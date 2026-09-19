@@ -1,0 +1,44 @@
+{
+  "verified_at": "2026-09-19T23:01:29.639Z",
+  "cloud": {
+    "state": "running",
+    "node_id": "7b9b887e-4269-4905-b030-dec06845bcf2",
+    "job_id": "j-97cf9f41-2388-4c77-88b5-939178b9aaac",
+    "execution_id": "e-3962afd2-9d44-4fd1-b6db-257c63fd2d08",
+    "last_tick_at": 1789858885.33166
+  },
+  "applied": [
+    {
+      "seq": 13,
+      "at": 1789858870.560822,
+      "stage": "applied",
+      "pod": "checkout-new",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.91,
+      "message": "applied",
+      "event_id": 13
+    }
+  ],
+  "undone": [
+    {
+      "seq": 18,
+      "at": 1789858885.842153,
+      "stage": "undone",
+      "pod": "checkout-new",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.9,
+      "message": "undone",
+      "event_id": 18
+    }
+  ],
+  "logs": [
+    "{\"event\": \"checkout_completed\", \"team\": \"payments\", \"routing_tier\": \"stable\", \"status\": 200, \"message\": \"Checkout request completed; eligible for stable checkout routing\", \"at\": 1789858669.5808437, \"synthetic_stimulus\": true}",
+    "{\"event\": \"checkout_completed\", \"team\": \"payments\", \"routing_tier\": \"stable\", \"status\": 200, \"message\": \"Checkout request completed; eligible for stable checkout routing\", \"at\": 1789858855.9025974, \"synthetic_stimulus\": true}",
+    "{\"event\": \"stable_traffic_denied\", \"routing_tier\": \"stable\", \"status\": 503, \"message\": \"Stable checkout traffic fails policy validation; remove stable routing membership\", \"at\": 1789858873.9751298, \"synthetic_stimulus\": true}"
+  ],
+  "browser_errors": []
+}

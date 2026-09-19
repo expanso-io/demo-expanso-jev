@@ -1,5 +1,14 @@
 # A pod-label agent with Expanso Cloud and Jev
 
+![Local visual pod-label demo](../../docs/pod-labels.png)
+
+**A mostly visual browser experience:** choose checkout traffic or a routing
+failure, then click `checkout-new`. Its real container writes a synthetic
+workload event to stdout. The Cloud-managed pipeline collects those logs,
+asks Jev whether a label fits, and updates Kubernetes when the judgment
+meets the threshold. The cluster view, log panel and decision trail show
+observed evidence; labels only change after Kubernetes accepts the patch.
+
 Implements [Nathan LeClaire's example](https://x.com/dotpem/status/2101432286214525156):
 discover labels on every pod in a cluster, compare them with each target pod,
 ask Jev whether to add missing labels, and reconsider additions when signals
@@ -134,6 +143,11 @@ In one terminal, run the adapter:
 just pod-labels-adapter
 ```
 
+Open **http://127.0.0.1:8901** in your browser. The adapter serves this UI
+only on localhost. The reference pods establish label meaning; the
+`checkout-new` pod is the clickable workload. Cloud execution remains
+unverified until the UI reads a running execution on the intended node.
+
 In another, bootstrap and run a dedicated Cloud-connected agent. Its identity
 and state remain under this repo's ignored `.expanso/pod-labels/` directory:
 
@@ -174,6 +188,20 @@ Only one candidate from a pod snapshot can be applied: each write advances
 its resource version, so further changes wait for the next fresh tick.
 
 ## Supply a rollback signal
+
+In the browser, select **Checkout traffic** and click `checkout-new`.
+Watch the log arrive, the Cloud collection and Jev judgment appear in the
+decision trail, and `routing-tier=stable` appear on the pod. Then select
+**Routing failure** and click it again. A newer failure log gives Jev the
+evidence to reconsider the owned label. Source events are synthetic; the
+pod logs, Cloud execution, inference and Kubernetes patches are real.
+
+The default threshold is still 90%. A lower probability produces **HELD**,
+not a pretend label change. The controls generate workload events only;
+they cannot invoke Jev or apply labels directly. Stop the job in Cloud and
+clicks can still generate logs, but no reconciliation runs.
+
+For a terminal-driven alternative, use the signal annotation below.
 
 After `checkout-new` gains `routing-tier=stable`, inject a clearly identified
 synthetic operational signal:
@@ -250,6 +278,14 @@ kubectl --context "$KUBE_CONTEXT" delete namespace jev-label-demo
 ```
 
 The example does not alter the existing log-triage processes or Cloud job.
+
+### Upgrading an earlier version of this example
+
+The visual fixture uses a Python HTTP workload in place of nginx. Kubernetes
+cannot update those existing Pod container specs in place. Stop this demo's
+Cloud job, delete **only your disposable `jev-label-demo` namespace**, and
+reapply `fixtures.yaml` before restarting. This also clears the owned-label
+journal for a fresh demonstration.
 
 ## Local verification
 
