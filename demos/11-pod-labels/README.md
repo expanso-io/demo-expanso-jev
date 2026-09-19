@@ -94,7 +94,9 @@ For an existing k3s cluster, use its kubeconfig and explicit context instead
 of installing another cluster. The adapter reads pods cluster-wide but only
 patches namespaces named in `POD_LABEL_NAMESPACES`. Its Kubernetes identity
 needs `list` on pods cluster-wide, plus `get` and `patch` in the target
-namespaces. The disposable setup uses k3s's administrator kubeconfig; use
+namespaces. Reading workload logs also needs `get` on `pods/log`; the
+browser's fixed fixture stimulus needs `create` on `pods/exec` there.
+The disposable setup uses k3s's administrator kubeconfig; use
 scoped credentials when adapting this to a shared cluster.
 
 ### 2. Connect Expanso Cloud and Jev

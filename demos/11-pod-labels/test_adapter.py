@@ -67,6 +67,12 @@ class FakeKube:
 
 
 class Tests(unittest.TestCase):
+    def setUp(self):
+        # Unit tests must never query a live network inherited from .env.
+        environment = patch.dict(a.os.environ, {}, clear=True)
+        environment.start()
+        self.addCleanup(environment.stop)
+
     def test_fixture_waits_for_logs_and_exposes_click_eligibility(self):
         e = self.engine()
         e.kube.target = pod("checkout-new")
