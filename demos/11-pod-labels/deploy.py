@@ -35,7 +35,7 @@ def main():
         text=True,
         timeout=30,
     )
-    node_id = selected_node(json.loads(result.stdout))
+    node_id = selected_node(json.JSONDecoder().raw_decode(result.stdout.lstrip())[0])
     root = Path(__file__).resolve().parents[2]
     connection = root / ".expanso/pod-labels/config.d/50-connection.yaml"
     local_ids = re.findall(

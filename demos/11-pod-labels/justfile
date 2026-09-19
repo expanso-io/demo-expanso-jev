@@ -1,0 +1,21 @@
+# This directory is the pod demo, never the repository's log-triage default.
+set dotenv-load := true
+set dotenv-path := "../../.env"
+root := justfile_directory() / "../.."
+
+_default:
+    @just --list
+
+# One terminal; Ctrl-C stops this session's job and services.
+up:
+    uv run "{{ justfile_directory() }}/local.py" up
+
+# Stop the foreground launcher from another terminal.
+down:
+    uv run "{{ justfile_directory() }}/local.py" down
+
+status:
+    @just --justfile "{{ root }}/justfile" pod-labels-status
+
+test:
+    @just --justfile "{{ root }}/justfile" pod-labels-test

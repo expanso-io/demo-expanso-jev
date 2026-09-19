@@ -236,6 +236,13 @@ reset-agent:
     for d in state executions; do [ -e ".expanso/edge/$d" ] && mv ".expanso/edge/$d" "$b/$d"; done
     echo "moved the agent's execution store to $b (identity untouched)"
 
+# Pod-label demo: one foreground command for local k3s + Cloud.
+pod-labels-up:
+    just --justfile "{{ root }}/demos/11-pod-labels/justfile" up
+
+pod-labels-down:
+    just --justfile "{{ root }}/demos/11-pod-labels/justfile" down
+
 # Pod-label demo: foreground adapter, driven only by the Cloud pipeline.
 pod-labels-adapter:
     uv run "{{ root }}/demos/11-pod-labels/adapter.py"
@@ -264,6 +271,7 @@ pod-labels-nodes:
 # Local tests do not use a cluster, Cloud, or paid inference.
 pod-labels-test:
     uv run "{{ root }}/demos/11-pod-labels/test_adapter.py"
+    uv run "{{ root }}/demos/11-pod-labels/test_local.py"
     POD_LABEL_TOKEN=offline-validation-placeholder-only expanso-edge validate "{{ root }}/demos/11-pod-labels/pipeline.yaml"
 
 # Run after inspecting pod-labels-nodes; selectors are validated by Cloud.

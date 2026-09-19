@@ -34,6 +34,19 @@ differ; the board measures it live.
   board labels mock answers in red, because they are keyword heuristics and
   not inference.
 
+## Pod-label browser demo
+
+For the clickable Kubernetes cluster with Cloud-managed Jev judgments:
+
+```bash
+just pod-labels-up
+```
+
+Open **http://127.0.0.1:8901** after READY. See the
+[pod demo prerequisites and runbook](demos/11-pod-labels/README.md).
+Inside `demos/11-pod-labels`, `just up` runs that demo directly.
+The root `just up` below starts the original log-triage demo.
+
 ## Quickstart
 
 ```bash

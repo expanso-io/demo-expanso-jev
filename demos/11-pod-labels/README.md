@@ -32,6 +32,44 @@ owned-label removal at 90%. See the [execution receipts](../../docs/pod-labels-p
 and [undo screenshot](../../docs/pod-labels-undo.png). Model judgments can
 vary; the unchanged acceptance threshold is 90%.
 
+## One-command local start
+
+From this directory, run:
+
+```bash
+just up
+```
+
+Or from the repository root:
+
+```bash
+just pod-labels-up
+```
+
+Install `uv`, `just`, Docker, `k3d`, `kubectl`, `expanso-cli`, and
+`expanso-edge` first. Keep your Cloud endpoint, Cloud API key, bootstrap
+token and `TYPESAFE_API_KEY` in the repository-root `.env`. The launcher
+loads that file automatically. On macOS it starts Docker Desktop if needed.
+
+The command creates or starts the dedicated `jev-label-demo` k3s cluster,
+applies the fixture, starts the local adapter and Edge agent, deploys
+through Expanso Cloud, and waits for a running execution on this node.
+Once it prints **READY**, open **http://127.0.0.1:8901**. No website password.
+It stays in the foreground; **Ctrl-C** stops its Cloud job and child
+processes, plus the cluster and Docker if this session started them.
+Use `just down` here, or `just pod-labels-down` from the root, to stop
+it from another terminal.
+
+This quickstart uses only the dedicated cluster and namespace. Its private
+kubeconfig, generated adapter token and logs live under the ignored
+`.expanso/pod-labels/` directory. Label writes default to enabled for this
+disposable fixture; set `POD_LABEL_APPLY=false` in root `.env` for dry-run.
+Restarting preserves fixture state, including earlier labels and undo
+history. The manual setup below is for native k3s or another cluster.
+
+**Command selection:** this directory has its own `justfile`.
+`just up` here starts pods; root `just up` still starts log triage.
+
 ## Run with k3s and Expanso Cloud
 
 **Use [Expanso Cloud](https://cloud.expanso.io) to run this example.** Create
