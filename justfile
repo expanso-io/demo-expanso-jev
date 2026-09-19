@@ -279,4 +279,4 @@ pod-labels-status:
 pod-labels-stop:
     : "${EXPANSO_CLI_ENDPOINT:?Set the Cloud endpoint}"
     : "${EXPANSO_CLI_AUTH_API_KEY:?Set the Cloud API key}"
-    expanso-cli job stop jev-pod-labels --namespace demo
+    expanso-cli job stop jev-pod-labels --namespace demo --force
