@@ -67,6 +67,94 @@ class FakeKube:
 
 
 class Tests(unittest.TestCase):
+    def test_fixture_waits_for_logs_and_exposes_click_eligibility(self):
+        e = self.engine()
+        e.kube.target = pod("checkout-new")
+        e.kube.target["metadata"]["annotations"]["jev.expanso.io/fixture"] = "visual-v1"
+        with patch.object(e.kube, "logs", return_value=[]):
+            self.assertEqual(e.snapshot(), [])
+        self.assertTrue(e.state()["pods"][0]["event_enabled"])
+        self.assertTrue(e.snapshot())
+        e.kube.target["metadata"]["name"] = "checkout-reference"
+        self.assertFalse(e.state()["pods"][0]["event_enabled"])
+
+    def test_successful_mutation_releases_selected_focus(self):
+        e = self.engine()
+        e.selected = ("demo", "target")
+        e.execute(self.decision(e))
+        self.assertIsNone(e.selected)
+
+    def test_state_does_not_need_mutation_lock(self):
+        e = self.engine()
+        server = a.ThreadingHTTPServer(("127.0.0.1", 0), a.handler(e, "secret"))
+        worker = threading.Thread(target=server.serve_forever)
+        worker.start()
+        e.lock.acquire()
+        try:
+            connection = http.client.HTTPConnection(*server.server_address, timeout=2)
+            connection.request("GET", "/api/state")
+            response = connection.getresponse()
+            self.assertEqual(response.status, 200)
+            response.read()
+            connection.close()
+        finally:
+            e.lock.release()
+            server.shutdown()
+            worker.join(timeout=5)
+            server.server_close()
+
+    def test_cloud_requires_matching_current_running_execution_and_caches(self):
+        from unittest.mock import Mock
+
+        node = "00000000-0000-0000-0000-000000000001"
+        connection = Mock()
+        connection.read_text.return_value = "node_id: " + node
+        job = {
+            "id": "j-demo",
+            "status": {"version": 2, "state": {"state_type": "running"}},
+        }
+        execution = {
+            "id": "e-demo",
+            "job_id": "j-demo",
+            "job_version": 2,
+            "node_id": node,
+            "namespace": "demo",
+            "status": {
+                "desired_state": {"state_type": "running"},
+                "observed_state": {"state_type": "running"},
+            },
+        }
+        with patch.dict(
+            a.os.environ,
+            {
+                "EXPANSO_CLI_ENDPOINT": "https://example.invalid",
+                "EXPANSO_CLI_AUTH_API_KEY": "fake",
+            },
+        ):
+            for change in (
+                {},
+                {"job_version": 1},
+                {"node_id": "wrong"},
+                {"job_id": "wrong"},
+            ):
+                cloud = a.CloudStatus(connection)
+                with patch.object(
+                    cloud, "command", side_effect=[job, [dict(execution, **change)]]
+                ) as command:
+                    result = cloud.read()
+                    self.assertEqual(
+                        result["state"], "unknown" if change else "running"
+                    )
+                    self.assertEqual(result, cloud.read())
+                    self.assertEqual(command.call_count, 2)
+        cloud = a.CloudStatus(connection)
+        with (
+            patch.dict(a.os.environ, {}, clear=True),
+            patch.object(cloud, "command") as command,
+        ):
+            self.assertEqual(cloud.read()["state"], "unknown")
+            command.assert_not_called()
+
     def test_logs_feed_inference(self):
         e = self.engine()
         item = e.snapshot()[0]

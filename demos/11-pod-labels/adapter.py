@@ -10,6 +10,7 @@ import hmac
 import json
 import math
 import os
+import re
 import secrets
 from pathlib import Path
 import subprocess
@@ -17,7 +18,8 @@ import sys
 import threading
 import time
 import urllib.request
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from http.server import HTTPServer as HTTPServer
 
 LEDGER = "jev.expanso.io/changes"
 SIGNAL = "jev.expanso.io/signal"
@@ -268,6 +270,96 @@ class Kubernetes:
         )
 
 
+class CloudStatus:
+    """Read pinned Cloud metadata only; never execute or infer from a heartbeat."""
+
+    def __init__(self, connection=None):
+        self.connection = (
+            connection
+            or Path(__file__).resolve().parents[2]
+            / ".expanso/pod-labels/config.d/50-connection.yaml"
+        )
+        self.cached = dict(
+            state="unknown", node_id=None, job_id=None, execution_id=None
+        )
+        self.expires = 0
+        self.lock = threading.Lock()
+
+    def command(self, *args):
+        proc = subprocess.run(
+            ["expanso-cli", *args, "--format", "json"],
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=8,
+        )
+        # CLI emits a pagination footer after JSON list output.
+        return json.JSONDecoder().raw_decode(proc.stdout.lstrip())[0]
+
+    def read(self):
+        with self.lock:
+            if time.monotonic() < self.expires:
+                return dict(self.cached)
+            result = dict(state="unknown", node_id=None, job_id=None, execution_id=None)
+            try:
+                if not all(
+                    os.environ.get(k)
+                    for k in ("EXPANSO_CLI_ENDPOINT", "EXPANSO_CLI_AUTH_API_KEY")
+                ):
+                    return result
+                ids = re.findall(
+                    r"(?m)^\s*node_id:\s*[\"']?([0-9a-f-]{36})",
+                    self.connection.read_text(),
+                )
+                if len(ids) != 1:
+                    return result
+                result["node_id"] = ids[0]
+                job = self.command(
+                    "job", "describe", "jev-pod-labels", "--namespace", "demo"
+                )
+                job_id, version = job["id"], job["status"]["version"]
+                result["job_id"] = job_id
+                executions = self.command(
+                    "execution",
+                    "list",
+                    "--namespace",
+                    "demo",
+                    "--job-id",
+                    job_id,
+                    "--job-version",
+                    str(version),
+                    "--node-id",
+                    ids[0],
+                )
+                job_state = job["status"]["state"]["state_type"]
+                for execution in executions:
+                    if (
+                        execution.get("node_id") != ids[0]
+                        or execution.get("job_id") != job_id
+                        or execution.get("job_version") != version
+                        or execution.get("namespace") != "demo"
+                    ):
+                        continue
+                    status = execution.get("status", {})
+                    if (
+                        job_state == "running"
+                        and status.get("observed_state", {}).get("state_type")
+                        == "running"
+                        and status.get("desired_state", {}).get("state_type")
+                        == "running"
+                    ):
+                        result.update(state="running", execution_id=execution["id"])
+                        break
+                if job_state == "stopped":
+                    result["state"] = "stopped"
+            except Exception:
+                pass
+            finally:
+                self.cached = result
+                self.expires = time.monotonic() + 5
+            return dict(result)
+
+
 class Reconciler:
     def __init__(self, kube, namespaces, key, threshold=0.9, apply=False):
         if not namespaces or not key or not 0.5 < threshold <= 1:
@@ -281,6 +373,7 @@ class Reconciler:
         self.selected = None
         self.last_tick_at = None
         self.log_cache = {}
+        self.cloud_status = CloudStatus()
         self.lock = threading.Lock()
 
     def emit(self, stage, candidate=None, **extra):
@@ -340,10 +433,15 @@ class Reconciler:
                     name=meta["name"],
                     namespace=meta["namespace"],
                     uid=meta["uid"],
+                    event_enabled=meta["name"] == "checkout-new"
+                    and meta.get("annotations", {}).get("jev.expanso.io/fixture")
+                    == "visual-v1",
                     labels=meta.get("labels", {}),
                     status=pod.get("status", {}).get("phase", "Unknown"),
                     node=pod.get("spec", {}).get("nodeName"),
-                    logs=self.log_cache.get((meta["namespace"], meta["name"]), []),
+                    logs=list(
+                        self.log_cache.get((meta["namespace"], meta["name"]), [])
+                    ),
                 )
             )
         return dict(
@@ -352,14 +450,8 @@ class Reconciler:
             cluster_context=getattr(self.kube, "context", "test"),
             namespace=",".join(sorted(self.namespaces)),
             pods=pods,
-            events=self.events,
-            cloud=dict(
-                state="unknown",
-                last_tick_at=self.last_tick_at,
-                node_id=None,
-                job_id=None,
-                execution_id=None,
-            ),
+            events=copy.deepcopy(self.events),
+            cloud=dict(self.cloud_status.read(), last_tick_at=self.last_tick_at),
         )
 
     def snapshot(self):
@@ -374,6 +466,18 @@ class Reconciler:
                 self.log_cache[(meta["namespace"], meta["name"])] = logs
         self.last_tick_at = time.time()
         options = candidates(pods, self.namespaces)
+        waiting = {
+            (p["metadata"]["namespace"], p["metadata"]["name"])
+            for p in pods
+            if p["metadata"].get("annotations", {}).get("jev.expanso.io/fixture")
+            == "visual-v1"
+            and not p.get("_logs")
+        }
+        options = [
+            c
+            for c in options
+            if (c["pod"]["namespace"], c["pod"]["name"]) not in waiting
+        ]
 
         def order(candidate):
             p = candidate["pod"]
@@ -471,6 +575,8 @@ class Reconciler:
             noul=score,
             message=receipt["result"],
         )
+        if receipt["result"] in {"applied", "undone"}:
+            self.selected = None
         del self.pending[token]
         return receipt
 
@@ -510,8 +616,7 @@ def handler(reconciler, token):
                 if self.path == "/api/session":
                     self.respond({"csrf_token": csrf})
                 elif self.path == "/api/state":
-                    with reconciler.lock:
-                        state = reconciler.state()
+                    state = reconciler.state()
                     self.respond(state)
                 else:
                     root = Path(__file__).parent
@@ -608,7 +713,7 @@ def main():
         float(os.environ.get("POD_LABEL_THRESHOLD", "0.9")),
         os.environ.get("POD_LABEL_APPLY") == "true",
     )
-    server = HTTPServer(
+    server = ThreadingHTTPServer(
         ("127.0.0.1", int(os.environ.get("POD_LABEL_PORT", "8901"))),
         handler(reconciler, token),
     )
