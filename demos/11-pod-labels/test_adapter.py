@@ -48,6 +48,12 @@ class FakeKube:
         self.target = pod()
         self.patches = []
 
+    def logs(self, namespace, name):
+        return ["synthetic_stimulus checkout_completed"]
+
+    def event(self, namespace, name, scenario):
+        return {"scenario": scenario}
+
     def pods(self):
         return [self.target, pod("source", {"team": "payments"}, "other")]
 
@@ -61,6 +67,95 @@ class FakeKube:
 
 
 class Tests(unittest.TestCase):
+    def test_logs_feed_inference(self):
+        e = self.engine()
+        item = e.snapshot()[0]
+        self.assertIn(
+            "checkout_completed",
+            a.question(item["candidate"])["state"]["pod"]["logs"][0],
+        )
+        self.assertEqual(e.state()["cloud"]["state"], "unknown")
+        self.assertIsNotNone(e.state()["cloud"]["last_tick_at"])
+
+    def test_stimulus_only_emits_workload_event_and_invalidates(self):
+        e = self.engine()
+        e.kube.target = pod("checkout-new")
+        e.kube.target["metadata"]["annotations"]["jev.expanso.io/fixture"] = "visual-v1"
+        token = self.decision(e)
+        with patch.object(a.urllib.request, "urlopen") as model:
+            result = e.stimulus(
+                {"namespace": "demo", "pod": "checkout-new", "scenario": "checkout"}
+            )
+        self.assertEqual(result["stage"], "event")
+        self.assertEqual(e.kube.patches, [])
+        model.assert_not_called()
+        with self.assertRaises(ValueError):
+            e.entry(token)
+
+    def test_stimulus_rejects_unowned_or_malformed_target(self):
+        e = self.engine()
+        for body in [
+            None,
+            [],
+            {},
+            {"namespace": "demo", "pod": "checkout-new", "scenario": "checkout"},
+            {"namespace": "demo", "pod": "--help", "scenario": "failure"},
+            {"namespace": "demo", "pod": "checkout-new", "scenario": "shell"},
+        ]:
+            with self.subTest(body=body), self.assertRaises((ValueError, TypeError)):
+                e.stimulus(body)
+        self.assertEqual(e.kube.patches, [])
+
+    def test_ui_http_boundaries(self):
+        e = self.engine()
+        e.kube.target = pod("checkout-new")
+        e.kube.target["metadata"]["annotations"]["jev.expanso.io/fixture"] = "visual-v1"
+        server = a.HTTPServer(("127.0.0.1", 0), a.handler(e, "cloud-secret"))
+        worker = threading.Thread(target=server.serve_forever)
+        worker.start()
+
+        def request(method, path, body=None, headers=None):
+            connection = http.client.HTTPConnection(*server.server_address, timeout=5)
+            connection.request(method, path, body, headers or {})
+            response = connection.getresponse()
+            data = response.read()
+            connection.close()
+            return response.status, data
+
+        try:
+            status, payload = request("GET", "/api/session")
+            self.assertEqual(status, 200)
+            self.assertNotIn(b"cloud-secret", payload)
+            csrf = json.loads(payload)["csrf_token"]
+            origin = "http://127.0.0.1:" + str(server.server_port)
+            body = json.dumps(
+                {"namespace": "demo", "pod": "checkout-new", "scenario": "checkout"}
+            )
+            for headers in [
+                {},
+                {"Origin": origin},
+                {"Origin": "https://evil.example", "X-CSRF-Token": csrf},
+                {
+                    "Host": "evil.example",
+                    "Origin": "http://evil.example",
+                    "X-CSRF-Token": csrf,
+                },
+            ]:
+                self.assertEqual(request("POST", "/api/event", body, headers)[0], 403)
+            headers = {"Origin": origin, "X-CSRF-Token": csrf}
+            self.assertEqual(request("POST", "/api/event", body, headers)[0], 200)
+            self.assertEqual(request("POST", "/api/event", "[]", headers)[0], 400)
+            self.assertEqual(
+                request("GET", "/api/state", headers={"Host": "evil.example"})[0], 403
+            )
+            self.assertEqual(request("GET", "/../../.env")[0], 404)
+            self.assertEqual(request("POST", "/judge", "{}", headers)[0], 401)
+            self.assertEqual(e.kube.patches, [])
+        finally:
+            server.shutdown()
+            worker.join(timeout=5)
+            server.server_close()
+
     def test_inventory_reads_other_namespaces(self):
         self.assertEqual(candidate()["sources"][0]["namespace"], "other")
 
