@@ -235,3 +235,47 @@ reset-agent:
     mkdir -p "$b"
     for d in state executions; do [ -e ".expanso/edge/$d" ] && mv ".expanso/edge/$d" "$b/$d"; done
     echo "moved the agent's execution store to $b (identity untouched)"
+
+# Pod-label demo: foreground adapter, driven only by the Cloud pipeline.
+pod-labels-adapter:
+    uv run "{{ root }}/demos/11-pod-labels/adapter.py"
+
+# Dedicated Cloud-connected node; Ctrl-C stops this foreground agent.
+pod-labels-edge:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    : "${EXPANSO_EDGE_BOOTSTRAP_TOKEN:?Set the Cloud bootstrap token}"
+    : "${POD_LABEL_TOKEN:?Set the adapter token in .env}"
+    export EXPANSO_EDGE_HOME="{{ root }}/.expanso/pod-labels"
+    unset TYPESAFE_API_KEY
+    if [ ! -f "$EXPANSO_EDGE_HOME/config.d/50-connection.yaml" ]; then
+      expanso-edge bootstrap
+    fi
+    exec expanso-edge run --api-listen 127.0.0.1:9016 \
+      --config "{{ root }}/demos/11-pod-labels/edge.yaml"
+
+# Inspect only the pinned Cloud network, never the global CLI profile.
+pod-labels-nodes:
+    : "${EXPANSO_CLI_ENDPOINT:?Set the Cloud endpoint}"
+    : "${EXPANSO_CLI_AUTH_API_KEY:?Set the Cloud API key}"
+    expanso-cli node list --label demo=jev-pod-labels
+
+# Local tests do not use a cluster, Cloud, or paid inference.
+pod-labels-test:
+    uv run "{{ root }}/demos/11-pod-labels/test_adapter.py"
+    POD_LABEL_TOKEN=offline-validation-placeholder-only expanso-edge validate "{{ root }}/demos/11-pod-labels/pipeline.yaml"
+
+# Run after inspecting pod-labels-nodes; selectors are validated by Cloud.
+pod-labels-deploy:
+    uv run "{{ root }}/demos/11-pod-labels/deploy.py"
+
+pod-labels-status:
+    : "${EXPANSO_CLI_ENDPOINT:?Set the Cloud endpoint}"
+    : "${EXPANSO_CLI_AUTH_API_KEY:?Set the Cloud API key}"
+    expanso-cli job describe jev-pod-labels --namespace demo
+    expanso-cli execution list --namespace demo
+
+pod-labels-stop:
+    : "${EXPANSO_CLI_ENDPOINT:?Set the Cloud endpoint}"
+    : "${EXPANSO_CLI_AUTH_API_KEY:?Set the Cloud API key}"
+    expanso-cli job stop jev-pod-labels --namespace demo
