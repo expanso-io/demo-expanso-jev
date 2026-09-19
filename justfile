@@ -246,12 +246,13 @@ pod-labels-edge:
     set -euo pipefail
     : "${EXPANSO_EDGE_BOOTSTRAP_TOKEN:?Set the Cloud bootstrap token}"
     : "${POD_LABEL_TOKEN:?Set the adapter token in .env}"
-    export EXPANSO_EDGE_HOME="{{ root }}/.expanso/pod-labels"
-    unset TYPESAFE_API_KEY
-    if [ ! -f "$EXPANSO_EDGE_HOME/config.d/50-connection.yaml" ]; then
-      expanso-edge bootstrap
+    edge_data="{{ root }}/.expanso/pod-labels"
+    unset TYPESAFE_API_KEY EXPANSO_EDGE_HOME
+    if [ ! -f "$edge_data/config.d/50-connection.yaml" ]; then
+      expanso-edge bootstrap --data-dir "$edge_data"
     fi
-    exec expanso-edge run --api-listen 127.0.0.1:9016 \
+    exec expanso-edge run --data-dir "$edge_data" \
+      --api-listen 127.0.0.1:9016 \
       --config "{{ root }}/demos/11-pod-labels/edge.yaml"
 
 # Inspect only the pinned Cloud network, never the global CLI profile.

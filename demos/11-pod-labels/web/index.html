@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Pod labels · Expanso × Jev</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/web/style.css">
+  <script src="/web/app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="https://expanso.io" target="_blank" rel="noopener">EXPANSO <span>×</span> JEV</a>
+      <span class="series">FIELD NOTES / 11</span>
+      <div class="connection"><span class="dot" id="connection-dot"></span><span id="connection">Connecting to cluster</span></div>
+      <a class="cloud-link" href="https://cloud.expanso.io" target="_blank" rel="noopener">Open Expanso Cloud ↗</a>
+    </header>
+    <section class="intro">
+      <div><p class="eyebrow">KUBERNETES, WITH A LITTLE JUDGMENT</p><h1>Click a pod.<br><span>Watch its labels change.</span></h1></div>
+      <div class="instructions"><p>Make something happen.<br>Jev reads the logs. Cloud runs the loop.</p><span class="mode" id="mode">Checking runtime</span></div>
+    </section>
+    <section class="board" aria-label="Live pod to Cloud to Jev flow">
+      <div class="board-top"><span class="board-title"><span class="kube-mark">⎈</span> <b id="cluster-name">k3s cluster</b></span><span class="micro" id="namespace">Waiting for Kubernetes</span><span class="legend"><i></i>Observed state</span></div>
+      <div class="scenario-bar"><span class="step-number">1</span><span>Choose an event</span><div class="segmented" role="group" aria-label="Workload event"><button class="active" data-scenario="checkout" aria-pressed="true"><span>↗</span> Checkout traffic</button><button data-scenario="failure" aria-pressed="false"><span>↯</span> Routing failure</button></div><span class="step-number second">2</span><span>Click a pod</span></div>
+      <div class="topology" id="topology">
+        <svg class="wires" id="wires" aria-hidden="true"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/></marker></defs><path id="to-cloud"/><path id="to-jev"/><path id="to-pod"/><g id="packets"></g></svg>
+        <div class="cluster" id="cluster"><div class="node-caption"><span class="mini-dot"></span> <span id="node-name">Kubernetes workloads</span><span class="micro" id="pod-count">— pods</span></div><div class="pods" id="pods"><div class="empty"><span class="empty-icon">⎈</span><h2>Connect your cluster</h2><p>Start the adapter with your k3s context.<br>Your real pods will appear here.</p><code>just pod-labels-adapter</code></div></div></div>
+        <div class="processor cloud-node" id="cloud-node"><span class="node-index">01 / ORCHESTRATE</span><svg class="cloud-icon" viewBox="0 0 72 52" aria-hidden="true"><path d="M20 42h35a13 13 0 0 0 1-26A21 21 0 0 0 16 18a12 12 0 0 0 4 24Z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="m29 27 6-6 6 6m-6-6v14" fill="none" stroke="currentColor" stroke-width="2"/></svg><h2>Expanso Cloud</h2><p id="cloud-detail">Waiting for execution</p><span class="node-status" id="cloud-status">UNKNOWN</span></div>
+        <div class="processor jev-node" id="jev-node"><span class="node-index">02 / JUDGE</span><div class="jev-glyph" aria-hidden="true"><span></span><span></span><span></span><span></span></div><h2>Jev</h2><p id="jev-detail">Logs → a typed judgment</p><span class="node-status" id="jev-status">WAITING</span></div>
+        <span class="wire-label logs-label">pod logs</span><span class="wire-label context-label">evidence</span><span class="wire-label return-label">confirmed label change</span>
+      </div>
+      <div class="result-bar" aria-live="polite"><span class="result-mark" id="result-mark">◎</span><div><b id="result-title">The cluster is the canvas.</b><span id="result-detail">Select an event, then click a workload. Labels reflect Kubernetes, never a scripted animation.</span></div><span class="micro" id="last-tick">No Cloud tick observed</span></div>
+    </section>
+    <section class="evidence">
+      <div class="log-panel"><div class="panel-heading"><h2>Inside the pod <span id="selected-name">/ select a workload</span></h2><span class="micro">STDOUT</span></div><div class="log-lines" id="logs"><p class="placeholder">Workload logs will appear when a pod is selected.</p></div></div>
+      <div class="decision-panel"><div class="panel-heading"><h2>The decision trail</h2><span class="micro" id="event-count">0 EVENTS</span></div><ol id="trail"><li class="placeholder">Cloud collection, Jev judgments, and confirmed writes appear here.</li></ol></div>
+    </section>
+    <footer><span><b>Real cluster. Real inference.</b> Synthetic workload events, triggered by you.</span><button id="details-toggle" aria-expanded="false" aria-controls="runtime-details">Inspect runtime +</button></footer>
+    <section id="runtime-details" class="runtime-details" hidden><dl id="runtime-fields"></dl><p>Pod labels change only after a Cloud-scheduled pipeline receives a Jev judgment and Kubernetes accepts the patch. A stopped Cloud job means no reconciliation. Dry-run mode makes no label changes.</p></section>
+    <p id="error" role="alert" hidden></p>
+  </main>
+</body>
+</html>
