@@ -1,0 +1,8 @@
+# demos/03-sensitivity-masking/input.jsonl holds fake, credential-shaped sample
+# values on purpose: the demo masks them. Nothing in that file is a real secret.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Synthetic PII and credential samples for the masking demo"
+paths = ['''demos/03-sensitivity-masking/input\.jsonl''']

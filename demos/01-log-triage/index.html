@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="fonts/fonts.css">
+<title>Expanso × Jev — log triage</title>
+<style>
+/* Light on purpose: watched on video next to the Expanso Cloud console, and
+   dark ink squares on paper stay crisp at capture size. Colour means "a
+   decision was made": an unprocessed log is plain ink. */
+:root{
+  color-scheme:light;
+  --bg:#f4f2f9; --surface:#ffffff; --surface-2:#ebe7f5; --line:#cfc8e0;
+  --text:#1b1530; --text-dim:#5b5473;
+  --accent:#6d3aed;            /* Expanso */
+  --jev:#b8530a;               /* Jev */
+  --ok:#187a3c; --warn:#a85c00; --err:#cf2e3d;
+  --page:#cf2e3d; --notify:#a85c00; --review:#2563eb; --archive:#5d5872; --raw:#1b1530; --held:#b8530a; --hero:#0a8f8f;
+  --sans:"IBM Plex Sans",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --display:"Big Shoulders Display","IBM Plex Sans",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;overflow:hidden;color:var(--text);font:14px/1.45 var(--sans);background:#f4f2f9}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* The flow is the board. Header and evidence are fixed and small; the flow
+   takes everything else, at 1280x720 and at 1440x900 alike. */
+.shell{height:100dvh;padding:14px 24px 16px;display:grid;gap:10px;grid-template-rows:44px minmax(0,1fr) 168px}
+
+.top{display:flex;align-items:center;gap:20px;min-width:0}
+.brand{font:800 32px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.brand i{font-style:normal;color:var(--text-dim);padding:0 5px}
+.claim{flex:1;min-width:0;font-size:24px;line-height:1.1;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:2px solid var(--line);padding-left:20px}
+.claim.err{color:var(--err)}
+.tabs{display:flex;gap:4px;padding:3px;background:var(--surface-2);border-radius:8px}
+.tabs button{height:32px;padding:0 14px;border:0;border-radius:4px;background:none;cursor:pointer;font-size:14px;font-weight:500;color:var(--text-dim)}
+.tabs button[aria-selected=true]{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(27,21,48,.18)}
+.fine.replay{color:var(--err);font-weight:600}
+.fine{font-size:13px;line-height:1.3;color:var(--text-dim);text-align:right;white-space:nowrap}
+
+/* ---------- flow ---------- */
+.flow{position:relative;min-height:0}
+.flow canvas{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;z-index:0}
+.srcbox{position:absolute;left:0;width:176px;height:56px;z-index:1;background:var(--surface);border:2px solid var(--text);border-radius:8px;padding:7px 12px}
+.srcbox small{display:block;font:500 13px/1.2 var(--mono);color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase}
+.srcbox b{font:500 14px var(--mono)}
+
+/* Expanso and Jev are not on the board until they are doing something. */
+.node{position:absolute;z-index:1;border-radius:8px;padding:10px 14px;transition:opacity .45s,transform .5s cubic-bezier(.2,.9,.3,1.25)}
+.node.gone{opacity:0;transform:scale(.92);pointer-events:none}
+.node h2{margin:0 0 6px;font:800 32px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.node h2:before{content:"";width:10px;height:10px;border-radius:50%;background:currentColor;animation:live 1.6s ease-in-out infinite}
+@keyframes live{50%{opacity:.25}}
+.node .ask{font-size:18px;line-height:1.3;font-weight:500}
+/* The steps are the pipeline's real processors, in order. */
+/* The chip row fills whatever is left under the logo and centres in it, so the
+   gap above the chips equals the gap below them. Bottom padding is 0 for that
+   reason: the row runs to the box's inner edge. */
+.node{display:flex;flex-direction:column;padding-bottom:0}
+.node h2{margin-bottom:0;flex:0 0 auto}
+.steps{flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:6px;margin:0}
+.node .num{flex:0 0 auto;padding-bottom:8px}
+.steps i{font-style:normal;color:var(--accent);font:500 14px var(--mono);opacity:.55}
+.step{font:500 14px/1 var(--mono);padding:7px 9px;border:1px solid var(--accent);border-radius:4px;background:var(--surface);white-space:nowrap;transition:background .25s,color .25s}
+.step.gatechip.fire{background:var(--jev);border-color:var(--jev);color:#ffffff}
+body:not(.act-jev) .j3{display:none}
+/* Jev's four questions are asked together, not in sequence: same chips as
+   Expanso's steps, no arrows between them. */
+.jevnode .step{border-color:var(--jev);color:var(--jev)}
+.jevnode.off .step{border-color:var(--line);color:var(--text-dim)}
+.jevnode.down .step{border-color:var(--err);color:var(--err)}
+.node .num{font-size:13px;line-height:1.3;color:var(--text-dim);margin-top:3px}
+.node .num b{color:var(--text);font-weight:600}
+.node.expanso{height:104px;border:2px solid var(--accent);background:#f3effe;box-shadow:0 8px 22px -12px var(--accent)}
+.node.expanso h2{color:var(--accent)}
+/* Real marks, not lookalikes: Expanso's own violet wordmark, and TypeSafe's mark
+   as published on typesafe.ai. "TypeSafe" beside it is a plain label in our
+   type, deliberately not an imitation of their wordmark. */
+.node h2 img.word{height:26px;width:auto;display:block}
+.node h2 img.mark{height:30px;width:30px;border-radius:50%;display:block}
+.node h2 .by{font:500 13px/1.1 var(--sans);letter-spacing:0;text-transform:none;color:var(--text-dim);align-self:flex-end;padding-bottom:3px}
+.node.expanso h2:before,.node.jevnode h2:before{order:-1}
+.node.jevnode{width:460px;height:96px;border:2px dashed var(--jev);background:#fdf3ea}
+.node.jevnode h2{color:var(--jev)}
+/* Jev is present but dormant until switched on: muted, no live dot. */
+.node.jevnode.off{border-color:var(--line);background:var(--surface)}
+.node.jevnode.off h2{color:var(--text-dim)} .node.jevnode.off h2:before{animation:none;opacity:.35}
+.node.jevnode h2{justify-content:flex-start}
+/* A macOS-style switch: pill track, round white knob, slides and tints when on. */
+.sw{margin-left:auto;flex:0 0 auto;width:46px;height:28px;border-radius:9999px;border:0;padding:0;cursor:pointer;position:relative;
+  background:var(--line);box-shadow:inset 0 0 0 1px rgba(27,21,48,.12);transition:background .22s}
+.sw:before{content:"";position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;background:#ffffff;
+  box-shadow:0 1px 3px rgba(27,21,48,.35),0 0 0 .5px rgba(27,21,48,.08);transition:transform .22s cubic-bezier(.3,.7,.3,1)}
+.sw[aria-checked=true]{background:var(--jev)} .sw[aria-checked=true]:before{transform:translateX(18px)}
+.sw:disabled{cursor:progress;opacity:.7}
+.node.jevnode.down{border-color:var(--err);background:#fdeeef}
+.node.jevnode.down h2{color:var(--err)}
+.node.jevnode.down h2:before{animation:none}
+
+.buckets{position:absolute;right:0;top:0;bottom:0;width:300px;z-index:1}
+.bucket{--c:var(--archive);position:absolute;left:0;right:0;height:64px;overflow:hidden;
+  display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:12px;text-align:left;
+  background:var(--surface);border:2px solid var(--line);border-left:6px solid var(--c);border-radius:8px;padding:0 14px;cursor:pointer;
+  transition:opacity .45s,transform .45s,top .55s cubic-bezier(.3,.8,.3,1),height .55s cubic-bezier(.3,.8,.3,1),border-color .2s,background .3s}
+.bucket[data-bin=page]{--c:var(--page)} .bucket[data-bin=notify]{--c:var(--notify)} .bucket[data-bin=review]{--c:var(--review)}
+.bucket.gone{opacity:0;transform:translateX(20px);pointer-events:none}
+.bucket .name{font:800 24px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;color:var(--c);position:relative;align-self:end}
+.bucket .what{grid-column:1;font-size:13px;line-height:1.25;color:var(--text-dim);position:relative;align-self:start}
+.bucket .count{grid-row:1/3;grid-column:2;font:800 32px/1 var(--display);position:relative}
+.bucket:hover,.bucket.sel{border-color:var(--c)}
+.bucket.sel{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 20%,transparent)}
+.bucket.hit .count{animation:bump .3s ease-out}
+@keyframes bump{30%{transform:scale(1.1)}}
+
+/* The raw bucket never leaves and never moves: bottom row, level with the
+   source. Once a pipeline runs it stays put as a stopped, dashed box. */
+.bucket.rawb{--c:var(--raw)}
+.bucket.rawb.tomb{background:var(--surface-2);border-style:dashed;border-left-style:solid}
+
+.fork{position:absolute;z-index:1;font:500 14px/1.25 var(--mono);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;transition:opacity .45s}
+.fork.gone{opacity:0}
+.fork b{font:800 32px/1 var(--display);letter-spacing:.02em;margin-right:8px;vertical-align:-3px}
+.fork.routine{color:var(--accent)} .fork.judge{color:var(--jev)}
+/* Expanso's hold: records waiting for Jev, drawn one square per held record. */
+.heldtag{position:absolute;z-index:1;font:500 13px/1.2 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--held);white-space:nowrap;transition:opacity .4s}
+.heldtag b{font:800 24px/1 var(--display);margin-right:7px;vertical-align:-2px}
+.heldtag.gone{opacity:0}
+.btn.fault{border-color:var(--err);color:var(--err)} .btn.fault.on{background:var(--err);color:#ffffff}
+.btn.restore{border-color:var(--ok);color:var(--ok);font-weight:600}
+.inject,.outage{position:absolute;z-index:1;display:flex;flex-direction:column;align-items:stretch;gap:8px;transition:opacity .5s}
+.inject{left:0;width:176px}
+.inject.gone,.outage.gone{opacity:0;pointer-events:none}
+.inject .lbl,.outage .lbl{font:500 13px var(--mono);color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase}
+.btn{height:30px;padding:0 12px;border-radius:4px;border:1px solid var(--text-dim);cursor:pointer;background:var(--surface);font-size:13px;font-weight:500;box-shadow:0 2px 0 var(--line)}
+.btn:hover{background:var(--surface-2)} .btn:active{transform:translateY(2px);box-shadow:none}
+.btn.fired{border-color:var(--hero);color:var(--hero)}
+.inject .btn{text-align:left}
+
+/* ---------- tab two: the pipeline itself ---------- */
+.yaml{display:none;grid-row:2/4;min-height:0;grid-template-rows:auto minmax(0,1fr);gap:10px}
+body.tab-yaml .flow,body.tab-yaml .evidence{display:none}
+body.tab-yaml .yaml{display:grid}
+.yamlbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.yamlbar .what{font-size:14px;color:var(--text-dim)}
+.yamlbar .what b{color:var(--text);font-family:var(--mono);font-weight:500}
+.yaml pre{margin:0;overflow:auto;background:var(--surface);border:2px solid var(--line);border-radius:8px;padding:18px 22px;font:14px/1.6 var(--mono);tab-size:2}
+.yaml pre .c{color:var(--text-dim)} .yaml pre .k{color:var(--accent)} .yaml pre .e{color:var(--jev);font-weight:500}
+
+/* Default frame carries the story only. Thresholds, recurrence mechanics,
+   sink filenames and stage counts are real and one click away (pin any
+   bucket), but they are narration material, not primary-frame material. */
+body:not(.inspect) .detail{display:none}
+
+/* ---------- record modal: the full JSON, coloured by who added each field ---------- */
+.modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(27,21,48,.42);padding:32px}
+.modal.open{display:flex}
+.sheet{width:min(920px,100%);max-height:100%;display:grid;grid-template-rows:auto auto minmax(0,1fr);background:var(--surface);border-radius:16px;
+  box-shadow:0 30px 80px -20px rgba(27,21,48,.55);overflow:hidden}
+.sheet header{display:flex;align-items:baseline;gap:14px;padding:18px 24px 6px}
+.sheet header b{font:800 32px/1 var(--display);letter-spacing:.04em;text-transform:uppercase}
+.sheet header span{font-size:14px;color:var(--text-dim)}
+.sheet header kbd{margin-left:auto;font:500 13px var(--mono);color:var(--text-dim);border:1px solid var(--line);border-radius:4px;padding:2px 8px}
+.legend{display:flex;gap:18px;padding:0 24px 12px;font-size:14px;color:var(--text-dim);border-bottom:2px solid var(--line)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:7px;vertical-align:-1px}
+.sheet pre{margin:0;padding:16px 24px 22px;overflow:auto;font:14px/1.65 var(--mono);tab-size:2}
+.sheet pre .row{display:block;padding-left:10px;border-left:3px solid transparent}
+.sheet pre .row.ex{border-left-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,transparent)}
+.sheet pre .row.jv{border-left-color:var(--jev);background:color-mix(in srgb,var(--jev) 7%,transparent)}
+.j-k{color:var(--text)} .row.ex>.j-k:first-child{color:var(--accent);font-weight:500} .row.jv>.j-k:first-child{color:var(--jev);font-weight:500}
+.j-s{color:var(--ok)} .j-n{color:var(--review)} .j-b{color:var(--warn)} .j-p{color:var(--text-dim)}
+
+/* ---------- evidence: one strip, input -> decided by -> destination ---------- */
+.evidence{display:grid;grid-template-columns:640px minmax(0,1fr);gap:10px;min-height:0}
+.panel{background:var(--surface);border:2px solid var(--line);border-radius:8px;min-height:0;overflow:hidden;padding:12px 16px}
+.cap{font:500 13px/1.2 var(--mono);color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}
+.ledger{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 18px;align-content:start}
+.ledger .cap{grid-column:1/5;margin:0}
+.stat b{display:block;font:800 32px/1 var(--display);letter-spacing:.02em}
+.stat span{display:block;font-size:13px;line-height:1.25;color:var(--text-dim);margin-top:3px}
+.stat.warn b{color:var(--err)}
+.stat canvas{display:block;width:100%;height:22px;margin-top:4px}
+.ledger .big{font:800 32px/1 var(--display);letter-spacing:.02em}
+.ledger .big small{font:500 14px var(--sans);color:var(--text-dim);letter-spacing:0;margin-left:8px}
+.bar{display:flex;height:12px;border-radius:9999px;overflow:hidden;background:var(--surface-2);margin:8px 0 8px}
+.bar i{display:block;height:100%;transition:width .5s}
+.bar .by{background:var(--accent)} .bar .jd{background:var(--jev)}
+.stages{display:flex;gap:14px;font-size:13px;color:var(--text-dim);flex-wrap:wrap;line-height:1.35}
+.stages b{color:var(--text);font-weight:600;font-family:var(--mono)}
+.card{display:grid;grid-template-columns:minmax(0,1.15fr) 24px minmax(0,1.25fr) 24px minmax(0,.9fr);align-items:start}
+.card .arrow{font:500 24px/1 var(--mono);color:var(--line);text-align:center;padding-top:30px}
+.card .msg{font:500 18px/1.35 var(--mono);word-break:break-word;max-height:76px;overflow:hidden}
+.card .meta{font-size:13px;color:var(--text-dim);margin-top:4px;line-height:1.35}
+.card .said{font-size:18px;line-height:1.35}
+.card .said b{font-family:var(--mono);font-weight:500}
+.card .rule{display:inline-block;font:500 13px/1.3 var(--mono);color:var(--text-dim);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:3px 8px;margin-top:6px}
+.card .dest{font:800 32px/1 var(--display);letter-spacing:.04em;text-transform:uppercase}
+.card .vs{font-size:14px;line-height:1.35;color:var(--text-dim);margin-top:6px}
+.card .vs.diff{color:var(--text);font-weight:600}
+.card.note{display:flex;flex-direction:column;justify-content:center}
+.card.note .lead{font-size:24px;line-height:1.2;font-weight:600;margin:0 0 6px}
+.card.note .sub{font-size:14px;line-height:1.4;color:var(--text-dim);margin:0;max-width:60em}
+.ex{color:var(--accent)} .jv{color:var(--jev)}
+
+@media(max-height:640px),(max-width:1180px){body{overflow:auto}.shell{height:auto;min-height:100dvh;grid-template-rows:44px 460px 168px}}
+@media(prefers-reduced-motion:reduce){.node h2:before,.bucket.hit .count{animation:none}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <header class="top">
+    <div class="brand">Expanso<i>×</i>Jev</div>
+    <div class="claim" id="claim">Connecting…</div>
+    <nav class="tabs" role="tablist"><button role="tab" data-tab="flow" aria-selected="true">Live flow</button><button role="tab" data-tab="yaml" aria-selected="false">Pipeline YAML</button></nav>
+    <div class="fine" id="fine">Synthetic demo events<br>Buckets are local demo files</div>
+  </header>
+
+  <section class="flow" id="flow" aria-label="Live log flow">
+    <canvas id="cv"></canvas>
+    <div class="srcbox" id="src"><small>Source</small><b>production logs</b></div>
+
+    <div class="node jevnode gone" id="jevNode"><h2><img class="mark" src="assets/typesafe-mark.png" alt="TypeSafe">Jev<span class="by">by TypeSafe</span><button class="sw" id="jevSw" role="switch" aria-checked="false" aria-label="Route through Jev"></button></h2><div class="steps qs" aria-label="What Jev is asked about each record"><span class="step">Actionable?</span><span class="step">Severity?</span><span class="step">Team?</span><span class="step">Recurrence?</span></div><div class="num detail" id="jevNum"></div></div>
+    <div class="node expanso gone" id="exNode"><h2><img class="word" src="assets/expanso-logo-full-violet.svg" alt="Expanso"></h2>
+      <div class="steps"><span class="step" data-s="shape">Shape</span><i>→</i><span class="step" data-s="count">Count</span><i class="j3">→</i><span class="step j3" data-s="match">Match rules</span><i class="j3">→</i><span class="step j3 gatechip" data-s="gate" id="gateChip">Gate</span><i>→</i><span class="step" data-s="route">Route</span></div>
+      <div class="num detail" id="exNum"></div></div>
+
+    <div class="fork judge gone" id="fkJudge"><b id="fkJudgeN">0%</b>ask Jev</div>
+    <div class="fork routine gone" id="fkRoutine"><b id="fkRoutineN">0%</b>no model call</div>
+    <div class="inject gone" id="inject">
+      <span class="lbl">Inject a log line</span>
+      <button class="btn chaos" data-chaos="ghost">Unknown config reload</button>
+      <button class="btn chaos" data-chaos="brute">Brute force login</button>
+      <button class="btn chaos" data-chaos="health500">INFO: health check 500</button>
+    </div>
+    <div class="outage gone" id="outage">
+      <button class="btn fault" data-gate="overloaded">Break the link to Jev</button>
+      <button class="btn restore" data-gate="open" id="gateOpen" hidden>Restore the link</button>
+    </div>
+    <div class="heldtag gone" id="heldTag"><b id="heldN">0</b>held by Expanso</div>
+
+    <div class="buckets">
+      <button class="bucket gone" data-bin="page"><span class="name">Page</span><span class="count" data-count>0</span><span class="what">Wake the on-call now</span></button>
+      <button class="bucket gone" data-bin="notify"><span class="name">Notify</span><span class="count" data-count>0</span><span class="what">Post to the owning team</span></button>
+      <button class="bucket gone" data-bin="review"><span class="name">Review</span><span class="count" data-count>0</span><span class="what">Unsure · a human looks</span></button>
+      <button class="bucket gone" data-bin="archive"><span class="name">Archive</span><span class="count" data-count>0</span><span class="what" id="arcWhat">Low-cost storage</span></button>
+      <button class="bucket rawb" data-bin="raw" id="rawb">
+        <span class="name" id="rawName">Raw log bucket</span><span class="count" id="rawCount">0</span><span class="what" id="rawWhat">Every line, exactly as written</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="yaml" id="yaml" aria-label="Pipeline source configuration">
+    <div class="yamlbar">
+      <nav class="tabs" id="yamlPick"><button data-pipe="logging" aria-selected="false">pipeline-logging.yaml</button><button data-pipe="recurrence" aria-selected="true">pipeline-recurrence.yaml</button></nav>
+      <span class="what" id="yamlWhat"></span>
+    </div>
+    <pre id="yamlPre" tabindex="0">Loading…</pre>
+  </section>
+
+  <section class="evidence">
+    <div class="panel ledger" id="ledger"></div>
+    <div class="panel card note" id="card" aria-live="polite"></div>
+  </section>
+</main>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="sheet">
+    <header><b id="mTitle"></b><span id="mSub"></span><kbd>esc</kbd></header>
+    <div class="legend" id="mLegend"></div>
+    <pre id="mPre" tabindex="0"></pre>
+  </div>
+</div>
+
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COLORS = {page:css('--page'), notify:css('--notify'), review:css('--review'), archive:css('--archive'), raw:css('--raw'), err:css('--err'), jev:css('--jev'), hero:css('--hero')};
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Representative and labelled as such on screen. The RATE it fills at is real.
+const SINK = {held:'held.jsonl', page:'page.jsonl', notify:'notify.jsonl', review:'review.jsonl', archive:'archive.jsonl', raw:'raw.jsonl'};
+
+const S = {mode:'off', up:false, gen:true, jevDown:false, gate:'open', upstreamOk:null, bins:{raw:0}, run:{mode:'off',produced:0,accepted:0,bypassed:0,judged:0,jev_failed:0,caught:0,quieted:0,received:{page:0,notify:0,review:0,archive:0,raw:0}}};
+let pinned = null, rawStopped = null, frozen = null, uiRev = 0;
+
+/* --------------------------------------------------------------- geometry */
+const flow = $('#flow'), cv = $('#cv'), ctx = cv.getContext('2d');
+let G = null, dpr = 1;
+function layout(){
+  const r = flow.getBoundingClientRect(); if (!r.height) return;
+  dpr = Math.max(1, window.devicePixelRatio || 1);
+  cv.width = Math.round(r.width*dpr); cv.height = Math.round(r.height*dpr);
+  const H = r.height, W = r.width, bucketX = W-300;
+  // Anchored to the bottom. The raw bucket and the source share the bottom row
+  // and never move; routed buckets stack upward from there as they appear.
+  const pitch = Math.max(74, Math.min(132, Math.floor((H-16)/5))), BH = pitch-10;
+  const rawTop = H-16-BH, top = {page:rawTop-4*pitch, notify:rawTop-3*pitch, review:rawTop-2*pitch, archive:rawTop-pitch};
+  document.querySelectorAll('.bucket').forEach(b => b.style.height = BH+'px');
+  for (const b in top) document.querySelector(`.bucket[data-bin=${b}]`).style.top = top[b]+'px';
+  const lane = rawTop+BH/2, srcR = 176;
+  $('#src').style.top = (lane-28)+'px';
+  const NH = 104, JW = 460, JH = 96, LINK = 124;  // node sizes mirror the CSS above
+  const NW = Math.max(380, Math.min(520, bucketX-srcR-280));
+  const nodeL = Math.round(srcR + (bucketX-srcR-NW)*0.40);
+  const ex = $('#exNode'), jv = $('#jevNode');
+  const exTop = lane-NH/2, jvTop = Math.max(0, exTop-LINK-JH);
+  ex.style.left = nodeL+'px'; ex.style.top = exTop+'px'; ex.style.width = NW+'px';
+  // Where the branch leaves and returns: above the real step chips. Unknown
+  // records go up from "Match rules" and the answer comes back down into "Gate".
+  const cx = k => { const el = document.querySelector(`.step[data-s=${k}]`), b = el.getBoundingClientRect(); return b.width ? b.left - r.left + b.width/2 : null; };
+  const askX = cx('match') ?? nodeL+NW*0.5, ansX = cx('gate') ?? nodeL+NW*0.7;
+  jv.style.left = Math.round(nodeL + NW/2 - JW/2)+'px'; jv.style.top = jvTop+'px';
+  const fx = nodeL+NW+18; $('#fkRoutine').style.cssText += `left:${fx}px;top:${lane+12}px`; $('#fkJudge').style.cssText += `left:${askX-14}px;top:${jvTop+JH+16}px;transform:translateX(-100%)`;
+  $('#inject').style.bottom = (H-lane+42)+'px';
+  // The one outage control sits on the link it breaks, left of the question line.
+  const og = $('#outage'); og.style.left = (askX-14)+'px'; og.style.top = (jvTop+JH+66)+'px'; og.style.transform = 'translateX(-100%)';
+  const trayX = ansX + 130, trayY = jvTop + JH + 44;
+  $('#heldTag').style.cssText += `left:${trayX}px;top:${trayY-24}px`;
+  G = {w:W, h:H, lane, srcR, bucketX, trayX, trayY, gateIn:nodeL, gateOut:nodeL+NW, askX, ansX,
+       jevBottom:jvTop+JH, exTop, rawTop,
+       ends:{page:top.page+BH/2, notify:top.notify+BH/2, review:top.review+BH/2, archive:top.archive+BH/2}};
+  placeRaw();
+}
+function placeRaw(){
+  const el = $('#rawb'), piped = S.mode!=='off';
+  el.classList.toggle('tomb', piped); el.style.top = G.rawTop+'px';
+}
+new ResizeObserver(layout).observe(flow);
+
+/* -------------------------------------------------------------- particles */
+// One square is one log line, in and out. No trails, no duplicates: visual
+// volume is exactly event volume.
+const inbound = [], outbound = [], pulses = [];
+let spawnQ = [];
+const ROWS = [-16,-8,0,8,16];
+const SPEED = () => (G.bucketX - G.srcR) / 2.0;
+
+function bez(a,b,c,d,t){ const u=1-t; return u*u*u*a + 3*u*u*t*b + 3*u*t*t*c + t*t*t*d; }
+function sq(x,y,s){ ctx.fillRect(Math.round(x-s/2), Math.round(y-s/2), s, s); }
+
+let last = performance.now()/1000;
+function frame(){
+  const now = performance.now()/1000, dt = Math.min(0.05, now-last); last = now;
+  if (!G){ requestAnimationFrame(frame); return; }
+  ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,G.w,G.h);
+  const piped = S.up && S.mode!=='off', v = SPEED(), stopX = piped ? G.gateIn+6 : G.bucketX;
+
+  if (spawnQ.length){ const keep=[]; for (const t of spawnQ){ if (t<=now) inbound.push({x:G.srcR, y:ROWS[(Math.random()*ROWS.length)|0]}); else keep.push(t);} spawnQ=keep; }
+  drawLanes(piped);
+
+  ctx.fillStyle = COLORS.raw;
+  for (let i=inbound.length-1;i>=0;i--){
+    const p = inbound[i]; p.x += v*dt;
+    if (p.x >= stopX){
+      inbound.splice(i,1);
+      continue;
+    }
+    sq(p.x, G.lane+p.y, 5);
+  }
+  ctx.globalAlpha = 1;
+
+  const x1 = G.gateOut, dx = G.bucketX-x1, T = dx/v;
+  for (let i=outbound.length-1;i>=0;i--){
+    const p = outbound[i]; p.t += dt/T;
+    if (p.t<0) continue;                               // not released yet
+    if (p.t>=1){ outbound.splice(i,1); hit(p.bin); continue; }
+    const y3 = G.ends[p.bin];
+    const x = bez(x1, x1+dx*.4, x1+dx*.6, G.bucketX, p.t);
+    const y = bez(G.lane, G.lane, y3, y3, p.t) + p.y*(1-p.t)*.5;
+    ctx.fillStyle = p.c; sq(x, y, p.bin==='archive' ? 5 : 7);
+  }
+  drawHeroes(dt);
+  requestAnimationFrame(frame);
+}
+function drawLanes(piped){
+  ctx.lineWidth = 2; ctx.setLineDash([]); ctx.strokeStyle = 'rgba(27,21,48,.16)';
+  ctx.beginPath(); ctx.moveTo(G.srcR,G.lane); ctx.lineTo(piped ? G.gateIn : G.bucketX, G.lane); ctx.stroke();
+  if (!piped) return;
+  const jev = S.mode==='jev', x1 = G.gateOut, dx = G.bucketX-x1;
+  for (const b of jev ? ['archive','review','notify','page'] : ['archive']){
+    ctx.strokeStyle = COLORS[b]; ctx.globalAlpha = .5;
+    ctx.beginPath(); ctx.moveTo(x1,G.lane); ctx.bezierCurveTo(x1+dx*.4,G.lane, x1+dx*.6,G.ends[b], G.bucketX,G.ends[b]); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  if (!jev) return;
+  // The branch. We observe receipts, not request starts, so the trip is replayed
+  // when a real judged receipt lands: one square up, one square back.
+  const jd = S.jevDown || S.gate!=='open', col = jd ? COLORS.err : COLORS.jev, y0 = G.jevBottom, y1 = G.exTop;
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 2; ctx.setLineDash([5,5]);
+  for (const x of [G.askX, G.ansX]){ ctx.beginPath(); ctx.moveTo(x,y0); ctx.lineTo(x,y1); ctx.stroke(); }
+  ctx.setLineDash([]);
+  // Held records: one orange square each (capped at 84 drawn; the number beside
+  // it is always the real count). They are waiting on the node, not moving.
+  const holding = S.run.holding||0;
+  if (holding){ ctx.fillStyle = COLORS.jev; const cols = 14;
+    for (let i=0;i<Math.min(holding,84);i++) sq(G.trayX + (i%cols)*9 + 3, G.trayY + Math.floor(i/cols)*9 + 3, 6); }
+  ctx.fillStyle = col;
+  const head = (x,y,dir) => { ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x-6,y-9*dir); ctx.lineTo(x+6,y-9*dir); ctx.closePath(); ctx.fill(); };
+  head(G.askX, y0+1, -1); head(G.ansX, y1-1, 1);
+  ctx.font = '500 13px "IBM Plex Mono"'; ctx.textBaseline = 'middle';
+  ctx.textAlign = 'left'; ctx.fillText(S.gate==='overloaded' ? '503 overloaded' : S.gate==='credential' ? '401 credential' : S.jevDown ? 'no answer' : 'answer', G.ansX+12, (y0+y1)/2);
+  if (reduced) return;
+  // One square per real receipt, replayed as the trip it made: up the question
+  // line, back down the answer line. A held record only goes up: nothing came back.
+  for (let i=pulses.length-1;i>=0;i--){
+    const p = pulses[i]; p.t += 0.016/0.9; if (p.t>=1 || (p.held && p.t>=.5)){ pulses.splice(i,1); continue; }
+    const up = p.t<.5, k = up ? p.t*2 : (p.t-.5)*2;
+    ctx.globalAlpha = p.held ? 1-k : 1; sq(up ? G.askX : G.ansX, up ? y1+(y0-y1)*k : y0+(y1-y0)*k, 7);
+  }
+  ctx.globalAlpha = 1;
+}
+// An injected line, drawn large and followed by id the whole way: in to Expanso,
+// up to Jev, where it WAITS for the real receipt, then down and out to the
+// bucket that receipt names. Held by Expanso, it parks in the tray until released.
+const heroes = [];
+function drawHeroes(dt){
+  const jev = S.mode==='jev', now = performance.now();
+  for (let i=heroes.length-1;i>=0;i--){
+    const h = heroes[i]; let x, y;
+    if (now-h.born > 120000){ heroes.splice(i,1); continue; }
+    const step = d => { h.k += dt/d; return h.k>=1; };
+    if (h.ph==='in'){ if (step(1.1)){ h.ph = jev ? 'up' : 'wait'; h.k=0; } x = G.srcR+(G.gateIn-G.srcR)*Math.min(1,h.k); y = G.lane; }
+    else if (h.ph==='up'){ if (step(.6)){ h.ph='wait'; h.k=0; } x = G.askX; y = G.exTop+(G.jevBottom-G.exTop)*Math.min(1,h.k); }
+    else if (h.ph==='wait' || h.ph==='held'){
+      if (h.dest==='held'){ h.ph='held'; h.dest=null; }
+      else if (h.dest){ h.ph = jev ? 'down' : 'out'; h.k=0; }
+      x = h.ph==='held' ? G.trayX-14 : jev ? G.askX : G.gateIn; y = h.ph==='held' ? G.trayY+8 : jev ? G.jevBottom+8 : G.lane;
+      if (h.ph==='down'){ x = G.ansX; y = G.jevBottom; } }
+    else if (h.ph==='down'){ if (step(.6)){ h.ph='out'; h.k=0; } x = G.ansX; y = G.jevBottom+(G.exTop-G.jevBottom)*Math.min(1,h.k); }
+    else { if (step(1.3)){ heroes.splice(i,1); hit(h.dest); continue; }
+      const x1 = G.gateOut, dx = G.bucketX-x1, y3 = G.ends[h.dest] ?? G.lane, t = Math.min(1,h.k);
+      x = bez(x1, x1+dx*.4, x1+dx*.6, G.bucketX, t); y = bez(G.lane, G.lane, y3, y3, t); }
+    const s0 = 14 + (h.ph==='wait' ? 2*Math.sin(now/180) : 0);
+    ctx.fillStyle = '#ffffff'; sq(x, y, s0+6); ctx.fillStyle = COLORS.hero; sq(x, y, s0);
+  }
+}
+let lastPulse = 0;
+function jevPulse(held){
+  const n=performance.now(); if (n-lastPulse<90 || pulses.length>24) return; lastPulse=n; pulses.push({t:0, held:!!held});
+  if (held) return;
+  const g = $('#gateChip'); setTimeout(() => { g.classList.add('fire'); setTimeout(() => g.classList.remove('fire'), 260); }, 850);
+}
+const hitAt = {};
+function hit(bin){
+  const n=performance.now(); if (n-(hitAt[bin]||0)<180) return; hitAt[bin]=n;
+  const el = document.querySelector(`.bucket[data-bin=${bin}]`); el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit');
+}
+
+/* ------------------------------------------------------------- live feed */
+function connect(){
+  const es = new EventSource('/events');
+  es.onmessage = ev => {
+    const m = JSON.parse(ev.data);
+    if (m.t==='src'){
+      if (m.hero && G) heroes.push({id:m.hero, ph:'in', k:0, born:performance.now()});
+      if (G && inbound.length+spawnQ.length < 2000){ const now=performance.now()/1000, spread=Math.min(.35, m.n*.02); for (let i=0;i<m.n;i++) spawnQ.push(now+Math.random()*spread); }
+    } else if (m.t==='rec'){
+      if (m.bin==='held' && G) jevPulse(true);
+      const h = m.hero && heroes.find(x => x.id===m.hero);
+      if (h){ h.dest = m.bin; }                            // the big square lands it instead
+      else if (m.bin!=='raw' && m.bin!=='held' && G && outbound.length<2000){
+        const decided = S.mode==='jev';
+        outbound.push({bin:m.bin, t:-Math.random()*0.1, y:ROWS[(Math.random()*ROWS.length)|0], c: decided ? COLORS[m.bin] : COLORS.raw});
+        if (m.ok) jevPulse();                              // an ANSWER arrived; a fallback has none
+      }
+    } else if (m.t==='stats'){
+      if (m.ui_rev){ if (uiRev && m.ui_rev !== uiRev){ location.reload(); return; } uiRev = m.ui_rev; }
+      const was = S.mode;
+      Object.assign(S, {mode:m.mode, up:m.up, gen:m.gen, jevDown:!!m.jev_down, replay:!!m.replay, gate:m.gate||'open', mock:!!m.mock, model:m.model||null, upstreamOk:m.upstream_ok, switching:m.switching||null, switchError:m.switch_error||null, bins:m.bins, run:m.run});
+      if (was!==S.mode){ if (was==='off') rawStopped = S.bins.raw; if (S.mode==='off') rawStopped = null; pinned = null; if (G) placeRaw(); setTimeout(card, 0); setTimeout(layout, 0); setTimeout(pickYaml, 0); }
+      render();
+    }
+  };
+  es.onerror = () => { const c=$('#claim'); c.className='claim err'; c.textContent='Lost the dashboard server. Is “just up” still running?'; };
+}
+const fmt = n => Math.round(n||0).toLocaleString('en-US');
+const esc = s => String(s??'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function render(){
+  const {mode, run} = S, piped = mode!=='off' && S.up, jev = mode==='jev' && S.up, down = jev && (S.jevDown || S.gate!=='open');
+  const blocked = S.gate!=='open', holding = run.holding||0;   // declared up here: used throughout render()
+  document.body.classList.toggle('act-jev', jev);
+  $('#exNode').classList.toggle('gone', !piped);
+  // Jev is on the board as soon as there is a pipeline to feed it: dormant with
+  // its switch off, live once the Jev version of the job is actually running.
+  const jn = $('#jevNode'), sw = $('#jevSw'), busy = !!S.switching;
+  jn.classList.toggle('gone', !piped); jn.classList.toggle('off', piped && !jev); jn.classList.toggle('down', down);
+  sw.setAttribute('aria-checked', String(busy ? S.switching==='jev' : jev)); sw.disabled = busy;
+  $('#inject').classList.toggle('gone', !jev); $('#outage').classList.toggle('gone', !jev);
+  $('#fkRoutine').classList.toggle('gone', !jev); $('#fkJudge').classList.toggle('gone', !jev);
+  for (const b of ['page','notify','review']){ const el=document.querySelector(`.bucket[data-bin=${b}]`); el.classList.toggle('gone', !jev); el.querySelector('[data-count]').textContent = fmt(run.received[b]); }
+  const arc = document.querySelector('.bucket[data-bin=archive]'); arc.classList.toggle('gone', !piped);
+  arc.querySelector('[data-count]').textContent = fmt(run.received.archive);
+  $('#arcWhat').textContent = jev ? 'Low-cost storage · routine' : 'Shaped, fingerprinted, counted';
+
+  const raw = S.bins.raw||0;
+  $('#rawCount').textContent = fmt(raw);
+  
+  $('#rawWhat').textContent = piped ? 'Stopped · nothing lands here now' : 'Every line, exactly as written';
+
+  const decided = run.bypassed + run.judged + run.jev_failed, pct = decided ? Math.round(run.bypassed/decided*100) : 0;
+  $('#fkRoutineN').textContent = pct+'%'; $('#fkJudgeN').textContent = (decided ? 100-pct : 0)+'%';
+  $('#exNum').innerHTML = jev ? `<b>${fmt(run.bypassed)}</b> of ${fmt(decided)} skipped the model` : `<b>${fmt(run.received.archive)}</b> records · all archived by this pipeline`;
+  $('#jevNum').innerHTML = down ? `<b>${fmt(holding)}</b> held · ${fmt(run.gave_up||0)} given up to review` : `<b>${fmt(run.judged)}</b> judged · ${fmt(run.received.page+run.received.notify)} need a person`;
+
+  const fine = $('#fine'); fine.classList.toggle('replay', !!S.replay || !!S.mock);
+  fine.innerHTML = S.mock ? `MOCK Jev responses (${esc(S.model)})<br>not real inference` : S.replay ? 'REPLAY of recorded records · not live<br>no pipeline, no model is running' : 'Synthetic demo events<br>Buckets are local demo files';
+  document.querySelectorAll('.btn.fault').forEach(b => { b.classList.toggle('on', b.dataset.gate===S.gate); b.hidden = blocked; });
+  $('#gateOpen').hidden = !blocked;
+  $('#heldTag').classList.toggle('gone', !(jev && holding)); $('#heldN').textContent = fmt(holding);
+  const c = $('#claim'); c.className = 'claim'+((down && !busy) || S.switchError ? ' err' : '');
+  c.textContent = busy ? (S.switching==='jev' ? 'Turning Jev on: deploying through Expanso Cloud…' : 'Turning Jev off: deploying through Expanso Cloud…')
+    : S.switchError ? 'Switch failed: '+S.switchError
+    : !S.gen ? 'Source paused.'
+    : !piped ? 'Every line kept. None understood.'
+    : down && blocked ? `Jev is blocked (simulated). Expanso is holding ${fmt(holding)} records, not guessing.`
+    : down ? `Jev is unreachable. Expanso is holding ${fmt(holding)} records, not guessing.`
+    : jev ? 'Stop paying to analyze noise. Catch the quiet problem that matters.'
+    : 'Structured, counted, and archived. No model needed.';
+  document.querySelectorAll('.bucket').forEach(x => x.classList.toggle('sel', x.dataset.bin===pinned));
+  document.body.classList.toggle('inspect', !!pinned);
+  ledger(piped, jev, decided, pct);
+}
+
+function ledger(piped, jev, decided, pct){
+  // Four measured facts, one denominator: records the pipeline COMPLETED this
+  // run. No produced/accepted here -- those are counted earlier, at the source,
+  // and do not share a boundary with receipts. A Jev failure is not a dropped
+  // record: the record was kept and held for review, and is labelled as such.
+  const r = S.run, el = $('#ledger'), dash = '—';
+  const stat = (v, label, cls='') => `<div class="stat ${cls}"><b>${v}</b><span>${label}</span></div>`;
+  const noModel = !piped ? dash : !jev ? '100%' : decided ? pct+'%' : dash;
+  el.innerHTML = `<p class="cap">${S.replay ? 'Replay' : 'This run'} · ${!piped ? 'no pipeline' : jev ? 'Expanso + Jev' : 'Expanso'}</p>`
+    + stat(fmt(r.completed), 'records completed')
+    + `<div class="stat"><b>${(r.rate??0).toFixed(1)}</b><span>${S.replay ? 'REPLAY receipts' : 'completed'} / sec · last ${r.rate_window_s||10} s</span><canvas id="spark"></canvas></div>`
+    + stat(noModel, 'no model call')
+    + stat(jev ? fmt(r.holding||0) : dash, 'held by Expanso · waiting for Jev', jev && r.holding ? 'warn' : '');
+  spark(r.spark||[]);
+}
+function spark(a){
+  const c = $('#spark'); if (!c || !a.length) return;
+  const d = Math.max(1, devicePixelRatio||1), w = c.clientWidth, hh = c.clientHeight; if (!w) return;
+  c.width = w*d; c.height = hh*d; const x = c.getContext('2d'); x.setTransform(d,0,0,d,0,0);
+  const top = Math.max(1, ...a); x.strokeStyle = css('--text-dim'); x.lineWidth = 1.5; x.lineJoin = 'round'; x.beginPath();
+  a.forEach((v,i) => { const px = i/(a.length-1)*w, py = hh-1-(v/top)*(hh-3); i ? x.lineTo(px,py) : x.moveTo(px,py); }); x.stroke();
+}
+
+/* ------------------------------------------------------------------- card */
+$('#jevSw').onclick = () => { const on = $('#jevSw').getAttribute('aria-checked')!=='true'; $('#jevSw').disabled = true;
+  fetch('/api/jev', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({on})}).catch(() => {}); };
+document.querySelectorAll('[data-gate]').forEach(b => b.onclick = () => fetch('/api/gate', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:b.dataset.gate})}).catch(() => {}));
+document.querySelectorAll('.chaos').forEach(b => b.onclick = () => { fetch('/chaos/'+b.dataset.chaos,{method:'POST'}); b.classList.add('fired'); setTimeout(()=>b.classList.remove('fired'),80000); });
+document.querySelectorAll('.bucket').forEach(b => b.onclick = () => openRecord(b.dataset.bin));
+
+// Which pipeline stage put each top-level field on the record. This is the
+// "change of shape": production sends five fields, Expanso adds context, Jev
+// adds a judgment.
+const ORIGIN = {fingerprint:'ex', held_attempts:'ex', baseline:'ex', received_at:'ex', node_id:'ex', recurrence:'ex', bypass:'ex', routed_by:'ex',
+                jev:'jv', jev_ok:'jv', jev_decision:'jv'};
+function jval(v, ind){
+  const pad = '  '.repeat(ind), pad1 = '  '.repeat(ind+1);
+  if (v === null) return '<span class="j-b">null</span>';
+  if (typeof v === 'string') return `<span class="j-s">"${esc(v)}"</span>`;
+  if (typeof v === 'number') return `<span class="j-n">${v}</span>`;
+  if (typeof v === 'boolean') return `<span class="j-b">${v}</span>`;
+  if (Array.isArray(v)) return v.length ? `<span class="j-p">[</span>${v.map(x => jval(x, ind+1)).join('<span class="j-p">, </span>')}<span class="j-p">]</span>` : '<span class="j-p">[]</span>';
+  const keys = Object.keys(v); if (!keys.length) return '<span class="j-p">{}</span>';
+  return `<span class="j-p">{</span>\n${keys.map((k,i) => `${pad1}<span class="j-k">"${esc(k)}"</span><span class="j-p">: </span>${jval(v[k], ind+1)}${i<keys.length-1?'<span class="j-p">,</span>':''}`).join('\n')}\n${pad}<span class="j-p">}</span>`;
+}
+// `jev_decision` is a legacy field name: it holds the routing decision whoever
+// made it. On a bypassed record Expanso's rule made it and Jev never saw the
+// record, so it must not be credited to Jev.
+const originOf = (k, r) => k==='jev_decision' ? (r.jev && r.jev_ok ? 'jv' : 'ex') : (ORIGIN[k] || '');
+function jrecord(r){
+  // Group by who put the field there -- production, then Expanso, then Jev -- so
+  // the change of shape reads top to bottom. (The pipeline emits keys A-Z.)
+  const rank = k => ({'':0, ex:1, jv:2})[originOf(k, r)];
+  const first = ['id','ts','level','service','msg'];
+  const keys = Object.keys(r).sort((a,b) => rank(a)-rank(b) || (first.indexOf(a)+1||99)-(first.indexOf(b)+1||99) || a.localeCompare(b));
+  return '<span class="j-p">{</span>\n' + keys.map((k,i) => `<span class="row ${originOf(k, r)}">  <span class="j-k">"${esc(k)}"</span><span class="j-p">: </span>${jval(r[k], 1)}${i<keys.length-1?'<span class="j-p">,</span>':''}</span>`).join('') + '<span class="j-p">}</span>';
+}
+async function openRecord(bin){
+  let d; try { d = await (await fetch('/api/bucket/'+bin)).json(); } catch { return; }
+  const r = d?.records?.[0]; pinned = bin; frozen = r ? {r, bin} : null; render(); card();
+  $('#mTitle').textContent = bin==='raw' ? 'Raw log bucket' : bin; $('#mTitle').style.color = `var(--${bin})`;
+  $('#mSub').textContent = r ? `latest of ${fmt(d.total)} · local demo file ${SINK[bin]}` : 'nothing here yet';
+  const used = r ? new Set(Object.keys(r).map(k => originOf(k, r)).filter(Boolean)) : new Set();
+  $('#mLegend').innerHTML = `<span><i style="background:var(--line)"></i>sent by production</span>`
+    + (used.has('ex') ? `<span><i style="background:var(--accent)"></i>added by Expanso</span>` : '')
+    + (used.has('jv') ? `<span><i style="background:var(--jev)"></i>added by Jev</span>` : '')
+    + (r && !used.size ? `<span>stored verbatim · nothing added</span>` : '');
+  $('#mPre').innerHTML = r ? jrecord(r) : ''; $('#mPre').scrollTop = 0;
+  $('#modal').classList.add('open'); $('#mPre').focus();   // frozen while open: the record does not change under the reader
+}
+function closeRecord(){ if (!$('#modal').classList.contains('open')) return; $('#modal').classList.remove('open'); pinned = null; frozen = null; render(); card(); }
+addEventListener('keydown', e => { if (e.key==='Escape') closeRecord(); });
+$('#modal').onclick = e => { if (e.target.id==='modal') closeRecord(); };
+
+const ord = n => { const t=n%100, o=n%10; return n + (t>=11&&t<=13 ? 'th' : o===1?'st' : o===2?'nd' : o===3?'rd' : 'th'); };
+function gate(r){
+  // Mirrors the cascade in pipeline-recurrence.yaml exactly. If that file changes, change this.
+  const a = r.jev.answers||{}, act=a.actionable?.noul??0, sev=a.severity?.choice??'other', conf=a.severity?.confidence??0;
+  if (!r.jev_ok) return 'Jev unreachable → review';
+  if (sev==='critical' && conf>=0.85) return 'severity critical, confidence ≥ 0.85 → page';
+  if (act>=0.7 && conf>=0.5) return 'actionable ≥ 0.70, confidence ≥ 0.50 → notify';
+  if (conf<0.6) return 'confidence < 0.60 → review';
+  if (act>=0.4) return 'actionable 0.40–0.70 → review';
+  return 'below every threshold → archive';
+}
+function note(lead, sub){ const el=$('#card'); el.className='panel card note'; el.innerHTML=`<p class="lead">${lead}</p><p class="sub">${sub}</p>`; }
+function show(r, bin, tag){
+  const el = $('#card'); el.className = 'panel card';
+  const c = r.recurrence, input = `<div><p class="cap">Input${tag?` · ${tag}`:''}</p><div class="msg">${esc(r.level)} · ${esc(r.service)} · ${esc(r.msg)}</div>
+    ${c ? `<div class="meta detail">${ord(c.occurrence)} time in ${Math.round(c.window_s/60)} min · counted by Expanso</div>` : ''}</div>`;
+  let by;
+  if (bin==='raw') by = `<div><p class="cap">Decided by</p><div class="said">Nothing. Stored verbatim: no fingerprint, no count, no owner.</div></div>`;
+  else if (r.bypass) by = `<div><p class="cap ex">Decided by · Expanso rule</p><div class="said">Exact match on the known-benign list. <b>No model call.</b></div><span class="rule detail">level INFO + service + message, exactly</span></div>`;
+  else if (!r.jev) by = `<div><p class="cap ex">Added by Expanso</p><div class="said"><b>${esc(r.fingerprint)}</b></div><div class="meta detail">node ${esc(r.node_id)} · no model in this pipeline</div></div>`;
+  else if (bin==='held') by = `<div><p class="cap" style="color:var(--held)">Decided by · Expanso</p><div class="said">Jev did not answer. Expanso holds it and asks again every 2–4s.</div><span class="rule detail">up to 15 attempts, then review</span></div>`;
+  else if (!r.jev_ok) by = `<div><p class="cap" style="color:var(--err)">Decided by · fallback</p><div class="said">Jev did not answer after ${r.held_attempts||0} attempts, so Expanso did not guess.</div><span class="rule detail">${gate(r)}</span></div>`;
+  else { const a = r.jev.answers||{}, f = v => (v??0).toFixed(2);
+    by = `<div><p class="cap jv">Decided by · Jev reported · ${esc(r.jev.model||'?')}</p><div class="said">actionable <b>${f(a.actionable?.noul)}</b> · ${esc(a.severity?.choice)} <b>${f(a.severity?.confidence)}</b> · team <b>${esc(a.team?.choice)}</b></div><span class="rule detail">${gate(r)}</span></div>`; }
+  const dest = bin==='raw' ? 'raw bucket' : bin==='held' ? 'on hold' : bin, base = r.baseline, judged = r.jev && r.jev_ok, diff = judged && base && base!==bin;
+  el.innerHTML = `${input}<div class="arrow">→</div>${by}<div class="arrow">→</div>
+    <div><p class="cap">Destination</p><div class="dest" style="color:var(--${bin})">${esc(dest)}</div>
+    ${base ? `<div class="vs${diff?' diff':''}">Severity-only baseline: <span style="text-transform:uppercase">${esc(base)}</span>${!judged ? '' : diff ? ' · differs' : ' · same'}</div>` : ''}<div class="vs detail">local demo file ${SINK[bin]}</div></div>`;
+}
+async function card(){
+  const get = async u => { try { return await (await fetch(u)).json(); } catch { return null; } };
+  const piped = S.mode!=='off' && S.up, jev = S.mode==='jev' && S.up;
+  if (frozen) return show(frozen.r, frozen.bin, 'latest in '+(frozen.bin==='raw'?'raw bucket':frozen.bin));
+  if (pinned){ const d = await get('/api/bucket/'+pinned); if (d?.records?.length) return show(d.records[0], pinned, 'latest in '+(pinned==='raw'?'raw bucket':pinned)); return note(`Nothing in ${pinned} yet.`, 'Click the bucket again to unpin.'); }
+  if (!piped){ const d = await get('/api/bucket/raw'); if (!d?.records?.length) return note('Waiting for the first logs…','');
+    const n = {}; d.records.forEach(r => n[r.msg]=(n[r.msg]||0)+1); const top = Object.entries(n).sort((a,b)=>b[1]-a[1]).slice(0,3);
+    return note(`${top.reduce((s,[,c])=>s+c,0)} of the last ${d.records.length} lines are the same ${top.length} messages.`, `Stored again and again: ${top.map(([m])=>esc(m)).join(' · ')}. No fingerprint, no owner, no way to tell which line is the one that matters.`); }
+  if (!jev){ const d = await get('/api/bucket/archive'); return d?.records?.length ? show(d.records[0], 'archive', 'latest') : note('Expanso is running.','Waiting for the first shaped record.'); }
+  if (S.jevDown || S.gate!=='open'){ const d = await get('/api/bucket/held'); const r = d?.records?.[0];
+    return r ? show(r, 'held', S.gate!=='open' ? 'Jev blocked (simulated) · held, not guessed' : 'Jev unreachable · held, not guessed') : note('Jev is not answering.', 'Known-benign lines still skip the model. Everything else is held for REVIEW rather than guessed.'); }
+  const e = await get('/api/evidence');
+  if (e?.caught?.length) return show(e.caught[0], e.caught[0].jev_decision, `a quiet one · ${S.run.caught} this run`);
+  for (const b of ['page','notify','review']){ const d = await get('/api/bucket/'+b); const r = d?.records?.find(x => x.jev_ok); if (r) return show(r, b, 'latest judged'); }
+  note('Judging…', 'Waiting for the first judgment to return.');
+}
+setInterval(card, 1500);
+
+/* ------------------------------------------------------------------- tabs */
+let pipeKey = 'recurrence', yamlUserPicked = false;
+document.querySelectorAll('.top .tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.top .tabs button').forEach(x => x.setAttribute('aria-selected', String(x===b)));
+  document.body.classList.toggle('tab-yaml', b.dataset.tab==='yaml');
+  if (b.dataset.tab==='yaml') loadYaml(); else setTimeout(layout, 0);
+});
+document.querySelectorAll('#yamlPick button').forEach(b => b.onclick = () => { yamlUserPicked = true; pipeKey = b.dataset.pipe; loadYaml(); });
+function pickYaml(){ if (yamlUserPicked) return; pipeKey = S.mode==='expanso' ? 'logging' : 'recurrence'; if (document.body.classList.contains('tab-yaml')) loadYaml(); }
+function paint(src){
+  // comments dim, top-level keys violet, ${ENV} placeholders orange. Escaped first; nothing is evaluated.
+  return src.split('\n').map(ln => { const e = esc(ln);
+    if (/^\s*#/.test(ln)) return `<span class="c">${e}</span>`;
+    return e.replace(/^(\s*-?\s*)([A-Za-z_][\w-]*)(:)/, '$1<span class="k">$2</span>$3').replace(/(\$\{[A-Z0-9_]+\})/g, '<span class="e">$1</span>'); }).join('\n');
+}
+async function loadYaml(){
+  document.querySelectorAll('#yamlPick button').forEach(x => x.setAttribute('aria-selected', String(x.dataset.pipe===pipeKey)));
+  const pre = $('#yamlPre');
+  try { const res = await fetch('/api/pipeline/'+pipeKey); if (!res.ok) throw new Error(res.status);
+    const fn = res.headers.get('X-Pipeline-File') || pipeKey, src = await res.text();
+    $('#yamlWhat').innerHTML = `Source configuration · checked-in file <b>${esc(fn)}</b> · ${src.split('\n').length} lines · not read back from Expanso Cloud`;
+    pre.innerHTML = paint(src); pre.scrollTop = 0;
+  } catch (e) { $('#yamlWhat').textContent = ''; pre.textContent = 'Could not load the pipeline file ('+e.message+'). Is the dashboard server running?'; }
+}
+
+// Preview/test hook only: lets a static layout check drive render() with a given
+// state. Nothing in the board reads it.
+window.__board = {S, render, layout, card: () => card(), ledger};
+
+document.fonts.ready.then(() => { layout(); render(); card(); connect(); requestAnimationFrame(frame); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+name: jev-sensor-triage
+type: pipeline
+description: Sensor anomaly triage with Jev — every reading is judged against its baseline in context. Real anomalies dispatch maintenance with a context packet; routine telemetry rolls into aggregates.
+namespace: production
+labels:
+  category: data-routing
+  pattern: ai-decision
+  model: jev
+
+config:
+  input:
+    http_server:
+      address: "0.0.0.0:8080"
+      path: /readings
+      allowed_verbs: ["POST"]
+
+  pipeline:
+    processors:
+      - mapping: |
+          # http_server already parses JSON bodies; only parse raw strings
+          root = if this.type() == "string" { this.parse_json() } else { this }
+
+      # Attach each sensor's normal operating baseline so Jev judges
+      # deviation in context, not raw values (production: use a cache lookup)
+      - mapping: |
+          root = this
+          root.baseline = {
+            "temp_c_max": 85,
+            "vibration_mm_s_max": 4.5,
+            "note": "Values above these sustained for 5+ minutes are abnormal for this asset class"
+          }
+          root.received_at = now()
+
+      # ── Ask Jev ──
+      - mutation: |
+          meta jev_start = timestamp_unix_milli()
+
+      - branch:
+          request_map: |
+            root = {
+              "state": this.string(),
+              "model": "jev-latest",
+              "questions": {
+                "anomaly": {
+                  "type": "score",
+                  "instructions": "How anomalous is this sensor reading relative to its baseline?",
+                  "criteria": [
+                    "Normal operation",
+                    "Slightly unusual, watch",
+                    "Concerning deviation",
+                    "Severe anomaly",
+                    "Critical failure signature"
+                  ]
+                },
+                "dispatch": {
+                  "type": "noul",
+                  "instructions": "Should a maintenance technician be dispatched based on this reading?"
+                }
+              }
+            }
+          processors:
+            - http:
+                url: "${JEV_API_URL:https://api.typesafe.ai/v1/systemone}"
+                verb: POST
+                headers:
+                  Content-Type: application/json
+                  Authorization: "Bearer ${TYPESAFE_API_KEY}"
+                timeout: 2s
+                retries: 1
+            - catch:
+              - mapping: |
+                  root = {"answers": {}, "model": "jev-unavailable"}
+          result_map: |
+            root.jev = {
+              "answers": this.answers,
+              "model": this.model.or("jev-latest"),
+              "ms": timestamp_unix_milli() - metadata("jev_start")
+            }
+
+      # ── Confidence-gated cascade ──
+      - mapping: |
+          root = this
+          let anomaly = this.jev.answers.anomaly.score.or(0)
+          let dispatch = this.jev.answers.dispatch.noul.or(0)
+
+          root.jev_decision = if $dispatch >= 0.8 {
+            "dispatch"
+          } else if $anomaly >= 2 {
+            "flag"
+          } else {
+            "rollup"
+          }
+
+  output:
+    broker:
+      pattern: fan_out
+      outputs:
+        - stdout:
+            codec: lines
+        - switch:
+            cases:
+              # Production: swap for http_client -> CMMS work-order API
+              - check: this.jev_decision == "dispatch"
+                output:
+                  file:
+                    path: ./data/jev-sensor-triage/dispatch-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: this.jev_decision == "flag"
+                output:
+                  file:
+                    path: ./data/jev-sensor-triage/flagged-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: "true"
+                output:
+                  file:
+                    path: ./data/jev-sensor-triage/rollup-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines

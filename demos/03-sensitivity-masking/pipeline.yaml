@@ -1,0 +1,135 @@
+name: jev-sensitivity-masking
+type: pipeline
+description: Semantic sensitivity classifier with Jev — every record gets a sensitivity class and PII/credential judgment at the edge, then the matching masking policy is applied before data leaves the source.
+namespace: production
+labels:
+  category: data-security
+  pattern: ai-decision
+  model: jev
+
+config:
+  input:
+    http_server:
+      address: "0.0.0.0:8080"
+      path: /records
+      allowed_verbs: ["POST"]
+
+  pipeline:
+    processors:
+      - mapping: |
+          # http_server already parses JSON bodies; only parse raw strings
+          root = if this.type() == "string" { this.parse_json() } else { this }
+
+      - mapping: |
+          root = this
+          root.received_at = now()
+
+      # ── Ask Jev: what is this record, semantically? ──
+      - mutation: |
+          meta jev_start = timestamp_unix_milli()
+
+      - branch:
+          request_map: |
+            root = {
+              "state": this.string(),
+              "model": "jev-latest",
+              "questions": {
+                "sensitivity": {
+                  "type": "choice",
+                  "instructions": "What is the sensitivity class of this record?",
+                  "criteria": {
+                    "public": "Safe to share broadly, no personal or secret data",
+                    "internal": "Company-internal, not for external sharing",
+                    "confidential": "Sensitive business or personal data, restricted distribution",
+                    "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+                  }
+                },
+                "contains_pii": {
+                  "type": "noul",
+                  "instructions": "Does this record contain personally identifiable information (names, emails, SSNs, addresses, phone numbers)?"
+                },
+                "contains_credentials": {
+                  "type": "noul",
+                  "instructions": "Does this record contain passwords, API keys, tokens, or other secrets?"
+                }
+              }
+            }
+          processors:
+            - http:
+                url: "${JEV_API_URL:https://api.typesafe.ai/v1/systemone}"
+                verb: POST
+                headers:
+                  Content-Type: application/json
+                  Authorization: "Bearer ${TYPESAFE_API_KEY}"
+                timeout: 2s
+                retries: 1
+            - catch:
+              - mapping: |
+                  root = {"answers": {}, "model": "jev-unavailable"}
+          result_map: |
+            root.jev = {
+              "answers": this.answers,
+              "model": this.model.or("jev-latest"),
+              "ms": timestamp_unix_milli() - metadata("jev_start")
+            }
+
+      # ── Pick the policy Jev's judgment calls for ──
+      - mapping: |
+          root = this
+          let sens = this.jev.answers.sensitivity.choice.or("internal")
+          let pii = this.jev.answers.contains_pii.noul.or(0)
+          let creds = this.jev.answers.contains_credentials.noul.or(0)
+
+          root.jev_decision = if $creds >= 0.7 || $sens == "restricted" {
+            "quarantine"
+          } else if $sens == "confidential" {
+            "tokenize"
+          } else if $pii >= 0.5 {
+            "mask"
+          } else {
+            "pass"
+          }
+
+      # ── Apply the policy before data leaves the source ──
+      - mapping: |
+          root = this
+          root.email = if this.jev_decision == "tokenize" {
+            this.email.or("").hash("sha256").encode("hex")
+          } else if this.jev_decision == "mask" {
+            "MASKED"
+          } else {
+            this.email
+          }
+          root.ssn = if this.jev_decision == "tokenize" {
+            this.ssn.or("").hash("sha256").encode("hex")
+          } else if this.jev_decision == "mask" || this.jev_decision == "quarantine" {
+            "MASKED"
+          } else {
+            this.ssn
+          }
+          root.api_key = if this.jev_decision == "quarantine" {
+            "QUARANTINED"
+          } else {
+            this.api_key
+          }
+          root.policy_applied = this.jev_decision
+
+  output:
+    broker:
+      pattern: fan_out
+      outputs:
+        - stdout:
+            codec: lines
+        - switch:
+            cases:
+              # Production: swap for http_client -> security alerting webhook
+              - check: this.jev_decision == "quarantine"
+                output:
+                  file:
+                    path: ./data/jev-sensitivity-masking/quarantine-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: "true"
+                output:
+                  file:
+                    path: ./data/jev-sensitivity-masking/forwarded-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines

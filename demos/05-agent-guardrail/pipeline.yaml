@@ -1,0 +1,113 @@
+name: jev-agent-guardrail
+type: pipeline
+description: Agent guardrail with Jev — a 0.4s safety check on every AI agent tool call. Calls matching user intent pass through; risky or off-intent calls are blocked or held for approval.
+namespace: production
+labels:
+  category: data-security
+  pattern: ai-decision
+  model: jev
+
+config:
+  input:
+    http_server:
+      address: "0.0.0.0:8080"
+      path: /tool-calls
+      allowed_verbs: ["POST"]
+
+  pipeline:
+    processors:
+      - mapping: |
+          # http_server already parses JSON bodies; only parse raw strings
+          root = if this.type() == "string" { this.parse_json() } else { this }
+
+      - mapping: |
+          root = this
+          root.received_at = now()
+
+      # ── Ask Jev: does this tool call match intent, and how risky is it? ──
+      - mutation: |
+          meta jev_start = timestamp_unix_milli()
+
+      - branch:
+          request_map: |
+            root = {
+              "state": this.string(),
+              "model": "jev-latest",
+              "questions": {
+                "intent_match": {
+                  "type": "noul",
+                  "instructions": "Does this tool call match the user's stated intent? Answer no if it goes beyond, contradicts, or is unrelated to what the user asked for."
+                },
+                "risk": {
+                  "type": "choice",
+                  "instructions": "What is the risk class of this tool call?",
+                  "criteria": {
+                    "safe": "Read-only or trivially reversible, no sensitive data",
+                    "irreversible": "Deletes, sends, publishes, or spends — cannot be undone",
+                    "data_exfiltration": "Moves sensitive data outside the trust boundary",
+                    "privilege_escalation": "Grants access, changes permissions, or elevates rights",
+                    "other": "Risky in a way not covered above"
+                  }
+                }
+              }
+            }
+          processors:
+            - http:
+                url: "${JEV_API_URL:https://api.typesafe.ai/v1/systemone}"
+                verb: POST
+                headers:
+                  Content-Type: application/json
+                  Authorization: "Bearer ${TYPESAFE_API_KEY}"
+                timeout: 2s
+                retries: 1
+            - catch:
+              # Fail closed: if Jev is unreachable, hold for approval
+              - mapping: |
+                  root = {"answers": {}, "model": "jev-unavailable"}
+          result_map: |
+            root.jev = {
+              "answers": this.answers,
+              "model": this.model.or("jev-latest"),
+              "ms": timestamp_unix_milli() - metadata("jev_start")
+            }
+
+      # ── Confidence-gated cascade. Fail closed on uncertainty. ──
+      - mapping: |
+          root = this
+          let intent = this.jev.answers.intent_match.noul.or(0)
+          let risk = this.jev.answers.risk.choice.or("other")
+          let risk_conf = this.jev.answers.risk.confidence.or(0)
+
+          root.jev_decision = if $intent < 0.3 || ($risk != "safe" && $risk_conf >= 0.7) {
+            "block"
+          } else if $risk != "safe" || $intent < 0.7 {
+            "hold"
+          } else {
+            "allow"
+          }
+
+  output:
+    broker:
+      pattern: fan_out
+      outputs:
+        - stdout:
+            codec: lines
+        - switch:
+            cases:
+              # Production: swap for http_client -> agent control plane (deny) + alerting
+              - check: this.jev_decision == "block"
+                output:
+                  file:
+                    path: ./data/jev-agent-guardrail/blocked-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              # Production: swap for http_client -> human approval queue
+              - check: this.jev_decision == "hold"
+                output:
+                  file:
+                    path: ./data/jev-agent-guardrail/held-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: "true"
+                output:
+                  file:
+                    path: ./data/jev-agent-guardrail/allowed-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines

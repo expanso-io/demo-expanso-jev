@@ -1,0 +1,106 @@
+# Act 2 of the demo: Expanso alone. Deterministic, no model in the loop.
+#
+# Every event is shaped, fingerprinted and given its recurrence context, then
+# written to ONE place -- the log archive. Nothing is dropped. This is what a pipeline can do with
+# rules and counting: it makes the data uniform and searchable, and it knows
+# "this is the 4th time in 10 minutes", but it cannot say whether that matters.
+# pipeline-recurrence.yaml is the same front half with Jev asked that question.
+#
+# Both files deploy as the SAME job, `log-triage`. Deploying the Jev version
+# over this one is an in-place version bump in Expanso Cloud -- one pipeline
+# that got smarter, not two pipelines fighting over the same HTTP input.
+
+name: log-triage
+type: pipeline
+description: Shape, fingerprint and count every log line; archive all of it. No model in the loop.
+namespace: demo
+
+labels:
+  category: log-processing
+  pattern: shape-and-archive
+
+config:
+  input:
+    http_server:
+      address: "0.0.0.0:8080"
+      path: /logs
+      allowed_verbs: ["POST"]
+      # The response is held until the event is written out, and a Jev
+      # judgment takes ~3.5s. At the 5s default a burst queues past the limit
+      # and the input answers 408 for events it then processes anyway -- the
+      # source counts them lost while they land in a bucket.
+      timeout: 30s
+
+  pipeline:
+    processors:
+      # 1. shape + deterministic fingerprint (identical to the Jev pipeline, so
+      #    a record looks the same in the archive whichever pipeline wrote it)
+      - mapping: |
+          root = this
+          root.received_at = now()
+          root.node_id = env("NODE_ID").or("edge-1")
+          let norm = this.msg.lowercase().re_replace("[0-9]+", "#").re_replace("[^a-z0-9 :/_.*#-]", "").re_replace("\\s+", " ").trim()
+          root.fingerprint = this.service + "::" + $norm
+          # The named naive baseline, computed on the IDENTICAL input so the two
+          # can be compared record by record: route on severity alone.
+          root.baseline = if this.level == "ERROR" { "page" } else if this.level == "WARN" { "notify" } else { "archive" }
+
+      # 2. deterministic temporal context: occurrence count in the window
+      - branch:
+          request_map: |
+            root = {"fingerprint": this.fingerprint}
+          processors:
+            - http:
+                url: http://127.0.0.1:8898/track
+                verb: POST
+                headers:
+                  Content-Type: application/json
+          result_map: |
+            root.recurrence = this
+
+      - mapping: |
+          root = this
+          root.routed_by = "expanso"
+
+      # operational log for the Expanso Cloud Logs tab: a checkpoint, not a
+      # per-record log. Same rules as pipeline-recurrence.yaml: a destination is
+      # "selected" and the write is pending (this runs before the output does);
+      # only allowlisted values, generated ids, numbers and hashes leave the
+      # node; sampling is per fingerprint, not a global rate.
+      - mapping: |
+          # Only values from closed sets, generated ids, numbers and hashes leave the
+          # node. service / level / id come from the log producer and team /
+          # severity come back from a model: all are arbitrary strings, so each is
+          # checked against a closed allowlist and anything else is replaced, never
+          # passed through. Ids and fingerprints are hashed unconditionally.
+          let occ = this.recurrence.occurrence.number().catch(0)
+          let fp = this.fingerprint.string().hash("sha256").encode("hex").slice(0, 12)
+          let lvl = if ["DEBUG", "INFO", "WARN", "ERROR"].contains(this.level) { this.level } else { "other" }
+          let svc = if ["api", "worker", "cache", "deploy", "db", "edge", "infra", "net", "auth"].contains(this.service) { this.service } else { "other" }
+          # The id is producer-supplied, so it is ALWAYS hashed: a pattern such as
+          # ^evt-... would still admit "evt-alice-smith". sha256 so the same 12 hex
+          # chars can be recomputed from a local receipt to correlate the two:
+          #   hashlib.sha256(record["id"].encode()).hexdigest()[:12]
+          let eid = this.id.string().hash("sha256").encode("hex").slice(0, 12)
+          let tail = " event=" + $eid + " fp=" + $fp + " occ=" + $occ.string() + " svc=" + $svc + " lvl=" + $lvl
+          meta log_kind = if $occ == 1 || $occ % 250 == 0 { "archive" } else { "" }
+          meta log_summary = "triage archive -> ARCHIVE selected, output pending: structured and counted, no model in this pipeline (checkpoint: a fingerprint's first occurrence, then every 250th)" + $tail
+          meta log_event = $eid
+      - switch:
+          - check: 'meta("log_kind") == "archive"'
+            processors:
+              - log:
+                  level: INFO
+                  message: '${! meta("log_summary") }'
+                  fields_mapping: |
+                    root.stage = "select"
+                    root.outcome = "archive_selected"
+                    root.destination = "archive"
+                    root.event_id = meta("log_event")
+                    root.model_called = false
+                    root.write_confirmed = false
+
+  output:
+    file:
+      path: data/logs.jsonl
+      codec: lines

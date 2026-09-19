@@ -1,0 +1,5 @@
+{"order_id":"ord-9001","customer_id":"cus-88121","amount":129.99,"currency":"USD","ts":"2026-09-18T14:00:00Z"}
+{"order_id":"ord-9002","customer_id":"cus-10422","amount":-45.00,"currency":"USD","ts":"2026-09-18T14:01:00Z"}
+{"order_id":"ord-9003","customer_id":null,"amount":"a lot","currency":"USDD","ts":"yesterday-ish"}
+{"order_id":"ord-9004","customer_id":"cus-77190","amount":9.99,"currency":"USD","ts":"2026-09-18T14:03:00Z"}
+{"order_id": "ord-9005", "customer_id": null, "amount": 99999999.99, "currency": "US", "ts": "2026-09-18T14:04:00Z"}

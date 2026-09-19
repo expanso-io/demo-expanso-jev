@@ -1,0 +1,106 @@
+name: jev-moderation
+type: pipeline
+description: Moderation pre-filter with Jev — every piece of user content gets a category judgment inline. Safe content auto-allows; everything else queues for humans, most-uncertain first.
+namespace: production
+labels:
+  category: integrations
+  pattern: ai-decision
+  model: jev
+
+config:
+  input:
+    http_server:
+      address: "0.0.0.0:8080"
+      path: /content
+      allowed_verbs: ["POST"]
+
+  pipeline:
+    processors:
+      - mapping: |
+          # http_server already parses JSON bodies; only parse raw strings
+          root = if this.type() == "string" { this.parse_json() } else { this }
+
+      - mapping: |
+          root = this
+          root.received_at = now()
+
+      # ── Ask Jev ──
+      - mutation: |
+          meta jev_start = timestamp_unix_milli()
+
+      - branch:
+          request_map: |
+            root = {
+              "state": this.string(),
+              "model": "jev-latest",
+              "questions": {
+                "category": {
+                  "type": "choice",
+                  "instructions": "Classify this user-generated content.",
+                  "criteria": {
+                    "safe": "Benign content, fine to publish",
+                    "spam": "Unsolicited promotion, scams, repetitive junk",
+                    "hate": "Attacks or demeans a protected group",
+                    "sexual": "Sexually explicit content",
+                    "self_harm": "Encourages or describes self-harm",
+                    "other": "Concerning but does not fit the above"
+                  }
+                },
+                "needs_human": {
+                  "type": "noul",
+                  "instructions": "Does this content need a human moderator to review it before publishing?"
+                }
+              }
+            }
+          processors:
+            - http:
+                url: "${JEV_API_URL:https://api.typesafe.ai/v1/systemone}"
+                verb: POST
+                headers:
+                  Content-Type: application/json
+                  Authorization: "Bearer ${TYPESAFE_API_KEY}"
+                timeout: 2s
+                retries: 1
+            - catch:
+              - mapping: |
+                  root = {"answers": {}, "model": "jev-unavailable"}
+          result_map: |
+            root.jev = {
+              "answers": this.answers,
+              "model": this.model.or("jev-latest"),
+              "ms": timestamp_unix_milli() - metadata("jev_start")
+            }
+
+      # ── Confidence-gated cascade: humans only see the edge cases ──
+      - mapping: |
+          root = this
+          let cat = this.jev.answers.category.choice.or("other")
+          let conf = this.jev.answers.category.confidence.or(0)
+          let needs_human = this.jev.answers.needs_human.noul.or(1)
+
+          root.jev_decision = if $cat == "safe" && $conf >= 0.9 && $needs_human < 0.5 {
+            "allow"
+          } else {
+            "review"
+          }
+          # Review queue is worked most-uncertain-first downstream
+          root.review_priority = 1 - $conf
+
+  output:
+    broker:
+      pattern: fan_out
+      outputs:
+        - stdout:
+            codec: lines
+        - switch:
+            cases:
+              - check: this.jev_decision == "allow"
+                output:
+                  file:
+                    path: ./data/jev-moderation/allowed-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: "true"
+                output:
+                  file:
+                    path: ./data/jev-moderation/review-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines

@@ -1,0 +1,142 @@
+name: jev-ticket-router
+type: pipeline
+description: Support ticket router with Jev — every ticket gets department, intent, frustration score and urgency judged inline. Confidently urgent tickets page on-call; uncertain ones queue for humans.
+namespace: production
+labels:
+  category: integrations
+  pattern: ai-decision
+  model: jev
+
+config:
+  input:
+    http_server:
+      address: "0.0.0.0:8080"
+      path: /tickets
+      allowed_verbs: ["POST"]
+
+  pipeline:
+    processors:
+      - mapping: |
+          # http_server already parses JSON bodies; only parse raw strings
+          root = if this.type() == "string" { this.parse_json() } else { this }
+
+      - mapping: |
+          root = this
+          root.received_at = now()
+
+      # ── Ask Jev ──
+      - mutation: |
+          meta jev_start = timestamp_unix_milli()
+
+      - branch:
+          request_map: |
+            root = {
+              "state": this.string(),
+              "model": "jev-latest",
+              "questions": {
+                "department": {
+                  "type": "choice",
+                  "instructions": "Which department should handle this ticket?",
+                  "criteria": {
+                    "billing": "Charges, invoices, refunds, subscription changes",
+                    "technical": "Bugs, errors, how-to questions, integrations",
+                    "sales": "Pricing questions, upgrades, new business",
+                    "other": "Does not fit any department above"
+                  }
+                },
+                "intent": {
+                  "type": "choice",
+                  "instructions": "What is the customer trying to do?",
+                  "criteria": {
+                    "bug": "Reporting something broken",
+                    "how_to": "Asking how to accomplish something",
+                    "billing_dispute": "Disputing a charge or invoice",
+                    "feature_request": "Asking for new functionality",
+                    "account_deletion": "Wants their account or data deleted",
+                    "other": "None of the above"
+                  }
+                },
+                "frustration": {
+                  "type": "score",
+                  "instructions": "How frustrated does the customer sound?",
+                  "criteria": [
+                    "Calm, just stating facts",
+                    "Mildly annoyed",
+                    "Frustrated but civil",
+                    "Very angry, strong language",
+                    "Furious, threatening to leave"
+                  ]
+                },
+                "urgent": {
+                  "type": "noul",
+                  "instructions": "Does this message convey urgency or time-sensitivity?"
+                }
+              }
+            }
+          processors:
+            - http:
+                url: "${JEV_API_URL:https://api.typesafe.ai/v1/systemone}"
+                verb: POST
+                headers:
+                  Content-Type: application/json
+                  Authorization: "Bearer ${TYPESAFE_API_KEY}"
+                timeout: 2s
+                retries: 1
+            - catch:
+              - mapping: |
+                  root = {"answers": {}, "model": "jev-unavailable"}
+          result_map: |
+            root.jev = {
+              "answers": this.answers,
+              "model": this.model.or("jev-latest"),
+              "ms": timestamp_unix_milli() - metadata("jev_start")
+            }
+
+      # ── Confidence-gated cascade ──
+      - mapping: |
+          root = this
+          let dept = this.jev.answers.department.choice.or("other")
+          let dept_conf = this.jev.answers.department.confidence.or(0)
+          let frustration = this.jev.answers.frustration.score.or(0)
+          let urgent = this.jev.answers.urgent.noul.or(0)
+
+          root.jev_decision = if $urgent >= 0.9 {
+            "page"
+          } else if $frustration >= 2.5 {
+            "priority"
+          } else if $dept_conf < 0.5 {
+            "triage"
+          } else {
+            "route"
+          }
+          root.assigned_department = $dept
+
+  output:
+    broker:
+      pattern: fan_out
+      outputs:
+        - stdout:
+            codec: lines
+        - switch:
+            cases:
+              # Production: swap for http_client -> on-call paging webhook
+              - check: this.jev_decision == "page"
+                output:
+                  file:
+                    path: ./data/jev-ticket-router/page-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: this.jev_decision == "priority"
+                output:
+                  file:
+                    path: ./data/jev-ticket-router/priority-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: this.jev_decision == "triage"
+                output:
+                  file:
+                    path: ./data/jev-ticket-router/triage-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: "true"
+                output:
+                  file:
+                    path: ./data/jev-ticket-router/routed-${! this.assigned_department }-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines

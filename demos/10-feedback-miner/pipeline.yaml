@@ -1,0 +1,123 @@
+name: jev-feedback-miner
+type: pipeline
+description: Feedback miner with Jev — every review and NPS verbatim gets topic, sentiment and churn-risk judged inline. Bugs route to eng, churn risks ping the account team, everything feeds analytics.
+namespace: production
+labels:
+  category: integrations
+  pattern: ai-decision
+  model: jev
+
+config:
+  input:
+    http_server:
+      address: "0.0.0.0:8080"
+      path: /feedback
+      allowed_verbs: ["POST"]
+
+  pipeline:
+    processors:
+      - mapping: |
+          # http_server already parses JSON bodies; only parse raw strings
+          root = if this.type() == "string" { this.parse_json() } else { this }
+
+      - mapping: |
+          root = this
+          root.received_at = now()
+
+      # ── Ask Jev ──
+      - mutation: |
+          meta jev_start = timestamp_unix_milli()
+
+      - branch:
+          request_map: |
+            root = {
+              "state": this.string(),
+              "model": "jev-latest",
+              "questions": {
+                "topic": {
+                  "type": "choice",
+                  "instructions": "What is this feedback about?",
+                  "criteria": {
+                    "bug": "Something is broken or not working",
+                    "feature_request": "Asking for new functionality",
+                    "praise": "Compliments, positive experience",
+                    "pricing": "Cost, plans, billing concerns",
+                    "support_experience": "About the support interaction itself",
+                    "other": "None of the above"
+                  }
+                },
+                "sentiment": {
+                  "type": "score",
+                  "instructions": "What is the sentiment of this feedback?",
+                  "criteria": [
+                    "Very negative",
+                    "Negative",
+                    "Neutral",
+                    "Positive",
+                    "Very positive"
+                  ]
+                },
+                "churn_risk": {
+                  "type": "noul",
+                  "instructions": "Does this feedback indicate the customer may churn or cancel?"
+                }
+              }
+            }
+          processors:
+            - http:
+                url: "${JEV_API_URL:https://api.typesafe.ai/v1/systemone}"
+                verb: POST
+                headers:
+                  Content-Type: application/json
+                  Authorization: "Bearer ${TYPESAFE_API_KEY}"
+                timeout: 2s
+                retries: 1
+            - catch:
+              - mapping: |
+                  root = {"answers": {}, "model": "jev-unavailable"}
+          result_map: |
+            root.jev = {
+              "answers": this.answers,
+              "model": this.model.or("jev-latest"),
+              "ms": timestamp_unix_milli() - metadata("jev_start")
+            }
+
+      # ── Confidence-gated cascade ──
+      - mapping: |
+          root = this
+          let topic = this.jev.answers.topic.choice.or("other")
+          let topic_conf = this.jev.answers.topic.confidence.or(0)
+          let churn = this.jev.answers.churn_risk.noul.or(0)
+
+          root.jev_decision = if $churn >= 0.75 {
+            "alert"
+          } else if $topic == "bug" && $topic_conf >= 0.7 {
+            "eng"
+          } else {
+            "analytics"
+          }
+
+  output:
+    broker:
+      pattern: fan_out
+      outputs:
+        - stdout:
+            codec: lines
+        - switch:
+            cases:
+              # Production: swap for http_client -> account-team alerting webhook
+              - check: this.jev_decision == "alert"
+                output:
+                  file:
+                    path: ./data/jev-feedback-miner/alert-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: this.jev_decision == "eng"
+                output:
+                  file:
+                    path: ./data/jev-feedback-miner/eng-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: "true"
+                output:
+                  file:
+                    path: ./data/jev-feedback-miner/analytics-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
