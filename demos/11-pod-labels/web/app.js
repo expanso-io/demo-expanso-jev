@@ -1,6 +1,7 @@
 'use strict';
 const $ = (id) => document.getElementById(id);
 let state = null, session = null, scenario = 'checkout', selected = null;
+let refreshing = false;
 let lastSeq = 0, busy = false, previousLabels = new Map(), lastPods = '';
 const NS = 'http://www.w3.org/2000/svg';
 const cube = '<svg class="pod-icon" viewBox="0 0 72 76" aria-hidden="true"><path d="M36 5 65 21v34L36 72 7 55V21Z" fill="#f1ebfe" stroke="currentColor" stroke-width="1.5"/><path d="m7 21 29 17 29-17M36 38v34" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m36 5 29 16-29 17L7 21Z" fill="white" stroke="currentColor" stroke-width="1.5"/><path d="m22 20 14-8 14 8-14 8Z" fill="currentColor" opacity=".12"/><path d="m16 36 10 6m-10 3 10 6m20-9 10-6m-10 15 10-6" fill="none" stroke="currentColor" opacity=".45" stroke-width="2"/></svg>';
@@ -13,7 +14,7 @@ function timeLabel(value) { const d=new Date(typeof value==='number' ? value*100
 function podByKey() { return state?.pods?.find(p=>key(p)===selected); }
 function renderPods() {
   const pods=state.pods || [];
-  if(!pods.length) { lastPods=''; return; }
+  if(!pods.length) { lastPods='';selected=null;$('pods').replaceChildren(el('p','empty','No pods found in the configured namespace.'));text('pod-count','0 pods');$('logs').replaceChildren();text('selected-name','/ no workload');return; }
   if(!selected || !pods.some(p=>key(p)===selected)) selected=key(pods.find(p=>p.name==='checkout-new') || pods[0]);
   const signature=JSON.stringify([pods.map(p=>[key(p),p.labels,p.status,p.event_enabled]),selected,busy]);
   if(signature===lastPods)return;
@@ -113,8 +114,10 @@ async function sendEvent(pod) {
   } catch(err) {error(err.message);} finally {busy=false;lastPods='';if(state)renderPods();}
 }
 async function refresh() {
+  if(refreshing)return;refreshing=true;
   try {const res=await fetch('/api/state',{cache:'no-store'});if(!res.ok)throw Error('The adapter could not read cluster state.');state=await res.json();render();}
   catch(err){text('connection','Adapter unavailable');$('connection-dot').className='dot error';text('cloud-status','UNVERIFIED');}
+  finally {refreshing=false;}
 }
 for(const button of document.querySelectorAll('[data-scenario]'))button.addEventListener('click',()=>{scenario=button.dataset.scenario;for(const b of document.querySelectorAll('[data-scenario]')){b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));}lastPods='';if(state)renderPods();});
 $('details-toggle').addEventListener('click',()=>{const hidden=!$('runtime-details').hidden;$('runtime-details').hidden=hidden;$('details-toggle').setAttribute('aria-expanded',String(!hidden));$('details-toggle').textContent=hidden?'Inspect runtime +':'Close runtime −';});

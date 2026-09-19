@@ -26,6 +26,12 @@ label changes actual service membership. A signal about misrouted traffic can
 cause Jev to remove it. The fixture includes an unrelated analytics pod so
 copying every observed label is visibly wrong.
 
+Verified on September 19, 2026: the browser-triggered checkout event led
+to a label addition at 91% confidence, then the routing failure led to
+owned-label removal at 90%. See the [execution receipts](../../docs/pod-labels-proof.json)
+and [undo screenshot](../../docs/pod-labels-undo.png). Model judgments can
+vary; the unchanged acceptance threshold is 90%.
+
 ## Run with k3s and Expanso Cloud
 
 **Use [Expanso Cloud](https://cloud.expanso.io) to run this example.** Create
