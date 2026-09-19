@@ -17,30 +17,106 @@ label changes actual service membership. A signal about misrouted traffic can
 cause Jev to remove it. The fixture includes an unrelated analytics pod so
 copying every observed label is visibly wrong.
 
-## Run
+## Run with k3s and Expanso Cloud
 
-Requires `uv`, `kubectl`, Expanso CLI/Edge and a reachable Kubernetes cluster.
-The optional disposable cluster below additionally needs a running Docker
-daemon and `minikube`. From the repository root:
+**Use [Expanso Cloud](https://cloud.expanso.io) to run this example.** Create
+a network, register the Edge agent below, and deploy the pipeline through
+Cloud. Cloud manages scheduling, assignment, execution status and stopping
+the job. [k3s](https://k3s.io) supplies the Kubernetes cluster whose labels
+change; Jev supplies the judgments. The adapter does not run its own loop.
+
+Install [Expanso CLI and Edge](https://docs.expanso.io),
+[uv](https://docs.astral.sh/uv/getting-started/installation/), and
+[just](https://github.com/casey/just#installation). You also need a
+[TypeSafe API key](https://typesafe.ai). Run the following commands from
+this repository's root. Keep the adapter and Edge agent on the **same host**:
+the pipeline calls the adapter at `127.0.0.1:8901`.
+
+### 1. Create a disposable k3s cluster
+
+Choose one setup below. Both keep a private kubeconfig under the repository's
+ignored `.expanso/` directory and name its context `jev-label-demo`.
+
+**Linux: native k3s.** Use a fresh Linux machine or VM that meets the
+[k3s requirements](https://docs.k3s.io/installation/requirements). Run the
+whole walkthrough inside that machine, including the adapter and Edge agent.
+The [official installer](https://docs.k3s.io/quick-start) includes kubectl
+and the container runtime; Docker is not needed.
 
 ```bash
-minikube start -p jev-label-demo --driver=docker
-export KUBE_CONTEXT=jev-label-demo
-kubectl --context "$KUBE_CONTEXT" apply \
--f demos/11-pod-labels/fixtures.yaml
+curl -sfL https://get.k3s.io | sh -
+mkdir -p .expanso
+umask 077
+export KUBECONFIG="$PWD/.expanso/pod-labels.kubeconfig"
+sudo cat /etc/rancher/k3s/k3s.yaml > "$KUBECONFIG"
+kubectl config rename-context default jev-label-demo
 ```
 
-For an existing cluster, explicitly set its context instead. The adapter reads
-pods cluster-wide but only patches namespaces named in `POD_LABEL_NAMESPACES`.
-Its Kubernetes identity needs `list` on pods cluster-wide, plus `get` and
-`patch` on pods in the target namespaces. Use a disposable cluster for the
-example: labels can change service routing, policy selection, and controller
-behavior.
+**macOS or a Docker-based laptop: k3s through k3d.** Start Docker and install
+[k3d](https://k3d.io/stable/#installation) and
+[kubectl](https://kubernetes.io/docs/tasks/tools/). k3d runs a real k3s
+cluster in containers; the adapter and Edge agent run on your laptop.
+These flags leave your default kubeconfig and current context unchanged.
 
-Configure root `.env` using the existing `.env.example`, then add settings
-from this directory's `.env.example`. Keep it gitignored and mode 600.
-The existing three Expanso credentials and `TYPESAFE_API_KEY` are required.
-Generate `POD_LABEL_TOKEN` with a password manager or:
+```bash
+mkdir -p .expanso
+umask 077
+k3d cluster create jev-label-demo \
+--kubeconfig-update-default=false \
+--kubeconfig-switch-context=false --wait
+export KUBECONFIG="$PWD/.expanso/pod-labels.kubeconfig"
+k3d kubeconfig get jev-label-demo > "$KUBECONFIG"
+kubectl config rename-context k3d-jev-label-demo jev-label-demo
+```
+
+For either setup, verify the cluster and create the fixture:
+
+```bash
+export KUBE_CONTEXT=jev-label-demo
+kubectl --context "$KUBE_CONTEXT" wait node --all \
+--for=condition=Ready --timeout=120s
+kubectl --context "$KUBE_CONTEXT" apply \
+-f demos/11-pod-labels/fixtures.yaml
+kubectl --context "$KUBE_CONTEXT" -n jev-label-demo \
+wait pod --all --for=condition=Ready --timeout=180s
+```
+
+For an existing k3s cluster, use its kubeconfig and explicit context instead
+of installing another cluster. The adapter reads pods cluster-wide but only
+patches namespaces named in `POD_LABEL_NAMESPACES`. Its Kubernetes identity
+needs `list` on pods cluster-wide, plus `get` and `patch` in the target
+namespaces. The disposable setup uses k3s's administrator kubeconfig; use
+scoped credentials when adapting this to a shared cluster.
+
+### 2. Connect Expanso Cloud and Jev
+
+At [cloud.expanso.io](https://cloud.expanso.io), create or select your demo
+network. Copy its API endpoint, create an API key, and obtain a node bootstrap
+token from **Nodes → Add Node**. All three must belong to the same network.
+
+```bash
+just init
+chmod 600 .env
+```
+
+Edit root `.env` and fill these existing settings:
+
+- `EXPANSO_CLI_ENDPOINT`: your Cloud network's API endpoint.
+- `EXPANSO_CLI_AUTH_API_KEY`: that network's API key.
+- `EXPANSO_EDGE_BOOTSTRAP_TOKEN`: its node bootstrap token.
+- `TYPESAFE_API_KEY`: your real Jev/TypeSafe API key.
+
+Add the settings from this directory's [`.env.example`](.env.example),
+including `KUBECONFIG` set to the **absolute path** printed by this command:
+
+```bash
+printf '%s\n' "$KUBECONFIG"
+```
+
+This lets all three `just` terminals use the same cluster without changing
+your globally selected context. Set `KUBE_CONTEXT=jev-label-demo` and
+`POD_LABEL_NAMESPACES=jev-label-demo`. Generate `POD_LABEL_TOKEN` with a
+password manager or:
 
 ```bash
 uv run python -c 'import secrets; print(secrets.token_hex(32))'
@@ -49,6 +125,8 @@ uv run python -c 'import secrets; print(secrets.token_hex(32))'
 Place the output in `.env`; never pass credentials as command flags. Set
 `POD_LABEL_APPLY=true` for actual writes. The default emits `dry-run` receipts
 after real Jev inference and freshness checks.
+
+### 3. Let Cloud run the reconciliation loop
 
 In one terminal, run the adapter:
 
@@ -77,10 +155,12 @@ local adapter can read Kubernetes before submission. Check the execution list:
 it must name that node,
 not merely show a stored job. Receipts are printed in the Edge terminal.
 
-Observe the actual Kubernetes labels and Service endpoints:
+In the cluster-setup terminal, observe the actual labels and Service
+endpoints. In a fresh terminal, restore both environment variables first:
 
 ```bash
 export KUBE_CONTEXT=jev-label-demo
+export KUBECONFIG="$PWD/.expanso/pod-labels.kubeconfig"
 kubectl --context "$KUBE_CONTEXT" -n jev-label-demo \
 get pods --show-labels
 kubectl --context "$KUBE_CONTEXT" -n jev-label-demo \
@@ -146,16 +226,30 @@ just pod-labels-stop
 just pod-labels-status
 ```
 
-Wait for executions to stop, then Ctrl-C both foreground terminals. If you
-created the disposable cluster above, remove it with:
+Wait for executions to stop, then Ctrl-C both foreground terminals. Remove
+only the disposable cluster you created for this walkthrough:
+
+For **k3d**:
 
 ```bash
-minikube delete -p jev-label-demo
+k3d cluster delete jev-label-demo
 ```
 
-Do not delete an existing cluster. To remove only the fixture from an
-existing cluster, delete the `jev-label-demo` namespace after stopping the
-job. The example does not alter the existing log-triage processes or job.
+For **native k3s on the disposable Linux host**, the
+[official uninstaller](https://docs.k3s.io/installation/uninstall) removes
+that host's entire k3s installation and local cluster data:
+
+```bash
+sudo /usr/local/bin/k3s-uninstall.sh
+```
+
+For an **existing cluster**, keep k3s running and remove only the fixture:
+
+```bash
+kubectl --context "$KUBE_CONTEXT" delete namespace jev-label-demo
+```
+
+The example does not alter the existing log-triage processes or Cloud job.
 
 ## Local verification
 
