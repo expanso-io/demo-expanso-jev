@@ -50,7 +50,8 @@ def ordinary_fixture(pod):
         meta["namespace"] == "jev-label-demo"
         and meta["name"] in FIXTURES
         and annotations.get("jev.expanso.io/fixture") == "visual-v1"
-        and annotations.get("jev.expanso.io/workload-version") == "ordinary-v3"
+        and annotations.get("jev.expanso.io/workload-version")
+        in {"ordinary-v3", "noise-v4"}
     )
 
 
@@ -309,7 +310,7 @@ class Kubernetes:
 
     def logs(self, namespace, name):
         return self.run(
-            "logs", name, "-n", namespace, "--tail=20", "--limit-bytes=8192", raw=True
+            "logs", name, "-n", namespace, "--tail=200", "--limit-bytes=65536", raw=True
         ).splitlines()
 
     def event(self, namespace, name, scenario):
@@ -455,6 +456,7 @@ class Reconciler:
         self.event_queue = queue.Queue(maxsize=32)
         self.requests = {}
         self.started = {}
+        self.routine_seen = {}
 
     def emit(self, stage, candidate=None, **extra):
         with self.lock:
@@ -517,11 +519,11 @@ class Reconciler:
                 message="Event queued for Cloud",
             )
 
-    def next_event(self, timeout=25):
+    def next_event(self, timeout=1):
         try:
             return self.event_queue.get(timeout=timeout)
         except queue.Empty:
-            return {}
+            return {"kind": "routine"}
 
     def event_feed(self, after):
         with self.lock:
@@ -569,7 +571,46 @@ class Reconciler:
             cloud=dict(self.cloud_status.read(), last_tick_at=self.last_tick_at),
         )
 
+    @staticmethod
+    def routine_log(line):
+        try:
+            value = json.loads(line)
+        except (TypeError, ValueError):
+            return False
+        return isinstance(value, dict) and value.get("event") == "routine_heartbeat"
+
+    def collect_routine(self):
+        """Read stdout only when the Cloud pipeline asks; never invoke Jev."""
+        for pod in self.kube.pods():
+            meta = pod["metadata"]
+            if not ordinary_fixture(pod) or meta["namespace"] not in self.namespaces:
+                continue
+            key = (meta["namespace"], meta["name"])
+            logs = self.kube.logs(*key)
+            self.log_cache[key] = logs
+            # Fixed fixture names bound this map. UID separates recreated pods;
+            # retained line fingerprints exceed the bounded kubectl tail window.
+            uid, seen = self.routine_seen.get(key, (None, []))
+            if uid != meta["uid"]:
+                seen = []
+            fresh = [
+                line for line in logs if self.routine_log(line) and line not in seen
+            ]
+            self.routine_seen[key] = (meta["uid"], (seen + fresh)[-512:])
+            if fresh:
+                self.emit(
+                    "routine",
+                    {"pod": view(pod)},
+                    count=len(fresh),
+                    logs=fresh[-20:],
+                    message="Cloud collected routine pod stdout",
+                )
+        self.last_tick_at = time.time()
+        return []
+
     def snapshot(self, request=None):
+        if request == {"kind": "routine"}:
+            return self.collect_routine()
         request_id = (request or {}).get("request_id")
         if request is not None:
             if not request_id:
@@ -605,7 +646,7 @@ class Reconciler:
                 == (request["namespace"], request["pod"])
             ):
                 logs = self.kube.logs(meta["namespace"], meta["name"])
-                pod["_logs"] = logs
+                pod["_logs"] = [line for line in logs if not self.routine_log(line)]
                 self.log_cache[(meta["namespace"], meta["name"])] = logs
         self.last_tick_at = time.time()
         options = candidates(pods, self.namespaces, request_id)

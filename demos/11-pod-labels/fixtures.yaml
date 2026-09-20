@@ -15,6 +15,7 @@ data:
     import json
     import sys
     import time
+    import threading
     import urllib.request
     from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -53,6 +54,15 @@ data:
     }
 
 
+    def routine_logs():
+        while True:
+            print(json.dumps({
+                "event": "routine_heartbeat", "at": time.time_ns(),
+                "message": "Routine worker heartbeat", "synthetic_stimulus": True,
+            }), flush=True)
+            time.sleep(0.5)
+
+
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *args):
             pass
@@ -79,6 +89,7 @@ data:
             with urllib.request.urlopen(request, timeout=5) as response:
                 print(response.read().decode())
         else:
+            threading.Thread(target=routine_logs, daemon=True).start()
             HTTPServer(("0.0.0.0", 8080), Handler).serve_forever()
 
 ---
@@ -92,7 +103,7 @@ metadata:
     team: payments
   annotations:
     jev.expanso.io/fixture: visual-v1
-    jev.expanso.io/workload-version: ordinary-v3
+    jev.expanso.io/workload-version: noise-v4
     jev.expanso.io/purpose: HTTP workload maintained by payments; current traffic eligibility comes from its latest relevant event.
 spec:
   containers:
@@ -120,7 +131,7 @@ metadata:
     team: payments
   annotations:
     jev.expanso.io/fixture: visual-v1
-    jev.expanso.io/workload-version: ordinary-v3
+    jev.expanso.io/workload-version: noise-v4
     jev.expanso.io/purpose: HTTP workload maintained by payments; current traffic eligibility comes from its latest relevant event.
 spec:
   containers:
@@ -148,7 +159,7 @@ metadata:
     team: data
   annotations:
     jev.expanso.io/fixture: visual-v1
-    jev.expanso.io/workload-version: ordinary-v3
+    jev.expanso.io/workload-version: noise-v4
     jev.expanso.io/purpose: Analytics workload maintained by data; current traffic eligibility comes from its latest relevant event.
 spec:
   containers:

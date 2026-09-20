@@ -79,6 +79,71 @@ class Tests(unittest.TestCase):
         e.kube.target["metadata"]["annotations"]["jev.expanso.io/fixture"] = "visual-v1"
         return e
 
+    def noise_engine(self):
+        e = self.owned_engine()
+        e.namespaces = {"jev-label-demo"}
+        e.kube.target["metadata"]["namespace"] = "jev-label-demo"
+        e.kube.target["metadata"]["annotations"]["jev.expanso.io/workload-version"] = (
+            "noise-v4"
+        )
+        return e
+
+    def test_cloud_routine_reads_once_without_judgment_or_mutation(self):
+        e = self.noise_engine()
+        line = json.dumps({"event": "routine_heartbeat", "at": 1})
+        with patch.object(e.kube, "logs", return_value=[line]) as logs:
+            with patch.object(e, "judge") as judge:
+                self.assertEqual(e.snapshot(e.next_event(0)), [])
+                self.assertEqual(e.events[-1]["stage"], "routine")
+                self.assertEqual(e.events[-1]["count"], 1)
+                self.assertEqual(e.events[-1]["logs"], [line])
+                self.assertEqual(e.snapshot(e.next_event(0)), [])
+                self.assertEqual(len(e.events), 1)
+                judge.assert_not_called()
+            self.assertEqual(logs.call_count, 2)
+        self.assertEqual(e.pending, {})
+        self.assertEqual(e.kube.patches, [])
+
+    def test_routine_collection_requires_recognized_owned_fixture(self):
+        e = self.noise_engine()
+        e.kube.target["metadata"]["annotations"].clear()
+        with patch.object(e.kube, "logs") as logs:
+            self.assertEqual(e.collect_routine(), [])
+            logs.assert_not_called()
+        self.assertEqual(e.events, [])
+
+    def test_triggered_evidence_excludes_noise_preserves_signal(self):
+        e = self.noise_engine()
+        noise = json.dumps({"event": "routine_heartbeat", "at": 1})
+        signal = json.dumps({"event": "checkout_completed", "status": 200})
+        e.stimulus(
+            {
+                "namespace": "jev-label-demo",
+                "pod": "checkout-api",
+                "scenario": "checkout",
+            }
+        )
+        with patch.object(e.kube, "logs", return_value=[noise, signal, noise]):
+            item = e.snapshot(e.next_event(0))[0]
+        self.assertEqual(item["candidate"]["pod"]["logs"], [signal])
+
+    def test_workload_emits_real_routine_stdout(self):
+        text = Path(__file__).with_name("fixtures.yaml").read_text()
+        source = text.split("  workload.py: |\n", 1)[1].split("\n---", 1)[0]
+        source = "\n".join(line[4:] for line in source.splitlines())
+        scope = {"__name__": "test_workload"}
+        exec(compile(source, "workload.py", "exec"), scope)
+        output = io.StringIO()
+        with (
+            patch("sys.stdout", output),
+            patch.object(scope["time"], "sleep", side_effect=InterruptedError),
+        ):
+            with self.assertRaises(InterruptedError):
+                scope["routine_logs"]()
+        event = json.loads(output.getvalue())
+        self.assertEqual(event["event"], "routine_heartbeat")
+        self.assertGreater(event["at"], 0)
+
     def test_ordinary_pods_have_routing_choices_without_reference_pods(self):
         for name, scenario, expected in (
             ("checkout-api", "checkout", "stable"),
@@ -142,7 +207,7 @@ class Tests(unittest.TestCase):
             event.assert_not_called()
         self.assertEqual(receipt["stage"], "queued")
         self.assertEqual(e.next_event(0)["request_id"], receipt["request_id"])
-        self.assertEqual(e.next_event(0), {})
+        self.assertEqual(e.next_event(0), {"kind": "routine"})
 
     def test_cloud_consumption_collects_correlated_real_logs(self):
         for name in a.FIXTURES:
