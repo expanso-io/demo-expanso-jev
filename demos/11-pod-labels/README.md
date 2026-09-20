@@ -167,9 +167,9 @@ storage service. Files rotate at 2 MB with two backups.
 
 The recording view fits 1280×720 and larger desktop viewports. Event controls
 sit above the pods; Expanso, Jev and Logs align above the Kubernetes API
-server. Colored key-value label highlights last six seconds after arrival. **Details** keeps
-the actual labels visible; expiring a highlight never removes a Kubernetes
-label. Motion follows real receipts, with a 3.7-second visual replay (500 ms each way between Expanso and Jev) and 60 ms
+server. Colored key-value labels remain visible for at least five seconds after arrival.
+Expanso Cloud then removes the actual managed Kubernetes label; the UI follows
+the confirmed pod state. Motion follows real receipts, with a 3.7-second visual replay (500 ms each way between Expanso and Jev) and 60 ms
 event polling. Cloud execution proceeds immediately; the replay adds no
 delay to Jev calls or Kubernetes changes.
 
@@ -183,8 +183,13 @@ Repeated events receive a new Jev judgment and, above the threshold, a real
 Kubernetes patch that refreshes the owned label and its decision journal.
 Recovery can update `health=degraded` to `health=healthy`. Existing labels
 without matching ownership remain read-only and show **Already set** or
-**Protected**. The six-second visual highlight is separate from the persistent
-Kubernetes label. Animation timing does not promise a provider response time.
+**Protected**. Each accepted repeat renews the owned label lease. The browser
+acknowledges visual arrival, and Cloud starts the five-second expiry interval;
+without an acknowledgement, labels expire nine seconds after application.
+Cloud retries failed removals and defers expiry while a decision for that pod
+is in flight. Labels remain visible until removal succeeds. External and
+fixture-owned labels are preserved. Animation timing does not promise a
+provider response time.
 
 Recovery updates the health classification; it does not clear every independent
 label (for example CPU pressure or a security classification) in the same patch.

@@ -263,3 +263,13 @@ button:disabled{cursor:wait;opacity:.55}
   .feed .did{padding:1px 6px;font-size:12px}
   .feed li:nth-child(n+6){display:none}
 }
+
+/* Make room for actual labels instead of hiding persisted Kubernetes state. */
+@media(min-width:1101px) and (max-height:750px){
+  .pod{gap:3px;padding-block:8px}
+  .pod-icon{width:32px;height:34px}
+  .pod-name{min-height:1.5em;font-size:15px}
+  .pod-event{height:18px;min-height:18px;margin-top:0}
+  .pod-labels{gap:2px}
+  .cluster-head{margin-bottom:12px}
+}

@@ -836,6 +836,9 @@ class Tests(unittest.TestCase):
                 },
             ]:
                 self.assertEqual(request("POST", "/api/event", body, headers)[0], 403)
+                self.assertEqual(
+                    request("POST", "/api/label-visible", body, headers)[0], 403
+                )
             headers = {"Origin": origin, "X-CSRF-Token": csrf}
             self.assertEqual(request("POST", "/api/event", body, headers)[0], 202)
             self.assertEqual(request("POST", "/api/event", "[]", headers)[0], 400)
@@ -844,6 +847,19 @@ class Tests(unittest.TestCase):
             )
             self.assertEqual(request("GET", "/../../.env")[0], 404)
             self.assertEqual(request("POST", "/judge", "{}", headers)[0], 401)
+            self.assertEqual(request("POST", "/expire-labels", "{}", headers)[0], 401)
+            acknowledgement = json.dumps(
+                dict(
+                    namespace="demo",
+                    pod="checkout-api",
+                    key="cpu",
+                    request_id="test-arrival",
+                )
+            )
+            self.assertEqual(
+                request("POST", "/api/label-visible", acknowledgement, headers)[0], 202
+            )
+            self.assertEqual(len(e.visible_requests), 1)
             self.assertEqual(e.kube.patches, [])
         finally:
             server.shutdown()
@@ -1078,6 +1094,154 @@ class Tests(unittest.TestCase):
         ]:
             with self.assertRaises(ValueError):
                 deploy.selected_node(nodes)
+
+
+class LabelLeaseTests(unittest.TestCase):
+    def setUp(self):
+        environment = patch.dict(a.os.environ, {}, clear=True)
+        environment.start()
+        self.addCleanup(environment.stop)
+        self.e = a.Reconciler(FakeKube(), {"jev-label-demo"}, "test-only", apply=True)
+        self.e.kube.target = pod(
+            "analytics-worker",
+            {"app": "analytics", "routing-tier": "batch"},
+            "jev-label-demo",
+        )
+        self.e.kube.target["metadata"]["annotations"] = {
+            "jev.expanso.io/fixture": "visual-v1",
+            "jev.expanso.io/workload-version": "signals-v7",
+        }
+
+    def apply_event(self, at):
+        with patch.object(a.time, "time", return_value=at):
+            ack = self.e.stimulus(
+                {
+                    "namespace": "jev-label-demo",
+                    "pod": "analytics-worker",
+                    "scenario": "squeeze",
+                }
+            )
+            item = self.e.snapshot(self.e.next_event(0))[0]
+            self.e.pending[item["id"]]["score"] = 0.97
+            self.assertEqual(self.e.execute(item["id"])["result"], "applied")
+        return {
+            "namespace": "jev-label-demo",
+            "pod": "analytics-worker",
+            "key": "cpu",
+            "request_id": ack["request_id"],
+        }
+
+    def sweep(self, at):
+        with patch.object(a.time, "time", return_value=at):
+            return self.e.expire_labels()
+
+    def acknowledge(self, body, at):
+        with patch.object(a.time, "time", return_value=at):
+            return self.e.label_visible(body)
+
+    def test_cloud_arms_five_seconds_after_arrival_and_removes_real_label(self):
+        body = self.apply_event(100)
+        self.assertEqual(a.ledger(self.e.kube.target)["cpu"]["expires_at"], 109)
+        writes = len(self.e.kube.patches)
+        self.acknowledge(body, 103.7)
+        self.assertEqual(
+            len(self.e.kube.patches), writes, "browser ACK must not patch Kubernetes"
+        )
+        self.assertEqual(self.sweep(103.8)["armed"], 1)
+        self.assertEqual(self.sweep(108.79)["expired"], 0)
+        self.assertEqual(self.e.kube.target["metadata"]["labels"]["cpu"], "throttled")
+        with patch.object(self.e, "judge") as judge:
+            self.assertEqual(self.sweep(108.8)["expired"], 1)
+            judge.assert_not_called()
+        self.assertNotIn("cpu", self.e.kube.target["metadata"]["labels"])
+        self.assertEqual(
+            self.e.kube.target["metadata"]["labels"]["routing-tier"], "batch"
+        )
+        self.assertEqual(self.e.events[-1]["stage"], "expired")
+        self.assertEqual(self.e.events[-1]["request_id"], body["request_id"])
+
+    def test_repeat_event_renews_lease_and_old_ack_cannot_extend_or_remove_it(self):
+        old = self.apply_event(100)
+        self.acknowledge(old, 103)
+        self.sweep(103)
+        new = self.apply_event(107)
+        self.assertNotEqual(old["request_id"], new["request_id"])
+        self.acknowledge(old, 108)
+        self.assertEqual(self.sweep(109)["expired"], 0)
+        self.acknowledge(new, 110)
+        self.assertEqual(self.sweep(110)["armed"], 1)
+        self.acknowledge(new, 114)
+        self.assertEqual(self.sweep(114)["armed"], 0)
+        self.assertEqual(a.ledger(self.e.kube.target)["cpu"]["expires_at"], 115)
+        self.assertEqual(self.sweep(115)["expired"], 1)
+        self.assertEqual(self.e.events[-1]["request_id"], new["request_id"])
+
+    def test_fallback_expiry_survives_adapter_restart_without_browser(self):
+        self.apply_event(100)
+        kube = self.e.kube
+        self.e = a.Reconciler(kube, {"jev-label-demo"}, "test-only", apply=True)
+        self.assertEqual(self.sweep(108.9)["expired"], 0)
+        self.assertEqual(self.sweep(109)["expired"], 1)
+
+    def test_external_edit_recreation_foreign_namespace_and_dry_run_are_protected(self):
+        self.apply_event(100)
+        original = copy.deepcopy(self.e.kube.target)
+        for mode in ("external", "recreated", "namespace", "dry-run"):
+            self.e.kube.target = copy.deepcopy(original)
+            self.e.apply = mode != "dry-run"
+            if mode == "external":
+                self.e.kube.target["metadata"]["labels"]["cpu"] = "external-value"
+            elif mode == "recreated":
+                self.e.kube.target["metadata"]["uid"] = "replacement-pod"
+            elif mode == "namespace":
+                self.e.namespaces = {"elsewhere"}
+            with self.subTest(mode=mode):
+                self.assertEqual(self.sweep(120)["expired"], 0)
+                self.assertIn("cpu", self.e.kube.target["metadata"]["labels"])
+            self.e.namespaces = {"jev-label-demo"}
+
+    def test_failed_delete_keeps_real_label_and_retries(self):
+        self.apply_event(100)
+        with patch.object(self.e.kube, "patch", side_effect=RuntimeError("conflict")):
+            self.assertEqual(self.sweep(110)["failed"], 1)
+        self.assertIn("cpu", self.e.kube.target["metadata"]["labels"])
+        self.assertNotEqual(self.e.events[-1]["stage"], "expired")
+        self.assertEqual(self.sweep(111)["expired"], 1)
+
+    def test_legacy_owned_labels_expire_without_touching_fixture_labels(self):
+        self.apply_event(100)
+        changes = a.ledger(self.e.kube.target)
+        for k in ("expires_at", "displayed_at", "uid"):
+            changes["cpu"].pop(k)
+        self.e.kube.target["metadata"]["annotations"][a.LEDGER] = json.dumps(changes)
+        self.assertEqual(self.sweep(120)["expired"], 1)
+        self.assertEqual(
+            self.e.kube.target["metadata"]["labels"]["routing-tier"], "batch"
+        )
+
+    def test_sweep_defers_same_pod_decision_but_other_pods_are_independent(self):
+        self.apply_event(100)
+        c = {"operation": "add", "pod": a.view(self.e.kube.target)}
+        self.e.pending["slow"] = {"candidate": c, "expires": a.time.monotonic() + 30}
+        self.assertEqual(self.sweep(110)["expired"], 0)
+        c["pod"]["name"] = "checkout-api"
+        self.assertEqual(self.sweep(111)["expired"], 1)
+
+    def test_expiry_rechecks_uid_and_atomic_resource_version(self):
+        self.apply_event(100)
+        get = self.e.kube.get
+
+        def replaced(*args):
+            p = get(*args)
+            p["metadata"]["uid"] = "new-pod"
+            return p
+
+        with patch.object(self.e.kube, "get", side_effect=replaced):
+            self.assertEqual(self.sweep(110)["expired"], 0)
+        self.assertEqual(self.sweep(111)["expired"], 1)
+        operations = self.e.kube.patches[-1]
+        self.assertEqual(operations[0]["path"], "/metadata/uid")
+        self.assertEqual(operations[1]["path"], "/metadata/resourceVersion")
 
 
 class SignalCatalogTests(unittest.TestCase):

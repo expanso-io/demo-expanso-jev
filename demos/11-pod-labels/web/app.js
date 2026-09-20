@@ -16,7 +16,7 @@ let lane="labels",investigationPending=false;
 let loggedCount=0,routineCount=0,askedCount=0,events=[],pollTimer=null;
 const flows=new Map(), feed=[];
 const labelHighlights=new Map();
-const LABEL_HOLD_MS=6000;
+
 
 const text=(id,v)=>{$(id).textContent=v??'';};
 function el(tag,cls,value){const n=document.createElement(tag);if(cls)n.className=cls;if(value!==undefined)n.textContent=value;return n;}
@@ -71,19 +71,20 @@ function labelChip(k,v,managed){
   if(managed)chip.style.setProperty('--lc',LABEL_COLOR[k]||'#6d3aed');
   chip.append(el('i','',k+'='),el('b','',v));const meaning=state?.available_labels?.find(l=>l.key===k&&l.value===v)?.meaning;chip.title=`${k}=${v}${meaning?' — '+meaning:''}`;return chip;
 }
-function highlightLabel(podKey,k,v,color,removed=false){
-  const id=podKey+'/'+k,entry={key:k,value:v,color,removed,until:Date.now()+LABEL_HOLD_MS};
-  labelHighlights.set(id,entry);
-  setTimeout(()=>{if(labelHighlights.get(id)!==entry)return;labelHighlights.delete(id);const pod=state?.pods.find(p=>key(p)===podKey),node=podEl(podKey);if(pod&&node)renderLabels(node,pod);},LABEL_HOLD_MS);
+function highlightLabel(podKey,k,v,color,requestId){
+  labelHighlights.set(podKey+'/'+k,{value:v,color,requestId});
 }
 function renderLabels(node,pod){
   const managedKeys=new Set((state?.available_labels||[]).map(l=>l.key));
-  const holder=node.querySelector('.pod-labels');
-  const base=Object.entries(pod.labels||{}).filter(([k])=>!managedKeys.has(k)).sort(([a],[b])=>a.localeCompare(b)).map(([k,v])=>labelChip(k,v,false));
-  const highlights=[...labelHighlights.entries()].filter(([id,h])=>id.startsWith(key(pod)+'/')&&h.until>Date.now()).map(([,h])=>{
-    const chip=labelChip(h.key,h.value,true);chip.classList.toggle('removed',h.removed);chip.style.setProperty('--lc',h.color);return chip;
+  const chips=Object.entries(pod.labels||{}).sort(([a],[b])=>a.localeCompare(b)).map(([k,v])=>{
+    const id=key(pod)+'/'+k,h=labelHighlights.get(id),lease=pod.label_leases?.[k];
+    if(h&&(h.value!==v||(lease&&lease.request_id!==h.requestId)))labelHighlights.delete(id);
+    const chip=labelChip(k,v,managedKeys.has(k));
+    if(labelHighlights.has(id))chip.style.setProperty('--lc',h.color);
+    else if(lease?.scenario)chip.style.setProperty('--lc',SIG[lease.scenario]||'#6d3aed');
+    return chip;
   });
-  holder.replaceChildren(...base,...highlights);
+  node.querySelector('.pod-labels').replaceChildren(...chips);
 }
 function renderPods(confirmedKey=null){
   const pods=state?.pods||[];
@@ -153,7 +154,14 @@ function acceptEvents(incoming,live=true){
   for(const event of [...incoming].sort((a,b)=>a.seq-b.seq)){
     if(event.seq<=cursor)continue;cursor=event.seq;
     if(event.stage==='routine'){if(live)showRoutine(event);else {routineCount+=Number(event.count)||0;if(event.destination==='general_logs')loggedCount+=Number(event.count)||0;}continue;}
-    events.push(event);const h=remember(event);
+    events.push(event);
+    if(event.stage==='expired'){
+      const id=`${event.namespace}/${event.pod}/${event.key}`;
+      if(labelHighlights.get(id)?.requestId===event.request_id)labelHighlights.delete(id);
+      if(live)refreshState();
+      continue;
+    }
+    const h=remember(event);
     if(event.investigation){const current=(state.investigations||[]).find(i=>i.namespace===event.namespace&&i.pod===event.pod);if((current?.revision||0)>(event.investigation.revision||0)){flows.delete(event.request_id);continue;}state.investigations=(state.investigations||[]).filter(i=>!(i.namespace===event.namespace&&i.pod===event.pod));state.investigations.push(event.investigation);}
     if(event.stage==='judging')askedCount++;
     if(!live&&h&&TERMINAL.includes(event.stage))pushFeed(event,h);
@@ -188,16 +196,19 @@ function acceptEvents(incoming,live=true){
         text('api-line',`PATCH /api/v1/namespaces/${event.namespace}/pods/${event.pod}  ${event.stage==='applied'?'+':'−'} ${event.key}=${event.value}`);
         await travel(g()?.toKube,color,800);$('kube-node').classList.add('fire');await travel(g()?.toPod,color,600);
         setTimeout(()=>$('kube-node').classList.remove('fire'),600);
+        await refreshState();
         const pod=state?.pods.find(p=>key(p)===f.podKey);
-        if(pod){
-          highlightLabel(f.podKey,event.key,event.value,color,event.stage==='undone');
-          if(event.stage==='applied')pod.labels[event.key]=event.value;else delete pod.labels[event.key];
+        const lease=pod?.label_leases?.[event.key];
+        if(event.stage==='applied'&&pod?.labels?.[event.key]===event.value&&lease?.request_id===event.request_id){
+          highlightLabel(f.podKey,event.key,event.value,color,event.request_id);
           renderPods(f.podKey);
-        }
-
+          try{await post('/api/label-visible',{namespace:event.namespace,pod:event.pod,key:event.key,request_id:event.request_id});}
+          catch(e){showError(e.message);}
+        }else renderPods(f.podKey);
       }
+
       const alreadySet=event.stage==='held'&&event.operation==='review'&&state.pods.some(p=>key(p)===f.podKey&&p.labels?.[event.key]===event.value)&&(scenarioOf(f.scenario)?.prefer||[]).some(([op,k,v])=>op==='add'&&k===event.key&&v===event.value);
-      if(alreadySet){highlightLabel(f.podKey,event.key,event.value,color);renderPods(f.podKey);}
+      if(alreadySet){highlightLabel(f.podKey,event.key,event.value,color,state.pods.find(p=>key(p)===f.podKey)?.label_leases?.[event.key]?.request_id);renderPods(f.podKey);}
       pushFeed({...event,already_set:alreadySet},h||{pod:f.pod,scenario:f.scenario});
       $('cloud-node').classList.toggle('processing',[...flows.values()].some(x=>x!==f));
       if(node){node.classList.remove('busy');

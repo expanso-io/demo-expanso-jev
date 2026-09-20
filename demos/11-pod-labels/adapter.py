@@ -44,6 +44,8 @@ import routing
 LEDGER = "jev.expanso.io/changes"
 SIGNAL = "jev.expanso.io/signal"
 PURPOSE = "jev.expanso.io/purpose"
+LABEL_VISIBLE_SECONDS = 5.0
+LABEL_FALLBACK_SECONDS = 9.0  # Four-second replay allowance plus visible time.
 FIXTURES = {"checkout-api", "orders-api", "analytics-worker"}
 # The only labels this agent may add to or remove from the demo pods, with the
 # meaning Jev is given for each. Anything else on a pod is left alone.
@@ -361,6 +363,17 @@ def can_refresh(pod, key, value, request_id):
     )
 
 
+def lease_deadline(change, now):
+    deadline = change.get("expires_at", change.get("at", now) + LABEL_FALLBACK_SECONDS)
+    if (
+        isinstance(deadline, bool)
+        or not isinstance(deadline, (int, float))
+        or not math.isfinite(deadline)
+    ):
+        raise ValueError("invalid label deadline")
+    return deadline
+
+
 def patch_for(pod, candidate, score):
     """Atomic label + ownership journal, guarded against stale decisions."""
     meta = pod["metadata"]
@@ -397,6 +410,17 @@ def patch_for(pod, candidate, score):
             "noul": score,
             "request_id": candidate.get("request_id"),
         }
+        if (
+            ordinary_fixture(pod)
+            and key in CATALOG_KEYS
+            and candidate.get("request_id")
+        ):
+            changes[key].update(
+                uid=meta["uid"],
+                expires_at=time.time() + LABEL_FALLBACK_SECONDS,
+                displayed_at=None,
+                scenario=candidate.get("scenario"),
+            )
     elif candidate["operation"] == "undo":
         change = changes.get(key, {})
         if change.get("state") != "applied" or change.get("value") != value:
@@ -412,6 +436,11 @@ def patch_for(pod, candidate, score):
         )
     else:
         raise ValueError("unknown operation")
+    return metadata_patch(pod, labels, changes)
+
+
+def metadata_patch(pod, labels, changes):
+    meta = pod["metadata"]
     annotations = copy.deepcopy(meta.get("annotations", {}))
     annotations[LEDGER] = json.dumps(changes, separators=(",", ":"))
     return [
@@ -618,6 +647,7 @@ class Reconciler(investigation.Investigations):
         self.native_seen = {}
         self.auto = False
         self.general_log = None
+        self.visible_requests = {}
 
     def emit(self, stage, candidate=None, **extra):
         with self.lock:
@@ -740,6 +770,144 @@ class Reconciler(investigation.Investigations):
                 "cursor": self.seq,
             }
 
+    def label_visible(self, body):
+        """Queue an arrival acknowledgement; only a Cloud sweep writes Kubernetes."""
+        if (
+            not isinstance(body, dict)
+            or set(body) != {"namespace", "pod", "key", "request_id"}
+            or not all(isinstance(v, str) and 0 < len(v) <= 128 for v in body.values())
+            or body["namespace"] not in self.namespaces
+            or body["pod"] not in FIXTURES
+            or body["key"] not in CATALOG_KEYS
+        ):
+            raise ValueError("invalid label acknowledgement")
+        identity = (body["namespace"], body["pod"], body["key"], body["request_id"])
+        with self.lock:
+            if (
+                identity not in self.visible_requests
+                and len(self.visible_requests) >= 128
+            ):
+                raise ValueError("too many label acknowledgements")
+            self.visible_requests.setdefault(identity, time.time())
+        return {"result": "queued"}
+
+    def expire_labels(self):
+        """Cloud-scheduled lease maintenance, independent of the Jev input branch."""
+        result = {"expired": 0, "armed": 0, "failed": 0}
+        if not self.apply:
+            return result
+        with self.lock:
+            now = time.time()
+            self.visible_requests = {
+                k: at for k, at in self.visible_requests.items() if now - at < 120
+            }
+            # Do not invalidate a decision in flight on this pod. Other pods'
+            # leases continue to expire while Jev evaluates that decision.
+            busy = {
+                (
+                    item["candidate"]["pod"]["namespace"],
+                    item["candidate"]["pod"]["name"],
+                )
+                for item in self.pending.values()
+                if item["expires"] > time.monotonic()
+                and item["candidate"]["operation"] != "investigate"
+            }
+            busy.update((r["namespace"], r["pod"]) for r in self.requests.values())
+            for listed in self.kube.pods():
+                meta = listed["metadata"]
+                identity = (meta["namespace"], meta["name"])
+                if (
+                    meta["namespace"] not in self.namespaces
+                    or not ordinary_fixture(listed)
+                    or identity in busy
+                ):
+                    continue
+                try:
+                    listed_changes = ledger(listed)
+                    keys = [
+                        k
+                        for k, c in listed_changes.items()
+                        if k in CATALOG_KEYS
+                        and c["state"] == "applied"
+                        and meta.get("labels", {}).get(k) == c["value"]
+                    ]
+                except (ValueError, TypeError):
+                    result["failed"] += 1
+                    continue
+                for key in keys:
+                    try:
+                        listed_change = listed_changes[key]
+                        listed_ack = (*identity, key, listed_change.get("request_id"))
+                        if (
+                            now < lease_deadline(listed_change, now)
+                            and listed_ack not in self.visible_requests
+                        ):
+                            continue
+                        current = self.kube.get(*identity)
+                        if current["metadata"]["uid"] != meta[
+                            "uid"
+                        ] or not ordinary_fixture(current):
+                            continue
+                        changes = ledger(current)
+                        change = changes.get(key, {})
+                        if (
+                            change.get("state") != "applied"
+                            or current["metadata"].get("labels", {}).get(key)
+                            != change.get("value")
+                            or change.get("uid", meta["uid"]) != meta["uid"]
+                        ):
+                            continue
+                        # Existing agent-owned demo labels from before leases
+                        # migrate using their original application time.
+                        deadline = lease_deadline(change, now)
+                        ack = (*identity, key, change.get("request_id"))
+                        received = self.visible_requests.get(ack)
+                        if (
+                            change.get("displayed_at") is None
+                            and received is not None
+                            and received <= deadline
+                        ):
+                            change.update(
+                                displayed_at=now, expires_at=now + LABEL_VISIBLE_SECONDS
+                            )
+                            self.kube.patch(
+                                *identity,
+                                metadata_patch(
+                                    current,
+                                    current["metadata"].get("labels", {}),
+                                    changes,
+                                ),
+                            )
+                            self.visible_requests.pop(ack, None)
+                            result["armed"] += 1
+                            continue
+                        self.visible_requests.pop(ack, None)
+                        if now < deadline:
+                            continue
+                        candidate = {
+                            "operation": "undo",
+                            "key": key,
+                            "value": change["value"],
+                            "request_id": change.get("request_id"),
+                            "pod": view(current),
+                        }
+                        updated = self.kube.patch(
+                            *identity,
+                            patch_for(current, candidate, change.get("noul", 0)),
+                        )
+                        self.emit(
+                            "expired",
+                            candidate,
+                            model_called=False,
+                            resource_version=updated["metadata"]["resourceVersion"],
+                            message="Cloud removed the expired demo label",
+                        )
+                        result["expired"] += 1
+                    except Exception:
+                        # Keep the real label visible and retry next Cloud tick.
+                        result["failed"] += 1
+        return result
+
     def state(self):
         pods = []
         inventory = self.kube.pods()
@@ -756,6 +924,7 @@ class Reconciler(investigation.Investigations):
                     and meta.get("annotations", {}).get("jev.expanso.io/fixture")
                     == "visual-v1",
                     labels=meta.get("labels", {}),
+                    label_leases=self.label_leases(pod),
                     status=pod.get("status", {}).get("phase", "Unknown"),
                     node=pod.get("spec", {}).get("nodeName"),
                     logs=list(
@@ -817,6 +986,18 @@ class Reconciler(investigation.Investigations):
             auto=self.auto,
             cloud=dict(self.cloud_status.read(), last_tick_at=self.last_tick_at),
         )
+
+    @staticmethod
+    def label_leases(pod):
+        try:
+            return {
+                k: copy.deepcopy(c)
+                for k, c in ledger(pod).items()
+                if c["state"] == "applied"
+                and pod["metadata"].get("labels", {}).get(k) == c["value"]
+            }
+        except (ValueError, TypeError):
+            return {}
 
     @staticmethod
     def routine_log(line):
@@ -965,6 +1146,7 @@ class Reconciler(investigation.Investigations):
                 trigger = None
             for c in options:
                 c["request_id"] = request_id
+                c["scenario"] = request["scenario"]
                 if isinstance(trigger, dict):
                     # The line that caused this question, called out so its
                     # recency never has to be inferred from epoch timestamps.
@@ -1261,7 +1443,12 @@ def handler(reconciler, token):
                 self.respond({"error": "state unavailable"}, 503)
 
         def do_POST(self):
-            if self.path in {"/api/event", "/api/auto", "/api/investigate"}:
+            if self.path in {
+                "/api/event",
+                "/api/auto",
+                "/api/investigate",
+                "/api/label-visible",
+            }:
                 if (
                     not self.local_host()
                     or self.headers.get("Origin")
@@ -1284,6 +1471,9 @@ def handler(reconciler, token):
                             raise ValueError("invalid body")
                         reconciler.auto = body["on"]
                         self.respond({"auto": reconciler.auto}, 200)
+                        return
+                    if self.path == "/api/label-visible":
+                        self.respond(reconciler.label_visible(body), 202)
                         return
                     result = (
                         reconciler.investigation_request(body)
@@ -1313,8 +1503,11 @@ def handler(reconciler, token):
                     with reconciler.routine_lock:
                         reconciler.collect_routine(mode="general")
                     result = {"result": "logged"}
+                elif self.path == "/expire-labels":
+                    result = reconciler.expire_labels()
                 elif self.path == "/candidates":
-                    result = reconciler.snapshot(body)
+                    with reconciler.lock:
+                        result = reconciler.snapshot(body)
                 elif self.path == "/judge":
                     result = reconciler.judge(body["id"])
                 elif self.path == "/apply":
@@ -1351,6 +1544,16 @@ def handler(reconciler, token):
                         candidate,
                         message="Pipeline request failed; labels unchanged",
                     )
+                if isinstance(body, dict) and (
+                    self.path == "/judge"
+                    or (
+                        self.path == "/apply"
+                        and reconciler.pending.get(body.get("id"), {}).get("score")
+                        is not None
+                    )
+                ):
+                    with reconciler.lock:
+                        reconciler.pending.pop(body.get("id"), None)
                 # Class only: third-party exception text can contain request data.
                 payload = json.dumps(
                     {"result": "held", "error": type(exc).__name__}

@@ -21,15 +21,22 @@ const server=http.createServer((req,res)=>{
   res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream'});res.end(fs.readFileSync(file));});
 (async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,channel:'chrome'});let page,errors=[],posted=[],events=[];try{
  page=await browser.newPage({viewport:{width:1600,height:900}});page.on('pageerror',e=>errors.push(e.message));
+ let expiryEnabled=true,acks=[];
  let state=structuredClone(baseState),seq=0,autoCalls=[],investigationCalls=[],outcome='applied',decisionDelay=0;
  const run=(podName,scenario,op,key,value,noul)=>{const request_id='r'+(posted.length+seq);const common={request_id,pod:podName,namespace:'jev-label-demo'};
    const stages=[['queued',{scenario}],['event',{scenario}],['collected',{key,value,operation:op}],['judging',{key,value,operation:op}],['judged',{key,value,operation:op,noul}],[['held','review'].includes(outcome)?'held':op==='undo'?'undone':'applied',{key,value,operation:op,noul}]];
-   stages.forEach(([stage,extra],i)=>setTimeout(()=>{if(stage==='applied')state.pods.find(p=>p.name===podName).labels[key]=value;if(stage==='undone')delete state.pods.find(p=>p.name===podName).labels[key];
+   stages.forEach(([stage,extra],i)=>setTimeout(()=>{if(stage==='applied'){const p=state.pods.find(p=>p.name===podName);p.labels[key]=value;p.label_leases||={};p.label_leases[key]={request_id,value,scenario,state:'applied'};}if(stage==='undone')delete state.pods.find(p=>p.name===podName).labels[key];
      events.push({...common,...extra,stage,seq:++seq,at:Date.now()/1000,message:stage});},i*60+(i>=4?decisionDelay:0)));return request_id;};
  await page.route('**/api/**',async route=>{const url=new URL(route.request().url());let body;
   if(url.pathname==='/api/session')body={csrf_token:'t'};
   else if(url.pathname==='/api/state')body={...state,events};
   else if(url.pathname==='/api/events')body={events:events.filter(e=>e.seq>Number(url.searchParams.get('after'))),cursor:seq};
+  else if(url.pathname==='/api/label-visible'){
+    const b=route.request().postDataJSON();acks.push(b);const p=state.pods.find(p=>p.name===b.pod),lease=p.label_leases?.[b.key];
+    if(lease?.request_id===b.request_id&&!lease.displayed_at){lease.displayed_at=Date.now()/1000;
+      if(expiryEnabled)setTimeout(()=>{if(p.label_leases?.[b.key]?.request_id!==b.request_id)return;delete p.labels[b.key];delete p.label_leases[b.key];events.push({...b,value:lease.value,stage:'expired',seq:++seq,at:Date.now()/1000});},5500);
+    }body={stage:'queued'};
+  }
   else if(url.pathname==='/api/auto'){const b=route.request().postDataJSON();autoCalls.push(b);state.auto=b.on;body={auto:b.on};}
   else if(url.pathname==='/api/investigate'){
     const b=route.request().postDataJSON();investigationCalls.push(b);
@@ -56,8 +63,8 @@ const server=http.createServer((req,res)=>{
  assert.equal(await page.locator('.legend-item').count(),scenarios.length);
  assert.equal(await page.locator('.processor img').count(),2);
  const checkout=page.locator('[data-pod="jev-label-demo/checkout-api"]');
- assert.equal(await checkout.locator('.label').count(),4);
- assert.equal(await checkout.locator('.label.managed').count(),0,'refresh never highlights existing labels');
+ assert.equal(await checkout.locator('.label').count(),5);
+ assert.equal(await checkout.locator('.label.managed').count(),1,'reload shows actual managed labels');
  assert.ok(await checkout.locator('.label').first().evaluate(n=>parseFloat(getComputedStyle(n).fontSize)<=13),'labels stay small');
  assert.match(await page.locator('#mode').textContent(),/acts at ≥ 80% yes/);
  console.log('PASS pods render base and managed labels as small chips, with a legend entry per event');
@@ -88,15 +95,18 @@ const server=http.createServer((req,res)=>{
  await page.locator('[data-scenario="crashloop"]').click();
  await page.waitForFunction(()=>document.querySelector('[data-pod="jev-label-demo/checkout-api"] .label[data-key="health"]'),{},{timeout:5000});
  assert.equal(await page.locator('#asked-count').textContent(),'2');
+ await page.waitForFunction(()=>!flows.size);
  const color=await checkout.locator('.label[data-key="health"]').evaluate(n=>n.style.getPropertyValue('--lc'));
  assert.equal(color,'#cf2e3d');
  assert.equal(await checkout.locator('.label[data-key="health"] i').textContent(),'health=');
  assert.equal(await checkout.locator('.label[data-key="health"] i').isVisible(),true);
+ await page.waitForFunction(()=>!flows.size);
  await page.waitForTimeout(5100);
  assert.equal(await checkout.locator('.label[data-key="health"]').count(),1,'highlight lasts at least five full seconds');
+ assert.equal(state.pods.find(p=>p.name==='checkout-api').labels.health,'degraded','real label lasts at least five seconds after arrival');
  await page.waitForFunction(()=>!document.querySelector('[data-pod="jev-label-demo/checkout-api"] .label[data-key="health"]'),{},{timeout:7500});
- assert.equal(state.pods.find(p=>p.name==='checkout-api').labels.health,'degraded');
- console.log('PASS label highlight expires after six seconds without changing Kubernetes state');
+ assert.equal(state.pods.find(p=>p.name==='checkout-api').labels.health,undefined);
+ console.log('PASS real label remains five seconds after arrival and disappears only on confirmed expiry');
 
  outcome='held';const before=await checkout.locator('.label:not(.leaving)').count();
  await page.locator('[data-scenario="restart"]').click();
@@ -104,6 +114,8 @@ const server=http.createServer((req,res)=>{
  assert.equal(await checkout.locator('.label:not(.leaving)').count(),before);
  assert.equal(await page.locator('#packets .packet').count(),0);
  console.log('PASS a low answer changes nothing and sends nothing to Kubernetes');
+ state.pods.find(p=>p.name==='checkout-api').labels.health='degraded';
+ await page.evaluate(()=>refreshState());
  outcome='review';
  await page.locator('[data-scenario="restart"]').click();
  await page.waitForFunction(()=>document.querySelector('.pod.selected .pod-event').textContent==='Already set');
@@ -122,6 +134,29 @@ const server=http.createServer((req,res)=>{
    await page.waitForFunction(()=>!document.querySelector('.pod.busy'));
  }finally{clearInterval(noise);decisionDelay=0;}
  console.log('PASS gray traffic continues throughout a delayed Jev decision');
+ expiryEnabled=false;outcome='applied';
+ const ackStart=acks.length;
+ await page.locator('[data-scenario="restart"]').click();
+ await page.waitForFunction(()=>document.querySelector('#feed li .did')?.textContent==='+ health=degraded');
+ assert.equal(acks.length,ackStart+1);
+ const active=state.pods.find(p=>p.name==='checkout-api'),firstLease=active.label_leases.health.request_id;
+ await page.locator('[data-scenario="restart"]').click();
+ await page.waitForTimeout(4500);
+ await page.waitForFunction(()=>!flows.size);
+ assert.equal(acks.length,ackStart+2);
+ assert.notEqual(active.label_leases.health.request_id,firstLease);
+ const historyCount=await page.locator('#feed li').count();
+ events.push({request_id:firstLease,namespace:active.namespace,pod:active.name,key:'health',value:'degraded',stage:'expired',seq:++seq,at:Date.now()/1000});
+ await page.waitForTimeout(300);
+ assert.equal(await checkout.locator('.label[data-key="health"]').textContent(),'health=degraded','stale expiry never removes a renewed label');
+ assert.equal(await page.locator('#feed li').count(),historyCount,'expiry is not a triggered event');
+ await page.waitForTimeout(5500);
+ assert.equal(await checkout.locator('.label[data-key="health"]').count(),1,'backend expiry failure cannot hide a real label');
+ await page.reload();await checkout.waitFor();
+ assert.equal(await checkout.locator('.label[data-key="health"]').textContent(),'health=degraded','refresh preserves actual managed labels');
+ await checkout.click();
+ console.log('PASS renewal ignores stale expiry; backend failure and reload preserve the real label');
+
 
 
  await page.locator('#auto-toggle').click();await page.waitForFunction(()=>document.getElementById('auto-toggle').textContent==='Resume events');
@@ -163,7 +198,7 @@ assert.equal(await page.locator('#evidence-cards').isVisible(),false);
  console.log('PASS six decisions persist and only the seventh displaces the oldest');
  await page.setViewportSize({width:1280,height:720});await page.waitForTimeout(80);
  assert.equal(await page.locator('#feed li:visible').count(),5,'short recording layout keeps five decisions');
- assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight),'fits one 1280x720 screen');
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight),'fits one 1280x720 screen: '+JSON.stringify(await page.evaluate(()=>({height:document.documentElement.scrollHeight,pod:document.querySelector('.pod').getBoundingClientRect().height,feed:document.querySelector('.feed').getBoundingClientRect().height}))));
  const positions=await page.evaluate(()=>['cloud-node','jev-node','logs-node','kube-node'].map(id=>{const r=document.getElementById(id).getBoundingClientRect();return{top:r.top,bottom:r.bottom,height:r.height};}));
  assert.equal(positions[0].height,positions[1].height);assert.equal(positions[0].height,positions[2].height);
  assert.ok(positions.slice(0,3).every(p=>p.bottom<positions[3].bottom));
