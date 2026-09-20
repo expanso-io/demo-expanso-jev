@@ -1,12 +1,15 @@
 'use strict';
 const $ = id => document.getElementById(id);
 const NS = 'http://www.w3.org/2000/svg';
-const colors = {source:'#6d3aed',cloud:'#6d3aed',jev:'#e347b6',return:'#187a3c',held:'#a06a22'};
+const eventColors={checkout:'#255ce5',failure:'#c92d4b',analytics:'#7839bc',recovery:'#087f6a',security:'#b85106'};
+const highlightMs=5000;
+const highlights=new Map();
+let routineCount=0,routineEpoch=0;
 const scenarios = {checkout:'Checkout',failure:'Route failure',analytics:'Batch job',recovery:'Recovery',security:'Security'};
 const names = {queued:'QUEUED',event:'POD LOG',collected:'CLOUD',judging:'JEV',judged:'VERDICT',applied:'APPLIED',undone:'UNDONE',held:'HELD',error:'ERROR','dry-run':'DRY RUN'};
 const cube = '<svg class="pod-icon" viewBox="0 0 72 76" aria-hidden="true"><path d="M36 5 65 21v34L36 72 7 55V21Z" fill="#f1ebfe" stroke="currentColor" stroke-width="1.5"/><path d="m7 21 29 17 29-17M36 38v34" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m36 5 29 16-29 17L7 21Z" fill="white" stroke="currentColor" stroke-width="1.5"/><path d="m22 20 14-8 14 8-14 8Z" fill="currentColor" opacity=".12"/><path d="m16 36 10 6m-10 3 10 6m20-9 10-6m-10 15 10-6" fill="none" stroke="currentColor" opacity=".45" stroke-width="2"/></svg>';
 let state=null,session=null,scenario='checkout',selected=null,cursor=0,initialized=false,refreshing=null,stateGeneration=0;
-const flows=new Map(),pending=new Map(),shownLabels=new Map();
+const flows=new Map(),pending=new Map();
 let events=[],eventPollTimer=null;
 const text=(id,value)=>{$(id).textContent=value??'';};
 function el(tag,cls,value){const n=document.createElement(tag);if(cls)n.className=cls;if(value!==undefined)n.textContent=value;return n;}
@@ -33,24 +36,27 @@ function geometry(podKey,chosenScenario=scenario){
   const bottom=$('topology').clientHeight-27;
   const toKube=mobile
     ?`M${c.x-c.w/2} ${returnY} H9 V${k.y} H${k.x-k.w/2-3}`
-    :`M${c.x} ${c.y+c.h/2+3} V${bottom} H${k.x} V${k.y+k.h/2+3}`;
-  const toPod=`M${k.x} ${k.y-k.h/2-3} V${p.y+p.h/2+26} H${p.x} V${p.y+p.h/2+2}`;
+    :`M${c.x} ${c.y-c.h/2-3} V${k.y+k.h/2+3}`;
+  const toPod=mobile
+    ?`M${k.x} ${k.y-k.h/2-3} V${p.y+p.h/2+26} H${p.x} V${p.y+p.h/2+2}`
+    :`M${k.x-k.w/2-3} ${k.y} H${cluster.x+cluster.w/2+38} V${bottom} H${p.x} V${p.y+p.h/2+2}`;
   return{inject,toCloud,toJev:`M${cRight+3} ${outboundY} H${jLeft-3}`,fromJev:`M${jLeft-3} ${returnY} H${cRight+3}`,toKube,toPod,
-    labels:[['evidence',(cRight+jLeft)/2,outboundY-11,false],['interpretation',(cRight+jLeft)/2,returnY+18,true],['update request',mobile?64:(k.x+c.x)/2,mobile?cluster.y+cluster.h/2+8:bottom-10,true]]};
+    labels:[['evidence',(cRight+jLeft)/2,outboundY-11,false],['interpretation',(cRight+jLeft)/2,returnY+18,true],['labels',mobile?64:(p.x+cluster.x+cluster.w/2+38)/2,mobile?cluster.y+cluster.h/2+8:bottom-10,true]]};
 }
 function drawWires(){
   const box=$('topology').getBoundingClientRect();$('wires').setAttribute('viewBox',`0 0 ${box.width} ${box.height}`);
   const g=geometry(selected);if(!g)return;
   for(const [id,path] of [['to-cloud',g.toCloud],['to-jev',g.toJev],['from-jev',g.fromJev],['to-kube',g.toKube],['to-pod',g.toPod]])$(id).setAttribute('d',path);
   $('wire-labels').replaceChildren(...g.labels.map(([label,x,y,back])=>{const n=svg('text',{x,y,class:'wire-label'+(back?' return':'')});n.textContent=label;return n;}));
+  $('routine-wires').replaceChildren(...(state?.pods||[]).map(p=>geometry(key(p))).filter(Boolean).map(p=>svg('path',{d:p.toCloud,class:'routine-wire'})));
   $('injection-wires').replaceChildren(...(state?.pods||[]).map(p=>geometry(key(p))).filter(Boolean).map(p=>svg('path',{d:p.inject,class:'injection-wire'})));
 }
-function travel(path,color,route,duration=220){
+function travel(path,color,route,duration=220,kind='signal'){
   if(!path||matchMedia('(prefers-reduced-motion: reduce)').matches)return Promise.resolve();
   const measure=svg('path',{d:path,fill:'none',stroke:'none'});
-  const packet=svg('g',{class:'packet','data-route':route,style:`color:${color}`});
-  packet.append(svg('circle',{r:12,fill:color,class:'packet-halo'}),svg('circle',{r:5,fill:color,class:'packet-core'}));
-  $('packets').append(measure,packet);
+  const packet=svg('g',{class:kind==='routine'?'routine-packet':'packet','data-route':route,style:`color:${color}`});
+  packet.append(svg('circle',{r:kind==='routine'?4:21,fill:color,class:'packet-halo'}),svg('circle',{r:kind==='routine'?2.5:9,fill:color,class:'packet-core'}));
+  $(kind==='routine'?'routine-packets':'packets').append(measure,packet);
   const length=measure.getTotalLength();
   const first=measure.getPointAtLength(0);packet.setAttribute('transform',`translate(${first.x} ${first.y})`);
   return new Promise(resolve=>{const start=performance.now();function frame(now){const progress=Math.min(1,(now-start)/duration),p=measure.getPointAtLength(length*progress);packet.setAttribute('transform',`translate(${p.x} ${p.y})`);if(progress<1)requestAnimationFrame(frame);else{packet.remove();measure.remove();resolve();}}requestAnimationFrame(frame);});
@@ -58,7 +64,8 @@ function travel(path,color,route,duration=220){
 function animate(flow,stage){
   flow.chain=flow.chain.then(async()=>{
     const g=geometry(flow.podKey,flow.scenario);if(!g)return;
-    const steps={inject:[g.inject,colors.source,'event-to-pod',120],event:[g.toCloud,colors.cloud,'pod-to-cloud',160],judging:[g.toJev,colors.jev,'cloud-to-jev',120],judged:[g.fromJev,colors.return,'jev-to-cloud',120],request:[g.toKube,colors.return,'cloud-to-kubernetes',100],terminal:[g.toPod,colors.return,'kubernetes-to-pod',100]};
+    const color=eventColors[flow.scenario]||eventColors.checkout;
+    const steps={inject:[g.inject,color,'event-to-pod',180],event:[g.toCloud,color,'pod-to-cloud',300],judging:[g.toJev,color,'cloud-to-jev',240],judged:[g.fromJev,color,'jev-to-cloud',240],request:[g.toKube,color,'cloud-to-kubernetes',240],terminal:[g.toPod,color,'kubernetes-to-pod',260]};
     const args=steps[stage];if(args)await travel(...args);
   });
   return flow.chain;
@@ -87,12 +94,7 @@ function renderPods(){
     if(!button){button=el('button','pod');button.dataset.pod=id;button.dataset.name=pod.name;button.innerHTML=cube;button.append(el('span','pod-name',pod.name),el('span','pod-phase'),el('span','pod-labels'));button.addEventListener('click',()=>sendEvent(pod));$('pods').append(button);}
     button.dataset.enabled=String(pod.event_enabled!==false);
     button.querySelector('.pod-phase').textContent=pod.status||'Unknown';
-    const prior=shownLabels.get(id)||{};
-    const labels=pending.has(id)&&shownLabels.has(id)?prior:(pod.labels||{});
-    if(button.dataset.labels!==JSON.stringify(labels)){
-      button.querySelector('.pod-labels').replaceChildren(...Object.entries(labels).filter(([k])=>!k.startsWith('jev.expanso.io/')&&!['pod-template-hash','controller-revision-hash'].includes(k)).map(([k,v])=>el('span','label'+(k==='routing-tier'?' routing':'')+(k in labels&&prior[k]!==v&&shownLabels.has(id)?' new':''),`${k}=${v}`)));
-      button.dataset.labels=JSON.stringify(labels);shownLabels.set(id,{...labels});
-    }
+
   }
   text('pod-count',`${pods.length} pods`);text('node-name',[...new Set(pods.map(p=>p.node).filter(Boolean))].join(' · ')||'Kubernetes workloads');updateBusy();requestAnimationFrame(drawWires);
 }
@@ -108,7 +110,7 @@ function acceptEvents(incoming,animateNew=true){
     if(event.seq<=cursor)continue;
     const id=`${event.namespace}/${event.pod}`,localFlow=pending.get(id);
     if(animateNew&&localFlow&&!localFlow.requestId)break;
-    cursor=event.seq;events.push(event);if(!animateNew)continue;
+    cursor=event.seq;if(event.stage==='routine'){if(animateNew)showRoutine(event);continue;}events.push(event);if(!animateNew)continue;
     let flow=flows.get(event.request_id);
     if(!flow&&localFlow&&localFlow.requestId===event.request_id)flow=localFlow;
     if(!flow&&localFlow)continue;
@@ -144,15 +146,32 @@ async function finish(flow,event){
   if(event.stage==='error')showError(explanation);
   updateBusy();await refreshState();renderPods();renderLogs();
 }
+function showRoutine(event){
+  const id=`${event.namespace}/${event.pod}`;
+  const count=Math.max(0,Math.min(12,Number(event.count)||0));
+  routineCount+=Number(event.count)||0;text('routine-count',`${routineCount.toLocaleString()} logs`);
+  const epoch=routineEpoch;
+  for(let i=0;i<count;i++)setTimeout(()=>{
+    if(epoch!==routineEpoch||document.hidden||state?.cloud?.state!=='running')return;
+    const g=geometry(id);if(g)travel(g.toCloud,'#9892a8','routine-to-cloud',1400,'routine');
+  },i*140);
+}
 function showLabelChange(flow,event){
   const button=podButton(flow.podKey);if(!button)return;
-  clearTimeout(button.changeTimer);
+  clearTimeout(highlights.get(flow.podKey)?.timer);
   button.querySelectorAll('.label-change').forEach(n=>n.remove());
-  button.classList.remove('changed-added','changed-removed');
+  const color=eventColors[flow.scenario]||eventColors.checkout;
   const removed=event.stage==='undone';
-  const change=el('span','label-change '+(removed?'removed':'added'),`${removed?'−':'+'} ${event.key}=${event.value}`);
-  button.append(change);button.classList.add(removed?'changed-removed':'changed-added');
-  button.changeTimer=setTimeout(()=>{change.remove();button.classList.remove('changed-removed','changed-added');},1400);
+  const change=el('span','label-change '+(removed?'removed':'added'));
+  change.style.setProperty('--event-color',color);
+  change.append(el('strong','',event.value),el('span','',removed?`${event.key} removed`:event.key));
+  change.dataset.scenario=flow.scenario;change.dataset.value=event.value;
+  button.append(change);button.style.setProperty('--signal-color',color);button.classList.add('signal-highlight');
+  const record={node:change,timer:null};highlights.set(flow.podKey,record);
+  record.timer=setTimeout(()=>{
+    if(highlights.get(flow.podKey)!==record)return;
+    change.remove();button.classList.remove('signal-highlight');highlights.delete(flow.podKey);
+  },highlightMs);
 }
 async function sendEvent(pod){
   const id=key(pod);if(pending.has(id))return;
@@ -170,6 +189,7 @@ async function sendEvent(pod){
 }
 function renderState(){
   const cloud=state.cloud||{};
+  $('current-labels').replaceChildren(...(state.pods||[]).map(p=>{const row=el('p');row.append(el('b','',p.name+' '),el('code','',JSON.stringify(p.labels||{})));return row;}));
   $('available-labels').replaceChildren(...(state.available_labels||[]).map(label=>{const item=el('div','label-choice');item.append(el('code','',`${label.key}=${label.value}`),el('span','',label.meaning));return item;}));
   text('connection',cloud.state==='running'?'Cloud execution running':cloud.state==='stopped'?'Cloud job stopped':'Cloud execution unverified');$('connection-dot').className='dot'+(cloud.state==='running'?' live':'');
   text('mode',state.apply_enabled?'LIVE':'DRY RUN');$('mode').classList.toggle('dry',!state.apply_enabled);
@@ -184,12 +204,13 @@ function refreshState(){
   return refreshing;
 }
 async function pollEvents(){
-  try{if(initialized){const r=await fetch(`/api/events?after=${cursor}`,{cache:'no-store'});if(!r.ok)throw Error('Event feed unavailable');const body=await r.json();if(Number.isFinite(body.cursor)&&body.cursor<cursor){cursor=0;initialized=false;events=[];flows.clear();pending.clear();session=null;shownLabels.clear();stateGeneration++;text('result-title','Adapter reconnected.');text('result-detail','Ready for a new event. Previous in-flight results are unverified.');text('timing','—');await refreshState();}else acceptEvents(body.events||[]);}}
+  try{if(initialized){const r=await fetch(`/api/events?after=${cursor}`,{cache:'no-store'});if(!r.ok)throw Error('Event feed unavailable');const body=await r.json();if(Number.isFinite(body.cursor)&&body.cursor<cursor){cursor=0;initialized=false;events=[];flows.clear();pending.clear();session=null;routineEpoch++;routineCount=0;for(const h of highlights.values()){clearTimeout(h.timer);h.node.remove();}highlights.clear();document.querySelectorAll(".signal-highlight").forEach(n=>n.classList.remove("signal-highlight"));stateGeneration++;text('result-title','Adapter reconnected.');text('result-detail','Ready for a new event. Previous in-flight results are unverified.');text('timing','—');await refreshState();}else acceptEvents(body.events||[]);}}
   catch{if(pending.size)text('activity','Event feed disconnected; waiting to reconnect.');}
   finally{eventPollTimer=setTimeout(pollEvents,200);}
 }
+for(const button of document.querySelectorAll('[data-scenario]'))button.style.setProperty('--event-color',eventColors[button.dataset.scenario]);
 for(const button of document.querySelectorAll('[data-scenario]'))button.addEventListener('click',()=>{scenario=button.dataset.scenario;for(const b of document.querySelectorAll('[data-scenario]')){b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));}updateBusy();drawWires();});
 $('details-toggle').addEventListener('click',()=>{const hidden=!$('runtime-details').hidden;$('runtime-details').hidden=hidden;$('details-toggle').setAttribute('aria-expanded',String(!hidden));$('details-toggle').textContent=hidden?'Details':'Close';});
 window.addEventListener('resize',drawWires);new ResizeObserver(drawWires).observe($('topology'));
-window.addEventListener('pagehide',()=>clearTimeout(eventPollTimer));
+window.addEventListener('pagehide',()=>{clearTimeout(eventPollTimer);routineEpoch++;for(const h of highlights.values())clearTimeout(h.timer);});
 refreshState().then(pollEvents);setInterval(refreshState,2500);

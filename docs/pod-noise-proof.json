@@ -1,0 +1,166 @@
+{
+  "verified_at": "2026-09-20T01:37:35.107Z",
+  "cloud": {
+    "state": "running",
+    "node_id": "7b9b887e-4269-4905-b030-dec06845bcf2",
+    "job_id": "j-97cf9f41-2388-4c77-88b5-939178b9aaac",
+    "execution_id": "e-16cdffb6-9a32-4378-b086-1474c270670f",
+    "last_tick_at": 1789868254.494923
+  },
+  "routine_pods": [
+    "analytics-worker",
+    "checkout-api",
+    "orders-api"
+  ],
+  "routine_receipts": [
+    {
+      "seq": 52,
+      "at": 1789868245.431864,
+      "stage": "routine",
+      "pod": "analytics-worker",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Cloud collected routine pod stdout",
+      "event_id": 52,
+      "request_id": null,
+      "count": 2,
+      "logs": [
+        "{\"event\": \"routine_heartbeat\", \"at\": 1789868244655721345, \"message\": \"Routine worker heartbeat\", \"synthetic_stimulus\": true}",
+        "{\"event\": \"routine_heartbeat\", \"at\": 1789868245157525887, \"message\": \"Routine worker heartbeat\", \"synthetic_stimulus\": true}"
+      ]
+    },
+    {
+      "seq": 53,
+      "at": 1789868245.468958,
+      "stage": "routine",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Cloud collected routine pod stdout",
+      "event_id": 53,
+      "request_id": null,
+      "count": 2,
+      "logs": [
+        "{\"event\": \"routine_heartbeat\", \"at\": 1789868244552206220, \"message\": \"Routine worker heartbeat\", \"synthetic_stimulus\": true}",
+        "{\"event\": \"routine_heartbeat\", \"at\": 1789868245056041137, \"message\": \"Routine worker heartbeat\", \"synthetic_stimulus\": true}"
+      ]
+    },
+    {
+      "seq": 54,
+      "at": 1789868245.506432,
+      "stage": "routine",
+      "pod": "orders-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Cloud collected routine pod stdout",
+      "event_id": 54,
+      "request_id": null,
+      "count": 2,
+      "logs": [
+        "{\"event\": \"routine_heartbeat\", \"at\": 1789868244538624428, \"message\": \"Routine worker heartbeat\", \"synthetic_stimulus\": true}",
+        "{\"event\": \"routine_heartbeat\", \"at\": 1789868245040695054, \"message\": \"Routine worker heartbeat\", \"synthetic_stimulus\": true}"
+      ]
+    }
+  ],
+  "stages": [
+    {
+      "seq": 55,
+      "at": 1789868245.723896,
+      "stage": "queued",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Event queued for Cloud",
+      "event_id": 55,
+      "request_id": "614d33bf67204892216b4de5",
+      "scenario": "checkout"
+    },
+    {
+      "seq": 56,
+      "at": 1789868245.8481998,
+      "stage": "event",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Workload emitted real stdout",
+      "event_id": 56,
+      "request_id": "614d33bf67204892216b4de5",
+      "scenario": "checkout",
+      "workload": {
+        "event": "checkout_completed",
+        "team": "payments",
+        "routing_tier": "stable",
+        "status": 200,
+        "message": "Checkout request completed; eligible for stable checkout routing",
+        "at": 1789868245.838211,
+        "synthetic_stimulus": true
+      }
+    },
+    {
+      "seq": 57,
+      "at": 1789868245.9157388,
+      "stage": "collected",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": null,
+      "message": "Authenticated pipeline request collected Kubernetes logs",
+      "event_id": 57,
+      "request_id": "614d33bf67204892216b4de5"
+    },
+    {
+      "seq": 58,
+      "at": 1789868245.916694,
+      "stage": "judging",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": null,
+      "message": "judging",
+      "event_id": 58,
+      "request_id": "614d33bf67204892216b4de5"
+    },
+    {
+      "seq": 59,
+      "at": 1789868248.191196,
+      "stage": "judged",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.91,
+      "message": "judged",
+      "event_id": 59,
+      "request_id": "614d33bf67204892216b4de5"
+    },
+    {
+      "seq": 60,
+      "at": 1789868248.275601,
+      "stage": "applied",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.91,
+      "message": "applied",
+      "event_id": 60,
+      "request_id": "614d33bf67204892216b4de5",
+      "elapsed_ms": 2552,
+      "model_called": true
+    }
+  ],
+  "visual_highlight_ms": 5000,
+  "kubernetes_label_persists": true
+}

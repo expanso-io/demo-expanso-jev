@@ -13,7 +13,7 @@ requests a change through the Kubernetes API; Kubernetes updates the pod. The cl
 observed evidence; labels only change after Kubernetes accepts the patch.
 The canvas keeps only event controls, workloads, logos, and moving signals.
 Logs, decisions, available labels, and runtime metadata are under **Details**.
-Confirmed additions flash green; removals flash red and fade out.
+Routine synthetic heartbeat logs stream from all three pods through Cloud without calling Jev. Triggered signals keep their event color through every hop and the large confirmed label highlight. Highlights stay fully visible for five seconds; actual Kubernetes labels persist and remain inspectable in Details.
 Pod logs exit from the top; Kubernetes updates enter from the bottom.
 
 Implements [Nathan LeClaire's example](https://x.com/dotpem/status/2101432286214525156):
@@ -30,7 +30,7 @@ There is no 15-second timer. The browser receives stage updates every 200 ms.
 Particles follow event → pod → Expanso → Jev → Expanso → Kubernetes → pod.
 Expanso reads logs and owns the workflow; Jev interprets; Kubernetes applies
 Expanso’s requested changes. Held judgments stop at Expanso. Label changes
-wait for Kubernetes confirmation. Real inference latency is measured on screen.
+wait for Kubernetes confirmation. Real inference latency is available in Details.
 The adapter has no reconciliation timer. Stopping the Cloud job stops
 processing. Everything uses the existing TypeSafe System One API.
 
@@ -68,6 +68,12 @@ Checkout and orders each received and then lost a routing label. Analytics
 was held at 89%; checkout recovery was held at 64%. These are real model
 judgments, not scripted outcomes. See [receipts](../../docs/pod-event-proof.json).
 The latency range is observed, not guaranteed.
+
+The routine-stream update was also verified live: all three pods emitted
+Cloud-collected heartbeat logs without idle Jev calls, followed by a real
+checkout judgment and Kubernetes label addition. The matching blue badge
+remained visible for five seconds. See [receipts](../../docs/pod-noise-proof.json)
+and the [live capture](../../docs/pod-noise-live.png).
 
 ## One-command local start
 

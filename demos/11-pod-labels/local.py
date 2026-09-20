@@ -71,7 +71,7 @@ def fixture_upgrade_targets(pods):
             )
         if (
             meta["name"] in {"checkout-api", "orders-api", "analytics-worker"}
-            and annotations.get("jev.expanso.io/workload-version") == "ordinary-v3"
+            and annotations.get("jev.expanso.io/workload-version") == "noise-v4"
         ):
             continue
         targets.append(meta["name"])

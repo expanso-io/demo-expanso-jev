@@ -110,6 +110,8 @@ class LauncherTests(unittest.TestCase):
         old["metadata"]["annotations"]["jev.expanso.io/workload-version"] = (
             "ordinary-v3"
         )
+        self.assertEqual(module.fixture_upgrade_targets([old]), ["checkout-api"])
+        old["metadata"]["annotations"]["jev.expanso.io/workload-version"] = "noise-v4"
         self.assertEqual(module.fixture_upgrade_targets([old]), [])
         old["metadata"]["annotations"] = {}
         with self.assertRaisesRegex(RuntimeError, "unrecognized"):
@@ -141,9 +143,7 @@ class LauncherTests(unittest.TestCase):
         for name in ["checkout-api", "orders-api", "analytics-worker"]:
             p = copy.deepcopy(old)
             p["metadata"]["name"] = name
-            p["metadata"]["annotations"]["jev.expanso.io/workload-version"] = (
-                "ordinary-v3"
-            )
+            p["metadata"]["annotations"]["jev.expanso.io/workload-version"] = "noise-v4"
             self.assertEqual(module.fixture_upgrade_targets([p]), [])
             del p["metadata"]["annotations"]["jev.expanso.io/fixture"]
             with self.assertRaisesRegex(RuntimeError, "unrecognized"):

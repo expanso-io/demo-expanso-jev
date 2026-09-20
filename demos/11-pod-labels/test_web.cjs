@@ -34,14 +34,21 @@ const server=http.createServer((req,res)=>{const known={'/':'web/index.html','/w
  assert.equal(await page.locator('.pod-phase').filter({hasText:'Running'}).count(),3);
  assert.equal(await page.locator('[data-scenario]').count(),5);assert.equal(await page.locator('[data-pod]:enabled').count(),3);
  await page.evaluate(()=>{window.testRoutes=[];new MutationObserver(records=>{for(const r of records)for(const n of r.addedNodes)if(n.dataset?.route)window.testRoutes.push(n.dataset.route);}).observe(document.getElementById('packets'),{childList:true});});
+ for(const pod of state.pods)events.push({seq:++seq,stage:'routine',pod:pod.name,namespace:pod.namespace,count:8,at:Date.now()/1000});
+ await page.waitForFunction(()=>document.querySelectorAll('.routine-packet').length>=3);assert.equal(posted.length,0);assert.equal(await page.locator('#packets .packet').count(),0);
+ console.log('PASS real-receipt routine visualization bypasses signal route');
  const target=page.locator('[data-pod="jev-label-demo/checkout-api"]');await target.click();
  await page.waitForFunction(()=>document.querySelector('.packet[data-route="event-to-pod"]'),{},{timeout:500});
  assert.equal(await target.locator('.label').filter({hasText:'routing-tier=stable'}).count(),0,'No optimistic label before confirmed return');
  await page.waitForFunction(()=>document.getElementById('result-title').textContent.includes('label added'),{},{timeout:5000});
  assert.deepEqual(await page.evaluate(()=>window.testRoutes),['event-to-pod','pod-to-cloud','cloud-to-jev','jev-to-cloud','cloud-to-kubernetes','kubernetes-to-pod']);
- await page.waitForFunction(()=>document.querySelector('[data-pod="jev-label-demo/checkout-api"]').textContent.includes('routing-tier=stable'));
+ await target.locator('.label-change.added').waitFor();
  assert.equal(await target.locator('.label-change.added').count(),1);
- assert.ok(await target.locator('.label.routing').evaluate(n=>parseFloat(getComputedStyle(n).fontSize)>=13));
+ assert.ok(await target.locator('.label-change strong').evaluate(n=>parseFloat(getComputedStyle(n).fontSize)>=29));
+ assert.equal(await target.locator('.label-change').evaluate(n=>getComputedStyle(n).backgroundColor),'rgb(37, 92, 229)');
+ await page.waitForTimeout(4700);assert.equal(await target.locator('.label-change.added').count(),1);
+ await target.locator('.label-change').waitFor({state:'detached'});
+ assert.equal(state.pods.find(p=>p.name==='checkout-api').labels['routing-tier'],'stable');
  console.log('PASS immediate injection, Expanso → Jev → Expanso → Kubernetes → pod flow, and confirmation-gated labels');
  for(const [pod,scenario] of [['analytics-worker','analytics'],['orders-api','security']]){await page.locator(`[data-scenario="${scenario}"]`).click();await page.locator(`[data-pod="jev-label-demo/${pod}"]`).click();await page.waitForFunction(p=>document.getElementById('result-title').textContent.startsWith(p+': label added'),pod);}
  assert.deepEqual(posted.map(e=>[e.pod,e.scenario]),[['checkout-api','checkout'],['analytics-worker','analytics'],['orders-api','security']]);
@@ -63,7 +70,7 @@ const server=http.createServer((req,res)=>{const known={'/':'web/index.html','/w
  assert.equal(await target.locator('.label.routing').count(),0);
  assert.equal(await target.locator('.label-change.removed').count(),1);
  await page.waitForFunction(()=>!document.querySelector('.label-change.removed'));
- console.log('PASS prominent confirmed additions and red removal feedback');
+ console.log('PASS prominent confirmed additions and event-colored removal feedback');
  for(const terminal of ['held','dry-run']){
   outcome=terminal;stageDelay=65;
   await page.evaluate(()=>{window.testRoutes=[];});
@@ -78,8 +85,10 @@ const server=http.createServer((req,res)=>{const known={'/':'web/index.html','/w
   if(process.env.POD_UI_SCREENSHOT&&width===390){await page.locator('#mode').evaluate(n=>{n.textContent='BROWSER TEST';});await page.locator('#cloud-status').evaluate(n=>{n.textContent='TEST';});await page.locator('.shell').screenshot({path:process.env.POD_UI_SCREENSHOT.replace('.png','-mobile.png')});}
   const geometry=await page.evaluate(()=>{const top=document.getElementById('topology').getBoundingClientRect(),c=document.getElementById('cloud-node').getBoundingClientRect(),j=document.getElementById('jev-node').getBoundingClientRect(),label=[...document.querySelectorAll('.wire-label')].find(x=>x.textContent==='evidence');return {expected:(c.right+j.left)/2-top.x,actual:Number(label.getAttribute('x')),anchor:label.getAttribute('class'),source:document.getElementById('event-source').getBoundingClientRect().bottom,pod:document.querySelector('[data-pod]').getBoundingClientRect().top};});assert.ok(Math.abs(geometry.expected-geometry.actual)<1);assert.ok(geometry.source<geometry.pod);console.log('PASS layout and centered arrow label at '+width);}
  if(process.env.POD_UI_SCREENSHOT){
-  await page.setViewportSize({width:1440,height:1100});
-  await page.waitForTimeout(100);
+  await page.setViewportSize({width:1846,height:980});
+  outcome='applied';await target.click();await target.locator('.label-change.added').waitFor();
+  for(const pod of state.pods)events.push({seq:++seq,stage:'routine',pod:pod.name,namespace:pod.namespace,count:12,at:Date.now()/1000});
+  await page.waitForTimeout(450);
   await page.evaluate(()=>{
    document.getElementById('mode').textContent='BROWSER TEST · SYNTHETIC EVENTS';
    document.getElementById('connection').textContent='Browser test · no Cloud connection';
