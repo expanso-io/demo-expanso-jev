@@ -85,3 +85,7 @@ footer{display:flex;justify-content:space-between;align-items:center;border-top:
 #available-labels{display:flex;flex-wrap:wrap;gap:10px 24px;min-width:0}
 .label-choice{display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--muted)}
 .label-choice code{font:10px var(--mono);color:var(--green)}.label-catalog .label-note{flex-basis:100%;font-size:10px}
+
+.cluster{padding-bottom:115px}
+.kube-node{position:absolute;bottom:25px;left:50%;transform:translateX(-50%);width:200px;max-width:calc(100% - 30px);padding:9px 8px;border:1px solid #9bbda4;border-radius:6px;background:#f5fbf6;text-align:center;color:var(--green)}
+.kube-node b{display:block;font-size:11px}.kube-node span{display:block;font-size:9px;margin-top:3px}

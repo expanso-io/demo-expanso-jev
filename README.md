@@ -37,7 +37,8 @@ differ; the board measures it live.
 ## Pod-label browser demo
 
 Run three clickable workloads (`checkout-api`, `orders-api`, and
-`analytics-worker`) with Cloud-managed Jev judgments. The browser lists
+`analytics-worker`) with Expanso orchestration. Expanso reads logs, sends evidence to Jev,
+and uses the returned interpretation to request Kubernetes updates. The browser lists
 `routing-tier=stable` and `routing-tier=batch` as available labels; every
 pod accepts every event type. App/team identity stays fixed.
 

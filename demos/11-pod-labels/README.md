@@ -1,34 +1,39 @@
 # A pod-label agent with Expanso Cloud and Jev
 
-![Local visual pod-label demo](../../docs/pod-event-flow.png)
+![Browser test preview of the orchestration flow](../../docs/pod-orchestration-preview.png)
+
+*UI preview uses synthetic browser-test responses. Real execution receipts are linked below.*
 
 **A mostly visual browser experience:** choose checkout, route failure, batch,
 recovery or security above the cluster, then click any of the three pods.
 Its real container writes a synthetic
 workload event to stdout. The Cloud-managed pipeline collects those logs,
-asks Jev whether a label fits, and updates Kubernetes when the judgment
-meets the threshold. The cluster view, log panel and decision trail show
+sends evidence to Jev for interpretation, then checks the result. Expanso
+requests a change through the Kubernetes API; Kubernetes updates the pod. The cluster view, log panel and decision trail show
 observed evidence; labels only change after Kubernetes accepts the patch.
 
 Implements [Nathan LeClaire's example](https://x.com/dotpem/status/2101432286214525156):
 discover labels on every pod in a cluster, compare them with each target pod,
 ask Jev whether to add missing labels, and reconsider additions when signals
-change. Jev selects observed key/value pairs or the explicit demo routing
-catalog; it cannot invent labels.
+change. Expanso selects candidates from observed labels or the explicit demo
+routing catalog. Jev interprets the evidence and returns a judgment to Expanso;
+it neither runs the loop nor changes Kubernetes.
 
 Expanso Cloud schedules an event-driven pipeline on a selected Edge node.
 Its authenticated long-poll input waits for injected events, then reads that
 pod’s logs, selects a safe candidate, calls Jev, and requests a guarded patch.
 There is no 15-second timer. The browser receives stage updates every 200 ms.
-Particles follow event → pod → Expanso → Jev → Expanso → pod; label changes
-wait for the confirmed result. Real inference latency is measured on screen.
+Particles follow event → pod → Expanso → Jev → Expanso → Kubernetes → pod.
+Expanso reads logs and owns the workflow; Jev interprets; Kubernetes applies
+Expanso’s requested changes. Held judgments stop at Expanso. Label changes
+wait for Kubernetes confirmation. Real inference latency is measured on screen.
 The adapter has no reconciliation timer. Stopping the Cloud job stops
 processing. Everything uses the existing TypeSafe System One API.
 
 The fixture makes labels matter: the `stable-checkout` Kubernetes Service
 selects pods with `app=checkout` and `routing-tier=stable`. Adding the latter
 label changes actual service membership. A signal about misrouted traffic can
-cause Jev to remove it. The fixture includes an unrelated analytics pod so
+lead Expanso to request its removal after Jev interprets the evidence. The fixture includes an unrelated analytics pod so
 copying every observed label is visibly wrong.
 
 ## Three workloads and their labels
@@ -39,8 +44,8 @@ Each starts with its app/team identity and no routing label.
 
 | Label | Meaning | Behavior |
 |---|---|---|
-| `routing-tier=stable` | Eligible for healthy HTTP traffic | Jev can add or remove |
-| `routing-tier=batch` | Eligible for batch processing | Jev can add or remove |
+| `routing-tier=stable` | Eligible for healthy HTTP traffic | Expanso requests; Kubernetes applies |
+| `routing-tier=batch` | Eligible for batch processing | Expanso requests; Kubernetes applies |
 | `app=checkout`, `app=orders`, `app=analytics` | Workload identity | Fixed |
 | `team=payments`, `team=data` | Owning team | Fixed in this demo |
 
@@ -267,9 +272,11 @@ its resource version, so further changes require another injected event.
 
 Choose one of five event cards above the pods, then click a destination.
 The first particle responds immediately. Later particles reflect observed
-pipeline stages, including Jev’s verdict returning to Expanso before apply.
+pipeline stages: Jev returns its interpretation to Expanso, then Expanso
+requests a Kubernetes update. Jev never calls Kubernetes.
 App/team identity stays fixed in this demo. Routing labels start absent,
-so all three pods can receive a label and later have it removed by Jev.
+so all three pods can receive a label and later have Kubernetes remove it
+on Expanso’s request, using Jev’s interpretation.
 The adapter still never removes a label it does not own. A held decision
 is not a failed animation.
 

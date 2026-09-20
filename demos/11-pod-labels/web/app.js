@@ -18,29 +18,30 @@ function showError(message){text('error',message);$('error').hidden=false;}
 function point(node){const box=node.getBoundingClientRect(),base=$('topology').getBoundingClientRect();return{x:box.x-base.x+box.width/2,y:box.y-base.y+box.height/2,w:box.width,h:box.height};}
 function geometry(podKey,chosenScenario=scenario){
   const pod=podButton(podKey);if(!pod)return null;
-  const p=point(pod),cluster=point($('cluster')),c=point($('cloud-node')),j=point($('jev-node'));
+  const p=point(pod),cluster=point($('cluster')),c=point($('cloud-node')),j=point($('jev-node')),k=point($('kube-node'));
   const source=point(document.querySelector(`[data-scenario="${chosenScenario}"]`));
   const mobile=matchMedia('(max-width:850px)').matches;
   const injectionY=cluster.y-cluster.h/2-20;
   const inject=`M${source.x} ${source.y+source.h/2+2} V${injectionY} H${p.x} V${p.y-p.h/2-4}`;
   const cLeft=c.x-c.w/2,cRight=c.x+c.w/2,jLeft=j.x-j.w/2;
-  const busY=cluster.y+cluster.h/2-19;
+  const busY=p.y+p.h/2+12;
   const outboundY=c.y-20,returnY=c.y+28;
   const outside=cluster.x+cluster.w/2+20;
   const toCloud=mobile
-    ?`M${p.x} ${p.y+p.h/2+2} V${cluster.y+cluster.h/2+29} H${c.x} V${c.y-c.h/2-3}`
+    ?`M${p.x} ${p.y+p.h/2+2} V${busY} H${cluster.x+cluster.w/2+9} V${cluster.y+cluster.h/2+29} H${c.x} V${c.y-c.h/2-3}`
     :`M${p.x} ${p.y+p.h/2+2} V${busY} H${outside} V${outboundY} H${cLeft-3}`;
   const bottom=$('topology').clientHeight-27;
-  const toPod=mobile
-    ?`M${c.x-c.w/2} ${returnY} H9 V${cluster.y+cluster.h/2+12} H${p.x} V${p.y+p.h/2+2}`
-    :`M${c.x} ${c.y+c.h/2+3} V${bottom} H${p.x} V${p.y+p.h/2+2}`;
-  return{inject,toCloud,toJev:`M${cRight+3} ${outboundY} H${jLeft-3}`,fromJev:`M${jLeft-3} ${returnY} H${cRight+3}`,toPod,
-    labels:[['pod logs',mobile?c.x+34:(outside+cLeft)/2,mobile?cluster.y+cluster.h/2+42:outboundY-11,false],['evidence',(cRight+jLeft)/2,outboundY-11,false],['verdict',(cRight+jLeft)/2,returnY+18,true],['label update',mobile?64:(p.x+c.x)/2,mobile?cluster.y+cluster.h/2+8:bottom-10,true]]};
+  const toKube=mobile
+    ?`M${c.x-c.w/2} ${returnY} H9 V${k.y} H${k.x-k.w/2-3}`
+    :`M${c.x} ${c.y+c.h/2+3} V${bottom} H${k.x} V${k.y+k.h/2+3}`;
+  const toPod=`M${k.x} ${k.y-k.h/2-3} V${p.y+p.h/2+26} H${p.x} V${p.y+p.h/2+2}`;
+  return{inject,toCloud,toJev:`M${cRight+3} ${outboundY} H${jLeft-3}`,fromJev:`M${jLeft-3} ${returnY} H${cRight+3}`,toKube,toPod,
+    labels:[['pod logs',mobile?c.x+34:(outside+cLeft)/2,mobile?cluster.y+cluster.h/2+42:outboundY-11,false],['evidence',(cRight+jLeft)/2,outboundY-11,false],['interpretation',(cRight+jLeft)/2,returnY+18,true],['update request',mobile?64:(k.x+c.x)/2,mobile?cluster.y+cluster.h/2+8:bottom-10,true]]};
 }
 function drawWires(){
   const box=$('topology').getBoundingClientRect();$('wires').setAttribute('viewBox',`0 0 ${box.width} ${box.height}`);
   const g=geometry(selected);if(!g)return;
-  for(const [id,path] of [['to-cloud',g.toCloud],['to-jev',g.toJev],['from-jev',g.fromJev],['to-pod',g.toPod]])$(id).setAttribute('d',path);
+  for(const [id,path] of [['to-cloud',g.toCloud],['to-jev',g.toJev],['from-jev',g.fromJev],['to-kube',g.toKube],['to-pod',g.toPod]])$(id).setAttribute('d',path);
   $('wire-labels').replaceChildren(...g.labels.map(([label,x,y,back])=>{const n=svg('text',{x,y,class:'wire-label'+(back?' return':'')});n.textContent=label;return n;}));
   $('injection-wires').replaceChildren(...(state?.pods||[]).map(p=>geometry(key(p))).filter(Boolean).map(p=>svg('path',{d:p.inject,class:'injection-wire'})));
 }
@@ -57,7 +58,7 @@ function travel(path,color,route,duration=220){
 function animate(flow,stage){
   flow.chain=flow.chain.then(async()=>{
     const g=geometry(flow.podKey,flow.scenario);if(!g)return;
-    const steps={inject:[g.inject,colors.source,'event-to-pod',120],event:[g.toCloud,colors.cloud,'pod-to-cloud',160],judging:[g.toJev,colors.jev,'cloud-to-jev',120],judged:[g.fromJev,colors.return,'jev-to-cloud',120],terminal:[g.toPod,flow.outcome==='held'?colors.held:colors.return,'cloud-to-pod',160]};
+    const steps={inject:[g.inject,colors.source,'event-to-pod',120],event:[g.toCloud,colors.cloud,'pod-to-cloud',160],judging:[g.toJev,colors.jev,'cloud-to-jev',120],judged:[g.fromJev,colors.return,'jev-to-cloud',120],request:[g.toKube,colors.return,'cloud-to-kubernetes',100],terminal:[g.toPod,colors.return,'kubernetes-to-pod',100]};
     const args=steps[stage];if(args)await travel(...args);
   });
   return flow.chain;
@@ -119,10 +120,10 @@ function acceptEvents(incoming,animateNew=true){
     if(event.stage==='event'){flow.hint='Logs → Expanso';animate(flow,'event');text('activity',`${event.pod}: workload log emitted`);refreshState();}
     if(event.stage==='collected'){flow.hint='Cloud collected logs';text('cloud-detail','Evidence collected');}
     if(event.stage==='judging'){flow.hint='Jev is judging…';animate(flow,'judging');text('jev-status','JUDGING');text('activity',`${event.pod}: waiting for Jev`);}
-    if(event.stage==='judged'){flow.hint='Verdict → Expanso';animate(flow,'judged');text('jev-status',Number.isFinite(event.noul)?`${Math.round(event.noul*100)}% YES`:'VERDICT');text('cloud-detail','Checking the verdict');}
+    if(event.stage==='judged'){flow.hint='Interpretation → Expanso';animate(flow,'judged');text('jev-status',Number.isFinite(event.noul)?`${Math.round(event.noul*100)}% YES`:'VERDICT');text('cloud-detail','Checking Jev’s interpretation');}
     if(['applied','undone','held','error','dry-run'].includes(event.stage)){
-      flow.outcome=event.stage;flow.hint=event.stage==='error'?'Event failed':'Expanso → pod';
-      if(event.stage!=='error')animate(flow,'terminal');
+      flow.outcome=event.stage;flow.hint=event.stage==='error'?'Event failed':'Expanso checks result';
+      if(['applied','undone'].includes(event.stage)){flow.hint='Expanso → Kubernetes → pod';animate(flow,'request');animate(flow,'terminal');}
       flow.chain=flow.chain.then(()=>finish(flow,event));
     }
   }
@@ -135,10 +136,10 @@ async function finish(flow,event){
   if((applied||undone)&&event.key){const pod=state?.pods.find(p=>key(p)===flow.podKey);if(pod){if(applied)pod.labels[event.key]=event.value;else delete pod.labels[event.key];}stateGeneration++;renderPods();}
   text('result-mark',applied?'+':undone?'−':event.stage==='error'?'!':'◎');
   text('result-title',`${event.pod}: ${applied?'label added':undone?'label removed':event.stage==='error'?'event failed':event.stage==='dry-run'?'dry run completed':'labels unchanged'}.`);
-  const explanation=event.message&&event.message!==event.stage?event.message:(event.stage==='held'?(Number.isFinite(event.noul)?`Jev returned ${Math.round(event.noul*100)}% yes; the threshold is 90%.`:'No safe label change for this evidence.'):'Kubernetes confirmed the change.');
+  const explanation=event.message&&event.message!==event.stage?event.message:(event.stage==='held'?(Number.isFinite(event.noul)?`Jev returned ${Math.round(event.noul*100)}% yes; the threshold is 90%.`:'No safe label change for this evidence.'):event.stage==='dry-run'?'Expanso evaluated the request; no Kubernetes change was submitted.':event.stage==='error'?'The request failed; no pod change is confirmed.':'Kubernetes confirmed Expanso’s requested change.');
   text('result-detail',(event.key?`${event.key}=${event.value} · `:'')+explanation);
   const elapsed=Number.isFinite(event.elapsed_ms)?event.elapsed_ms:performance.now()-flow.started;
-  text('timing',`${(elapsed/1000).toFixed(2)}s end to end`);text('activity',`${event.pod}: ${names[event.stage].toLowerCase()}`);text('cloud-detail','Collect → ask → apply');
+  text('timing',`${(elapsed/1000).toFixed(2)}s end to end`);text('activity',`${event.pod}: ${names[event.stage].toLowerCase()}`);text('cloud-detail','Read logs → ask → request');
   if(event.stage==='error')showError(explanation);
   updateBusy();await refreshState();renderPods();renderLogs();
 }
