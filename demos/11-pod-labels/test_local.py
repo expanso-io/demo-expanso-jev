@@ -105,12 +105,49 @@ class LauncherTests(unittest.TestCase):
         }
         self.assertEqual(module.fixture_upgrade_targets([old]), ["checkout-new"])
         old["metadata"]["annotations"]["jev.expanso.io/workload-version"] = "events-v2"
+        self.assertEqual(module.fixture_upgrade_targets([old]), ["checkout-new"])
+        old["metadata"]["name"] = "checkout-api"
+        old["metadata"]["annotations"]["jev.expanso.io/workload-version"] = (
+            "ordinary-v3"
+        )
         self.assertEqual(module.fixture_upgrade_targets([old]), [])
         old["metadata"]["annotations"] = {}
         with self.assertRaisesRegex(RuntimeError, "unrecognized"):
             module.fixture_upgrade_targets([old])
         old["metadata"]["namespace"] = "production"
         self.assertEqual(module.fixture_upgrade_targets([old]), [])
+
+    def test_migration_removes_all_owned_old_names_but_preserves_current(self):
+        module = self.load()
+        import copy
+
+        old = {
+            "metadata": {
+                "namespace": module.CLUSTER,
+                "annotations": {
+                    "jev.expanso.io/fixture": "visual-v1",
+                    "jev.expanso.io/workload-version": "events-v2",
+                },
+            },
+            "spec": {"containers": []},
+        }
+        pods = []
+        names = ["checkout-new", "checkout-reference", "analytics-reference"]
+        for name in names:
+            p = copy.deepcopy(old)
+            p["metadata"]["name"] = name
+            pods.append(p)
+        self.assertEqual(module.fixture_upgrade_targets(pods), names)
+        for name in ["checkout-api", "orders-api", "analytics-worker"]:
+            p = copy.deepcopy(old)
+            p["metadata"]["name"] = name
+            p["metadata"]["annotations"]["jev.expanso.io/workload-version"] = (
+                "ordinary-v3"
+            )
+            self.assertEqual(module.fixture_upgrade_targets([p]), [])
+            del p["metadata"]["annotations"]["jev.expanso.io/fixture"]
+            with self.assertRaisesRegex(RuntimeError, "unrecognized"):
+                module.fixture_upgrade_targets([p])
 
     def test_port_collision_fails_before_starting_services(self):
         module = self.load()

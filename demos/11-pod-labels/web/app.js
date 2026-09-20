@@ -77,14 +77,15 @@ function updateBusy(){
 function renderPods(){
   const pods=state?.pods||[];
   if(!pods.length){$('pods').replaceChildren(el('p','empty','No pods found in the configured namespace.'));text('pod-count','0 pods');selected=null;return;}
-  if(!pods.some(p=>key(p)===selected))selected=key(pods.find(p=>p.name==='checkout-new')||pods[0]);
+  if(!pods.some(p=>key(p)===selected))selected=key(pods.find(p=>p.name==='checkout-api')||pods[0]);
   const keys=pods.map(key);
   for(const old of $('pods').querySelectorAll('[data-pod]'))if(!keys.includes(old.dataset.pod))old.remove();
   $('pods').querySelector('.empty')?.remove();
   for(const pod of pods){
     const id=key(pod);let button=podButton(id);
-    if(!button){button=el('button','pod');button.dataset.pod=id;button.dataset.name=pod.name;button.innerHTML=cube;button.append(el('span','pod-name',pod.name),el('span','pod-labels'),el('span','pod-hint'));button.addEventListener('click',()=>sendEvent(pod));$('pods').append(button);}
+    if(!button){button=el('button','pod');button.dataset.pod=id;button.dataset.name=pod.name;button.innerHTML=cube;button.append(el('span','pod-name',pod.name),el('span','pod-phase'),el('span','pod-labels'),el('span','pod-hint'));button.addEventListener('click',()=>sendEvent(pod));$('pods').append(button);}
     button.dataset.enabled=String(pod.event_enabled!==false);
+    button.querySelector('.pod-phase').textContent=pod.status||'Unknown';
     const prior=shownLabels.get(id)||{};
     const labels=pending.has(id)&&shownLabels.has(id)?prior:(pod.labels||{});
     if(button.dataset.labels!==JSON.stringify(labels)){
@@ -157,6 +158,7 @@ async function sendEvent(pod){
 }
 function renderState(){
   const cloud=state.cloud||{};
+  $('available-labels').replaceChildren(...(state.available_labels||[]).map(label=>{const item=el('div','label-choice');item.append(el('code','',`${label.key}=${label.value}`),el('span','',label.meaning));return item;}));
   text('connection',cloud.state==='running'?'Cloud execution running':cloud.state==='stopped'?'Cloud job stopped':'Cloud execution unverified');$('connection-dot').className='dot'+(cloud.state==='running'?' live':'');
   text('mode',state.apply_enabled?'LIVE · WRITES ENABLED':'DRY RUN · NO LABEL WRITES');$('mode').classList.toggle('dry',!state.apply_enabled);
   text('cluster-name',state.cluster_context||'k3s cluster');text('namespace',state.namespace||'Target namespace');text('cloud-status',(cloud.state||'unknown').toUpperCase());renderPods();renderLogs();

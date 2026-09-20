@@ -73,17 +73,70 @@ class Tests(unittest.TestCase):
         environment.start()
         self.addCleanup(environment.stop)
 
-    def owned_engine(self, name="checkout-new"):
+    def owned_engine(self, name="checkout-api"):
         e = self.engine()
         e.kube.target = pod(name)
         e.kube.target["metadata"]["annotations"]["jev.expanso.io/fixture"] = "visual-v1"
         return e
 
+    def test_ordinary_pods_have_routing_choices_without_reference_pods(self):
+        for name, scenario, expected in (
+            ("checkout-api", "checkout", "stable"),
+            ("orders-api", "recovery", "stable"),
+            ("analytics-worker", "analytics", "batch"),
+        ):
+            e = self.owned_engine(name)
+            e.kube.target["metadata"]["namespace"] = "jev-label-demo"
+            e.namespaces = {"jev-label-demo"}
+            e.kube.target["metadata"]["annotations"][
+                "jev.expanso.io/workload-version"
+            ] = "ordinary-v3"
+            e.kube.target["metadata"]["labels"] = {"app": name, "team": "payments"}
+            with patch.object(e.kube, "pods", side_effect=lambda: [e.kube.target]):
+                state = e.state()
+                self.assertEqual(len(state["available_labels"]), 2)
+                self.assertTrue(state["pods"][0]["event_enabled"])
+                e.stimulus(
+                    {"namespace": "jev-label-demo", "pod": name, "scenario": scenario}
+                )
+                item = e.snapshot(e.next_event(0))[0]
+                c = item["candidate"]
+                self.assertEqual(
+                    (c["operation"], c["key"], c["value"]),
+                    ("add", "routing-tier", expected),
+                )
+                self.assertEqual(c["catalog"]["origin"], "demo configuration")
+                e.pending[item["id"]]["score"] = 0.99
+                self.assertEqual(e.execute(item["id"])["result"], "applied")
+                self.assertEqual(
+                    e.kube.target["metadata"]["labels"]["routing-tier"], expected
+                )
+
+    def test_ordinary_catalog_excludes_unlisted_values_and_identity(self):
+        target = pod("orders-api", namespace="jev-label-demo")
+        target["metadata"]["annotations"] = {
+            "jev.expanso.io/fixture": "visual-v1",
+            "jev.expanso.io/workload-version": "ordinary-v3",
+        }
+        source = pod("other", {"team": "rogue", "routing-tier": "canary"})
+        options = a.candidates([target, source], {"jev-label-demo"})
+        self.assertEqual(
+            {(c["key"], c["value"]) for c in options},
+            {("routing-tier", "stable"), ("routing-tier", "batch")},
+        )
+
+    def test_demo_catalog_does_not_apply_to_unrelated_pods(self):
+        target = pod("unrelated", namespace="jev-label-demo")
+        target["metadata"]["annotations"]["jev.expanso.io/workload-version"] = (
+            "ordinary-v3"
+        )
+        self.assertEqual(a.candidates([target], {"jev-label-demo"}), [])
+
     def test_queue_ack_does_not_call_kubernetes_or_model(self):
         e = self.owned_engine()
         with patch.object(e.kube, "get") as get, patch.object(e.kube, "event") as event:
             receipt = e.stimulus(
-                {"namespace": "demo", "pod": "checkout-new", "scenario": "recovery"}
+                {"namespace": "demo", "pod": "checkout-api", "scenario": "recovery"}
             )
             get.assert_not_called()
             event.assert_not_called()
@@ -110,7 +163,7 @@ class Tests(unittest.TestCase):
 
     def test_cloud_rechecks_fixture_ownership_before_exec(self):
         e = self.owned_engine()
-        e.stimulus({"namespace": "demo", "pod": "checkout-new", "scenario": "security"})
+        e.stimulus({"namespace": "demo", "pod": "checkout-api", "scenario": "security"})
         e.kube.target["metadata"]["annotations"].clear()
         with patch.object(e.kube, "event") as event, self.assertRaises(ValueError):
             e.snapshot(e.next_event(0))
@@ -133,7 +186,7 @@ class Tests(unittest.TestCase):
 
     def test_cursor_feed_and_bounded_queue(self):
         e = self.owned_engine()
-        body = {"namespace": "demo", "pod": "checkout-new", "scenario": "analytics"}
+        body = {"namespace": "demo", "pod": "checkout-api", "scenario": "analytics"}
         for _ in range(32):
             e.stimulus(body)
         with self.assertRaises(a.queue.Full):
@@ -164,7 +217,7 @@ class Tests(unittest.TestCase):
         try:
             self.assertEqual(request("POST", "/next-event", auth=False)[0], 401)
             e.stimulus(
-                {"namespace": "demo", "pod": "checkout-new", "scenario": "checkout"}
+                {"namespace": "demo", "pod": "checkout-api", "scenario": "checkout"}
             )
             status, event = request("POST", "/next-event")
             self.assertEqual(status, 200)
@@ -183,7 +236,7 @@ class Tests(unittest.TestCase):
 
     def test_owned_fixture_existing_labels_get_nonmutating_review(self):
         for score in (0.01, 0.99):
-            e = self.owned_engine("checkout-reference")
+            e = self.owned_engine("orders-api")
             e.kube.target["metadata"]["labels"] = {
                 "team": "payments",
                 "routing-tier": "stable",
@@ -192,7 +245,7 @@ class Tests(unittest.TestCase):
             queued = e.stimulus(
                 {
                     "namespace": "demo",
-                    "pod": "checkout-reference",
+                    "pod": "orders-api",
                     "scenario": "failure",
                 }
             )
@@ -228,7 +281,7 @@ class Tests(unittest.TestCase):
     def test_no_safe_existing_label_still_skips_model(self):
         e = self.owned_engine()
         e.kube.target["metadata"]["labels"] = {"app": "checkout"}
-        e.stimulus({"namespace": "demo", "pod": "checkout-new", "scenario": "failure"})
+        e.stimulus({"namespace": "demo", "pod": "checkout-api", "scenario": "failure"})
         with patch.object(e.kube, "pods", return_value=[e.kube.target]):
             self.assertEqual(e.snapshot(e.next_event(0)), [])
         self.assertFalse(e.events[-1]["model_called"])
@@ -236,13 +289,13 @@ class Tests(unittest.TestCase):
 
     def test_fixture_waits_for_logs_and_exposes_click_eligibility(self):
         e = self.engine()
-        e.kube.target = pod("checkout-new")
+        e.kube.target = pod("checkout-api")
         e.kube.target["metadata"]["annotations"]["jev.expanso.io/fixture"] = "visual-v1"
         with patch.object(e.kube, "logs", return_value=[]):
             self.assertEqual(e.snapshot(), [])
         self.assertTrue(e.state()["pods"][0]["event_enabled"])
         self.assertTrue(e.snapshot())
-        e.kube.target["metadata"]["name"] = "checkout-reference"
+        e.kube.target["metadata"]["name"] = "orders-api"
         self.assertTrue(e.state()["pods"][0]["event_enabled"])
 
     def test_successful_mutation_releases_selected_focus(self):
@@ -334,12 +387,12 @@ class Tests(unittest.TestCase):
 
     def test_stimulus_only_emits_workload_event_and_invalidates(self):
         e = self.engine()
-        e.kube.target = pod("checkout-new")
+        e.kube.target = pod("checkout-api")
         e.kube.target["metadata"]["annotations"]["jev.expanso.io/fixture"] = "visual-v1"
         token = self.decision(e)
         with patch.object(a.urllib.request, "urlopen") as model:
             result = e.stimulus(
-                {"namespace": "demo", "pod": "checkout-new", "scenario": "checkout"}
+                {"namespace": "demo", "pod": "checkout-api", "scenario": "checkout"}
             )
         self.assertEqual(result["stage"], "queued")
         self.assertEqual(e.kube.patches, [])
@@ -354,7 +407,7 @@ class Tests(unittest.TestCase):
             [],
             {},
             {"namespace": "demo", "pod": "--help", "scenario": "failure"},
-            {"namespace": "demo", "pod": "checkout-new", "scenario": "shell"},
+            {"namespace": "demo", "pod": "checkout-api", "scenario": "shell"},
         ]:
             with self.subTest(body=body), self.assertRaises((ValueError, TypeError)):
                 e.stimulus(body)
@@ -362,7 +415,7 @@ class Tests(unittest.TestCase):
 
     def test_ui_http_boundaries(self):
         e = self.engine()
-        e.kube.target = pod("checkout-new")
+        e.kube.target = pod("checkout-api")
         e.kube.target["metadata"]["annotations"]["jev.expanso.io/fixture"] = "visual-v1"
         server = a.HTTPServer(("127.0.0.1", 0), a.handler(e, "cloud-secret"))
         worker = threading.Thread(target=server.serve_forever)
@@ -383,7 +436,7 @@ class Tests(unittest.TestCase):
             csrf = json.loads(payload)["csrf_token"]
             origin = "http://127.0.0.1:" + str(server.server_port)
             body = json.dumps(
-                {"namespace": "demo", "pod": "checkout-new", "scenario": "checkout"}
+                {"namespace": "demo", "pod": "checkout-api", "scenario": "checkout"}
             )
             for headers in [
                 {},

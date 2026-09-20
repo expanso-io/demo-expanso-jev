@@ -71,6 +71,11 @@
       <span class="timing" id="timing">Ready to inject</span>
     </div>
   </section>
+  <section class="label-catalog" aria-label="Available labels">
+    <div><h2>Labels Jev can assign</h2><p>Based on the latest logs. Failure or security events can remove a routing label.</p></div>
+    <div id="available-labels"></div>
+    <p class="label-note">App and team identify the workload and stay fixed in this demo. One routing decision per event; switching routes takes removal, then another event to add.</p>
+  </section>
   <section class="evidence">
     <div class="log-panel"><div class="panel-heading"><h2>Inside the pod <span id="selected-name">/ select a workload</span></h2><span class="micro">STDOUT</span></div><div class="log-lines" id="logs"><p class="placeholder">Your event will appear in the pod’s actual logs.</p></div></div>
     <div class="decision-panel"><div class="panel-heading"><h2>The decision trail</h2><span class="micro" id="event-count">0 EVENTS</span></div><ol id="trail"><li class="placeholder">Each stage appears as it happens.</li></ol></div>

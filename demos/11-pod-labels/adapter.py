@@ -26,7 +26,34 @@ from http.server import HTTPServer as HTTPServer
 LEDGER = "jev.expanso.io/changes"
 SIGNAL = "jev.expanso.io/signal"
 PURPOSE = "jev.expanso.io/purpose"
-FIXTURES = {"checkout-new", "checkout-reference", "analytics-reference"}
+FIXTURES = {"checkout-api", "orders-api", "analytics-worker"}
+ROUTING_LABELS = [
+    {
+        "key": "routing-tier",
+        "value": "stable",
+        "meaning": "Eligible for healthy HTTP traffic",
+        "origin": "demo configuration",
+    },
+    {
+        "key": "routing-tier",
+        "value": "batch",
+        "meaning": "Eligible for batch processing",
+        "origin": "demo configuration",
+    },
+]
+
+
+def ordinary_fixture(pod):
+    meta = pod["metadata"]
+    annotations = meta.get("annotations", {})
+    return (
+        meta["namespace"] == "jev-label-demo"
+        and meta["name"] in FIXTURES
+        and annotations.get("jev.expanso.io/fixture") == "visual-v1"
+        and annotations.get("jev.expanso.io/workload-version") == "ordinary-v3"
+    )
+
+
 SCENARIOS = {"checkout", "failure", "analytics", "recovery", "security"}
 SAFE_KEYS = {"team", "routing-tier"}
 
@@ -101,7 +128,12 @@ def candidates(pods, namespaces, request_id=None):
             )
             continue
         target = view(pod)
-        for (key, value), sources in sorted(inventory.items()):
+        choices = dict(inventory)
+        catalog = {}
+        if ordinary_fixture(pod):
+            catalog = {(c["key"], c["value"]): c for c in ROUTING_LABELS}
+            choices = {pair: inventory.get(pair, []) for pair in catalog}
+        for (key, value), sources in sorted(choices.items()):
             change = changes.get(key)
             retry = (
                 request_id
@@ -118,10 +150,15 @@ def candidates(pods, namespaces, request_id=None):
                     "value": value,
                     "pod": target,
                     "sources": sources,
+                    "catalog": catalog.get((key, value)),
                 }
             )
         for key, change in changes.items():
-            if key in SAFE_KEYS and change["state"] == "applied":
+            if (
+                key in SAFE_KEYS
+                and change["state"] == "applied"
+                and (not ordinary_fixture(pod) or key == "routing-tier")
+            ):
                 result.append(
                     {
                         "operation": "undo",
@@ -130,6 +167,7 @@ def candidates(pods, namespaces, request_id=None):
                         "pod": target,
                         "change": change,
                         "sources": inventory.get((key, change["value"]), []),
+                        "catalog": catalog.get((key, change["value"])),
                     }
                 )
     return result
@@ -149,7 +187,7 @@ def question(candidate):
     elif candidate["operation"] == "add":
         instructions = (
             "Does the exact candidate key/value accurately describe the target "
-            "pod NOW? Source pods establish the label's meaning. Compare the "
+            "pod NOW? The approved catalog, when present, defines label meaning; otherwise source pods establish it. Compare the "
             "target's declared purpose and most recent relevant workload logs. "
             "For routing labels, explicit current eligibility supports applicability; "
             "a newer relevant denial or failure opposes it. Read logs chronologically. "
@@ -494,7 +532,8 @@ class Reconciler:
 
     def state(self):
         pods = []
-        for pod in self.kube.pods():
+        inventory = self.kube.pods()
+        for pod in inventory:
             meta = pod["metadata"]
             if meta["namespace"] not in self.namespaces:
                 continue
@@ -520,6 +559,12 @@ class Reconciler:
             cluster_context=getattr(self.kube, "context", "test"),
             namespace=",".join(sorted(self.namespaces)),
             pods=pods,
+            available_labels=copy.deepcopy(ROUTING_LABELS)
+            if any(
+                ordinary_fixture(p) and p["metadata"]["namespace"] in self.namespaces
+                for p in inventory
+            )
+            else [],
             events=copy.deepcopy(self.events),
             cloud=dict(self.cloud_status.read(), last_tick_at=self.last_tick_at),
         )

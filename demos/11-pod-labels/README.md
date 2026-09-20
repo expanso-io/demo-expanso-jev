@@ -13,7 +13,8 @@ observed evidence; labels only change after Kubernetes accepts the patch.
 Implements [Nathan LeClaire's example](https://x.com/dotpem/status/2101432286214525156):
 discover labels on every pod in a cluster, compare them with each target pod,
 ask Jev whether to add missing labels, and reconsider additions when signals
-change. Jev selects observed key/value pairs; it cannot invent labels.
+change. Jev selects observed key/value pairs or the explicit demo routing
+catalog; it cannot invent labels.
 
 Expanso Cloud schedules an event-driven pipeline on a selected Edge node.
 Its authenticated long-poll input waits for injected events, then reads that
@@ -30,13 +31,34 @@ label changes actual service membership. A signal about misrouted traffic can
 cause Jev to remove it. The fixture includes an unrelated analytics pod so
 copying every observed label is visibly wrong.
 
-Verified on September 19, 2026: all five event types completed real Cloud
-and Jev processing in 394–727 ms. Checkout added a label in 536 ms at 91%
-confidence; routing failure removed it in 473 ms at 90%. Both reference
-pods received real Jev reviews without changing protected labels. Recovery
-was held below threshold. See the [event receipts](../../docs/pod-event-proof.json).
-These are observed timings, not latency guarantees. Model judgments vary;
-the unchanged acceptance threshold is 90%.
+## Three workloads and their labels
+
+The local cluster runs `checkout-api`, `orders-api`, and `analytics-worker`.
+Every pod accepts all five events. None is a special reference workload.
+Each starts with its app/team identity and no routing label.
+
+| Label | Meaning | Behavior |
+|---|---|---|
+| `routing-tier=stable` | Eligible for healthy HTTP traffic | Jev can add or remove |
+| `routing-tier=batch` | Eligible for batch processing | Jev can add or remove |
+| `app=checkout`, `app=orders`, `app=analytics` | Workload identity | Fixed |
+| `team=payments`, `team=data` | Owning team | Fixed in this demo |
+
+The two routing choices are defined in `adapter.py`, exposed by `/api/state`,
+and listed on screen. This approved catalog applies only to the three owned
+local demo pods; other workloads continue using observed cluster labels.
+Catalog meanings are passed to Jev explicitly, never disguised as other pods.
+
+One event produces one guarded decision. Switching between routing values
+requires removing the old value, then injecting another event to add the new
+one. Failure or security evidence may remove an owned routing label; a held
+verdict leaves it unchanged. The acceptance threshold remains 90%.
+
+Live verification: all three pods completed Cloud/Jev processing in 396–804 ms.
+Checkout and orders each received and then lost a routing label. Analytics
+was held at 89%; checkout recovery was held at 64%. These are real model
+judgments, not scripted outcomes. See [receipts](../../docs/pod-event-proof.json).
+The latency range is observed, not guaranteed.
 
 ## One-command local start
 
@@ -71,8 +93,8 @@ kubeconfig, generated adapter token and logs live under the ignored
 `.expanso/pod-labels/` directory. Label writes default to enabled for this
 disposable fixture; set `POD_LABEL_APPLY=false` in root `.env` for dry-run.
 Normal restarts preserve fixture state, including labels and undo history.
-The first start after this upgrade recreates only recognized old demo pods
-to install the five-event workload; their previous demo state is reset.
+The first start after this upgrade removes recognized old demo pods and
+creates the three ordinary workloads; their previous demo state is reset.
 The manual setup below is for native k3s or another cluster.
 
 **Command selection:** this directory has its own `justfile`.
@@ -198,8 +220,8 @@ just pod-labels-adapter
 ```
 
 Open **http://127.0.0.1:8901** in your browser. The adapter serves this UI
-only on localhost. The reference pods establish label meaning; the
-three pods are all clickable workloads. Cloud execution remains
+only on localhost. The page lists available routing labels, and all three
+pods are clickable workloads. Cloud execution remains
 unverified until the UI reads a running execution on the intended node.
 
 In another, bootstrap and run a dedicated Cloud-connected agent. Its identity
@@ -246,13 +268,14 @@ its resource version, so further changes require another injected event.
 Choose one of five event cards above the pods, then click a destination.
 The first particle responds immediately. Later particles reflect observed
 pipeline stages, including Jev’s verdict returning to Expanso before apply.
-Existing seed labels remain protected: Jev reviews reference-pod evidence
-and returns its verdict, but the adapter never changes a label it does not
-own. A held decision is not a failed animation.
+App/team identity stays fixed in this demo. Routing labels start absent,
+so all three pods can receive a label and later have it removed by Jev.
+The adapter still never removes a label it does not own. A held decision
+is not a failed animation.
 
 ## Supply a rollback signal
 
-In the browser, select **Checkout** and click `checkout-new`.
+In the browser, select **Checkout** and click `checkout-api`.
 Watch the log arrive, the Cloud collection and Jev judgment appear in the
 decision trail, and `routing-tier=stable` appear on the pod. Then select
 **Route failure** and click it again. A newer failure log gives Jev the
@@ -268,7 +291,7 @@ The signal annotation below supplies extra context. After annotating, inject
 a browser event to make the Cloud pipeline reassess it; annotations alone
 do not trigger a background reconciliation loop.
 
-After `checkout-new` gains `routing-tier=stable`, inject a clearly identified
+After `checkout-api` gains `routing-tier=stable`, inject a clearly identified
 synthetic operational signal:
 
 ```bash
@@ -276,7 +299,7 @@ signal='Synthetic test: routing-tier=stable sent checkout traffic'
 signal="$signal to this pod before rollout approval. Remove that"
 signal="$signal routing label; team=payments remains correct."
 kubectl --context "$KUBE_CONTEXT" -n jev-label-demo \
-annotate pod checkout-new "jev.expanso.io/signal=$signal" \
+annotate pod checkout-api "jev.expanso.io/signal=$signal" \
 --overwrite
 ```
 
@@ -290,7 +313,8 @@ those systems can supply observations through the same signal annotation.
 
 ## What protects the round trip
 
-- Only observed labels are candidates. Existing keys are never overwritten.
+- Only observed labels or the two configured demo routing labels are candidates.
+  Existing keys are never overwritten.
 - Pod UID and resource version are checked both before mutation and inside
   the atomic Kubernetes JSON patch. Recreated or changed pods are held.
 - Label addition and its ownership journal are one atomic patch. Restarting
@@ -306,7 +330,7 @@ those systems can supply observations through the same signal annotation.
 To reset the demonstration, stop the Cloud job and recreate the fixture
 namespace. Clearing the journal while leaving its labels in place would lose
 ownership; do not do that. This is a small demo, not a scalable controller:
-safe observed labels are considered for the clicked pod, with one candidate
+safe label candidates are considered for the clicked pod, with one candidate
 per event so inference cannot build an expired batch. Tokens expire after 120
 seconds. Larger clusters need batching and admission-policy integration.
 Malformed ownership journals quarantine only the affected pod and are

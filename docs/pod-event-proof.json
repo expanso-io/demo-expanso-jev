@@ -1,275 +1,746 @@
 {
-  "verified_at": "2026-09-20T00:30:30.706Z",
+  "verified_at": "2026-09-20T00:41:29.285Z",
   "measurements": [
     {
-      "pod": "checkout-new",
-      "scenario": "checkout",
-      "elapsed_ms": 536,
-      "ui_observed_ms": 588,
+      "pod": "orders-api",
+      "scenario": "recovery",
+      "elapsed_ms": 453,
+      "ui_observed_ms": 507,
       "injectionVisible": 1,
       "terminal": {
-        "seq": 6,
-        "at": 1789864224.142765,
+        "seq": 24,
+        "at": 1789864885.477123,
         "stage": "applied",
-        "pod": "checkout-new",
+        "pod": "orders-api",
         "namespace": "jev-label-demo",
         "key": "routing-tier",
         "value": "stable",
         "noul": 0.91,
         "message": "applied",
-        "event_id": 6,
-        "request_id": "6601669b5f07636e25cb4cc3",
-        "elapsed_ms": 536,
+        "event_id": 24,
+        "request_id": "056786d1f1c24c9268de5d7f",
+        "elapsed_ms": 453,
         "model_called": true
       },
       "stages": [
         {
           "stage": "queued",
-          "at": 1789864223.6071,
-          "request_id": "6601669b5f07636e25cb4cc3"
+          "at": 1789864885.02405,
+          "request_id": "056786d1f1c24c9268de5d7f"
         },
         {
           "stage": "event",
-          "at": 1789864223.751859,
-          "request_id": "6601669b5f07636e25cb4cc3"
+          "at": 1789864885.141134,
+          "request_id": "056786d1f1c24c9268de5d7f"
         },
         {
           "stage": "collected",
-          "at": 1789864223.828608,
-          "request_id": "6601669b5f07636e25cb4cc3"
+          "at": 1789864885.2089942,
+          "request_id": "056786d1f1c24c9268de5d7f"
         },
         {
           "stage": "judging",
-          "at": 1789864223.8295581,
-          "request_id": "6601669b5f07636e25cb4cc3"
+          "at": 1789864885.209624,
+          "request_id": "056786d1f1c24c9268de5d7f"
         },
         {
           "stage": "judged",
-          "at": 1789864224.060034,
-          "request_id": "6601669b5f07636e25cb4cc3"
+          "at": 1789864885.401045,
+          "request_id": "056786d1f1c24c9268de5d7f"
         },
         {
           "stage": "applied",
-          "at": 1789864224.142765,
-          "request_id": "6601669b5f07636e25cb4cc3"
+          "at": 1789864885.477123,
+          "request_id": "056786d1f1c24c9268de5d7f"
         }
       ]
     },
     {
-      "pod": "checkout-new",
-      "scenario": "failure",
-      "elapsed_ms": 473,
-      "ui_observed_ms": 710,
+      "pod": "orders-api",
+      "scenario": "security",
+      "elapsed_ms": 455,
+      "ui_observed_ms": 709,
       "injectionVisible": 1,
       "terminal": {
-        "seq": 12,
-        "at": 1789864225.681188,
+        "seq": 30,
+        "at": 1789864886.9503539,
         "stage": "undone",
-        "pod": "checkout-new",
+        "pod": "orders-api",
         "namespace": "jev-label-demo",
         "key": "routing-tier",
         "value": "stable",
         "noul": 0.9,
         "message": "undone",
-        "event_id": 12,
-        "request_id": "7c679f19e07f2b49f0e67eed",
-        "elapsed_ms": 473,
+        "event_id": 30,
+        "request_id": "f9fef14afcfd289ad8ace2f9",
+        "elapsed_ms": 455,
         "model_called": true
       },
       "stages": [
         {
           "stage": "queued",
-          "at": 1789864225.2082298,
-          "request_id": "7c679f19e07f2b49f0e67eed"
+          "at": 1789864886.495203,
+          "request_id": "f9fef14afcfd289ad8ace2f9"
         },
         {
           "stage": "event",
-          "at": 1789864225.3416178,
-          "request_id": "7c679f19e07f2b49f0e67eed"
+          "at": 1789864886.617172,
+          "request_id": "f9fef14afcfd289ad8ace2f9"
         },
         {
           "stage": "collected",
-          "at": 1789864225.4324312,
-          "request_id": "7c679f19e07f2b49f0e67eed"
+          "at": 1789864886.685461,
+          "request_id": "f9fef14afcfd289ad8ace2f9"
         },
         {
           "stage": "judging",
-          "at": 1789864225.433666,
-          "request_id": "7c679f19e07f2b49f0e67eed"
+          "at": 1789864886.686167,
+          "request_id": "f9fef14afcfd289ad8ace2f9"
         },
         {
           "stage": "judged",
-          "at": 1789864225.601801,
-          "request_id": "7c679f19e07f2b49f0e67eed"
+          "at": 1789864886.877283,
+          "request_id": "f9fef14afcfd289ad8ace2f9"
         },
         {
           "stage": "undone",
-          "at": 1789864225.681188,
-          "request_id": "7c679f19e07f2b49f0e67eed"
+          "at": 1789864886.9503539,
+          "request_id": "f9fef14afcfd289ad8ace2f9"
         }
       ]
     },
     {
-      "pod": "analytics-reference",
-      "scenario": "analytics",
-      "elapsed_ms": 394,
-      "ui_observed_ms": 509,
-      "injectionVisible": 1,
-      "terminal": {
-        "seq": 18,
-        "at": 1789864226.9025862,
-        "stage": "held",
-        "pod": "analytics-reference",
-        "namespace": "jev-label-demo",
-        "key": "routing-tier",
-        "value": "batch",
-        "noul": 0.87,
-        "message": "Jev reviewed this existing label; its ownership is protected, so no change was made",
-        "event_id": 18,
-        "request_id": "487b4653dd131dc153a0d308",
-        "elapsed_ms": 394,
-        "model_called": true
-      },
-      "stages": [
-        {
-          "stage": "queued",
-          "at": 1789864226.508804,
-          "request_id": "487b4653dd131dc153a0d308"
-        },
-        {
-          "stage": "event",
-          "at": 1789864226.648355,
-          "request_id": "487b4653dd131dc153a0d308"
-        },
-        {
-          "stage": "collected",
-          "at": 1789864226.7220979,
-          "request_id": "487b4653dd131dc153a0d308"
-        },
-        {
-          "stage": "judging",
-          "at": 1789864226.722812,
-          "request_id": "487b4653dd131dc153a0d308"
-        },
-        {
-          "stage": "judged",
-          "at": 1789864226.902007,
-          "request_id": "487b4653dd131dc153a0d308"
-        },
-        {
-          "stage": "held",
-          "at": 1789864226.9025862,
-          "request_id": "487b4653dd131dc153a0d308"
-        }
-      ]
-    },
-    {
-      "pod": "checkout-reference",
-      "scenario": "security",
-      "elapsed_ms": 484,
-      "ui_observed_ms": 660,
-      "injectionVisible": 1,
-      "terminal": {
-        "seq": 24,
-        "at": 1789864228.293401,
-        "stage": "held",
-        "pod": "checkout-reference",
-        "namespace": "jev-label-demo",
-        "key": "routing-tier",
-        "value": "stable",
-        "noul": 0.11,
-        "message": "Jev reviewed this existing label; its ownership is protected, so no change was made",
-        "event_id": 24,
-        "request_id": "bdeb9230a0f160d14ec2dea2",
-        "elapsed_ms": 484,
-        "model_called": true
-      },
-      "stages": [
-        {
-          "stage": "queued",
-          "at": 1789864227.809495,
-          "request_id": "bdeb9230a0f160d14ec2dea2"
-        },
-        {
-          "stage": "event",
-          "at": 1789864227.942208,
-          "request_id": "bdeb9230a0f160d14ec2dea2"
-        },
-        {
-          "stage": "collected",
-          "at": 1789864228.014049,
-          "request_id": "bdeb9230a0f160d14ec2dea2"
-        },
-        {
-          "stage": "judging",
-          "at": 1789864228.0147681,
-          "request_id": "bdeb9230a0f160d14ec2dea2"
-        },
-        {
-          "stage": "judged",
-          "at": 1789864228.2929192,
-          "request_id": "bdeb9230a0f160d14ec2dea2"
-        },
-        {
-          "stage": "held",
-          "at": 1789864228.293401,
-          "request_id": "bdeb9230a0f160d14ec2dea2"
-        }
-      ]
-    },
-    {
-      "pod": "checkout-new",
+      "pod": "checkout-api",
       "scenario": "recovery",
-      "elapsed_ms": 727,
+      "elapsed_ms": 674,
       "ui_observed_ms": 814,
       "injectionVisible": 1,
       "terminal": {
-        "seq": 30,
-        "at": 1789864229.8687842,
+        "seq": 36,
+        "at": 1789864888.399374,
         "stage": "held",
-        "pod": "checkout-new",
+        "pod": "checkout-api",
         "namespace": "jev-label-demo",
         "key": "routing-tier",
         "value": "stable",
-        "noul": 0.4,
+        "noul": 0.64,
         "message": "held",
-        "event_id": 30,
-        "request_id": "02ef96e6562417f3def2513f",
-        "elapsed_ms": 727,
+        "event_id": 36,
+        "request_id": "ee00b4b0cbaad1ec3b4a4a54",
+        "elapsed_ms": 674,
         "model_called": true
       },
       "stages": [
         {
           "stage": "queued",
-          "at": 1789864229.1419132,
-          "request_id": "02ef96e6562417f3def2513f"
+          "at": 1789864887.725292,
+          "request_id": "ee00b4b0cbaad1ec3b4a4a54"
         },
         {
           "stage": "event",
-          "at": 1789864229.271596,
-          "request_id": "02ef96e6562417f3def2513f"
+          "at": 1789864887.85163,
+          "request_id": "ee00b4b0cbaad1ec3b4a4a54"
         },
         {
           "stage": "collected",
-          "at": 1789864229.688591,
-          "request_id": "02ef96e6562417f3def2513f"
+          "at": 1789864888.2411678,
+          "request_id": "ee00b4b0cbaad1ec3b4a4a54"
         },
         {
           "stage": "judging",
-          "at": 1789864229.689449,
-          "request_id": "02ef96e6562417f3def2513f"
+          "at": 1789864888.242015,
+          "request_id": "ee00b4b0cbaad1ec3b4a4a54"
         },
         {
           "stage": "judged",
-          "at": 1789864229.868099,
-          "request_id": "02ef96e6562417f3def2513f"
+          "at": 1789864888.398985,
+          "request_id": "ee00b4b0cbaad1ec3b4a4a54"
         },
         {
           "stage": "held",
-          "at": 1789864229.8687842,
-          "request_id": "02ef96e6562417f3def2513f"
+          "at": 1789864888.399374,
+          "request_id": "ee00b4b0cbaad1ec3b4a4a54"
         }
       ]
+    }
+  ],
+  "all_events": [
+    {
+      "seq": 1,
+      "at": 1789864840.9728682,
+      "stage": "queued",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Event queued for Cloud",
+      "event_id": 1,
+      "request_id": "0b8a72fd46b29a5ae482d361",
+      "scenario": "checkout"
+    },
+    {
+      "seq": 2,
+      "at": 1789864841.099227,
+      "stage": "event",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Workload emitted real stdout",
+      "event_id": 2,
+      "request_id": "0b8a72fd46b29a5ae482d361",
+      "scenario": "checkout",
+      "workload": {
+        "event": "checkout_completed",
+        "team": "payments",
+        "routing_tier": "stable",
+        "status": 200,
+        "message": "Checkout request completed; eligible for stable checkout routing",
+        "at": 1789864841.0892792,
+        "synthetic_stimulus": true
+      }
+    },
+    {
+      "seq": 3,
+      "at": 1789864841.169625,
+      "stage": "collected",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": null,
+      "message": "Authenticated pipeline request collected Kubernetes logs",
+      "event_id": 3,
+      "request_id": "0b8a72fd46b29a5ae482d361"
+    },
+    {
+      "seq": 4,
+      "at": 1789864841.170447,
+      "stage": "judging",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": null,
+      "message": "judging",
+      "event_id": 4,
+      "request_id": "0b8a72fd46b29a5ae482d361"
+    },
+    {
+      "seq": 5,
+      "at": 1789864841.7059782,
+      "stage": "judged",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.92,
+      "message": "judged",
+      "event_id": 5,
+      "request_id": "0b8a72fd46b29a5ae482d361"
+    },
+    {
+      "seq": 6,
+      "at": 1789864841.7767732,
+      "stage": "applied",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.92,
+      "message": "applied",
+      "event_id": 6,
+      "request_id": "0b8a72fd46b29a5ae482d361",
+      "elapsed_ms": 804,
+      "model_called": true
+    },
+    {
+      "seq": 7,
+      "at": 1789864842.777348,
+      "stage": "queued",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Event queued for Cloud",
+      "event_id": 7,
+      "request_id": "219cd3ab38ddf31bda224dd8",
+      "scenario": "failure"
+    },
+    {
+      "seq": 8,
+      "at": 1789864842.908918,
+      "stage": "event",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Workload emitted real stdout",
+      "event_id": 8,
+      "request_id": "219cd3ab38ddf31bda224dd8",
+      "scenario": "failure",
+      "workload": {
+        "event": "stable_traffic_denied",
+        "routing_tier": "stable",
+        "status": 503,
+        "message": "Stable checkout traffic fails policy validation; remove stable routing membership",
+        "at": 1789864842.8993437,
+        "synthetic_stimulus": true
+      }
+    },
+    {
+      "seq": 9,
+      "at": 1789864842.9812539,
+      "stage": "collected",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": null,
+      "message": "Authenticated pipeline request collected Kubernetes logs",
+      "event_id": 9,
+      "request_id": "219cd3ab38ddf31bda224dd8"
+    },
+    {
+      "seq": 10,
+      "at": 1789864842.982095,
+      "stage": "judging",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": null,
+      "message": "judging",
+      "event_id": 10,
+      "request_id": "219cd3ab38ddf31bda224dd8"
+    },
+    {
+      "seq": 11,
+      "at": 1789864843.172238,
+      "stage": "judged",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.92,
+      "message": "judged",
+      "event_id": 11,
+      "request_id": "219cd3ab38ddf31bda224dd8"
+    },
+    {
+      "seq": 12,
+      "at": 1789864843.248799,
+      "stage": "undone",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.92,
+      "message": "undone",
+      "event_id": 12,
+      "request_id": "219cd3ab38ddf31bda224dd8",
+      "elapsed_ms": 471,
+      "model_called": true
+    },
+    {
+      "seq": 13,
+      "at": 1789864844.0917509,
+      "stage": "queued",
+      "pod": "analytics-worker",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Event queued for Cloud",
+      "event_id": 13,
+      "request_id": "0c1d5e503b58335ef4a20538",
+      "scenario": "analytics"
+    },
+    {
+      "seq": 14,
+      "at": 1789864844.2077792,
+      "stage": "event",
+      "pod": "analytics-worker",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Workload emitted real stdout",
+      "event_id": 14,
+      "request_id": "0c1d5e503b58335ef4a20538",
+      "scenario": "analytics",
+      "workload": {
+        "event": "batch_completed",
+        "team": "data",
+        "routing_tier": "batch",
+        "status": 200,
+        "message": "Batch analytics completed; batch routing eligible now",
+        "at": 1789864844.198865,
+        "synthetic_stimulus": true
+      }
+    },
+    {
+      "seq": 15,
+      "at": 1789864844.278177,
+      "stage": "collected",
+      "pod": "analytics-worker",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "batch",
+      "noul": null,
+      "message": "Authenticated pipeline request collected Kubernetes logs",
+      "event_id": 15,
+      "request_id": "0c1d5e503b58335ef4a20538"
+    },
+    {
+      "seq": 16,
+      "at": 1789864844.278937,
+      "stage": "judging",
+      "pod": "analytics-worker",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "batch",
+      "noul": null,
+      "message": "judging",
+      "event_id": 16,
+      "request_id": "0c1d5e503b58335ef4a20538"
+    },
+    {
+      "seq": 17,
+      "at": 1789864844.48705,
+      "stage": "judged",
+      "pod": "analytics-worker",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "batch",
+      "noul": 0.89,
+      "message": "judged",
+      "event_id": 17,
+      "request_id": "0c1d5e503b58335ef4a20538"
+    },
+    {
+      "seq": 18,
+      "at": 1789864844.487828,
+      "stage": "held",
+      "pod": "analytics-worker",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "batch",
+      "noul": 0.89,
+      "message": "held",
+      "event_id": 18,
+      "request_id": "0c1d5e503b58335ef4a20538",
+      "elapsed_ms": 396,
+      "model_called": true
+    },
+    {
+      "seq": 19,
+      "at": 1789864885.02405,
+      "stage": "queued",
+      "pod": "orders-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Event queued for Cloud",
+      "event_id": 19,
+      "request_id": "056786d1f1c24c9268de5d7f",
+      "scenario": "recovery"
+    },
+    {
+      "seq": 20,
+      "at": 1789864885.141134,
+      "stage": "event",
+      "pod": "orders-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Workload emitted real stdout",
+      "event_id": 20,
+      "request_id": "056786d1f1c24c9268de5d7f",
+      "scenario": "recovery",
+      "workload": {
+        "event": "routing_recovered",
+        "routing_tier": "stable",
+        "status": 200,
+        "message": "Health recovered; eligible for stable HTTP routing now",
+        "at": 1789864885.1309996,
+        "synthetic_stimulus": true
+      }
+    },
+    {
+      "seq": 21,
+      "at": 1789864885.2089942,
+      "stage": "collected",
+      "pod": "orders-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": null,
+      "message": "Authenticated pipeline request collected Kubernetes logs",
+      "event_id": 21,
+      "request_id": "056786d1f1c24c9268de5d7f"
+    },
+    {
+      "seq": 22,
+      "at": 1789864885.209624,
+      "stage": "judging",
+      "pod": "orders-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": null,
+      "message": "judging",
+      "event_id": 22,
+      "request_id": "056786d1f1c24c9268de5d7f"
+    },
+    {
+      "seq": 23,
+      "at": 1789864885.401045,
+      "stage": "judged",
+      "pod": "orders-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.91,
+      "message": "judged",
+      "event_id": 23,
+      "request_id": "056786d1f1c24c9268de5d7f"
+    },
+    {
+      "seq": 24,
+      "at": 1789864885.477123,
+      "stage": "applied",
+      "pod": "orders-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.91,
+      "message": "applied",
+      "event_id": 24,
+      "request_id": "056786d1f1c24c9268de5d7f",
+      "elapsed_ms": 453,
+      "model_called": true
+    },
+    {
+      "seq": 25,
+      "at": 1789864886.495203,
+      "stage": "queued",
+      "pod": "orders-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Event queued for Cloud",
+      "event_id": 25,
+      "request_id": "f9fef14afcfd289ad8ace2f9",
+      "scenario": "security"
+    },
+    {
+      "seq": 26,
+      "at": 1789864886.617172,
+      "stage": "event",
+      "pod": "orders-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Workload emitted real stdout",
+      "event_id": 26,
+      "request_id": "f9fef14afcfd289ad8ace2f9",
+      "scenario": "security",
+      "workload": {
+        "event": "routing_quarantined",
+        "status": 403,
+        "message": "Security policy denied traffic; no routing membership is eligible now",
+        "at": 1789864886.6076221,
+        "synthetic_stimulus": true
+      }
+    },
+    {
+      "seq": 27,
+      "at": 1789864886.685461,
+      "stage": "collected",
+      "pod": "orders-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": null,
+      "message": "Authenticated pipeline request collected Kubernetes logs",
+      "event_id": 27,
+      "request_id": "f9fef14afcfd289ad8ace2f9"
+    },
+    {
+      "seq": 28,
+      "at": 1789864886.686167,
+      "stage": "judging",
+      "pod": "orders-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": null,
+      "message": "judging",
+      "event_id": 28,
+      "request_id": "f9fef14afcfd289ad8ace2f9"
+    },
+    {
+      "seq": 29,
+      "at": 1789864886.877283,
+      "stage": "judged",
+      "pod": "orders-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.9,
+      "message": "judged",
+      "event_id": 29,
+      "request_id": "f9fef14afcfd289ad8ace2f9"
+    },
+    {
+      "seq": 30,
+      "at": 1789864886.9503539,
+      "stage": "undone",
+      "pod": "orders-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.9,
+      "message": "undone",
+      "event_id": 30,
+      "request_id": "f9fef14afcfd289ad8ace2f9",
+      "elapsed_ms": 455,
+      "model_called": true
+    },
+    {
+      "seq": 31,
+      "at": 1789864887.725292,
+      "stage": "queued",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Event queued for Cloud",
+      "event_id": 31,
+      "request_id": "ee00b4b0cbaad1ec3b4a4a54",
+      "scenario": "recovery"
+    },
+    {
+      "seq": 32,
+      "at": 1789864887.85163,
+      "stage": "event",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": null,
+      "value": null,
+      "noul": null,
+      "message": "Workload emitted real stdout",
+      "event_id": 32,
+      "request_id": "ee00b4b0cbaad1ec3b4a4a54",
+      "scenario": "recovery",
+      "workload": {
+        "event": "routing_recovered",
+        "routing_tier": "stable",
+        "status": 200,
+        "message": "Health recovered; eligible for stable HTTP routing now",
+        "at": 1789864887.8414352,
+        "synthetic_stimulus": true
+      }
+    },
+    {
+      "seq": 33,
+      "at": 1789864888.2411678,
+      "stage": "collected",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": null,
+      "message": "Authenticated pipeline request collected Kubernetes logs",
+      "event_id": 33,
+      "request_id": "ee00b4b0cbaad1ec3b4a4a54"
+    },
+    {
+      "seq": 34,
+      "at": 1789864888.242015,
+      "stage": "judging",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": null,
+      "message": "judging",
+      "event_id": 34,
+      "request_id": "ee00b4b0cbaad1ec3b4a4a54"
+    },
+    {
+      "seq": 35,
+      "at": 1789864888.398985,
+      "stage": "judged",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.64,
+      "message": "judged",
+      "event_id": 35,
+      "request_id": "ee00b4b0cbaad1ec3b4a4a54"
+    },
+    {
+      "seq": 36,
+      "at": 1789864888.399374,
+      "stage": "held",
+      "pod": "checkout-api",
+      "namespace": "jev-label-demo",
+      "key": "routing-tier",
+      "value": "stable",
+      "noul": 0.64,
+      "message": "held",
+      "event_id": 36,
+      "request_id": "ee00b4b0cbaad1ec3b4a4a54",
+      "elapsed_ms": 674,
+      "model_called": true
+    }
+  ],
+  "cloud": {
+    "state": "running",
+    "node_id": "7b9b887e-4269-4905-b030-dec06845bcf2",
+    "job_id": "j-97cf9f41-2388-4c77-88b5-939178b9aaac",
+    "execution_id": "e-f3321ce0-38c4-4618-a2d3-e39410f9d29d",
+    "last_tick_at": 1789864888.2410529
+  },
+  "pods": [
+    {
+      "name": "analytics-worker",
+      "status": "Running",
+      "labels": {
+        "app": "analytics",
+        "team": "data"
+      },
+      "event_enabled": true
+    },
+    {
+      "name": "checkout-api",
+      "status": "Running",
+      "labels": {
+        "app": "checkout",
+        "team": "payments"
+      },
+      "event_enabled": true
+    },
+    {
+      "name": "orders-api",
+      "status": "Running",
+      "labels": {
+        "app": "orders",
+        "team": "payments"
+      },
+      "event_enabled": true
     }
   ],
   "browser_errors": []

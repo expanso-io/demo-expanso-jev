@@ -49,11 +49,12 @@ def fixture_upgrade_targets(pods):
             "checkout-new",
             "checkout-reference",
             "analytics-reference",
+            "checkout-api",
+            "orders-api",
+            "analytics-worker",
         }:
             continue
         annotations = meta.get("annotations", {})
-        if annotations.get("jev.expanso.io/workload-version") == "events-v2":
-            continue
         legacy_analytics = (
             meta["name"] == "analytics-reference"
             and annotations.get("jev.expanso.io/purpose")
@@ -68,6 +69,11 @@ def fixture_upgrade_targets(pods):
             raise RuntimeError(
                 "Refusing to replace an unrecognized pod: " + meta["name"]
             )
+        if (
+            meta["name"] in {"checkout-api", "orders-api", "analytics-worker"}
+            and annotations.get("jev.expanso.io/workload-version") == "ordinary-v3"
+        ):
+            continue
         targets.append(meta["name"])
     return targets
 

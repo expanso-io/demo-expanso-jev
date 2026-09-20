@@ -85,16 +85,43 @@ data:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: checkout-reference
+  name: orders-api
+  namespace: jev-label-demo
+  labels:
+    app: orders
+    team: payments
+  annotations:
+    jev.expanso.io/fixture: visual-v1
+    jev.expanso.io/workload-version: ordinary-v3
+    jev.expanso.io/purpose: HTTP workload maintained by payments; current traffic eligibility comes from its latest relevant event.
+spec:
+  containers:
+    - name: checkout
+      image: python:3.13-alpine
+      command: ["python", "-u", "/app/workload.py"]
+      ports:
+        - containerPort: 8080
+      volumeMounts:
+        - name: workload
+          mountPath: /app
+          readOnly: true
+  volumes:
+    - name: workload
+      configMap:
+        name: jev-visual-workload
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: checkout-api
   namespace: jev-label-demo
   labels:
     app: checkout
     team: payments
-    routing-tier: stable
   annotations:
     jev.expanso.io/fixture: visual-v1
-    jev.expanso.io/workload-version: events-v2
-    jev.expanso.io/purpose: Checkout HTTP service, maintained by payments, eligible for stable checkout traffic.
+    jev.expanso.io/workload-version: ordinary-v3
+    jev.expanso.io/purpose: HTTP workload maintained by payments; current traffic eligibility comes from its latest relevant event.
 spec:
   containers:
     - name: checkout
@@ -114,43 +141,15 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: checkout-new
-  namespace: jev-label-demo
-  labels:
-    app: checkout
-  annotations:
-    jev.expanso.io/fixture: visual-v1
-    jev.expanso.io/workload-version: events-v2
-    jev.expanso.io/purpose: Checkout HTTP service, maintained by payments, eligible for stable checkout traffic.
-spec:
-  containers:
-    - name: checkout
-      image: python:3.13-alpine
-      command: ["python", "-u", "/app/workload.py"]
-      ports:
-        - containerPort: 8080
-      volumeMounts:
-        - name: workload
-          mountPath: /app
-          readOnly: true
-  volumes:
-    - name: workload
-      configMap:
-        name: jev-visual-workload
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: analytics-reference
+  name: analytics-worker
   namespace: jev-label-demo
   labels:
     app: analytics
     team: data
-    routing-tier: batch
   annotations:
     jev.expanso.io/fixture: visual-v1
-    jev.expanso.io/workload-version: events-v2
-    jev.expanso.io/purpose: Analytics workload that accepts controlled routing and traffic scenarios.
+    jev.expanso.io/workload-version: ordinary-v3
+    jev.expanso.io/purpose: Analytics workload maintained by data; current traffic eligibility comes from its latest relevant event.
 spec:
   containers:
     - name: checkout
