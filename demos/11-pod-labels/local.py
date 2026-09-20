@@ -1,4 +1,4 @@
-"""Foreground local k3d demo. Cloud owns all reconciliation ticks."""
+"""Foreground local k3d demo. Cloud processes injected pod events."""
 
 import fcntl
 import json
@@ -38,6 +38,38 @@ def environment(home):
         POD_LABEL_APPLY=os.environ.get("POD_LABEL_APPLY", "true"),
     )
     return env
+
+
+def fixture_upgrade_targets(pods):
+    """Recreate only recognized disposable fixtures for the new workload."""
+    targets = []
+    for pod in pods:
+        meta = pod["metadata"]
+        if meta["namespace"] != CLUSTER or meta["name"] not in {
+            "checkout-new",
+            "checkout-reference",
+            "analytics-reference",
+        }:
+            continue
+        annotations = meta.get("annotations", {})
+        if annotations.get("jev.expanso.io/workload-version") == "events-v2":
+            continue
+        legacy_analytics = (
+            meta["name"] == "analytics-reference"
+            and annotations.get("jev.expanso.io/purpose")
+            == "Analytics batch worker. Not a checkout service or stable HTTP traffic target."
+            and [c["image"] for c in pod["spec"]["containers"]]
+            == ["registry.k8s.io/pause:3.10"]
+        )
+        if (
+            annotations.get("jev.expanso.io/fixture") != "visual-v1"
+            and not legacy_analytics
+        ):
+            raise RuntimeError(
+                "Refusing to replace an unrecognized pod: " + meta["name"]
+            )
+        targets.append(meta["name"])
+    return targets
 
 
 def require_free_port(port):
@@ -217,6 +249,34 @@ class Session:
         with os.fdopen(fd, "w") as stream:
             stream.write(self.run("k3d", "kubeconfig", "get", CLUSTER))
         self.run("kubectl", "config", "rename-context", "k3d-" + CLUSTER, CLUSTER)
+        inventory = json.loads(
+            self.run(
+                "kubectl",
+                "--context",
+                CLUSTER,
+                "get",
+                "pods",
+                "--all-namespaces",
+                "-o",
+                "json",
+            )
+        )
+        for name in fixture_upgrade_targets(inventory["items"]):
+            print(
+                f"Upgrading disposable fixture {name} to the event workload…",
+                flush=True,
+            )
+            self.run(
+                "kubectl",
+                "--context",
+                CLUSTER,
+                "-n",
+                CLUSTER,
+                "delete",
+                "pod",
+                name,
+                "--wait=true",
+            )
         self.run(
             "kubectl", "--context", CLUSTER, "apply", "-f", str(HERE / "fixtures.yaml")
         )
@@ -270,7 +330,7 @@ class Session:
             lambda: self.state().get("cloud", {}).get("state") == "running",
         )
         print(
-            f"\nREADY: {URL}\nClick checkout-new. Ctrl-C stops this session.\n"
+            f"\nREADY: {URL}\nChoose an event, then click any pod. Ctrl-C stops this session.\n"
             f"Label writes: {self.env['POD_LABEL_APPLY']}. Logs: {STATE_DIR}",
             flush=True,
         )

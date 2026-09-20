@@ -93,6 +93,7 @@ metadata:
     routing-tier: stable
   annotations:
     jev.expanso.io/fixture: visual-v1
+    jev.expanso.io/workload-version: events-v2
     jev.expanso.io/purpose: Checkout HTTP service, maintained by payments, eligible for stable checkout traffic.
 spec:
   containers:
@@ -119,6 +120,7 @@ metadata:
     app: checkout
   annotations:
     jev.expanso.io/fixture: visual-v1
+    jev.expanso.io/workload-version: events-v2
     jev.expanso.io/purpose: Checkout HTTP service, maintained by payments, eligible for stable checkout traffic.
 spec:
   containers:
@@ -147,6 +149,7 @@ metadata:
     routing-tier: batch
   annotations:
     jev.expanso.io/fixture: visual-v1
+    jev.expanso.io/workload-version: events-v2
     jev.expanso.io/purpose: Analytics workload that accepts controlled routing and traffic scenarios.
 spec:
   containers:

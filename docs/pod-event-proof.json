@@ -1,0 +1,276 @@
+{
+  "verified_at": "2026-09-20T00:30:30.706Z",
+  "measurements": [
+    {
+      "pod": "checkout-new",
+      "scenario": "checkout",
+      "elapsed_ms": 536,
+      "ui_observed_ms": 588,
+      "injectionVisible": 1,
+      "terminal": {
+        "seq": 6,
+        "at": 1789864224.142765,
+        "stage": "applied",
+        "pod": "checkout-new",
+        "namespace": "jev-label-demo",
+        "key": "routing-tier",
+        "value": "stable",
+        "noul": 0.91,
+        "message": "applied",
+        "event_id": 6,
+        "request_id": "6601669b5f07636e25cb4cc3",
+        "elapsed_ms": 536,
+        "model_called": true
+      },
+      "stages": [
+        {
+          "stage": "queued",
+          "at": 1789864223.6071,
+          "request_id": "6601669b5f07636e25cb4cc3"
+        },
+        {
+          "stage": "event",
+          "at": 1789864223.751859,
+          "request_id": "6601669b5f07636e25cb4cc3"
+        },
+        {
+          "stage": "collected",
+          "at": 1789864223.828608,
+          "request_id": "6601669b5f07636e25cb4cc3"
+        },
+        {
+          "stage": "judging",
+          "at": 1789864223.8295581,
+          "request_id": "6601669b5f07636e25cb4cc3"
+        },
+        {
+          "stage": "judged",
+          "at": 1789864224.060034,
+          "request_id": "6601669b5f07636e25cb4cc3"
+        },
+        {
+          "stage": "applied",
+          "at": 1789864224.142765,
+          "request_id": "6601669b5f07636e25cb4cc3"
+        }
+      ]
+    },
+    {
+      "pod": "checkout-new",
+      "scenario": "failure",
+      "elapsed_ms": 473,
+      "ui_observed_ms": 710,
+      "injectionVisible": 1,
+      "terminal": {
+        "seq": 12,
+        "at": 1789864225.681188,
+        "stage": "undone",
+        "pod": "checkout-new",
+        "namespace": "jev-label-demo",
+        "key": "routing-tier",
+        "value": "stable",
+        "noul": 0.9,
+        "message": "undone",
+        "event_id": 12,
+        "request_id": "7c679f19e07f2b49f0e67eed",
+        "elapsed_ms": 473,
+        "model_called": true
+      },
+      "stages": [
+        {
+          "stage": "queued",
+          "at": 1789864225.2082298,
+          "request_id": "7c679f19e07f2b49f0e67eed"
+        },
+        {
+          "stage": "event",
+          "at": 1789864225.3416178,
+          "request_id": "7c679f19e07f2b49f0e67eed"
+        },
+        {
+          "stage": "collected",
+          "at": 1789864225.4324312,
+          "request_id": "7c679f19e07f2b49f0e67eed"
+        },
+        {
+          "stage": "judging",
+          "at": 1789864225.433666,
+          "request_id": "7c679f19e07f2b49f0e67eed"
+        },
+        {
+          "stage": "judged",
+          "at": 1789864225.601801,
+          "request_id": "7c679f19e07f2b49f0e67eed"
+        },
+        {
+          "stage": "undone",
+          "at": 1789864225.681188,
+          "request_id": "7c679f19e07f2b49f0e67eed"
+        }
+      ]
+    },
+    {
+      "pod": "analytics-reference",
+      "scenario": "analytics",
+      "elapsed_ms": 394,
+      "ui_observed_ms": 509,
+      "injectionVisible": 1,
+      "terminal": {
+        "seq": 18,
+        "at": 1789864226.9025862,
+        "stage": "held",
+        "pod": "analytics-reference",
+        "namespace": "jev-label-demo",
+        "key": "routing-tier",
+        "value": "batch",
+        "noul": 0.87,
+        "message": "Jev reviewed this existing label; its ownership is protected, so no change was made",
+        "event_id": 18,
+        "request_id": "487b4653dd131dc153a0d308",
+        "elapsed_ms": 394,
+        "model_called": true
+      },
+      "stages": [
+        {
+          "stage": "queued",
+          "at": 1789864226.508804,
+          "request_id": "487b4653dd131dc153a0d308"
+        },
+        {
+          "stage": "event",
+          "at": 1789864226.648355,
+          "request_id": "487b4653dd131dc153a0d308"
+        },
+        {
+          "stage": "collected",
+          "at": 1789864226.7220979,
+          "request_id": "487b4653dd131dc153a0d308"
+        },
+        {
+          "stage": "judging",
+          "at": 1789864226.722812,
+          "request_id": "487b4653dd131dc153a0d308"
+        },
+        {
+          "stage": "judged",
+          "at": 1789864226.902007,
+          "request_id": "487b4653dd131dc153a0d308"
+        },
+        {
+          "stage": "held",
+          "at": 1789864226.9025862,
+          "request_id": "487b4653dd131dc153a0d308"
+        }
+      ]
+    },
+    {
+      "pod": "checkout-reference",
+      "scenario": "security",
+      "elapsed_ms": 484,
+      "ui_observed_ms": 660,
+      "injectionVisible": 1,
+      "terminal": {
+        "seq": 24,
+        "at": 1789864228.293401,
+        "stage": "held",
+        "pod": "checkout-reference",
+        "namespace": "jev-label-demo",
+        "key": "routing-tier",
+        "value": "stable",
+        "noul": 0.11,
+        "message": "Jev reviewed this existing label; its ownership is protected, so no change was made",
+        "event_id": 24,
+        "request_id": "bdeb9230a0f160d14ec2dea2",
+        "elapsed_ms": 484,
+        "model_called": true
+      },
+      "stages": [
+        {
+          "stage": "queued",
+          "at": 1789864227.809495,
+          "request_id": "bdeb9230a0f160d14ec2dea2"
+        },
+        {
+          "stage": "event",
+          "at": 1789864227.942208,
+          "request_id": "bdeb9230a0f160d14ec2dea2"
+        },
+        {
+          "stage": "collected",
+          "at": 1789864228.014049,
+          "request_id": "bdeb9230a0f160d14ec2dea2"
+        },
+        {
+          "stage": "judging",
+          "at": 1789864228.0147681,
+          "request_id": "bdeb9230a0f160d14ec2dea2"
+        },
+        {
+          "stage": "judged",
+          "at": 1789864228.2929192,
+          "request_id": "bdeb9230a0f160d14ec2dea2"
+        },
+        {
+          "stage": "held",
+          "at": 1789864228.293401,
+          "request_id": "bdeb9230a0f160d14ec2dea2"
+        }
+      ]
+    },
+    {
+      "pod": "checkout-new",
+      "scenario": "recovery",
+      "elapsed_ms": 727,
+      "ui_observed_ms": 814,
+      "injectionVisible": 1,
+      "terminal": {
+        "seq": 30,
+        "at": 1789864229.8687842,
+        "stage": "held",
+        "pod": "checkout-new",
+        "namespace": "jev-label-demo",
+        "key": "routing-tier",
+        "value": "stable",
+        "noul": 0.4,
+        "message": "held",
+        "event_id": 30,
+        "request_id": "02ef96e6562417f3def2513f",
+        "elapsed_ms": 727,
+        "model_called": true
+      },
+      "stages": [
+        {
+          "stage": "queued",
+          "at": 1789864229.1419132,
+          "request_id": "02ef96e6562417f3def2513f"
+        },
+        {
+          "stage": "event",
+          "at": 1789864229.271596,
+          "request_id": "02ef96e6562417f3def2513f"
+        },
+        {
+          "stage": "collected",
+          "at": 1789864229.688591,
+          "request_id": "02ef96e6562417f3def2513f"
+        },
+        {
+          "stage": "judging",
+          "at": 1789864229.689449,
+          "request_id": "02ef96e6562417f3def2513f"
+        },
+        {
+          "stage": "judged",
+          "at": 1789864229.868099,
+          "request_id": "02ef96e6562417f3def2513f"
+        },
+        {
+          "stage": "held",
+          "at": 1789864229.8687842,
+          "request_id": "02ef96e6562417f3def2513f"
+        }
+      ]
+    }
+  ],
+  "browser_errors": []
+}

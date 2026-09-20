@@ -93,6 +93,25 @@ class LauncherTests(unittest.TestCase):
             session.close()
         session.run.assert_called_once_with("k3d", "cluster", "stop", module.CLUSTER)
 
+    def test_fixture_upgrade_preserves_current_and_unrelated_pods(self):
+        module = self.load()
+        old = {
+            "metadata": {
+                "name": "checkout-new",
+                "namespace": module.CLUSTER,
+                "annotations": {"jev.expanso.io/fixture": "visual-v1"},
+            },
+            "spec": {"containers": []},
+        }
+        self.assertEqual(module.fixture_upgrade_targets([old]), ["checkout-new"])
+        old["metadata"]["annotations"]["jev.expanso.io/workload-version"] = "events-v2"
+        self.assertEqual(module.fixture_upgrade_targets([old]), [])
+        old["metadata"]["annotations"] = {}
+        with self.assertRaisesRegex(RuntimeError, "unrecognized"):
+            module.fixture_upgrade_targets([old])
+        old["metadata"]["namespace"] = "production"
+        self.assertEqual(module.fixture_upgrade_targets([old]), [])
+
     def test_port_collision_fails_before_starting_services(self):
         module = self.load()
         import socket

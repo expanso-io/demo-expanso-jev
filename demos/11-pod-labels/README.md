@@ -1,9 +1,10 @@
 # A pod-label agent with Expanso Cloud and Jev
 
-![Local visual pod-label demo](../../docs/pod-labels.png)
+![Local visual pod-label demo](../../docs/pod-event-flow.png)
 
-**A mostly visual browser experience:** choose checkout traffic or a routing
-failure, then click `checkout-new`. Its real container writes a synthetic
+**A mostly visual browser experience:** choose checkout, route failure, batch,
+recovery or security above the cluster, then click any of the three pods.
+Its real container writes a synthetic
 workload event to stdout. The Cloud-managed pipeline collects those logs,
 asks Jev whether a label fits, and updates Kubernetes when the judgment
 meets the threshold. The cluster view, log panel and decision trail show
@@ -14,11 +15,14 @@ discover labels on every pod in a cluster, compare them with each target pod,
 ask Jev whether to add missing labels, and reconsider additions when signals
 change. Jev selects observed key/value pairs; it cannot invent labels.
 
-Expanso Cloud schedules the pipeline on a selected Edge node. Every 15 seconds
-the pipeline requests a fresh Kubernetes inventory, selects a candidate, calls
-Jev through the local adapter, and requests a guarded patch. The adapter has
-no timer or background reconciliation loop. Stopping the Cloud job stops
-reconciliation. Everything uses the existing TypeSafe System One API.
+Expanso Cloud schedules an event-driven pipeline on a selected Edge node.
+Its authenticated long-poll input waits for injected events, then reads that
+pod’s logs, selects a safe candidate, calls Jev, and requests a guarded patch.
+There is no 15-second timer. The browser receives stage updates every 200 ms.
+Particles follow event → pod → Expanso → Jev → Expanso → pod; label changes
+wait for the confirmed result. Real inference latency is measured on screen.
+The adapter has no reconciliation timer. Stopping the Cloud job stops
+processing. Everything uses the existing TypeSafe System One API.
 
 The fixture makes labels matter: the `stable-checkout` Kubernetes Service
 selects pods with `app=checkout` and `routing-tier=stable`. Adding the latter
@@ -26,11 +30,13 @@ label changes actual service membership. A signal about misrouted traffic can
 cause Jev to remove it. The fixture includes an unrelated analytics pod so
 copying every observed label is visibly wrong.
 
-Verified on September 19, 2026: the browser-triggered checkout event led
-to a label addition at 91% confidence, then the routing failure led to
-owned-label removal at 90%. See the [execution receipts](../../docs/pod-labels-proof.json)
-and [undo screenshot](../../docs/pod-labels-undo.png). Model judgments can
-vary; the unchanged acceptance threshold is 90%.
+Verified on September 19, 2026: all five event types completed real Cloud
+and Jev processing in 394–727 ms. Checkout added a label in 536 ms at 91%
+confidence; routing failure removed it in 473 ms at 90%. Both reference
+pods received real Jev reviews without changing protected labels. Recovery
+was held below threshold. See the [event receipts](../../docs/pod-event-proof.json).
+These are observed timings, not latency guarantees. Model judgments vary;
+the unchanged acceptance threshold is 90%.
 
 ## One-command local start
 
@@ -64,8 +70,10 @@ This quickstart uses only the dedicated cluster and namespace. Its private
 kubeconfig, generated adapter token and logs live under the ignored
 `.expanso/pod-labels/` directory. Label writes default to enabled for this
 disposable fixture; set `POD_LABEL_APPLY=false` in root `.env` for dry-run.
-Restarting preserves fixture state, including earlier labels and undo
-history. The manual setup below is for native k3s or another cluster.
+Normal restarts preserve fixture state, including labels and undo history.
+The first start after this upgrade recreates only recognized old demo pods
+to install the five-event workload; their previous demo state is reset.
+The manual setup below is for native k3s or another cluster.
 
 **Command selection:** this directory has its own `justfile`.
 `just up` here starts pods; root `just up` still starts log triage.
@@ -191,7 +199,7 @@ just pod-labels-adapter
 
 Open **http://127.0.0.1:8901** in your browser. The adapter serves this UI
 only on localhost. The reference pods establish label meaning; the
-`checkout-new` pod is the clickable workload. Cloud execution remains
+three pods are all clickable workloads. Cloud execution remains
 unverified until the UI reads a running execution on the intended node.
 
 In another, bootstrap and run a dedicated Cloud-connected agent. Its identity
@@ -231,23 +239,34 @@ Jev's decisions are probabilistic. Expect matching checkout labels to be
 favored and analytics labels rejected, but verify receipts and cluster state.
 The default Noul threshold is 0.9; it is a demo policy, not an accuracy claim.
 Only one candidate from a pod snapshot can be applied: each write advances
-its resource version, so further changes wait for the next fresh tick.
+its resource version, so further changes require another injected event.
+
+## Follow the event round trip
+
+Choose one of five event cards above the pods, then click a destination.
+The first particle responds immediately. Later particles reflect observed
+pipeline stages, including Jev’s verdict returning to Expanso before apply.
+Existing seed labels remain protected: Jev reviews reference-pod evidence
+and returns its verdict, but the adapter never changes a label it does not
+own. A held decision is not a failed animation.
 
 ## Supply a rollback signal
 
-In the browser, select **Checkout traffic** and click `checkout-new`.
+In the browser, select **Checkout** and click `checkout-new`.
 Watch the log arrive, the Cloud collection and Jev judgment appear in the
 decision trail, and `routing-tier=stable` appear on the pod. Then select
-**Routing failure** and click it again. A newer failure log gives Jev the
+**Route failure** and click it again. A newer failure log gives Jev the
 evidence to reconsider the owned label. Source events are synthetic; the
 pod logs, Cloud execution, inference and Kubernetes patches are real.
 
 The default threshold is still 90%. A lower probability produces **HELD**,
 not a pretend label change. The controls generate workload events only;
 they cannot invoke Jev or apply labels directly. Stop the job in Cloud and
-clicks can still generate logs, but no reconciliation runs.
+clicks queue events, but no workload emission or processing runs.
 
-For a terminal-driven alternative, use the signal annotation below.
+The signal annotation below supplies extra context. After annotating, inject
+a browser event to make the Cloud pipeline reassess it; annotations alone
+do not trigger a background reconciliation loop.
 
 After `checkout-new` gains `routing-tier=stable`, inject a clearly identified
 synthetic operational signal:
@@ -287,8 +306,8 @@ those systems can supply observations through the same signal annotation.
 To reset the demonstration, stop the Cloud job and recreate the fixture
 namespace. Clearing the journal while leaving its labels in place would lose
 ownership; do not do that. This is a small demo, not a scalable controller:
-all candidates are enumerated, but a rotating cursor selects just one per
-tick so inference cannot build an expired batch. Tokens expire after 120
+safe observed labels are considered for the clicked pod, with one candidate
+per event so inference cannot build an expired batch. Tokens expire after 120
 seconds. Larger clusters need batching and admission-policy integration.
 Malformed ownership journals quarantine only the affected pod and are
 reported in the adapter terminal.
@@ -327,17 +346,21 @@ The example does not alter the existing log-triage processes or Cloud job.
 
 ### Upgrading an earlier version of this example
 
-The visual fixture uses a Python HTTP workload in place of nginx. Kubernetes
-cannot update those existing Pod container specs in place. Stop this demo's
-Cloud job, delete **only your disposable `jev-label-demo` namespace**, and
-reapply `fixtures.yaml` before restarting. This also clears the owned-label
-journal for a fresh demonstration.
+The local launcher replaces recognized older disposable fixture pods with
+the event workload automatically. This first upgrade resets their labels;
+later starts preserve them. It refuses to replace unrecognized pods.
 
 ## Local verification
 
 ```bash
 just pod-labels-test
+node demos/11-pod-labels/test_web.cjs
 ```
+
+Run these from the repository root. The browser suite requires Node,
+Playwright and Chrome; it uses an isolated browser and mock API responses.
+It checks immediate particles, confirmed label changes, all three targets,
+keyboard controls, reduced motion and four viewport sizes.
 
 Tests cover discovery, namespace scope, inference failures, dry-run, patch
 ownership, UID/resource-version changes, replay, restart-safe undo and
