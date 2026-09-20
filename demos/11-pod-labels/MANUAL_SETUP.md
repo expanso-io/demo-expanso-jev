@@ -199,7 +199,7 @@ now, or **Pause events** to stop them. Each event is one log line written by a
 real pod. The pipeline reads it, picks the single label change that evidence
 could justify, asks Jev that one question, and patches only if the answer
 clears the threshold. Jev never calls Kubernetes, and the adapter never
-removes a label it did not add. **No change** is a normal, correct outcome.
+removes a label it did not add. **Not supported** means the judgment did not clear the threshold.
 
 The adapter's default threshold is 90% (`POD_LABEL_THRESHOLD`). The local
 simulator sets 80%. Source events are synthetic; the pod logs, Cloud
@@ -233,8 +233,9 @@ those systems can supply observations through the same signal annotation.
 
 ## What protects the round trip
 
-- Only observed labels or the two configured demo routing labels are candidates.
-  Existing keys are never overwritten.
+- Only observed labels or configured demo catalog labels are candidates.
+  Explicit demo events can refresh or update matching agent-owned catalog labels.
+  Externally owned or edited keys are protected.
 - Pod UID and resource version are checked both before mutation and inside
   the atomic Kubernetes JSON patch. Recreated or changed pods are held.
 - Label addition and its ownership journal are one atomic patch. Restarting

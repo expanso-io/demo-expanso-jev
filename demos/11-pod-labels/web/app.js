@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 const NS = 'http://www.w3.org/2000/svg';
 const SIG = {crashloop:'#cf2e3d',restart:'#6b7280',oom:'#b8530a',squeeze:'#a21caf',probe:'#2563eb',egress:'#7c3aed',healthy:'#187a3c',attested:'#0a8f8f',batch:'#475569'};
 const LABEL_COLOR = {'routing-tier':'#187a3c',health:'#cf2e3d',pressure:'#b8530a',traffic:'#2563eb',security:'#7c3aed'};
-const STAGE = {queued:'QUEUED',event:'POD LOG',collected:'READ',judging:'ASKED',judged:'ANSWER',applied:'APPLIED',undone:'REMOVED',held:'NO CHANGE',error:'ERROR','dry-run':'DRY RUN'};
+const STAGE = {queued:'QUEUED',event:'POD LOG',collected:'READ',judging:'ASKED',judged:'ANSWER',applied:'APPLIED',undone:'REMOVED',held:'NOT SUPPORTED',error:'ERROR','dry-run':'DRY RUN'};
 const cube = '<svg class="pod-icon" viewBox="0 0 72 76" aria-hidden="true"><path d="M36 5 65 21v34L36 72 7 55V21Z" fill="#f1ebfe" stroke="currentColor" stroke-width="2"/><path d="m7 21 29 17 29-17M36 38v34" fill="none" stroke="currentColor" stroke-width="2"/><path d="m36 5 29 16-29 17L7 21Z" fill="white" stroke="currentColor" stroke-width="2"/></svg>';
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -69,7 +69,7 @@ function travel(path,color,duration,routine){
 function labelChip(k,v,managed){
   const chip=el('span','label'+(managed?' managed':''));chip.dataset.key=k;
   if(managed)chip.style.setProperty('--lc',LABEL_COLOR[k]||'#6d3aed');
-  chip.append(el('i','',k+'='),el('b','',v));chip.title=`${k}=${v}`;return chip;
+  chip.append(el('i','',k+'='),el('b','',v));const meaning=state?.available_labels?.find(l=>l.key===k&&l.value===v)?.meaning;chip.title=`${k}=${v}${meaning?' — '+meaning:''}`;return chip;
 }
 function highlightLabel(podKey,k,v,color,removed=false){
   const id=podKey+'/'+k,entry={key:k,value:v,color,removed,until:Date.now()+LABEL_HOLD_MS};
@@ -139,7 +139,7 @@ function pushFeed(event,h){
   const pct=Number.isFinite(h.noul)?`Jev ${Math.round(h.noul*100)}% yes`:'Jev not asked';
   const asked=h.key?`“${h.key}=${h.value}” ${h.op==='undo'?'no longer true?':'true now?'} `:'';
   feed.unshift({at:event.at,pod:h.pod||event.pod,scenario:h.scenario,said:`${asked}${pct}`,
-    did:event.already_set?'already set':event.stage==='applied'?`+ ${event.key}=${event.value}`:event.stage==='undone'?`− ${event.key}=${event.value}`:event.stage==='error'?'error':event.stage==='dry-run'?'dry run':'no change',
+    did:event.already_set?'already set':event.stage==='applied'?`+ ${event.key}=${event.value}`:event.stage==='undone'?`− ${event.key}=${event.value}`:event.stage==='error'?'error':event.stage==='dry-run'?'dry run':'not supported',
     cls:event.stage==='applied'?'add':event.stage==='undone'?'rm':event.stage==='error'?'err':''});
   feed.length=Math.min(feed.length,12);renderFeed();
 }
@@ -173,10 +173,10 @@ function acceptEvents(incoming,live=true){
     if(event.stage==='judging')then(async()=>{
       f.key=event.key;f.value=event.value;f.op=event.operation;
       text('jev-question',isInvestigation?'Investigate?':event.key?`${event.key}=${event.value} ${event.operation==='undo'?'no longer true?':'true?'}`:'');text('jev-status','…');
-      await travel(g()?.toJev,color,650);$('jev-node').classList.add('processing');});
+      await travel(g()?.toJev,color,500);$('jev-node').classList.add('processing');});
     if(event.stage==='judged')then(async()=>{
       f.noul=event.noul;text('jev-status',Number.isFinite(event.noul)?`${Math.round(event.noul*100)}% YES`:'ANSWERED');
-      $('jev-node').classList.remove('processing');await travel(g()?.fromJev,color,650);});
+      $('jev-node').classList.remove('processing');await travel(g()?.fromJev,color,500);});
     if(['investigation_waiting','investigation_ready','investigation_error'].includes(event.stage))then(async()=>{
       $('cloud-node').classList.remove('processing');
       node?.classList.remove('busy');investigationPending=false;flows.delete(f.id);
@@ -202,7 +202,7 @@ function acceptEvents(incoming,live=true){
       $('cloud-node').classList.toggle('processing',[...flows.values()].some(x=>x!==f));
       if(node){node.classList.remove('busy');
         const outcome=node.querySelector('.pod-event');
-        if(event.stage==='undone'||event.stage==='held'){outcome.classList.add('result');outcome.textContent=event.stage==='undone'?'Removed':alreadySet?'Already set':'No change';}
+        if(event.stage==='undone'||event.stage==='held'){outcome.classList.add('result');outcome.textContent=event.stage==='undone'?'Removed':alreadySet?'Already set':event.operation==='review'?'Protected':'Not supported';}
         setTimeout(()=>{if(node.dataset.receipt!==f.id)return;outcome.textContent='';outcome.classList.remove('result');document.querySelectorAll('.legend-item.live').forEach(n=>n.classList.remove('live'));},5000);
       }
       flows.delete(f.id);refreshState();});

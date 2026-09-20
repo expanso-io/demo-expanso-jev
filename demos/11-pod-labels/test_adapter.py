@@ -333,13 +333,17 @@ class Tests(unittest.TestCase):
                 c = item["candidate"]
                 self.assertEqual(
                     (c["operation"], c["key"], c["value"]),
-                    ("add", "routing-tier", expected),
+                    (
+                        "add",
+                        "workload" if scenario == "batch" else "health",
+                        "batch" if scenario == "batch" else "healthy",
+                    ),
                 )
                 self.assertEqual(c["catalog"]["origin"], "demo configuration")
                 e.pending[item["id"]]["score"] = 0.99
                 self.assertEqual(e.execute(item["id"])["result"], "applied")
                 self.assertEqual(
-                    e.kube.target["metadata"]["labels"]["routing-tier"], expected
+                    e.kube.target["metadata"]["labels"][c["key"]], c["value"]
                 )
 
     def test_ordinary_catalog_excludes_unlisted_values_and_identity(self):
@@ -464,7 +468,127 @@ class Tests(unittest.TestCase):
             worker.join(timeout=5)
             server.server_close()
 
-    def test_squeeze_reviews_existing_health_before_unrelated_routing(self):
+    def test_each_event_proposes_its_own_label_on_every_demo_pod(self):
+        for name in a.FIXTURES:
+            for scenario in a.SCENARIOS:
+                with self.subTest(pod=name, scenario=scenario):
+                    e = self.noise_engine()
+                    e.kube.target["metadata"]["name"] = name
+                    e.stimulus(
+                        {
+                            "namespace": "jev-label-demo",
+                            "pod": name,
+                            "scenario": scenario,
+                        }
+                    )
+                    item = e.snapshot(e.next_event(0))[0]
+                    c = item["candidate"]
+                    self.assertEqual(
+                        [c["operation"], c["key"], c["value"]],
+                        a.workload.SCENARIOS[scenario]["prefer"][0],
+                    )
+                    e.pending[item["id"]]["score"] = 0.99
+                    self.assertEqual(e.execute(item["id"])["result"], "applied")
+
+    def test_event_question_preserves_evidence_without_old_label_votes(self):
+        e = self.noise_engine()
+        e.stimulus(
+            {
+                "namespace": "jev-label-demo",
+                "pod": "checkout-api",
+                "scenario": "healthy",
+            }
+        )
+        c = e.snapshot(e.next_event(0))[0]["candidate"]
+        c["pod"]["labels"]["health"] = "degraded"
+        state = a.question(c)["state"]
+        self.assertEqual(state["latest_event"], c["trigger"])
+        self.assertEqual(state["recent_logs"], c["pod"]["logs"])
+        self.assertEqual(state["label"]["value"], "healthy")
+        self.assertNotIn("pod", state)
+        self.assertEqual(c["pod"]["labels"]["health"], "degraded")
+
+    def test_explicit_event_refresh_and_recovery_require_owned_label(self):
+        e = self.noise_engine()
+        requests = []
+        for scenario, value in [
+            ("crashloop", "degraded"),
+            ("crashloop", "degraded"),
+            ("healthy", "healthy"),
+        ]:
+            e.stimulus(
+                {
+                    "namespace": "jev-label-demo",
+                    "pod": "checkout-api",
+                    "scenario": scenario,
+                }
+            )
+            item = e.snapshot(e.next_event(0))[0]
+            c = item["candidate"]
+            requests.append(c["request_id"])
+            self.assertEqual(
+                (c["operation"], c["key"], c["value"]), ("add", "health", value)
+            )
+            e.pending[item["id"]]["score"] = 0.99
+            self.assertEqual(e.execute(item["id"])["result"], "applied")
+            self.assertEqual(
+                a.ledger(e.kube.target)["health"]["request_id"], requests[-1]
+            )
+        self.assertEqual(len(e.kube.patches), 3)
+        p = e.kube.target
+        self.assertFalse(a.can_refresh(p, "health", "healthy", requests[-1]))
+        self.assertFalse(a.can_refresh(p, "health", "healthy", None))
+        self.assertFalse(a.can_refresh(p, "health", "invented", "new"))
+        self.assertFalse(
+            any(
+                c["operation"] == "add" and c["key"] == "health"
+                for c in a.candidates([p], e.namespaces)
+            )
+        )
+        for request_id in (requests[-1], None):
+            c = {
+                "operation": "add",
+                "key": "health",
+                "value": "healthy",
+                "request_id": request_id,
+                "pod": a.view(p),
+            }
+            with self.subTest(request_id=request_id), self.assertRaises(ValueError):
+                a.patch_for(p, c, 0.99)
+        for mutation in ("edited", "unowned", "nonfixture", "withdrawn"):
+            changed = copy.deepcopy(p)
+            if mutation == "edited":
+                changed["metadata"]["labels"]["health"] = "external"
+            elif mutation == "unowned":
+                del changed["metadata"]["annotations"][a.LEDGER]
+            elif mutation == "nonfixture":
+                del changed["metadata"]["annotations"]["jev.expanso.io/fixture"]
+            else:
+                journal = a.ledger(changed)
+                journal["health"]["state"] = "withdrawn"
+                changed["metadata"]["annotations"][a.LEDGER] = json.dumps(journal)
+            c = {
+                "operation": "add",
+                "key": "health",
+                "value": "healthy",
+                "request_id": "new",
+                "pod": a.view(changed),
+            }
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                a.patch_for(changed, c, 0.99)
+        e.stimulus(
+            {
+                "namespace": "jev-label-demo",
+                "pod": "checkout-api",
+                "scenario": "healthy",
+            }
+        )
+        item = e.snapshot(e.next_event(0))[0]
+        e.pending[item["id"]]["score"] = 0.1
+        self.assertEqual(e.execute(item["id"])["result"], "held")
+        self.assertEqual(len(e.kube.patches), 3)
+
+    def test_squeeze_adds_cpu_label_despite_existing_health(self):
         e = self.noise_engine()
         e.kube.target["metadata"]["labels"].update(
             {"health": "degraded", "routing-tier": "batch"}
@@ -483,11 +607,11 @@ class Tests(unittest.TestCase):
                 item["candidate"]["key"],
                 item["candidate"]["value"],
             ),
-            ("review", "health", "degraded"),
+            ("add", "cpu", "throttled"),
         )
         e.pending[item["id"]]["score"] = 0.99
-        self.assertEqual(e.execute(item["id"])["result"], "held")
-        self.assertEqual(e.kube.patches, [])
+        self.assertEqual(e.execute(item["id"])["result"], "applied")
+        self.assertEqual(e.kube.target["metadata"]["labels"]["cpu"], "throttled")
 
     def test_owned_fixture_existing_labels_get_nonmutating_review(self):
         for score in (0.01, 0.99):
@@ -978,26 +1102,18 @@ class SignalCatalogTests(unittest.TestCase):
                 self.assertIn(op, {"add", "undo"}, name)
                 self.assertIn((key, value), catalog, name)
 
-    def test_auto_pick_recovers_loaded_pods_and_skips_busy_ones(self):
+    def test_auto_pick_visits_all_classifications_and_skips_busy_pods(self):
         import random
 
         e = a.Reconciler.__new__(a.Reconciler)
         rng = random.Random(7)
         loaded = {
             "name": "checkout-api",
-            "labels": {"app": "checkout", "health": "degraded", "traffic": "drain"},
+            "labels": {"health": "healthy", "traffic": "drain"},
         }
-        for _ in range(50):
-            self.assertEqual(e.auto_pick([loaded], rng), ("checkout-api", "healthy"))
         self.assertIsNone(e.auto_pick([dict(loaded, busy=True)], rng))
-        calm = {"name": "orders-api", "labels": {"app": "orders"}}
-        seen = {e.auto_pick([calm], rng)[1] for _ in range(300)}
-        self.assertTrue(
-            {"healthy", "crashloop", "restart", "oom", "probe", "egress"} <= seen
-        )
-        held = {"name": "orders-api", "labels": {"health": "degraded"}}
-        for _ in range(200):
-            self.assertNotIn(e.auto_pick([held], rng)[1], {"crashloop", "squeeze"})
+        seen = {e.auto_pick([loaded], rng)[1] for _ in range(300)}
+        self.assertEqual(seen, a.SCENARIOS)
 
 
 if __name__ == "__main__":

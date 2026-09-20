@@ -71,16 +71,18 @@ const server=http.createServer((req,res)=>{
  assert.ok(await page.locator('.wire.general').count());
  console.log('PASS routine lines animate and are counted without any Jev question');
 
+ await page.evaluate(()=>{window.signalDurations=[];const original=travel;travel=(path,color,duration,routine)=>{if(!routine)window.signalDurations.push(duration);return original(path,color,duration,routine);};});
  await checkout.click();await page.locator('[data-scenario="crashloop"]').click();
  await page.waitForTimeout(500);
  assert.equal(state.pods.find(p=>p.name==='checkout-api').labels['routing-tier'],undefined,'backend completed while visual replay continues');
- assert.ok(await page.locator('#packets .packet').count(),'four-second visual replay is still running');
+ assert.ok(await page.locator('#packets .packet').count(),'visual replay is still running');
 
  await page.waitForFunction(()=>document.querySelector('#feed li .did')?.textContent.includes('− routing-tier=stable'),{},{timeout:5000});
  assert.deepEqual(posted[0],{namespace:'jev-label-demo',pod:'checkout-api',scenario:'crashloop'});
  await page.waitForFunction(()=>!document.querySelector('[data-pod="jev-label-demo/checkout-api"] .label[data-key="routing-tier"]:not(.removed):not(.leaving)'));
  assert.match(await page.locator('#feed li .said').first().textContent(),/no longer true\? Jev 93% yes/);
  assert.match(await page.locator('#api-line').textContent(),/PATCH .*checkout-api.*− routing-tier=stable/);
+ assert.deepEqual(await page.evaluate(()=>window.signalDurations),[400,900,500,500,800,600]);
  console.log('PASS a removal is shown only after the confirmed receipt, with the question and answer');
 
  await page.locator('[data-scenario="crashloop"]').click();
@@ -98,7 +100,7 @@ const server=http.createServer((req,res)=>{
 
  outcome='held';const before=await checkout.locator('.label:not(.leaving)').count();
  await page.locator('[data-scenario="restart"]').click();
- await page.waitForFunction(()=>document.querySelector('#feed li .did')?.textContent==='no change',{},{timeout:5000});
+ await page.waitForFunction(()=>document.querySelector('#feed li .did')?.textContent==='not supported',{},{timeout:5000});
  assert.equal(await checkout.locator('.label:not(.leaving)').count(),before);
  assert.equal(await page.locator('#packets .packet').count(),0);
  console.log('PASS a low answer changes nothing and sends nothing to Kubernetes');

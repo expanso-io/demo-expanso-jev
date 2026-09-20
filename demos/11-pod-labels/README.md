@@ -69,24 +69,26 @@ The decision does not establish a root cause.
 Three pods, each carrying its ordinary labels (`app`, `team`, `version`,
 `istio.io/rev`). Routine log lines stream to Expanso constantly and never
 reach Jev. Every few seconds one pod writes something that needs
-interpreting, and the label stack changes or, just as often, correctly does
-not:
+interpreting. Jev evaluates a meaningful classification; Expanso applies it
+only when the evidence clears the confidence threshold:
 
 | Event | Evidence in the log | Label in question |
 |---|---|---|
 | Crash loop | 5 restarts in 4 minutes | `health=degraded` |
-| One restart | 1 restart after a planned node drain | `health=degraded` (expect no) |
+| One restart | 1 restart after a planned node drain | `restart=expected` |
 | Out of memory | OOMKilled, stack trace names a cache | `pressure=memory` |
-| Resource squeeze | CPU, memory and latency together | `routing-tier=stable` off, then `health=degraded` |
-| Failing readiness | 6 probe failures, same upstream timeout | `routing-tier=stable` off, then `traffic=drain` |
-| Denied egress | denied connections plus an image digest mismatch | `security=quarantined` |
-| Back to healthy | 10 minutes of clean metrics | warnings off, then `routing-tier=stable` |
-| Image verified | digest re-verified | `security=quarantined` off |
-| Batch finished | batch done, no HTTP listeners | `routing-tier=batch` |
+| Resource squeeze | CPU, memory and latency together | `cpu=throttled` |
+| Failing readiness | 6 probe failures, same upstream timeout | `traffic=drain` |
+| Denied egress | denied connections plus an image digest mismatch | `security=suspicious` |
+| Back to healthy | 10 minutes of clean metrics | `health=healthy` |
+| Image verified | digest re-verified | `image=verified` |
+| Batch finished | batch done, no HTTP listeners | `workload=batch` |
 
-`routing-tier=stable` is not decoration: the `stable-checkout` Service selects
-`app=checkout` plus that label, so removing it from `checkout-api` takes the
-pod out of the Service's endpoints.
+These are Kubernetes metadata labels: `health=degraded` means repeated
+failures, `cpu=throttled` means CPU contention, and `traffic=drain` marks a
+pod that cannot serve. The classification itself does not enforce draining
+or quarantine; a controller or policy must consume it. The separate
+`stable-checkout` Service still selects `routing-tier=stable`.
 
 The decision strip shows the question, Jev's answer and what happened. The header shows the threshold in force.
 
@@ -95,7 +97,9 @@ The decision strip shows the question, Jev's answer and what happened. The heade
 Letting an agent rewrite labels automatically is maximum chaos in a real
 cluster, which is exactly why the guardrails are the demo, not the fine
 print. Jev's judgment gates every write behind a confidence threshold;
-**no change** is a first-class outcome; existing keys are never overwritten;
+**Not supported** means the evidence did not clear that threshold.
+Explicit demo events may refresh or update catalog labels this agent owns;
+externally owned or edited labels remain protected;
 and the agent can only remove a label it added itself, tracked in a pod
 annotation that survives adapter restarts. The undo path is signal-driven:
 annotate a pod with `jev.expanso.io/signal` describing what changed, and the
@@ -112,7 +116,7 @@ real status is not sent to Jev as evidence.
 
 Jev's answers are judgments, not guarantees. In one session the same healthy
 evidence scored between 25% and 89% depending on what the pod had logged
-before it. That is why a threshold exists and why **no change** is a first-class
+before it. That is why a threshold exists and why **Not supported** is a first-class
 outcome. The adapter defaults to 90%; the local simulator uses 80%.
 
 ## Use it on your own cluster
@@ -165,7 +169,7 @@ The recording view fits 1280×720 and larger desktop viewports. Event controls
 sit above the pods; Expanso, Jev and Logs align above the Kubernetes API
 server. Colored key-value label highlights last six seconds after arrival. **Details** keeps
 the actual labels visible; expiring a highlight never removes a Kubernetes
-label. Motion follows real receipts, with a four-second visual replay and 60 ms
+label. Motion follows real receipts, with a 3.7-second visual replay (500 ms each way between Expanso and Jev) and 60 ms
 event polling. Cloud execution proceeds immediately; the replay adds no
 delay to Jev calls or Kubernetes changes.
 
@@ -174,7 +178,13 @@ every 400 ms plus collection time. Its receipts bypass the Jev processor,
 so inference does not pause general logging. Gray particles still require
 real collection receipts; a stopped pipeline does not animate fake traffic.
 
-Refreshing does not replay existing labels as fresh highlights. Resource
-squeeze proposes `health=degraded`; if it is already present, Jev reviews
-that label and the UI shows **Already set** for the existing value. It does not
-rewrite an identical Kubernetes label.
+Refreshing the page does not replay existing labels as fresh highlights.
+Repeated events receive a new Jev judgment and, above the threshold, a real
+Kubernetes patch that refreshes the owned label and its decision journal.
+Recovery can update `health=degraded` to `health=healthy`. Existing labels
+without matching ownership remain read-only and show **Already set** or
+**Protected**. The six-second visual highlight is separate from the persistent
+Kubernetes label. Animation timing does not promise a provider response time.
+
+Recovery updates the health classification; it does not clear every independent
+label (for example CPU pressure or a security classification) in the same patch.
