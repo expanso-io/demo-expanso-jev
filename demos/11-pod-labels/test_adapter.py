@@ -1139,19 +1139,19 @@ class LabelLeaseTests(unittest.TestCase):
         with patch.object(a.time, "time", return_value=at):
             return self.e.label_visible(body)
 
-    def test_cloud_arms_five_seconds_after_arrival_and_removes_real_label(self):
+    def test_cloud_arms_ten_seconds_after_arrival_and_removes_real_label(self):
         body = self.apply_event(100)
-        self.assertEqual(a.ledger(self.e.kube.target)["cpu"]["expires_at"], 109)
+        self.assertEqual(a.ledger(self.e.kube.target)["cpu"]["expires_at"], 114)
         writes = len(self.e.kube.patches)
         self.acknowledge(body, 103.7)
         self.assertEqual(
             len(self.e.kube.patches), writes, "browser ACK must not patch Kubernetes"
         )
         self.assertEqual(self.sweep(103.8)["armed"], 1)
-        self.assertEqual(self.sweep(108.79)["expired"], 0)
+        self.assertEqual(self.sweep(113.79)["expired"], 0)
         self.assertEqual(self.e.kube.target["metadata"]["labels"]["cpu"], "throttled")
         with patch.object(self.e, "judge") as judge:
-            self.assertEqual(self.sweep(108.8)["expired"], 1)
+            self.assertEqual(self.sweep(113.8)["expired"], 1)
             judge.assert_not_called()
         self.assertNotIn("cpu", self.e.kube.target["metadata"]["labels"])
         self.assertEqual(
@@ -1172,16 +1172,16 @@ class LabelLeaseTests(unittest.TestCase):
         self.assertEqual(self.sweep(110)["armed"], 1)
         self.acknowledge(new, 114)
         self.assertEqual(self.sweep(114)["armed"], 0)
-        self.assertEqual(a.ledger(self.e.kube.target)["cpu"]["expires_at"], 115)
-        self.assertEqual(self.sweep(115)["expired"], 1)
+        self.assertEqual(a.ledger(self.e.kube.target)["cpu"]["expires_at"], 120)
+        self.assertEqual(self.sweep(120)["expired"], 1)
         self.assertEqual(self.e.events[-1]["request_id"], new["request_id"])
 
     def test_fallback_expiry_survives_adapter_restart_without_browser(self):
         self.apply_event(100)
         kube = self.e.kube
         self.e = a.Reconciler(kube, {"jev-label-demo"}, "test-only", apply=True)
-        self.assertEqual(self.sweep(108.9)["expired"], 0)
-        self.assertEqual(self.sweep(109)["expired"], 1)
+        self.assertEqual(self.sweep(113.9)["expired"], 0)
+        self.assertEqual(self.sweep(114)["expired"], 1)
 
     def test_external_edit_recreation_foreign_namespace_and_dry_run_are_protected(self):
         self.apply_event(100)
@@ -1203,10 +1203,10 @@ class LabelLeaseTests(unittest.TestCase):
     def test_failed_delete_keeps_real_label_and_retries(self):
         self.apply_event(100)
         with patch.object(self.e.kube, "patch", side_effect=RuntimeError("conflict")):
-            self.assertEqual(self.sweep(110)["failed"], 1)
+            self.assertEqual(self.sweep(115)["failed"], 1)
         self.assertIn("cpu", self.e.kube.target["metadata"]["labels"])
         self.assertNotEqual(self.e.events[-1]["stage"], "expired")
-        self.assertEqual(self.sweep(111)["expired"], 1)
+        self.assertEqual(self.sweep(116)["expired"], 1)
 
     def test_legacy_owned_labels_expire_without_touching_fixture_labels(self):
         self.apply_event(100)
@@ -1223,9 +1223,9 @@ class LabelLeaseTests(unittest.TestCase):
         self.apply_event(100)
         c = {"operation": "add", "pod": a.view(self.e.kube.target)}
         self.e.pending["slow"] = {"candidate": c, "expires": a.time.monotonic() + 30}
-        self.assertEqual(self.sweep(110)["expired"], 0)
+        self.assertEqual(self.sweep(115)["expired"], 0)
         c["pod"]["name"] = "checkout-api"
-        self.assertEqual(self.sweep(111)["expired"], 1)
+        self.assertEqual(self.sweep(116)["expired"], 1)
 
     def test_expiry_rechecks_uid_and_atomic_resource_version(self):
         self.apply_event(100)
@@ -1237,8 +1237,8 @@ class LabelLeaseTests(unittest.TestCase):
             return p
 
         with patch.object(self.e.kube, "get", side_effect=replaced):
-            self.assertEqual(self.sweep(110)["expired"], 0)
-        self.assertEqual(self.sweep(111)["expired"], 1)
+            self.assertEqual(self.sweep(115)["expired"], 0)
+        self.assertEqual(self.sweep(116)["expired"], 1)
         operations = self.e.kube.patches[-1]
         self.assertEqual(operations[0]["path"], "/metadata/uid")
         self.assertEqual(operations[1]["path"], "/metadata/resourceVersion")

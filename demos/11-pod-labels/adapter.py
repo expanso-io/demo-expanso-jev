@@ -44,8 +44,9 @@ import routing
 LEDGER = "jev.expanso.io/changes"
 SIGNAL = "jev.expanso.io/signal"
 PURPOSE = "jev.expanso.io/purpose"
-LABEL_VISIBLE_SECONDS = 5.0
-LABEL_FALLBACK_SECONDS = 9.0  # Four-second replay allowance plus visible time.
+LABEL_VISIBLE_SECONDS = 10.0
+# Four-second replay allowance plus visible time.
+LABEL_FALLBACK_SECONDS = LABEL_VISIBLE_SECONDS + 4.0
 FIXTURES = {"checkout-api", "orders-api", "analytics-worker"}
 # The only labels this agent may add to or remove from the demo pods, with the
 # meaning Jev is given for each. Anything else on a pod is left alone.

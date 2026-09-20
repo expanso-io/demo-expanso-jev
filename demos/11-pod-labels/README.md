@@ -167,7 +167,7 @@ storage service. Files rotate at 2 MB with two backups.
 
 The recording view fits 1280×720 and larger desktop viewports. Event controls
 sit above the pods; Expanso, Jev and Logs align above the Kubernetes API
-server. Colored key-value labels remain visible for at least five seconds after arrival.
+server. Colored key-value labels remain visible for at least ten seconds after arrival.
 Expanso Cloud then removes the actual managed Kubernetes label; the UI follows
 the confirmed pod state. Motion follows real receipts, with a 3.7-second visual replay (500 ms each way between Expanso and Jev) and 60 ms
 event polling. Cloud execution proceeds immediately; the replay adds no
@@ -184,8 +184,8 @@ Kubernetes patch that refreshes the owned label and its decision journal.
 Recovery can update `health=degraded` to `health=healthy`. Existing labels
 without matching ownership remain read-only and show **Already set** or
 **Protected**. Each accepted repeat renews the owned label lease. The browser
-acknowledges visual arrival, and Cloud starts the five-second expiry interval;
-without an acknowledgement, labels expire nine seconds after application.
+acknowledges visual arrival, and Cloud starts the ten-second expiry interval;
+without an acknowledgement, labels expire fourteen seconds after application.
 Cloud retries failed removals and defers expiry while a decision for that pod
 is in flight. Labels remain visible until removal succeeds. External and
 fixture-owned labels are preserved. Animation timing does not promise a

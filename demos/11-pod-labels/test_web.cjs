@@ -34,7 +34,7 @@ const server=http.createServer((req,res)=>{
   else if(url.pathname==='/api/label-visible'){
     const b=route.request().postDataJSON();acks.push(b);const p=state.pods.find(p=>p.name===b.pod),lease=p.label_leases?.[b.key];
     if(lease?.request_id===b.request_id&&!lease.displayed_at){lease.displayed_at=Date.now()/1000;
-      if(expiryEnabled)setTimeout(()=>{if(p.label_leases?.[b.key]?.request_id!==b.request_id)return;delete p.labels[b.key];delete p.label_leases[b.key];events.push({...b,value:lease.value,stage:'expired',seq:++seq,at:Date.now()/1000});},5500);
+      if(expiryEnabled)setTimeout(()=>{if(p.label_leases?.[b.key]?.request_id!==b.request_id)return;delete p.labels[b.key];delete p.label_leases[b.key];events.push({...b,value:lease.value,stage:'expired',seq:++seq,at:Date.now()/1000});},10500);
     }body={stage:'queued'};
   }
   else if(url.pathname==='/api/auto'){const b=route.request().postDataJSON();autoCalls.push(b);state.auto=b.on;body={auto:b.on};}
@@ -101,12 +101,12 @@ const server=http.createServer((req,res)=>{
  assert.equal(await checkout.locator('.label[data-key="health"] i').textContent(),'health=');
  assert.equal(await checkout.locator('.label[data-key="health"] i').isVisible(),true);
  await page.waitForFunction(()=>!flows.size);
- await page.waitForTimeout(5100);
- assert.equal(await checkout.locator('.label[data-key="health"]').count(),1,'highlight lasts at least five full seconds');
- assert.equal(state.pods.find(p=>p.name==='checkout-api').labels.health,'degraded','real label lasts at least five seconds after arrival');
+ await page.waitForTimeout(10100);
+ assert.equal(await checkout.locator('.label[data-key="health"]').count(),1,'highlight lasts at least ten full seconds');
+ assert.equal(state.pods.find(p=>p.name==='checkout-api').labels.health,'degraded','real label lasts at least ten seconds after arrival');
  await page.waitForFunction(()=>!document.querySelector('[data-pod="jev-label-demo/checkout-api"] .label[data-key="health"]'),{},{timeout:7500});
  assert.equal(state.pods.find(p=>p.name==='checkout-api').labels.health,undefined);
- console.log('PASS real label remains five seconds after arrival and disappears only on confirmed expiry');
+ console.log('PASS real label remains ten seconds after arrival and disappears only on confirmed expiry');
 
  outcome='held';const before=await checkout.locator('.label:not(.leaving)').count();
  await page.locator('[data-scenario="restart"]').click();
@@ -150,7 +150,7 @@ const server=http.createServer((req,res)=>{
  await page.waitForTimeout(300);
  assert.equal(await checkout.locator('.label[data-key="health"]').textContent(),'health=degraded','stale expiry never removes a renewed label');
  assert.equal(await page.locator('#feed li').count(),historyCount,'expiry is not a triggered event');
- await page.waitForTimeout(5500);
+ await page.waitForTimeout(10500);
  assert.equal(await checkout.locator('.label[data-key="health"]').count(),1,'backend expiry failure cannot hide a real label');
  await page.reload();await checkout.waitFor();
  assert.equal(await checkout.locator('.label[data-key="health"]').textContent(),'health=degraded','refresh preserves actual managed labels');
