@@ -181,6 +181,59 @@ class Tests(unittest.TestCase):
             worker.join(timeout=5)
             server.server_close()
 
+    def test_owned_fixture_existing_labels_get_nonmutating_review(self):
+        for score in (0.01, 0.99):
+            e = self.owned_engine("checkout-reference")
+            e.kube.target["metadata"]["labels"] = {
+                "team": "payments",
+                "routing-tier": "stable",
+            }
+            initial = copy.deepcopy(e.kube.target)
+            queued = e.stimulus(
+                {
+                    "namespace": "demo",
+                    "pod": "checkout-reference",
+                    "scenario": "failure",
+                }
+            )
+            item = e.snapshot(e.next_event(0))[0]
+            candidate = item["candidate"]
+            self.assertEqual(candidate["operation"], "review")
+            self.assertEqual(candidate["key"], "routing-tier")
+            self.assertEqual(candidate["request_id"], queued["request_id"])
+            prompt = a.question(candidate)["questions"]["act"]["instructions"]
+            self.assertIn("accurately describe this pod NOW", prompt)
+            self.assertIn("read-only review", prompt)
+            response = io.BytesIO(
+                json.dumps({"answers": {"act": {"noul": score}}}).encode()
+            )
+            with patch.object(
+                a.urllib.request, "urlopen", return_value=response
+            ) as model:
+                e.judge(item["id"])
+                model.assert_called_once()
+            receipt = e.execute(item["id"])
+            self.assertEqual(receipt["result"], "held")
+            self.assertIn("ownership is protected", receipt["message"])
+            self.assertEqual(e.kube.patches, [])
+            self.assertEqual(e.kube.target["metadata"], initial["metadata"])
+            terminal = e.events[-1]
+            self.assertEqual(terminal["request_id"], queued["request_id"])
+            self.assertTrue(terminal["model_called"])
+            self.assertEqual(
+                [x["stage"] for x in e.events],
+                ["queued", "event", "collected", "judging", "judged", "held"],
+            )
+
+    def test_no_safe_existing_label_still_skips_model(self):
+        e = self.owned_engine()
+        e.kube.target["metadata"]["labels"] = {"app": "checkout"}
+        e.stimulus({"namespace": "demo", "pod": "checkout-new", "scenario": "failure"})
+        with patch.object(e.kube, "pods", return_value=[e.kube.target]):
+            self.assertEqual(e.snapshot(e.next_event(0)), [])
+        self.assertFalse(e.events[-1]["model_called"])
+        self.assertEqual(e.events[-1]["stage"], "held")
+
     def test_fixture_waits_for_logs_and_exposes_click_eligibility(self):
         e = self.engine()
         e.kube.target = pod("checkout-new")
