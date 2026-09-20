@@ -5,7 +5,7 @@
 Labels drive routing, scheduling and policy: Services select on them,
 Kyverno policies match on them, Istio routes on them. They go stale the
 moment a pod's behavior changes, and a stale label is maximum chaos. This
-example is the agent Nathan described: it looks at the labels available on
+example is an agent that looks at the labels available on
 every pod in the cluster, compares them against each pod's current list,
 and applies a label when Jev judges it true. When signals
 say a label no longer holds, it takes it back off.
@@ -153,7 +153,7 @@ label and later removed it (93% each); the real Service EndpointSlice
 membership followed both changes. [Label receipts](../../docs/labels-discovery-live-proof.json).
 
 The earlier [investigation receipts](../../docs/investigation-live-proof.json)
-record a superseded version that invoked Claude. The current demo ends at
+record a superseded version that called a second model. The current demo ends at
 Jev's evidence-readiness decision and invokes no additional model.
 Incident stimuli are synthetic; inference and orchestration are real.
 

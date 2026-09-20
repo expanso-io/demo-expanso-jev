@@ -27,3 +27,7 @@ demos/*/DESIGN_BRIEF.md
 demos/*/review/
 .direnv
 .envrc
+
+# Distribution and outreach planning is kept outside this repository.
+docs/*sharing-opportunities*
+docs/*outreach*
