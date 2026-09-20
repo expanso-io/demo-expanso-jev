@@ -119,7 +119,7 @@ function renderLegend(){
 
 /* --------------------------------------------------------------- decisions */
 function renderFeed(){
-  $('feed').replaceChildren(...feed.slice(0,3).map(f=>{
+  $('feed').replaceChildren(...feed.map(f=>{
     const li=el('li');li.style.setProperty('--sig',SIG[f.scenario]||'#6d3aed');
     li.append(el('time','',clock(f.at)),el('span','who',f.pod),el('span','what',scenarioOf(f.scenario)?.title||f.scenario||'event'),el('span','said',f.said),el('span','did '+f.cls,f.did));return li;}));
 }
@@ -141,7 +141,7 @@ function pushFeed(event,h){
   feed.unshift({at:event.at,pod:h.pod||event.pod,scenario:h.scenario,said:`${asked}${pct}`,
     did:event.already_set?'already set':event.stage==='applied'?`+ ${event.key}=${event.value}`:event.stage==='undone'?`− ${event.key}=${event.value}`:event.stage==='error'?'error':event.stage==='dry-run'?'dry run':'not supported',
     cls:event.stage==='applied'?'add':event.stage==='undone'?'rm':event.stage==='error'?'err':''});
-  feed.length=Math.min(feed.length,12);renderFeed();
+  feed.length=Math.min(feed.length,6);renderFeed();
 }
 const TERMINAL=['applied','undone','held','error','dry-run','investigation_waiting','investigation_ready','investigation_error'];
 function flowFor(event){

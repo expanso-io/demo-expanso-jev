@@ -152,7 +152,17 @@ assert.equal(await page.locator('#evidence-cards').isVisible(),false);
  await page.locator('[data-lane="labels"]').click();
  for(const width of [1600,1280,1024,768,390]){await page.setViewportSize({width,height:900});await page.waitForTimeout(80);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`no horizontal scroll at ${width}`);}
+ await page.evaluate(()=>{feed.length=0;for(let i=0;i<7;i++)pushFeed({stage:'applied',at:Date.now()/1000,key:'health',value:'degraded'}, {pod:'event-'+i,scenario:'crashloop',key:'health',value:'degraded',noul:.93});});
+ assert.equal(await page.locator('#feed li').count(),6);
+ assert.deepEqual(await page.locator('#feed .who').allTextContents(),['event-6','event-5','event-4','event-3','event-2','event-1']);
+ await page.setViewportSize({width:1600,height:900});
+ await page.waitForTimeout(6100);
+ assert.equal(await page.locator('#feed li:visible').count(),6,'history remains after label highlights expire');
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight),'six decisions fit a 1600x900 screen');
+ assert.equal(await page.locator('#feed li').first().evaluate(n=>getComputedStyle(n).opacity),'1');
+ console.log('PASS six decisions persist and only the seventh displaces the oldest');
  await page.setViewportSize({width:1280,height:720});await page.waitForTimeout(80);
+ assert.equal(await page.locator('#feed li:visible').count(),5,'short recording layout keeps five decisions');
  assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight),'fits one 1280x720 screen');
  const positions=await page.evaluate(()=>['cloud-node','jev-node','logs-node','kube-node'].map(id=>{const r=document.getElementById(id).getBoundingClientRect();return{top:r.top,bottom:r.bottom,height:r.height};}));
  assert.equal(positions[0].height,positions[1].height);assert.equal(positions[0].height,positions[2].height);
