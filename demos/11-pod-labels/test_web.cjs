@@ -7,7 +7,7 @@ const path=require('node:path');
 const {chromium}=require('playwright');
 const root=__dirname;
 const baseState={mode:'live',apply_enabled:true,cluster_context:'test-fixture',namespace:'jev-label-demo',available_labels:[{key:'routing-tier',value:'stable',meaning:'Eligible for healthy HTTP traffic'},{key:'routing-tier',value:'batch',meaning:'Eligible for batch processing'}],cloud:{state:'running'},pods:['analytics-worker','checkout-api','orders-api'].map(name=>({name,namespace:'jev-label-demo',event_enabled:true,status:'Running',node:'test-node',labels:{app:name.includes('analytics')?'analytics':name.includes('orders')?'orders':'checkout'},logs:[]})),events:[]};
-const server=http.createServer((req,res)=>{const known={'/':'web/index.html','/web/style.css':'web/style.css','/web/app.js':'web/app.js'};let file=known[req.url];if(req.url.startsWith('/fonts/')&&/^[\w-]+\.woff2$/.test(req.url.slice(7)))file='../01-log-triage/fonts/'+req.url.slice(7);if(!file){res.writeHead(404);res.end();return;}res.setHeader('Content-Type',req.url.endsWith('.js')?'text/javascript':req.url.endsWith('.css')?'text/css':req.url.endsWith('.woff2')?'font/woff2':'text/html');res.end(fs.readFileSync(path.join(root,file)));});
+const server=http.createServer((req,res)=>{const known={'/':'web/index.html','/web/style.css':'web/style.css','/web/app.js':'web/app.js','/assets/expanso-logo-full-violet.svg':'../01-log-triage/assets/expanso-logo-full-violet.svg','/assets/typesafe-mark.png':'../01-log-triage/assets/typesafe-mark.png'};let file=known[req.url];if(req.url.startsWith('/fonts/')&&/^[\w-]+\.woff2$/.test(req.url.slice(7)))file='../01-log-triage/fonts/'+req.url.slice(7);if(!file){res.writeHead(404);res.end();return;}res.setHeader('Content-Type',req.url.endsWith('.svg')?'image/svg+xml':req.url.endsWith('.png')?'image/png':req.url.endsWith('.js')?'text/javascript':req.url.endsWith('.css')?'text/css':req.url.endsWith('.woff2')?'font/woff2':'text/html');res.end(fs.readFileSync(path.join(root,file)));});
 (async()=>{await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const browser=await chromium.launch({headless:true,channel:'chrome'});try{
  const page=await browser.newPage({viewport:{width:1440,height:1100}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
  let state=structuredClone(baseState),events=[],seq=0,posted=[],stageDelay=65,outcome='applied';
@@ -18,14 +18,18 @@ const server=http.createServer((req,res)=>{const known={'/':'web/index.html','/w
   else if(url.pathname==='/api/event'){
    const request=route.request().postDataJSON();posted.push(request);const request_id='test-'+posted.length;
    const stages=['queued','event','collected','judging','judged',outcome];
-   for(const [index,stage] of stages.entries())setTimeout(()=>{const event={...request,request_id,seq:++seq,stage,at:Date.now()/1000,message:stage,noul:stage==='judged'||stage==='applied'?.96:undefined};if(stage==='applied'){event.key='routing-tier';event.value='stable';event.elapsed_ms=400;state.pods.find(p=>p.name===request.pod).labels['routing-tier']='stable';}events.push(event);},index*stageDelay);
+   for(const [index,stage] of stages.entries())setTimeout(()=>{const event={...request,request_id,seq:++seq,stage,at:Date.now()/1000,message:stage,noul:stage==='judged'||stage==='applied'?.96:undefined};if(['applied','undone'].includes(stage)){event.key='routing-tier';event.value='stable';event.elapsed_ms=400;const labels=state.pods.find(p=>p.name===request.pod).labels;if(stage==='applied')labels['routing-tier']='stable';else delete labels['routing-tier'];}events.push(event);},index*stageDelay);
    body={request_id,stage:'queued'};
   }else{await route.fulfill({status:404,body:'{}'});return;}
   await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body)});
  });
  await page.goto(`http://127.0.0.1:${server.address().port}`);await page.locator('[data-pod]').first().waitFor();
  assert.equal(await page.locator('#kube-node').count(),1);
- assert.equal(await page.locator('.label-catalog h2').textContent(),'Labels Expanso can request');
+ assert.equal(await page.locator('#runtime-details').isVisible(),false);
+ assert.ok(!/click to inject|round trip|choose an event|send it to any pod/i.test(await page.locator('body').innerText()));
+ await page.waitForFunction(()=>[...document.querySelectorAll('.processor img')].every(i=>i.complete&&i.naturalWidth>0));
+ assert.equal(await page.locator('.processor img').count(),2);
+ assert.equal(await page.locator('.label-catalog h2').textContent(),'Available labels');
  assert.equal(await page.locator('.label-choice').count(),2);
  assert.equal(await page.locator('.pod-phase').filter({hasText:'Running'}).count(),3);
  assert.equal(await page.locator('[data-scenario]').count(),5);assert.equal(await page.locator('[data-pod]:enabled').count(),3);
@@ -36,6 +40,8 @@ const server=http.createServer((req,res)=>{const known={'/':'web/index.html','/w
  await page.waitForFunction(()=>document.getElementById('result-title').textContent.includes('label added'),{},{timeout:5000});
  assert.deepEqual(await page.evaluate(()=>window.testRoutes),['event-to-pod','pod-to-cloud','cloud-to-jev','jev-to-cloud','cloud-to-kubernetes','kubernetes-to-pod']);
  await page.waitForFunction(()=>document.querySelector('[data-pod="jev-label-demo/checkout-api"]').textContent.includes('routing-tier=stable'));
+ assert.equal(await target.locator('.label-change.added').count(),1);
+ assert.ok(await target.locator('.label.routing').evaluate(n=>parseFloat(getComputedStyle(n).fontSize)>=13));
  console.log('PASS immediate injection, Expanso → Jev → Expanso → Kubernetes → pod flow, and confirmation-gated labels');
  for(const [pod,scenario] of [['analytics-worker','analytics'],['orders-api','security']]){await page.locator(`[data-scenario="${scenario}"]`).click();await page.locator(`[data-pod="jev-label-demo/${pod}"]`).click();await page.waitForFunction(p=>document.getElementById('result-title').textContent.startsWith(p+': label added'),pod);}
  assert.deepEqual(posted.map(e=>[e.pod,e.scenario]),[['checkout-api','checkout'],['analytics-worker','analytics'],['orders-api','security']]);
@@ -51,6 +57,13 @@ const server=http.createServer((req,res)=>{const known={'/':'web/index.html','/w
  await page.waitForFunction(()=>document.querySelectorAll('[data-pod]:enabled').length===3);
  assert.deepEqual(posted.slice(startCount).map(e=>e.pod),['checkout-api','analytics-worker','orders-api']);
  console.log('PASS simultaneous injection into all three pods and re-enabled controls');
+ outcome='undone';stageDelay=65;
+ await target.click();
+ await page.waitForFunction(()=>document.getElementById('result-title').textContent.includes('label removed'));
+ assert.equal(await target.locator('.label.routing').count(),0);
+ assert.equal(await target.locator('.label-change.removed').count(),1);
+ await page.waitForFunction(()=>!document.querySelector('.label-change.removed'));
+ console.log('PASS prominent confirmed additions and red removal feedback');
  for(const terminal of ['held','dry-run']){
   outcome=terminal;stageDelay=65;
   await page.evaluate(()=>{window.testRoutes=[];});
@@ -61,6 +74,8 @@ const server=http.createServer((req,res)=>{const known={'/':'web/index.html','/w
  }
  console.log('PASS held and dry-run decisions stop at Expanso without Kubernetes mutation animation');
  for(const width of [1440,1024,768,390]){await page.setViewportSize({width,height:1100});await page.waitForTimeout(80);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`overflow at ${width}`);
+  const ports=await page.evaluate(()=>{const b=document.querySelector('[data-pod="jev-label-demo/checkout-api"]').getBoundingClientRect(),t=document.getElementById('topology').getBoundingClientRect(),out=document.getElementById('to-cloud'),back=document.getElementById('to-pod');return {outY:out.getPointAtLength(0).y,backY:back.getPointAtLength(back.getTotalLength()).y,top:b.top-t.top,bottom:b.bottom-t.top};});assert.ok(ports.outY<ports.top&&ports.backY>ports.bottom,'log and update arrows use opposite pod edges');
+  if(process.env.POD_UI_SCREENSHOT&&width===390){await page.locator('#mode').evaluate(n=>{n.textContent='BROWSER TEST';});await page.locator('#cloud-status').evaluate(n=>{n.textContent='TEST';});await page.locator('.shell').screenshot({path:process.env.POD_UI_SCREENSHOT.replace('.png','-mobile.png')});}
   const geometry=await page.evaluate(()=>{const top=document.getElementById('topology').getBoundingClientRect(),c=document.getElementById('cloud-node').getBoundingClientRect(),j=document.getElementById('jev-node').getBoundingClientRect(),label=[...document.querySelectorAll('.wire-label')].find(x=>x.textContent==='evidence');return {expected:(c.right+j.left)/2-top.x,actual:Number(label.getAttribute('x')),anchor:label.getAttribute('class'),source:document.getElementById('event-source').getBoundingClientRect().bottom,pod:document.querySelector('[data-pod]').getBoundingClientRect().top};});assert.ok(Math.abs(geometry.expected-geometry.actual)<1);assert.ok(geometry.source<geometry.pod);console.log('PASS layout and centered arrow label at '+width);}
  if(process.env.POD_UI_SCREENSHOT){
   await page.setViewportSize({width:1440,height:1100});
@@ -68,10 +83,9 @@ const server=http.createServer((req,res)=>{const known={'/':'web/index.html','/w
   await page.evaluate(()=>{
    document.getElementById('mode').textContent='BROWSER TEST · SYNTHETIC EVENTS';
    document.getElementById('connection').textContent='Browser test · no Cloud connection';
-   document.querySelector('.legend').textContent='Synthetic responses';
-   document.querySelector('footer>span').textContent='Browser test preview. No cluster or inference calls.';
+   document.getElementById('cloud-status').textContent='TEST';
   });
-  await page.screenshot({path:process.env.POD_UI_SCREENSHOT,fullPage:true});
+  await page.locator('.shell').screenshot({path:process.env.POD_UI_SCREENSHOT});
  }
  await page.emulateMedia({reducedMotion:'reduce'});await page.locator('[data-scenario="recovery"]').focus();await page.keyboard.press('Enter');assert.equal(await page.locator('[data-scenario="recovery"]').getAttribute('aria-pressed'),'true');assert.deepEqual(errors,[]);console.log('PASS keyboard selection, reduced motion, no browser errors');
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve));}})().catch(e=>{console.error(e);process.exitCode=1;server.close();});

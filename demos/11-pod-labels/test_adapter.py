@@ -430,6 +430,14 @@ class Tests(unittest.TestCase):
             return response.status, data
 
         try:
+            for asset, signature in (
+                ("expanso-logo-full-violet.svg", b"<svg"),
+                ("typesafe-mark.png", b"\x89PNG"),
+            ):
+                status, payload = request("GET", "/assets/" + asset)
+                self.assertEqual(status, 200)
+                self.assertTrue(payload.startswith(signature))
+            self.assertEqual(request("GET", "/assets/../../.env")[0], 404)
             status, payload = request("GET", "/api/session")
             self.assertEqual(status, 200)
             self.assertNotIn(b"cloud-secret", payload)

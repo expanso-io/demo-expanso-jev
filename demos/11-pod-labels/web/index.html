@@ -12,21 +12,11 @@
 <body>
 <main class="shell">
   <header class="topbar">
-    <a class="brand" href="https://expanso.io" target="_blank" rel="noopener">EXPANSO <span>×</span> JEV</a>
-    <span class="series">FIELD NOTES / 11</span>
-    <div class="connection"><span class="dot" id="connection-dot"></span><span id="connection">Connecting to cluster</span></div>
-    <a class="cloud-link" href="https://cloud.expanso.io" target="_blank" rel="noopener">Open Expanso Cloud ↗</a>
+    <h1>Pod signals</h1>
+    <div class="connection"><span class="dot" id="connection-dot"></span><span id="connection" class="sr-only">Connecting</span></div>
+    <span class="mode" id="mode">CONNECTING</span>
   </header>
-  <section class="intro">
-    <div><p class="eyebrow">KUBERNETES, WITH A LITTLE JUDGMENT</p><h1>Send an event. <span>Follow the decision.</span></h1></div>
-    <span class="mode" id="mode">Checking runtime</span>
-  </section>
   <section class="board" aria-label="Expanso reads pod logs, asks Jev, then requests Kubernetes updates">
-    <div class="board-top">
-      <span class="board-title"><span class="kube-mark">⎈</span><b id="cluster-name">k3s cluster</b></span>
-      <span class="micro" id="namespace">Waiting for Kubernetes</span>
-      <span class="legend"><i></i>Live evidence</span>
-    </div>
     <div class="topology" id="topology">
       <svg class="wires" id="wires" aria-hidden="true">
         <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="context-stroke"/></marker></defs>
@@ -39,51 +29,40 @@
         <g id="wire-labels"></g>
         <g id="packets"></g>
       </svg>
-      <section class="event-source" id="event-source" aria-label="Inject a workload event">
-        <div class="source-heading"><span class="step-number">1</span><b>Choose an event</b><span>Synthetic stimulus · real pod logs</span></div>
+      <section class="event-source" id="event-source" aria-label="Workload events">
         <div class="event-tray" role="group" aria-label="Workload event">
-          <button data-scenario="checkout" class="event-chip active" aria-pressed="true"><span class="event-icon">↗</span><b>Checkout</b><small>Successful request</small></button>
-          <button data-scenario="failure" class="event-chip" aria-pressed="false"><span class="event-icon">↯</span><b>Route failure</b><small>Traffic denied</small></button>
-          <button data-scenario="analytics" class="event-chip" aria-pressed="false"><span class="event-icon">▥</span><b>Batch job</b><small>Analytics workload</small></button>
-          <button data-scenario="recovery" class="event-chip" aria-pressed="false"><span class="event-icon">↻</span><b>Recovery</b><small>Healthy again</small></button>
-          <button data-scenario="security" class="event-chip" aria-pressed="false"><span class="event-icon">◇</span><b>Security</b><small>Access blocked</small></button>
+          <button data-scenario="checkout" class="event-chip active" aria-pressed="true"><span class="event-icon">↗</span><b>Checkout</b></button>
+          <button data-scenario="failure" class="event-chip" aria-pressed="false"><span class="event-icon">↯</span><b>Failure</b></button>
+          <button data-scenario="analytics" class="event-chip" aria-pressed="false"><span class="event-icon">▥</span><b>Batch</b></button>
+          <button data-scenario="recovery" class="event-chip" aria-pressed="false"><span class="event-icon">↻</span><b>Recovery</b></button>
+          <button data-scenario="security" class="event-chip" aria-pressed="false"><span class="event-icon">◇</span><b>Security</b></button>
         </div>
       </section>
-      <div class="flow-explainer"><span class="micro">THE ROUND TRIP</span><p>Expanso reads logs → asks Jev<br>Jev interprets → returns to Expanso<br>Expanso requests → Kubernetes updates</p><span id="activity">Choose an event, then any pod.</span></div>
       <div class="cluster" id="cluster">
-        <div class="node-caption"><span class="step-number">2</span><b>Send it to any pod</b><span class="micro" id="pod-count">— pods</span></div>
-        <div class="pods" id="pods"><p class="empty">Start <code>just up</code> to connect your cluster.</p></div>
-        <div class="kube-node" id="kube-node"><b>⎈ Kubernetes orchestrator</b><span>Updates pods on Expanso’s request</span></div>
-        <span class="node-name" id="node-name">Kubernetes workloads</span>
+        <div class="pods" id="pods"><p class="empty">Connecting…</p></div>
+        <div class="kube-node" id="kube-node"><span aria-hidden="true">⎈</span><b>Kubernetes</b></div>
       </div>
-      <div class="processor cloud-node" id="cloud-node">
-        <span class="node-index">READ LOGS + ORCHESTRATE</span>
-        <svg class="cloud-icon" viewBox="0 0 72 52" aria-hidden="true"><path d="M20 42h35a13 13 0 0 0 1-26A21 21 0 0 0 16 18a12 12 0 0 0 4 24Z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="m29 27 6-6 6 6m-6-6v14" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-        <h2>Expanso Cloud</h2><p id="cloud-detail">Read logs → ask → request</p><span class="node-status" id="cloud-status">UNKNOWN</span>
+      <div class="processor cloud-node" id="cloud-node" aria-label="Expanso Cloud">
+        <img class="expanso-logo" src="/assets/expanso-logo-full-violet.svg" alt="Expanso">
+        <h2>Cloud</h2><span class="node-status" id="cloud-status">UNKNOWN</span>
       </div>
-      <div class="processor jev-node" id="jev-node">
-        <span class="node-index">INTERPRET EVIDENCE</span>
-        <div class="jev-glyph" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-        <h2>Jev</h2><p id="jev-detail">Returns interpretation to Expanso</p><span class="node-status" id="jev-status">WAITING</span>
+      <div class="processor jev-node" id="jev-node" aria-label="Jev by TypeSafe">
+        <img class="typesafe-logo" src="/assets/typesafe-mark.png" alt="TypeSafe">
+        <h2>Jev <small>by TypeSafe</small></h2><span class="node-status" id="jev-status">—</span>
       </div>
     </div>
-    <div class="result-bar" aria-live="polite">
-      <span class="result-mark" id="result-mark">◎</span>
-      <div><b id="result-title">Three pods. Five things that can happen.</b><span id="result-detail">Choose an event above, then click its destination. Follow the moving evidence.</span></div>
-      <span class="timing" id="timing">Ready to inject</span>
-    </div>
   </section>
-  <section class="label-catalog" aria-label="Available labels">
-    <div><h2>Labels Expanso can request</h2><p>Jev interprets the logs. Expanso checks the result and asks Kubernetes to update labels.</p></div>
-    <div id="available-labels"></div>
-    <p class="label-note">App and team identify the workload and stay fixed in this demo. One routing decision per event; switching routes takes removal, then another event to add.</p>
+  <footer><span class="timing" id="timing">—</span><button id="details-toggle" aria-expanded="false" aria-controls="runtime-details">Details</button></footer>
+  <section id="runtime-details" class="runtime-details" hidden>
+    <div class="result-bar" aria-live="polite"><span id="result-mark"></span><div><b id="result-title">Ready</b><span id="result-detail"></span></div></div>
+    <section class="label-catalog" aria-label="Available labels"><h2>Available labels</h2><div id="available-labels"></div></section>
+    <section class="evidence">
+      <div class="log-panel"><div class="panel-heading"><h2>Pod logs <span id="selected-name"></span></h2></div><div class="log-lines" id="logs"></div></div>
+      <div class="decision-panel"><div class="panel-heading"><h2>Decisions</h2><span class="micro" id="event-count">0 EVENTS</span></div><ol id="trail"></ol></div>
+    </section>
+    <dl id="runtime-fields"></dl>
+    <div hidden><span id="cluster-name"></span><span id="namespace"></span><span id="node-name"></span><span id="pod-count"></span><span id="activity"></span><span id="cloud-detail"></span></div>
   </section>
-  <section class="evidence">
-    <div class="log-panel"><div class="panel-heading"><h2>Inside the pod <span id="selected-name">/ select a workload</span></h2><span class="micro">STDOUT</span></div><div class="log-lines" id="logs"><p class="placeholder">Your event will appear in the pod’s actual logs.</p></div></div>
-    <div class="decision-panel"><div class="panel-heading"><h2>The decision trail</h2><span class="micro" id="event-count">0 EVENTS</span></div><ol id="trail"><li class="placeholder">Each stage appears as it happens.</li></ol></div>
-  </section>
-  <footer><span><b>Real cluster. Real inference.</b> Motion follows evidence; label changes wait for Kubernetes.</span><button id="details-toggle" aria-expanded="false" aria-controls="runtime-details">Inspect runtime +</button></footer>
-  <section id="runtime-details" class="runtime-details" hidden><dl id="runtime-fields"></dl><p>Expanso Cloud manages the pipeline running on your local Edge node. Jev response time is real; the measured duration appears above. A stopped Cloud job means no reconciliation.</p></section>
   <p id="error" role="alert" hidden></p>
 </main>
 </body>

@@ -844,6 +844,15 @@ def handler(reconciler, token):
                         "/web/app.js": (root / "web/app.js", "text/javascript"),
                         "/web/style.css": (root / "web/style.css", "text/css"),
                     }
+                    assets = root.parent / "01-log-triage/assets"
+                    paths["/assets/expanso-logo-full-violet.svg"] = (
+                        assets / "expanso-logo-full-violet.svg",
+                        "image/svg+xml",
+                    )
+                    paths["/assets/typesafe-mark.png"] = (
+                        assets / "typesafe-mark.png",
+                        "image/png",
+                    )
                     fonts = root.parent / "01-log-triage/fonts"
                     for name in (
                         "big-shoulders-display-700.woff2",

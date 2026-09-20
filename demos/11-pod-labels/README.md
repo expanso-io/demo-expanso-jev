@@ -4,13 +4,17 @@
 
 *UI preview uses synthetic browser-test responses. Real execution receipts are linked below.*
 
-**A mostly visual browser experience:** choose checkout, route failure, batch,
+**An interactive animation canvas:** choose checkout, route failure, batch,
 recovery or security above the cluster, then click any of the three pods.
 Its real container writes a synthetic
 workload event to stdout. The Cloud-managed pipeline collects those logs,
 sends evidence to Jev for interpretation, then checks the result. Expanso
 requests a change through the Kubernetes API; Kubernetes updates the pod. The cluster view, log panel and decision trail show
 observed evidence; labels only change after Kubernetes accepts the patch.
+The canvas keeps only event controls, workloads, logos, and moving signals.
+Logs, decisions, available labels, and runtime metadata are under **Details**.
+Confirmed additions flash green; removals flash red and fade out.
+Pod logs exit from the top; Kubernetes updates enter from the bottom.
 
 Implements [Nathan LeClaire's example](https://x.com/dotpem/status/2101432286214525156):
 discover labels on every pod in a cluster, compare them with each target pod,
@@ -397,3 +401,11 @@ Tests cover discovery, namespace scope, inference failures, dry-run, patch
 ownership, UID/resource-version changes, replay, restart-safe undo and
 withdrawal. Pipeline validation is offline and does not prove Cloud
 assignment, a real Jev response, or a Kubernetes mutation.
+
+## Brand assets
+
+The canvas reuses the repository’s Expanso violet wordmark and TypeSafe mark
+from `demos/01-log-triage/assets/`. The TypeSafe mark matches the
+[official asset](https://framerusercontent.com/images/aNFzSFxM4fjICmnibw7npfZjcQ.png);
+the Expanso geometry matches the [official wordmark](https://expanso.io/images/expanso-logo-full-black.svg).
+“Cloud” and “Jev by TypeSafe” identify the products beside their company marks.
