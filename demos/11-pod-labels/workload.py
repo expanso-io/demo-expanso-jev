@@ -14,6 +14,24 @@ SCENARIOS = {
         "status": 200,
         "message": "Checkout request completed; eligible for stable checkout routing",
     },
+    "recovery": {
+        "event": "routing_recovered",
+        "routing_tier": "stable",
+        "status": 200,
+        "message": "Health recovered; eligible for stable HTTP routing now",
+    },
+    "analytics": {
+        "event": "batch_completed",
+        "team": "data",
+        "routing_tier": "batch",
+        "status": 200,
+        "message": "Batch analytics completed; batch routing eligible now",
+    },
+    "security": {
+        "event": "routing_quarantined",
+        "status": 403,
+        "message": "Security policy denied traffic; no routing membership is eligible now",
+    },
     "failure": {
         "event": "stable_traffic_denied",
         "routing_tier": "stable",

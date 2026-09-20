@@ -10,6 +10,7 @@ import hmac
 import json
 import math
 import os
+import queue
 import re
 import secrets
 from pathlib import Path
@@ -18,12 +19,16 @@ import sys
 import threading
 import time
 import urllib.request
+import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from http.server import HTTPServer as HTTPServer
 
 LEDGER = "jev.expanso.io/changes"
 SIGNAL = "jev.expanso.io/signal"
 PURPOSE = "jev.expanso.io/purpose"
+FIXTURES = {"checkout-new", "checkout-reference", "analytics-reference"}
+SCENARIOS = {"checkout", "failure", "analytics", "recovery", "security"}
+SAFE_KEYS = {"team", "routing-tier"}
 
 
 def ledger(pod):
@@ -63,16 +68,17 @@ def view(pod):
     }
 
 
-def candidates(pods, namespaces):
+def candidates(pods, namespaces, request_id=None):
     """Inventory every observed key/value, then compare each target pod.
 
     Only absent keys are additions; existing labels are never overwritten.
-    Previously withdrawn keys stay withdrawn until their ledger is reset.
+    Withdrawn keys can be reconsidered only for a distinct injected event.
     """
     inventory = {}
     for pod in pods:
         for key, value in pod["metadata"].get("labels", {}).items():
-            inventory.setdefault((key, value), []).append(view(pod))
+            if key in SAFE_KEYS:
+                inventory.setdefault((key, value), []).append(view(pod))
     result = []
     for pod in pods:
         meta = pod["metadata"]
@@ -96,7 +102,14 @@ def candidates(pods, namespaces):
             continue
         target = view(pod)
         for (key, value), sources in sorted(inventory.items()):
-            if key in target["labels"] or key in changes:
+            change = changes.get(key)
+            retry = (
+                request_id
+                and change
+                and change["state"] == "withdrawn"
+                and change.get("request_id") != request_id
+            )
+            if key in target["labels"] or (change and not retry):
                 continue
             result.append(
                 {
@@ -108,7 +121,7 @@ def candidates(pods, namespaces):
                 }
             )
         for key, change in changes.items():
-            if change["state"] == "applied":
+            if key in SAFE_KEYS and change["state"] == "applied":
                 result.append(
                     {
                         "operation": "undo",
@@ -179,7 +192,14 @@ def patch_for(pod, candidate, score):
     labels = copy.deepcopy(meta.get("labels", {}))
     key, value = candidate["key"], candidate["value"]
     if candidate["operation"] == "add":
-        if key in labels or key in changes:
+        previous = changes.get(key)
+        retry = (
+            candidate.get("request_id")
+            and previous
+            and previous["state"] == "withdrawn"
+            and previous.get("request_id") != candidate["request_id"]
+        )
+        if key in labels or (previous and not retry):
             raise ValueError("label is already present or managed")
         labels[key] = value
         changes[key] = {
@@ -188,6 +208,7 @@ def patch_for(pod, candidate, score):
             "previous": None,
             "at": time.time(),
             "noul": score,
+            "request_id": candidate.get("request_id"),
         }
     elif candidate["operation"] == "undo":
         change = changes.get(key, {})
@@ -196,7 +217,12 @@ def patch_for(pod, candidate, score):
         if labels.get(key) != value:
             raise ValueError("label was edited by someone else; leave it alone")
         del labels[key]
-        changes[key].update(state="withdrawn", undone_at=time.time(), noul=score)
+        changes[key].update(
+            state="withdrawn",
+            undone_at=time.time(),
+            noul=score,
+            request_id=candidate.get("request_id"),
+        )
     else:
         raise ValueError("unknown operation")
     annotations = copy.deepcopy(meta.get("annotations", {}))
@@ -377,9 +403,16 @@ class Reconciler:
         self.last_tick_at = None
         self.log_cache = {}
         self.cloud_status = CloudStatus()
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
+        self.event_queue = queue.Queue(maxsize=32)
+        self.requests = {}
+        self.started = {}
 
     def emit(self, stage, candidate=None, **extra):
+        with self.lock:
+            return self._emit(stage, candidate, **extra)
+
+    def _emit(self, stage, candidate=None, **extra):
         self.seq += 1
         target = (candidate or {}).get("pod", {})
         event = dict(
@@ -393,7 +426,12 @@ class Reconciler:
             noul=None,
             message=stage,
             event_id=self.seq,
+            request_id=(candidate or {}).get("request_id"),
         )
+        if stage in {"applied", "undone", "held", "error"}:
+            started = self.started.pop(event["request_id"], None)
+            if started is not None:
+                event["elapsed_ms"] = round((time.monotonic() - started) * 1000)
         event.update(extra)
         self.events.append(event)
         self.events = self.events[-100:]
@@ -405,25 +443,44 @@ class Reconciler:
         namespace, name, scenario = (body[k] for k in ("namespace", "pod", "scenario"))
         if (
             namespace not in self.namespaces
-            or name != "checkout-new"
-            or scenario not in {"checkout", "failure"}
+            or name not in FIXTURES
+            or scenario not in SCENARIOS
         ):
             raise ValueError("only fixed fixture scenarios are allowed")
-        target = self.kube.get(namespace, name)
-        if (
-            target["metadata"].get("annotations", {}).get("jev.expanso.io/fixture")
-            != "visual-v1"
-        ):
-            raise ValueError("not an owned demo fixture")
-        result = self.kube.event(namespace, name, scenario)
-        self.pending.clear()  # New workload evidence invalidates outstanding judgments.
-        self.selected = (namespace, name)
-        return self.emit(
-            "event",
-            {"pod": view(target)},
-            message="Synthetic stimulus: " + scenario,
-            workload=result,
-        )
+        request_id = secrets.token_hex(12)
+        request = dict(body, request_id=request_id)
+        with self.lock:
+            self.event_queue.put_nowait(request)
+            self.requests[request_id] = request
+            self.started[request_id] = time.monotonic()
+            self.pending = {
+                k: v
+                for k, v in self.pending.items()
+                if (v["candidate"]["pod"]["namespace"], v["candidate"]["pod"]["name"])
+                != (namespace, name)
+            }
+            return self.emit(
+                "queued",
+                {
+                    "pod": {"name": name, "namespace": namespace},
+                    "request_id": request_id,
+                },
+                scenario=scenario,
+                message="Event queued for Cloud",
+            )
+
+    def next_event(self, timeout=25):
+        try:
+            return self.event_queue.get(timeout=timeout)
+        except queue.Empty:
+            return {}
+
+    def event_feed(self, after):
+        with self.lock:
+            return {
+                "events": copy.deepcopy([e for e in self.events if e["seq"] > after]),
+                "cursor": self.seq,
+            }
 
     def state(self):
         pods = []
@@ -436,7 +493,7 @@ class Reconciler:
                     name=meta["name"],
                     namespace=meta["namespace"],
                     uid=meta["uid"],
-                    event_enabled=meta["name"] == "checkout-new"
+                    event_enabled=meta["name"] in FIXTURES
                     and meta.get("annotations", {}).get("jev.expanso.io/fixture")
                     == "visual-v1",
                     labels=meta.get("labels", {}),
@@ -457,18 +514,65 @@ class Reconciler:
             cloud=dict(self.cloud_status.read(), last_tick_at=self.last_tick_at),
         )
 
-    def snapshot(self):
+    def snapshot(self, request=None):
+        request_id = (request or {}).get("request_id")
+        if request is not None:
+            if not request_id:
+                return []
+            with self.lock:
+                saved = self.requests.pop(request_id, None)
+            if saved != request:
+                raise ValueError("unknown event request")
+            target = self.kube.get(request["namespace"], request["pod"])
+            if (
+                target["metadata"].get("annotations", {}).get("jev.expanso.io/fixture")
+                != "visual-v1"
+            ):
+                raise ValueError("not an owned demo fixture")
+            workload = self.kube.event(
+                request["namespace"], request["pod"], request["scenario"]
+            )
+            self.emit(
+                "event",
+                {"pod": view(target), "request_id": request_id},
+                scenario=request["scenario"],
+                workload=workload,
+                message="Workload emitted real stdout",
+            )
         now = time.monotonic()
         self.pending = {k: v for k, v in self.pending.items() if v["expires"] > now}
         pods = self.kube.pods()
         for pod in pods:
             meta = pod["metadata"]
-            if meta["namespace"] in self.namespaces:
+            if meta["namespace"] in self.namespaces and (
+                not request
+                or (meta["namespace"], meta["name"])
+                == (request["namespace"], request["pod"])
+            ):
                 logs = self.kube.logs(meta["namespace"], meta["name"])
                 pod["_logs"] = logs
                 self.log_cache[(meta["namespace"], meta["name"])] = logs
         self.last_tick_at = time.time()
-        options = candidates(pods, self.namespaces)
+        options = candidates(pods, self.namespaces, request_id)
+        if request:
+            options = [
+                c
+                for c in options
+                if (c["pod"]["namespace"], c["pod"]["name"])
+                == (request["namespace"], request["pod"])
+            ]
+            for c in options:
+                c["request_id"] = request_id
+            # Prefer routing changes; one fresh candidate per event avoids stale
+            # resource versions after the first successful atomic patch.
+            preferred = "batch" if request["scenario"] == "analytics" else "stable"
+            options.sort(
+                key=lambda c: (
+                    c["key"] != "routing-tier",
+                    c["operation"] != "undo",
+                    c["value"] != preferred,
+                )
+            )
         waiting = {
             (p["metadata"]["namespace"], p["metadata"]["name"])
             for p in pods
@@ -492,7 +596,8 @@ class Reconciler:
                 candidate["value"],
             )
 
-        options.sort(key=order)
+        if not request:
+            options.sort(key=order)
         # One decision per tick avoids queued verdicts expiring before /apply.
         # A stable cursor prevents low-probability candidates starving others.
         after_cursor = [c for c in options if order(c) > self.cursor]
@@ -504,7 +609,9 @@ class Reconciler:
             and c["value"] == "stable"
         ]
         result = []
-        for candidate in (selected or after_cursor or options)[:1]:
+        for candidate in (
+            options if request else (selected or after_cursor or options)
+        )[:1]:
             self.emit(
                 "collected",
                 candidate,
@@ -516,6 +623,16 @@ class Reconciler:
             ).hexdigest()
             self.pending[token] = {"candidate": candidate, "expires": now + 120}
             result.append({"id": token, "candidate": candidate})
+        if request and not result:
+            self.emit(
+                "held",
+                {
+                    "pod": {"namespace": request["namespace"], "name": request["pod"]},
+                    "request_id": request_id,
+                },
+                message="No safe label change available; Jev was not called",
+                model_called=False,
+            )
         return result
 
     def entry(self, token):
@@ -538,6 +655,8 @@ class Reconciler:
         )
         with urllib.request.urlopen(req, timeout=30) as response:
             answer = json.load(response)
+        if self.entry(token) is not item:
+            raise ValueError("judgment superseded by newer evidence")
         item["score"] = probability(answer)
         self.emit("judged", item["candidate"], noul=item["score"])
         return {"id": token, "noul": item["score"], "model": "jev-latest"}
@@ -551,6 +670,7 @@ class Reconciler:
         pod = candidate["pod"]
         receipt = {
             "id": token,
+            "request_id": candidate.get("request_id"),
             "namespace": pod["namespace"],
             "pod": pod["name"],
             "uid": pod["uid"],
@@ -618,6 +738,12 @@ def handler(reconciler, token):
             try:
                 if self.path == "/api/session":
                     self.respond({"csrf_token": csrf})
+                elif self.path.startswith("/api/events?"):
+                    query = urllib.parse.parse_qs(
+                        urllib.parse.urlsplit(self.path).query
+                    )
+                    after = int(query.get("after", ["0"])[0])
+                    self.respond(reconciler.event_feed(after))
                 elif self.path == "/api/state":
                     state = reconciler.state()
                     self.respond(state)
@@ -663,9 +789,8 @@ def handler(reconciler, token):
                     size = int(self.headers.get("Content-Length", "0"))
                     if not 0 < size <= 1024:
                         raise ValueError("invalid size")
-                    with reconciler.lock:
-                        result = reconciler.stimulus(json.loads(self.rfile.read(size)))
-                    self.respond(result)
+                    result = reconciler.stimulus(json.loads(self.rfile.read(size)))
+                    self.respond(result, 202)
                 except Exception:
                     self.respond({"error": "event rejected"}, 400)
                 return
@@ -674,24 +799,48 @@ def handler(reconciler, token):
             ):
                 self.send_error(401)
                 return
+            body = {}
             try:
                 size = int(self.headers.get("Content-Length", "0"))
                 if not 0 <= size <= 16384:
                     raise ValueError("request too large")
                 body = json.loads(self.rfile.read(size) or b"{}")
-                with reconciler.lock:
-                    if self.path == "/candidates":
-                        result = reconciler.snapshot()
-                    elif self.path == "/judge":
-                        result = reconciler.judge(body["id"])
-                    elif self.path == "/apply":
+                if self.path == "/health":
+                    result = {"pods": len(reconciler.kube.pods())}
+                elif self.path == "/next-event":
+                    result = reconciler.next_event()
+                elif self.path == "/candidates":
+                    result = reconciler.snapshot(body)
+                elif self.path == "/judge":
+                    result = reconciler.judge(body["id"])
+                elif self.path == "/apply":
+                    with reconciler.lock:
                         result = reconciler.execute(body["id"])
-                    else:
-                        self.send_error(404)
-                        return
+                else:
+                    self.send_error(404)
+                    return
                 payload = json.dumps(result).encode()
                 self.send_response(200)
             except Exception as exc:
+                candidate = (
+                    reconciler.pending.get(body.get("id"), {}).get("candidate")
+                    if isinstance(body, dict)
+                    else None
+                )
+                if not candidate and isinstance(body, dict) and body.get("request_id"):
+                    candidate = {
+                        "pod": {
+                            "name": body.get("pod"),
+                            "namespace": body.get("namespace"),
+                        },
+                        "request_id": body["request_id"],
+                    }
+                if candidate:
+                    reconciler.emit(
+                        "error",
+                        candidate,
+                        message="Pipeline request failed; labels unchanged",
+                    )
                 # Class only: third-party exception text can contain request data.
                 payload = json.dumps(
                     {"result": "held", "error": type(exc).__name__}

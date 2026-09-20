@@ -73,6 +73,114 @@ class Tests(unittest.TestCase):
         environment.start()
         self.addCleanup(environment.stop)
 
+    def owned_engine(self, name="checkout-new"):
+        e = self.engine()
+        e.kube.target = pod(name)
+        e.kube.target["metadata"]["annotations"]["jev.expanso.io/fixture"] = "visual-v1"
+        return e
+
+    def test_queue_ack_does_not_call_kubernetes_or_model(self):
+        e = self.owned_engine()
+        with patch.object(e.kube, "get") as get, patch.object(e.kube, "event") as event:
+            receipt = e.stimulus(
+                {"namespace": "demo", "pod": "checkout-new", "scenario": "recovery"}
+            )
+            get.assert_not_called()
+            event.assert_not_called()
+        self.assertEqual(receipt["stage"], "queued")
+        self.assertEqual(e.next_event(0)["request_id"], receipt["request_id"])
+        self.assertEqual(e.next_event(0), {})
+
+    def test_cloud_consumption_collects_correlated_real_logs(self):
+        for name in a.FIXTURES:
+            e = self.owned_engine(name)
+            queued = e.stimulus(
+                {"namespace": "demo", "pod": name, "scenario": "checkout"}
+            )
+            request = e.next_event(0)
+            item = e.snapshot(request)[0]
+            self.assertEqual(item["candidate"]["request_id"], queued["request_id"])
+            self.assertEqual(item["candidate"]["pod"]["name"], name)
+            self.assertEqual(
+                [x["stage"] for x in e.events], ["queued", "event", "collected"]
+            )
+            with self.assertRaises(ValueError):
+                e.snapshot(request)
+            self.assertEqual(e.snapshot({}), [])
+
+    def test_cloud_rechecks_fixture_ownership_before_exec(self):
+        e = self.owned_engine()
+        e.stimulus({"namespace": "demo", "pod": "checkout-new", "scenario": "security"})
+        e.kube.target["metadata"]["annotations"].clear()
+        with patch.object(e.kube, "event") as event, self.assertRaises(ValueError):
+            e.snapshot(e.next_event(0))
+        event.assert_not_called()
+
+    def test_safe_keys_and_new_event_allow_owned_label_recovery(self):
+        p = self.managed()
+        undo = a.candidates([p], {"demo"})[0]
+        undo["request_id"] = "old"
+        p = apply_patch(p, a.patch_for(p, undo, 0.99))
+        source = pod(
+            "source", {"team": "payments", "pod-template-hash": "bad"}, "other"
+        )
+        self.assertEqual(a.candidates([p, source], {"demo"}, "old"), [])
+        options = a.candidates([p, source], {"demo"}, "new")
+        self.assertEqual([c["key"] for c in options], ["team"])
+        options[0]["request_id"] = "new"
+        updated = apply_patch(p, a.patch_for(p, options[0], 0.99))
+        self.assertEqual(updated["metadata"]["labels"]["team"], "payments")
+
+    def test_cursor_feed_and_bounded_queue(self):
+        e = self.owned_engine()
+        body = {"namespace": "demo", "pod": "checkout-new", "scenario": "analytics"}
+        for _ in range(32):
+            e.stimulus(body)
+        with self.assertRaises(a.queue.Full):
+            e.stimulus(body)
+        feed = e.event_feed(30)
+        self.assertEqual([v["seq"] for v in feed["events"]], [31, 32])
+        self.assertEqual(feed["cursor"], 32)
+
+    def test_cloud_event_http_path_and_failure_terminal(self):
+        e = self.owned_engine()
+        server = a.ThreadingHTTPServer(("127.0.0.1", 0), a.handler(e, "test-token"))
+        worker = threading.Thread(target=server.serve_forever)
+        worker.start()
+
+        def request(method, path, data=None, auth=True):
+            connection = http.client.HTTPConnection(*server.server_address, timeout=2)
+            headers = {"Authorization": "Bearer test-token"} if auth else {}
+            connection.request(
+                method, path, json.dumps(data) if data else None, headers
+            )
+            response = connection.getresponse()
+            payload = response.read()
+            connection.close()
+            return response.status, json.loads(
+                payload
+            ) if response.status != 401 else None
+
+        try:
+            self.assertEqual(request("POST", "/next-event", auth=False)[0], 401)
+            e.stimulus(
+                {"namespace": "demo", "pod": "checkout-new", "scenario": "checkout"}
+            )
+            status, event = request("POST", "/next-event")
+            self.assertEqual(status, 200)
+            with patch.object(e.kube, "event", side_effect=RuntimeError):
+                self.assertEqual(request("POST", "/candidates", event)[0], 503)
+            status, feed = request("GET", "/api/events?after=0", auth=False)
+            self.assertEqual(status, 200)
+            terminal = feed["events"][-1]
+            self.assertEqual(terminal["stage"], "error")
+            self.assertEqual(terminal["request_id"], event["request_id"])
+            self.assertGreaterEqual(terminal["elapsed_ms"], 0)
+        finally:
+            server.shutdown()
+            worker.join(timeout=5)
+            server.server_close()
+
     def test_fixture_waits_for_logs_and_exposes_click_eligibility(self):
         e = self.engine()
         e.kube.target = pod("checkout-new")
@@ -82,7 +190,7 @@ class Tests(unittest.TestCase):
         self.assertTrue(e.state()["pods"][0]["event_enabled"])
         self.assertTrue(e.snapshot())
         e.kube.target["metadata"]["name"] = "checkout-reference"
-        self.assertFalse(e.state()["pods"][0]["event_enabled"])
+        self.assertTrue(e.state()["pods"][0]["event_enabled"])
 
     def test_successful_mutation_releases_selected_focus(self):
         e = self.engine()
@@ -180,7 +288,7 @@ class Tests(unittest.TestCase):
             result = e.stimulus(
                 {"namespace": "demo", "pod": "checkout-new", "scenario": "checkout"}
             )
-        self.assertEqual(result["stage"], "event")
+        self.assertEqual(result["stage"], "queued")
         self.assertEqual(e.kube.patches, [])
         model.assert_not_called()
         with self.assertRaises(ValueError):
@@ -192,7 +300,6 @@ class Tests(unittest.TestCase):
             None,
             [],
             {},
-            {"namespace": "demo", "pod": "checkout-new", "scenario": "checkout"},
             {"namespace": "demo", "pod": "--help", "scenario": "failure"},
             {"namespace": "demo", "pod": "checkout-new", "scenario": "shell"},
         ]:
@@ -237,7 +344,7 @@ class Tests(unittest.TestCase):
             ]:
                 self.assertEqual(request("POST", "/api/event", body, headers)[0], 403)
             headers = {"Origin": origin, "X-CSRF-Token": csrf}
-            self.assertEqual(request("POST", "/api/event", body, headers)[0], 200)
+            self.assertEqual(request("POST", "/api/event", body, headers)[0], 202)
             self.assertEqual(request("POST", "/api/event", "[]", headers)[0], 400)
             self.assertEqual(
                 request("GET", "/api/state", headers={"Host": "evil.example"})[0], 403
@@ -406,7 +513,7 @@ class Tests(unittest.TestCase):
             "pods",
             return_value=[
                 pod(),
-                pod("source", {"team": "payments", "tier": "web"}, "other"),
+                pod("source", {"team": "payments", "routing-tier": "stable"}, "other"),
             ],
         ):
             first = e.snapshot()
@@ -447,7 +554,8 @@ class Tests(unittest.TestCase):
         try:
             self.assertEqual(post("/candidates", {}, False)[0], 401)
             for expected in ["applied", "undone"]:
-                status, options = post("/candidates", {})
+                options = e.snapshot()
+                status = 200
                 self.assertEqual(status, 200)
                 token = options[0]["id"]
                 # Forging a model answer in the request cannot authorize a write.

@@ -47,7 +47,7 @@ def main():
         )
     # Prove the intended local adapter can read the intended Kubernetes API.
     req = urllib.request.Request(
-        "http://127.0.0.1:8901/candidates",
+        "http://127.0.0.1:8901/health",
         data=b"{}",
         headers={
             "Authorization": "Bearer " + os.environ["POD_LABEL_TOKEN"],
@@ -55,8 +55,8 @@ def main():
         },
     )
     with urllib.request.urlopen(req, timeout=30) as response:
-        if not isinstance(json.load(response), list):
-            raise ValueError("adapter did not return a candidate list")
+        if not isinstance(json.load(response).get("pods"), int):
+            raise ValueError("adapter could not read Kubernetes pods")
     pipeline = str(Path(__file__).with_name("pipeline.yaml"))
     subprocess.run(["expanso-edge", "validate", pipeline], check=True, timeout=30)
     subprocess.run(["expanso-cli", "job", "deploy", pipeline], check=True, timeout=30)

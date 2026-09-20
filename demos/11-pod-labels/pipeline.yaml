@@ -7,9 +7,16 @@ selector:
     demo: jev-pod-labels
 config:
   input:
-    generate:
-      interval: 15s
-      mapping: 'root = {}'
+    http_client:
+      url: http://127.0.0.1:8901/next-event
+      verb: POST
+      headers:
+        Content-Type: application/json
+        Authorization: 'Bearer ${POD_LABEL_TOKEN}'
+      timeout: 30s
+      retries: 0
+      stream:
+        enabled: false
   pipeline:
     threads: 1
     processors:

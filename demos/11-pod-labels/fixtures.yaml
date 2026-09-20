@@ -26,6 +26,24 @@ data:
             "status": 200,
             "message": "Checkout request completed; eligible for stable checkout routing",
         },
+        "recovery": {
+            "event": "routing_recovered",
+            "routing_tier": "stable",
+            "status": 200,
+            "message": "Health recovered; eligible for stable HTTP routing now",
+        },
+        "analytics": {
+            "event": "batch_completed",
+            "team": "data",
+            "routing_tier": "batch",
+            "status": 200,
+            "message": "Batch analytics completed; batch routing eligible now",
+        },
+        "security": {
+            "event": "routing_quarantined",
+            "status": 403,
+            "message": "Security policy denied traffic; no routing membership is eligible now",
+        },
         "failure": {
             "event": "stable_traffic_denied",
             "routing_tier": "stable",
@@ -62,6 +80,7 @@ data:
                 print(response.read().decode())
         else:
             HTTPServer(("0.0.0.0", 8080), Handler).serve_forever()
+
 ---
 apiVersion: v1
 kind: Pod
@@ -127,11 +146,23 @@ metadata:
     team: data
     routing-tier: batch
   annotations:
-    jev.expanso.io/purpose: Analytics batch worker. Not a checkout service or stable HTTP traffic target.
+    jev.expanso.io/fixture: visual-v1
+    jev.expanso.io/purpose: Analytics workload that accepts controlled routing and traffic scenarios.
 spec:
   containers:
-    - name: analytics
-      image: registry.k8s.io/pause:3.10
+    - name: checkout
+      image: python:3.13-alpine
+      command: ["python", "-u", "/app/workload.py"]
+      ports:
+        - containerPort: 8080
+      volumeMounts:
+        - name: workload
+          mountPath: /app
+          readOnly: true
+  volumes:
+    - name: workload
+      configMap:
+        name: jev-visual-workload
 ---
 apiVersion: v1
 kind: Service
