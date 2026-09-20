@@ -1,0 +1,100 @@
+name: jev-smart-sampling
+type: pipeline
+description: Smart sampling with Jev — every event is scored for interestingness. Keep 100% of the interesting ones, 1% of the noise. Volume reduction depends on your signal-to-noise ratio.
+namespace: production
+labels:
+  category: log-processing
+  pattern: ai-decision
+  model: jev
+
+config:
+  input:
+    http_server:
+      address: "0.0.0.0:8080"
+      path: /events
+      allowed_verbs: ["POST"]
+
+  pipeline:
+    processors:
+      - mapping: |
+          # http_server already parses JSON bodies; only parse raw strings
+          root = if this.type() == "string" { this.parse_json() } else { this }
+
+      - mapping: |
+          root = this
+          root.received_at = now()
+
+      # ── Ask Jev: how interesting is this event? ──
+      - mutation: |
+          meta jev_start = timestamp_unix_milli()
+
+      - branch:
+          request_map: |
+            root = {
+              "state": this.string(),
+              "model": "jev-latest",
+              "questions": {
+                "interesting": {
+                  "type": "score",
+                  "instructions": "How interesting or unusual is this event for an engineer investigating an incident?",
+                  "criteria": [
+                    "Routine noise, safe to drop",
+                    "Mildly interesting context",
+                    "Notable, worth keeping",
+                    "Highly unusual, keep for investigation",
+                    "Critical signal, never drop"
+                  ]
+                }
+              }
+            }
+          processors:
+            - http:
+                url: "${JEV_API_URL:https://api.typesafe.ai/v1/systemone}"
+                verb: POST
+                headers:
+                  Content-Type: application/json
+                  Authorization: "Bearer ${TYPESAFE_API_KEY}"
+                timeout: 2s
+                retries: 1
+            - catch:
+              - mapping: |
+                  root = {"answers": {}, "model": "jev-unavailable"}
+          result_map: |
+            root.jev = {
+              "answers": this.answers,
+              "model": this.model.or("jev-latest"),
+              "ms": timestamp_unix_milli() - metadata("jev_start")
+            }
+
+      # ── Judgment-based sampling: 100% of interesting, 1% of noise ──
+      # (annotate first, drop in a separate mapping: assigning fields after
+      # root = deleted() aborts the mapping, and `this` is frozen at mapping
+      # entry so re-assigning it would wipe the annotations above)
+      - mapping: |
+          let score = this.jev.answers.interesting.score.or(0)
+          root = this
+          root.jev_score = $score
+          root.jev_decision = if $score >= 3 { "keep" } else { "sampled" }
+
+      # ── Deterministic 1% sample of low-interest events via counter ──
+      - mapping: |
+          root = if this.jev_score >= 3 || count("sampled") % 100 == 0 { this } else { deleted() }
+
+  output:
+    broker:
+      pattern: fan_out
+      outputs:
+        - stdout:
+            codec: lines
+        - switch:
+            cases:
+              - check: this.jev_decision == "keep"
+                output:
+                  file:
+                    path: ./data/jev-smart-sampling/kept-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: "true"
+                output:
+                  file:
+                    path: ./data/jev-smart-sampling/sampled-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines

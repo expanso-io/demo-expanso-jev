@@ -1,0 +1,8 @@
+{"ts":"2026-09-18T14:00:01Z","service":"api-gw","msg":"GET /health 200 3ms"}
+{"ts":"2026-09-18T14:00:02Z","service":"api-gw","msg":"GET /health 200 2ms"}
+{"ts":"2026-09-18T14:00:03Z","service":"api-gw","msg":"POST /checkout 200 184ms user=48211 amount=129.99"}
+{"ts":"2026-09-18T14:00:04Z","service":"api-gw","msg":"GET /health 200 3ms"}
+{"ts":"2026-09-18T14:00:05Z","service":"worker-3","msg":"panic: nil pointer dereference in invoice renderer, goroutine 4412"}
+{"ts":"2026-09-18T14:00:06Z","service":"api-gw","msg":"GET /health 200 2ms"}
+{"ts": "2026-09-18T14:00:07Z", "service": "db-proxy", "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections"}
+{"ts":"2026-09-18T14:00:08Z","service":"api-gw","msg":"GET /health 200 3ms"}

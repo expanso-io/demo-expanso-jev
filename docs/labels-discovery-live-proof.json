@@ -1,0 +1,212 @@
+{
+  "verified_at": "2026-09-20T18:01:22.445Z",
+  "cloud": {
+    "state": "running",
+    "node_id": "7b9b887e-4269-4905-b030-dec06845bcf2",
+    "job_id": "j-97cf9f41-2388-4c77-88b5-939178b9aaac",
+    "execution_id": "e-80ea2b76-8f85-4e3e-a32e-a56b7f8206ae",
+    "last_tick_at": 1789927282.0518909
+  },
+  "results": [
+    {
+      "pod": "orders-api",
+      "scenario": "batch",
+      "terminal": {
+        "seq": 24,
+        "at": 1789927273.742715,
+        "stage": "applied",
+        "pod": "orders-api",
+        "namespace": "jev-label-demo",
+        "key": "routing-tier",
+        "value": "batch",
+        "operation": "add",
+        "origin": "observed",
+        "source_pods": [
+          {
+            "name": "analytics-worker",
+            "namespace": "jev-label-demo"
+          }
+        ],
+        "noul": 0.83,
+        "message": "applied",
+        "event_id": 24,
+        "request_id": "d7e979715c3b21bf12837dd5",
+        "elapsed_ms": 2513,
+        "model_called": true
+      },
+      "routing": {
+        "service": "stable-checkout",
+        "namespace": "jev-label-demo",
+        "state": "observed",
+        "pods": [],
+        "selector": {
+          "app": "checkout",
+          "routing-tier": "stable"
+        }
+      },
+      "labels": [
+        {
+          "name": "analytics-worker",
+          "labels": {
+            "app": "analytics",
+            "routing-tier": "batch",
+            "team": "data",
+            "version": "v1.9.2"
+          }
+        },
+        {
+          "name": "checkout-api",
+          "labels": {
+            "app": "checkout",
+            "istio.io/rev": "default",
+            "team": "payments",
+            "version": "v3.1.0"
+          }
+        },
+        {
+          "name": "orders-api",
+          "labels": {
+            "app": "orders",
+            "istio.io/rev": "default",
+            "routing-tier": "batch",
+            "team": "payments",
+            "version": "v2.4.1"
+          }
+        }
+      ]
+    },
+    {
+      "pod": "checkout-api",
+      "scenario": "healthy",
+      "terminal": {
+        "seq": 39,
+        "at": 1789927276.404693,
+        "stage": "applied",
+        "pod": "checkout-api",
+        "namespace": "jev-label-demo",
+        "key": "routing-tier",
+        "value": "stable",
+        "operation": "add",
+        "origin": "configured",
+        "source_pods": [],
+        "noul": 0.93,
+        "message": "applied",
+        "event_id": 39,
+        "request_id": "e02736c7a590812bc2ff1218",
+        "elapsed_ms": 408,
+        "model_called": true
+      },
+      "routing": {
+        "service": "stable-checkout",
+        "namespace": "jev-label-demo",
+        "state": "observed",
+        "pods": [
+          "checkout-api"
+        ],
+        "selector": {
+          "app": "checkout",
+          "routing-tier": "stable"
+        }
+      },
+      "labels": [
+        {
+          "name": "analytics-worker",
+          "labels": {
+            "app": "analytics",
+            "routing-tier": "batch",
+            "team": "data",
+            "version": "v1.9.2"
+          }
+        },
+        {
+          "name": "checkout-api",
+          "labels": {
+            "app": "checkout",
+            "istio.io/rev": "default",
+            "routing-tier": "stable",
+            "team": "payments",
+            "version": "v3.1.0"
+          }
+        },
+        {
+          "name": "orders-api",
+          "labels": {
+            "app": "orders",
+            "istio.io/rev": "default",
+            "routing-tier": "batch",
+            "team": "payments",
+            "version": "v2.4.1"
+          }
+        }
+      ]
+    },
+    {
+      "pod": "checkout-api",
+      "scenario": "probe",
+      "terminal": {
+        "seq": 51,
+        "at": 1789927279.38336,
+        "stage": "undone",
+        "pod": "checkout-api",
+        "namespace": "jev-label-demo",
+        "key": "routing-tier",
+        "value": "stable",
+        "operation": "undo",
+        "origin": "observed",
+        "source_pods": [
+          {
+            "name": "checkout-api",
+            "namespace": "jev-label-demo"
+          }
+        ],
+        "noul": 0.93,
+        "message": "undone",
+        "event_id": 51,
+        "request_id": "a5f0be91776770f3bdefa86d",
+        "elapsed_ms": 519,
+        "model_called": true
+      },
+      "routing": {
+        "service": "stable-checkout",
+        "namespace": "jev-label-demo",
+        "state": "observed",
+        "pods": [],
+        "selector": {
+          "app": "checkout",
+          "routing-tier": "stable"
+        }
+      },
+      "labels": [
+        {
+          "name": "analytics-worker",
+          "labels": {
+            "app": "analytics",
+            "routing-tier": "batch",
+            "team": "data",
+            "version": "v1.9.2"
+          }
+        },
+        {
+          "name": "checkout-api",
+          "labels": {
+            "app": "checkout",
+            "istio.io/rev": "default",
+            "team": "payments",
+            "version": "v3.1.0"
+          }
+        },
+        {
+          "name": "orders-api",
+          "labels": {
+            "app": "orders",
+            "istio.io/rev": "default",
+            "routing-tier": "batch",
+            "team": "payments",
+            "version": "v2.4.1"
+          }
+        }
+      ]
+    }
+  ],
+  "browser_errors": []
+}

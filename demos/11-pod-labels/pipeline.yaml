@@ -1,0 +1,74 @@
+name: jev-pod-labels
+namespace: demo
+type: pipeline
+description: Cloud-driven Kubernetes label discovery, Jev judgment and signal-based undo.
+selector:
+  match_labels:
+    demo: jev-pod-labels
+config:
+  input:
+    broker:
+      inputs:
+        - http_client:
+            url: http://127.0.0.1:8901/next-event
+            verb: POST
+            headers:
+              Content-Type: application/json
+              Authorization: 'Bearer ${POD_LABEL_TOKEN}'
+            timeout: 30s
+            retries: 0
+            stream:
+              enabled: false
+        - generate:
+            interval: 400ms
+            mapping: 'root = {}'
+          processors:
+            - try:
+                - http:
+                    url: http://127.0.0.1:8901/routine
+                    verb: POST
+                    headers:
+                      Content-Type: application/json
+                      Authorization: 'Bearer ${POD_LABEL_TOKEN}'
+                    timeout: 10s
+                    retries: 0
+            # This branch ends here, before the serial Jev decision path.
+            - mapping: 'root = deleted()'
+  pipeline:
+    threads: 1
+    processors:
+      - try:
+          - http:
+              url: http://127.0.0.1:8901/candidates
+              verb: POST
+              headers:
+                Content-Type: application/json
+                Authorization: 'Bearer ${POD_LABEL_TOKEN}'
+              timeout: 30s
+              retries: 0
+          - unarchive:
+              format: json_array
+          - mapping: |
+              root = {"id": this.id}
+          - http:
+              url: http://127.0.0.1:8901/judge
+              verb: POST
+              headers:
+                Content-Type: application/json
+                Authorization: 'Bearer ${POD_LABEL_TOKEN}'
+              timeout: 35s
+              retries: 0
+          - http:
+              url: http://127.0.0.1:8901/apply
+              verb: POST
+              headers:
+                Content-Type: application/json
+                Authorization: 'Bearer ${POD_LABEL_TOKEN}'
+              timeout: 110s
+              retries: 0
+      - catch:
+          - mapping: |
+              root = {"result": "held", "reason": "adapter_or_jev_error"}
+  output:
+    stdout:
+      codec: lines

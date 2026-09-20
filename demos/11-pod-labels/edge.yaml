@@ -1,0 +1,4 @@
+# Agent settings, not pipeline settings. One host should carry this label.
+name: jev-pod-labels
+labels:
+  demo: jev-pod-labels

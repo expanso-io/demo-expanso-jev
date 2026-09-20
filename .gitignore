@@ -1,0 +1,29 @@
+logs/
+agent-data/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+
+# Credentials — never commit.
+.scratch
+.scratch/
+*.creds
+
+# Pipeline output and agent state are runtime artifacts.
+demos/*/data/
+demos/*/logs/
+demos/*/agent-data/
+.expanso/
+
+# Test scratch
+demos/*/.test-scratch/
+
+# Recording and review material is kept outside this repository. These names
+# are symlinks on the maintainer's machine and must never be committed.
+demos/*/RUNBOOK.md
+demos/*/RECORDING_SCRIPT.md
+demos/*/DESIGN_BRIEF.md
+demos/*/review/
+.direnv
+.envrc

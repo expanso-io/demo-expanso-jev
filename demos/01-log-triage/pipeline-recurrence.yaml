@@ -1,0 +1,387 @@
+# Jev recurrence demo: deterministic temporal assembly (Expanso) + judgment (Jev).
+#
+# Thesis: Expanso does what computers are good at -- count, window, recall,
+# assemble -- and Jev does what they aren't: "given this history, how
+# concerning is this?" The same log line scores differently on occurrence
+# #1 vs #4, because the context changed.
+#
+# Flow per event:
+#   1. shape + fingerprint (deterministic normalization)
+#   2. POST /track -> occurrence N, first_seen_ago, previous decisions (deterministic)
+#   2b. deterministic bypass: exact-match known-benign INFO lines skip the model
+#   3. ask Jev WITH the recurrence history in state (judgment) -- the rest
+#   4. confidence cascade: page / notify / review / archive
+#      - review catches uncertainty AND near-threshold scores (the gradient,
+#        not just a binary line)
+#   4h. if Jev did not answer: HOLD -- re-submit, wait 2-4 s, ask again, up to 15 attempts
+#   5. POST /record the decision (deterministic, feeds future history)
+#   6. route to the endpoint file
+
+name: log-triage
+type: pipeline
+description: Recurrence-aware log triage -- Expanso assembles temporal context, Jev judges it.
+namespace: demo
+
+labels:
+  category: log-processing
+  model: jev
+  pattern: temporal-context
+
+config:
+  input:
+    http_server:
+      address: "0.0.0.0:8080"
+      path: /logs
+      allowed_verbs: ["POST"]
+      # The response is held until the event is written out, and a Jev
+      # judgment takes ~3.5s. At the 5s default a burst queues past the limit
+      # and the input answers 408 for events it then processes anyway -- the
+      # source counts them lost while they land in a bucket.
+      timeout: 30s
+
+  # The hold path below re-submits a record to this pipeline's own input. With a
+  # buffer the input acknowledges once the record is queued; without one it keeps
+  # the request open until the record is fully delivered, so every retry would
+  # nest inside the request that made it and time out.
+  buffer:
+    memory:
+      limit: 104857600
+
+  pipeline:
+    # Held records wait INSIDE a processor thread (step 0). Threads are cheap and
+    # a waiting one costs nothing, but there must be more of them than records
+    # on hold, or routine traffic queues behind the waiters.
+    threads: 256
+    processors:
+      # 0. a record that was held comes back round here. Wait before asking Jev
+      #    again: 2-4 s, jittered, so that when Jev returns the backlog arrives
+      #    spread out instead of as one thundering herd. (The wait lives here and
+      #    not on the output because output processors run one at a time: a 3 s
+      #    sleep there released one record every 3 s and stalled the pipeline.)
+      - switch:
+          - check: 'this.held_attempts.number().catch(0) > 0'
+            processors:
+              - sleep:
+                  duration: '${! (2000 + random_int(max: 2000)).string() + "ms" }'
+
+      # 1. shape + deterministic fingerprint
+      - mapping: |
+          root = this
+          root.received_at = this.received_at.or(now())   # a held record keeps its first arrival time
+          # Producer-supplied on first arrival, so never trusted as-is: coerce to a
+          # non-negative whole number. (A producer claiming 15 only skips its own hold.)
+          let ha = this.held_attempts.number().catch(0).floor()
+          root.held_attempts = if $ha < 0 { 0 } else { $ha }
+          root.node_id = env("NODE_ID").or("edge-1")
+          let norm = this.msg.lowercase().re_replace("[0-9]+", "#").re_replace("[^a-z0-9 :/_.*#-]", "").re_replace("\\s+", " ").trim()
+          root.fingerprint = this.service + "::" + $norm
+          # The named naive baseline, computed on the IDENTICAL input so the two
+          # can be compared record by record: route on severity alone.
+          root.baseline = if this.level == "ERROR" { "page" } else if this.level == "WARN" { "notify" } else { "archive" }
+
+      # 2. deterministic temporal assembly: occurrence count + history. First
+      #    arrival only: a held record coming back round is the SAME event, and
+      #    counting it again would inflate its own recurrence.
+      - switch:
+          - check: 'this.held_attempts == 0'
+            processors:
+            - branch:
+                request_map: |
+                  root = {"fingerprint": this.fingerprint}
+                processors:
+                  - http:
+                      url: http://127.0.0.1:8898/track
+                      verb: POST
+                      headers:
+                        Content-Type: application/json
+                result_map: |
+                  root.recurrence = this
+
+      # 2b. deterministic bypass: does this record need a model at all?
+      #     An explicit allowlist of known-benign lines. A match goes to the
+      #     archive with NO model call. It matches on level + service + the RAW
+      #     message, exactly -- NOT on the fingerprint. The fingerprint omits the
+      #     level and erases every number, so matching on it would wave through
+      #     "GET /health 500 9000ms", a WARN carrying a health-check message, or
+      #     "cache hit rate 0.01": it would normalise the danger away and then
+      #     call the result routine. Exact match means:
+      #       - only INFO can bypass (explicit guard, not an accident of the list)
+      #       - any changed value -- status, latency, rate, count -- is a
+      #         different string, so it is judged
+      #       - any novel message is judged, including INFO ones such as
+      #         "config reload requested by unknown actor"
+      #       - nothing is dropped or sampled away; every record is written
+      #         somewhere, and bypassed ones say so (routed_by)
+      #     The cost is that a real fleet's routine lines vary in their numbers
+      #     and would need bounded patterns ("200, under 50ms") rather than exact
+      #     strings. That is ordinary rule-writing and rules are the right tool
+      #     for it. Jev is for what is left.
+      - mapping: |
+          root = this
+          let routine = [
+            "api|GET /health 200 2ms",
+            "api|GET /metrics 200 5ms",
+            "worker|cron heartbeat ok job=nightly-rollup",
+            "cache|cache hit rate 0.94 window=5m",
+            "api|gc pause 12ms heap=1.2gb",
+            "db|connection pool idle 45/50",
+            "deploy|rollout step 3/8 complete service=checkout",
+          ]
+          root.bypass = this.level == "INFO" && $routine.contains(this.service + "|" + this.msg)
+
+      # 3. Jev judgment, WITH the recurrence history in state -- only for records
+      #    the bypass did not clear. This switch is the whole cost story: a
+      #    bypassed record never reaches the http processor below.
+      - switch:
+          - check: '!this.bypass'
+            processors:
+            - branch:
+                request_map: |
+                  root.state = {
+                    "log": {
+                      "level": this.level,
+                      "service": this.service,
+                      "msg": this.msg,
+                    },
+                    "recurrence": {
+                      "occurrence": this.recurrence.occurrence,
+                      "window": "10 minutes",
+                      "first_seen_seconds_ago": this.recurrence.first_seen_ago_s,
+                      "previous_routing_decisions": this.recurrence.previous_decisions,
+                    },
+                  }
+                  root.model = "jev-latest"
+                  root.questions = {
+                    "actionable": {
+                      "type": "noul",
+                      "instructions": "How actionable is this log for an on-call engineer RIGHT NOW, 0.0 to 1.0? Weigh recurrence heavily: a first, isolated occurrence of a benign-looking line is low. The SAME line repeating (occurrence 3 or more within 10 minutes) is much more concerning -- repeated auth failures suggest brute force, repeated restarts suggest a crash loop, repeated warnings suggest a degrading system. Escalate the score as occurrence count rises.",
+                    },
+                    "severity": {
+                      "type": "choice",
+                      "instructions": "Classify the severity of this log line.",
+                      "choices": ["info", "warning", "critical", "other"],
+                      "criteria": {
+                        "info": "Routine operational message, no action needed",
+                        "warning": "Needs attention soon but is not urgent",
+                        "critical": "Service-impacting right now, page someone",
+                        "other": "Does not fit the above"
+                      }
+                    },
+                    "team": {
+                      "type": "choice",
+                      "instructions": "Which team owns this? backend = app/services, infra = hosts/network/kubernetes, data = pipelines/databases, security = auth/intrusion/certs.",
+                      "choices": ["backend", "infra", "data", "security", "other"],
+                      "criteria": {
+                        "backend": "Application code, APIs, services",
+                        "infra": "Hosts, network, Kubernetes, TLS",
+                        "data": "Databases, pipelines, warehouses",
+                        "security": "Authentication, intrusion, access control",
+                        "other": "Cannot tell from this event"
+                      }
+                    },
+                    "recurrence_concern": {
+                      "type": "noul",
+                      "instructions": "How much does the RECURRENCE PATTERN alone elevate concern, 0.0 to 1.0? 0.0 = isolated occurrence, nothing to infer. 1.0 = clearly escalating pattern (e.g., repeated auth failures from one source, repeated crashes, warnings trending toward critical).",
+                    },
+                  }
+                processors:
+                  - http:
+                      url: ${JEV_API_URL}
+                      verb: POST
+                      headers:
+                        Content-Type: application/json
+                  - catch:
+                      # Jev unreachable: degrade gracefully, everything goes to review
+                      - mapping: |
+                          root = {"model": "jev-unavailable", "answers": {}}
+                result_map: |
+                  root.jev = {"answers": this.answers, "model": this.model.or("jev-latest")}
+                  root.jev_ok = this.model != "jev-unavailable"
+
+      # 4. confidence cascade: deterministic gates over Jev's graded judgment.
+      #    review catches BOTH uncertainty (low confidence) and near-threshold
+      #    scores -- the gradient, not a binary line.
+      - mapping: |
+          root = this
+          root.routed_by = if this.bypass { "expanso-bypass" } else { "jev" }
+          let actionable = this.jev.answers.actionable.noul.or(0)
+          let sev = this.jev.answers.severity.choice.or("other")
+          let conf = this.jev.answers.severity.confidence.or(0)
+          root.jev_decision = if this.bypass {
+            "archive"
+          } else if !this.jev_ok && this.held_attempts < 15 {
+            # Jev did not answer. Do not guess and do not give up yet: hold the
+            # record and ask again. See the "held" output below.
+            "held"
+          } else if !this.jev_ok {
+            "review"   # 15 attempts, ~45 s: stop holding, hand it to a human
+          } else if $sev == "critical" && $conf >= 0.85 {
+            "page"
+          } else if $actionable >= 0.7 && $conf >= 0.5 {
+            "notify"
+          } else if $conf < 0.6 || ($actionable >= 0.4 && $actionable < 0.7) {
+            "review"
+          } else {
+            "archive"
+          }
+
+      # 4b. operational log: what this pipeline DECIDED, for the Expanso Cloud Logs
+      #     tab (and `expanso-cli job logs`). Ground rules:
+      #       - A selection, not a delivery. This runs BEFORE the output writes, so
+      #         a line says a destination was "selected" and the write is pending.
+      #         It never says written, delivered, kept or retained: at this point
+      #         none of that has happened yet. The framework's own DEBUG
+      #         "Successfully wrote" line is the write confirmation.
+      #       - Nothing is passed through raw. See the allowlists below. No message
+      #         text, no prompt, no Jev request or response body, no URL, no
+      #         credential, and the fingerprint only as a short hash (it is derived
+      #         from the message and can hold a username).
+      #       - Only the ROUTINE path is sampled. A bypassed record logs a
+      #         checkpoint on its fingerprint's first occurrence and every 250th
+      #         after: per fingerprint, by that fingerprint's own count, not a
+      #         global rate.
+      #       - Every NON-bypass selection is logged, judged (INFO) or fallback
+      #         (WARN), with no sampling. It has to be: the fingerprint erases
+      #         numbers, so "GET /health 500" shares a counter with the routine
+      #         "GET /health 200", and any occurrence-based sampling would silence
+      #         exactly the changed-value line worth seeing.
+      #       - Honest limit: this is sized for a synthetic demo, where non-routine
+      #         traffic is a few lines a second. With Jev unreachable every
+      #         non-routine record is a WARN. High-volume production traffic would
+      #         need a real rate cap, which needs state this pipeline does not keep.
+      #       - The summary is in the MESSAGE, because the Logs tab filters the line
+      #         by substring. Search "triage", "fallback", "-> PAGE", or an event hash.
+      #       - A fallback is WARN and is never worded as a judgment: no model
+      #         answered.
+      - mapping: |
+          # Only values from closed sets, generated ids, numbers and hashes leave the
+          # node. service / level / id come from the log producer and team /
+          # severity come back from a model: all are arbitrary strings, so each is
+          # checked against a closed allowlist and anything else is replaced, never
+          # passed through. Ids and fingerprints are hashed unconditionally.
+          let occ = this.recurrence.occurrence.number().catch(0)
+          let fp = this.fingerprint.string().hash("sha256").encode("hex").slice(0, 12)
+          let lvl = if ["DEBUG", "INFO", "WARN", "ERROR"].contains(this.level) { this.level } else { "other" }
+          let svc = if ["api", "worker", "cache", "deploy", "db", "edge", "infra", "net", "auth"].contains(this.service) { this.service } else { "other" }
+          # The id is producer-supplied, so it is ALWAYS hashed: a pattern such as
+          # ^evt-... would still admit "evt-alice-smith". sha256 so the same 12 hex
+          # chars can be recomputed from a local receipt to correlate the two:
+          #   hashlib.sha256(record["id"].encode()).hexdigest()[:12]
+          let eid = this.id.string().hash("sha256").encode("hex").slice(0, 12)
+          let tail = " event=" + $eid + " fp=" + $fp + " occ=" + $occ.string() + " svc=" + $svc + " lvl=" + $lvl
+          let a = this.jev.answers.or({})
+          let sev = if ["info", "warning", "critical", "other"].contains($a.severity.choice) { $a.severity.choice } else { "invalid" }
+          let team = if ["backend", "infra", "data", "security", "other"].contains($a.team.choice) { $a.team.choice } else { "invalid" }
+          let act = ($a.actionable.noul.number().catch(0) * 100).round() / 100
+          let conf = ($a.severity.confidence.number().catch(0) * 100).round() / 100
+          meta log_kind = if this.bypass {
+            if $occ == 1 || $occ % 250 == 0 { "bypass" } else { "" }
+          } else if this.jev_decision == "held" {
+            # one line when a record is FIRST held; its retries are not news
+            if this.held_attempts == 0 { "held" } else { "" }
+          } else if !this.jev_ok.or(false) {
+            "fallback"
+          } else {
+            "judged"
+          }
+          meta log_summary = if this.bypass {
+            "triage bypass -> ARCHIVE selected, output pending: known-routine line, no model call (checkpoint: a fingerprint's first occurrence, then every 250th)" + $tail
+          } else if this.jev_decision == "held" {
+            "triage held -> HOLD selected, output pending: Jev gave no answer, nothing guessed; retrying every 2-4s, up to 15 attempts (severity-only baseline: " + this.baseline + ")" + $tail
+          } else if !this.jev_ok.or(false) {
+            "triage fallback -> REVIEW selected, output pending: Jev gave no answer after " + this.held_attempts.string() + " attempts, nothing guessed (severity-only baseline: " + this.baseline + ")" + $tail
+          } else {
+            "triage judged -> " + this.jev_decision.uppercase() + " selected, output pending: " + (if this.held_attempts > 0 { "released after " + this.held_attempts.string() + " held attempts; " } else { "" }) + "Jev reported actionable=" + $act.string() + " severity=" + $sev + " confidence=" + $conf.string() + " team=" + $team + " (severity-only baseline: " + this.baseline + ")" + $tail
+          }
+          meta log_event = $eid
+      - switch:
+          - check: 'meta("log_kind") == "fallback" || meta("log_kind") == "held"'
+            processors:
+              - log:
+                  level: WARN
+                  message: '${! meta("log_summary") }'
+                  fields_mapping: |
+                    root.stage = "select"
+                    root.outcome = meta("log_kind") + "_selected"
+                    root.held_attempts = this.held_attempts
+                    root.destination = this.jev_decision
+                    root.baseline = this.baseline
+                    root.event_id = meta("log_event")
+                    root.write_confirmed = false
+          - check: 'meta("log_kind") == "judged" || meta("log_kind") == "bypass"'
+            processors:
+              - log:
+                  level: INFO
+                  message: '${! meta("log_summary") }'
+                  fields_mapping: |
+                    root.stage = "select"
+                    root.outcome = meta("log_kind") + "_" + this.jev_decision + "_selected"
+                    root.destination = this.jev_decision
+                    root.baseline = this.baseline
+                    root.event_id = meta("log_event")
+                    root.model_called = !this.bypass
+                    root.write_confirmed = false
+
+      # 5. record the decision (deterministic -- feeds future recurrence history).
+      #    Not while held: "held" is not a decision about the event, and it must
+      #    not show up in a fingerprint's history as if it were.
+      - switch:
+          - check: 'this.jev_decision != "held"'
+            processors:
+            - branch:
+                request_map: |
+                  root = {"fingerprint": this.fingerprint, "decision": this.jev_decision}
+                processors:
+                  - http:
+                      url: http://127.0.0.1:8898/record
+                      verb: POST
+                      headers:
+                        Content-Type: application/json
+
+  output:
+    switch:
+      cases:
+        # HOLD. Jev did not answer, so the record is neither guessed nor dropped.
+        # First hold only: write one receipt, then fall through (`continue`) to...
+        - check: this.jev_decision == "held" && this.held_attempts == 0
+          continue: true
+          output:
+            file:
+              path: data/held.jsonl
+              codec: lines
+        # ...the loop: re-submit to this pipeline's own input with the attempt
+        # count raised. It waits at step 0, asks Jev again, and takes its real
+        # route on the pass where Jev answers. After 15 attempts the gate stops
+        # holding and sends it to review.
+        - check: this.jev_decision == "held"
+          output:
+            http_client:
+              url: http://127.0.0.1:8080/logs
+              verb: POST
+              headers:
+                Content-Type: application/json
+              max_in_flight: 64
+            processors:
+              - mapping: |
+                  root = this
+                  root.held_attempts = this.held_attempts + 1
+        - check: this.jev_decision == "page"
+          output:
+            file:
+              path: data/page.jsonl
+              codec: lines
+        - check: this.jev_decision == "notify"
+          output:
+            file:
+              path: data/notify.jsonl
+              codec: lines
+        - check: this.jev_decision == "review"
+          output:
+            file:
+              path: data/review.jsonl
+              codec: lines
+        - check: "true"
+          output:
+            file:
+              path: data/archive.jsonl
+              codec: lines

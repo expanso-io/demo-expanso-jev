@@ -1,0 +1,111 @@
+name: jev-soc-prefilter
+type: pipeline
+description: SOC pre-filter with Jev — auth and access events get a threat classification and escalation judgment at the edge. Only real escalations reach the SIEM; everything else lands in cheap storage with scores attached.
+namespace: production
+labels:
+  category: data-security
+  pattern: ai-decision
+  model: jev
+
+config:
+  input:
+    http_server:
+      address: "0.0.0.0:8080"
+      path: /auth-events
+      allowed_verbs: ["POST"]
+
+  pipeline:
+    processors:
+      - mapping: |
+          # http_server already parses JSON bodies; only parse raw strings
+          root = if this.type() == "string" { this.parse_json() } else { this }
+
+      - mapping: |
+          root = this
+          root.received_at = now()
+
+      # ── Ask Jev ──
+      - mutation: |
+          meta jev_start = timestamp_unix_milli()
+
+      - branch:
+          request_map: |
+            root = {
+              "state": this.string(),
+              "model": "jev-latest",
+              "questions": {
+                "threat": {
+                  "type": "choice",
+                  "instructions": "What threat pattern does this authentication event match?",
+                  "criteria": {
+                    "benign": "Normal user behavior, no threat indicators",
+                    "brute_force": "Repeated failed logins against one account",
+                    "credential_stuffing": "Many accounts tried from one source, low success rate",
+                    "impossible_travel": "Logins from geographically distant locations too fast to be one person",
+                    "token_abuse": "Stolen or replayed session tokens, anomalous API use",
+                    "other": "Suspicious but does not match a known pattern"
+                  }
+                },
+                "escalate": {
+                  "type": "noul",
+                  "instructions": "Should a security analyst review this event immediately?"
+                }
+              }
+            }
+          processors:
+            - http:
+                url: "${JEV_API_URL:https://api.typesafe.ai/v1/systemone}"
+                verb: POST
+                headers:
+                  Content-Type: application/json
+                  Authorization: "Bearer ${TYPESAFE_API_KEY}"
+                timeout: 2s
+                retries: 1
+            - catch:
+              - mapping: |
+                  root = {"answers": {}, "model": "jev-unavailable"}
+          result_map: |
+            root.jev = {
+              "answers": this.answers,
+              "model": this.model.or("jev-latest"),
+              "ms": timestamp_unix_milli() - metadata("jev_start")
+            }
+
+      # ── Confidence-gated cascade ──
+      - mapping: |
+          root = this
+          let threat = this.jev.answers.threat.choice.or("benign")
+          let escalate = this.jev.answers.escalate.noul.or(0)
+
+          root.jev_decision = if $escalate >= 0.85 {
+            "siem"
+          } else if $threat != "benign" {
+            "warm"
+          } else {
+            "cold"
+          }
+
+  output:
+    broker:
+      pattern: fan_out
+      outputs:
+        - stdout:
+            codec: lines
+        - switch:
+            cases:
+              # Production: swap for http_client -> SIEM ingestion API
+              - check: this.jev_decision == "siem"
+                output:
+                  file:
+                    path: ./data/jev-soc-prefilter/siem-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: this.jev_decision == "warm"
+                output:
+                  file:
+                    path: ./data/jev-soc-prefilter/warm-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: "true"
+                output:
+                  file:
+                    path: ./data/jev-soc-prefilter/cold-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines

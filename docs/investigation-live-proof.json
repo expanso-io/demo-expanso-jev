@@ -1,0 +1,218 @@
+{
+  "verified_at": "2026-09-20T18:02:09.928Z",
+  "cloud": {
+    "state": "running",
+    "node_id": "7b9b887e-4269-4905-b030-dec06845bcf2",
+    "job_id": "j-97cf9f41-2388-4c77-88b5-939178b9aaac",
+    "execution_id": "e-80ea2b76-8f85-4e3e-a32e-a56b7f8206ae",
+    "last_tick_at": 1789927329.712692
+  },
+  "phases": [
+    {
+      "phase": "restart",
+      "receipt": {
+        "seq": 159,
+        "at": 1789927314.124641,
+        "stage": "investigation_waiting",
+        "pod": "checkout-api",
+        "namespace": "jev-label-demo",
+        "key": null,
+        "value": null,
+        "operation": "investigate",
+        "origin": null,
+        "source_pods": [],
+        "noul": 0.12,
+        "message": "investigation_waiting",
+        "event_id": 159,
+        "request_id": "062fd17bc5bcf87dfd6ea201",
+        "scenario": "investigate_restart",
+        "investigation": {
+          "id": "e5e24cd3ce66c7f71ff4c674",
+          "namespace": "jev-label-demo",
+          "pod": "checkout-api",
+          "uid": "adb2c74a-fa56-4d53-8e2b-299624ff4ad8",
+          "evidence": [
+            {
+              "id": "E947767d0",
+              "kind": "pod",
+              "text": "{\"name\": \"checkout-api\", \"namespace\": \"jev-label-demo\", \"uid\": \"adb2c74a-fa56-4d53-8e2b-299624ff4ad8\", \"labels\": {\"app\": \"checkout\", \"istio.io/rev\": \"default\", \"team\": \"payments\", \"version\": \"v3.1.0\"}, \"phase\": \"Running\", \"containers\": [{\"name\": \"checkout\", \"image\": \"python:3.13-alpine\"}], \"runtime_note\": \"Live simulator metadata; incident evidence is the marked synthetic stdout. The simulator itself stays healthy.\"}",
+              "source": "Kubernetes API",
+              "synthetic": false
+            },
+            {
+              "id": "E27158fd9",
+              "kind": "logs",
+              "text": "{\"event\": \"investigation_restart\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 1, \"message\": \"Synthetic incident: container restarted once; termination details and stack trace are unavailable. Cause unknown.\", \"at\": 1789927313.7671168}",
+              "source": "pod stdout; demo stimuli",
+              "synthetic": true
+            },
+            {
+              "id": "Ef5d6cb95",
+              "kind": "previous_logs",
+              "text": "Unavailable",
+              "source": "Kubernetes API",
+              "synthetic": false
+            },
+            {
+              "id": "Eb60ab1bf",
+              "kind": "events",
+              "text": "[{\"reason\": \"Scheduled\", \"message\": \"Successfully assigned jev-label-demo/checkout-api to k3d-jev-label-demo-server-0\", \"type\": \"Normal\", \"count\": null, \"at\": \"2026-09-20T18:00:00.436347Z\"}, {\"reason\": \"Pulled\", \"message\": \"Container image \\\"python:3.13-alpine\\\" already present on machine and can be accessed by the pod\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-09-20T18:00:01Z\"}, {\"reason\": \"Created\", \"message\": \"Container created\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-09-20T18:00:01Z\"}, {\"reason\": \"Started\", \"message\": \"Container started\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-09-20T18:00:01Z\"}]",
+              "source": "Kubernetes API",
+              "synthetic": false
+            }
+          ],
+          "phase": "restart",
+          "status": "waiting",
+          "request_id": "062fd17bc5bcf87dfd6ea201",
+          "revision": 156,
+          "score": 0.12
+        }
+      }
+    },
+    {
+      "phase": "context",
+      "receipt": {
+        "seq": 171,
+        "at": 1789927316.2008,
+        "stage": "investigation_waiting",
+        "pod": "checkout-api",
+        "namespace": "jev-label-demo",
+        "key": null,
+        "value": null,
+        "operation": "investigate",
+        "origin": null,
+        "source_pods": [],
+        "noul": 0.33,
+        "message": "investigation_waiting",
+        "event_id": 171,
+        "request_id": "028540a7130b5a11b25aa5c7",
+        "scenario": "investigate_context",
+        "investigation": {
+          "id": "e5e24cd3ce66c7f71ff4c674",
+          "namespace": "jev-label-demo",
+          "pod": "checkout-api",
+          "uid": "adb2c74a-fa56-4d53-8e2b-299624ff4ad8",
+          "evidence": [
+            {
+              "id": "E947767d0",
+              "kind": "pod",
+              "text": "{\"name\": \"checkout-api\", \"namespace\": \"jev-label-demo\", \"uid\": \"adb2c74a-fa56-4d53-8e2b-299624ff4ad8\", \"labels\": {\"app\": \"checkout\", \"istio.io/rev\": \"default\", \"team\": \"payments\", \"version\": \"v3.1.0\"}, \"phase\": \"Running\", \"containers\": [{\"name\": \"checkout\", \"image\": \"python:3.13-alpine\"}], \"runtime_note\": \"Live simulator metadata; incident evidence is the marked synthetic stdout. The simulator itself stays healthy.\"}",
+              "source": "Kubernetes API",
+              "synthetic": false
+            },
+            {
+              "id": "E27158fd9",
+              "kind": "logs",
+              "text": "{\"event\": \"investigation_restart\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 1, \"message\": \"Synthetic incident: container restarted once; termination details and stack trace are unavailable. Cause unknown.\", \"at\": 1789927313.7671168}",
+              "source": "pod stdout; demo stimuli",
+              "synthetic": true
+            },
+            {
+              "id": "Ef5d6cb95",
+              "kind": "previous_logs",
+              "text": "Unavailable",
+              "source": "Kubernetes API",
+              "synthetic": false
+            },
+            {
+              "id": "Eb60ab1bf",
+              "kind": "events",
+              "text": "[{\"reason\": \"Scheduled\", \"message\": \"Successfully assigned jev-label-demo/checkout-api to k3d-jev-label-demo-server-0\", \"type\": \"Normal\", \"count\": null, \"at\": \"2026-09-20T18:00:00.436347Z\"}, {\"reason\": \"Pulled\", \"message\": \"Container image \\\"python:3.13-alpine\\\" already present on machine and can be accessed by the pod\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-09-20T18:00:01Z\"}, {\"reason\": \"Created\", \"message\": \"Container created\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-09-20T18:00:01Z\"}, {\"reason\": \"Started\", \"message\": \"Container started\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-09-20T18:00:01Z\"}]",
+              "source": "Kubernetes API",
+              "synthetic": false
+            },
+            {
+              "id": "E50419947",
+              "kind": "logs",
+              "text": "{\"event\": \"investigation_context\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 5, \"window\": \"4m\", \"release_sha\": \"7c9e2a1\", \"timeline\": [\"12:00 UTC: release 7c9e2a1 deployed (synthetic)\", \"12:02-12:06 UTC: five container restarts (synthetic)\"], \"message\": \"Synthetic incident: five restarts in four minutes after recent release 7c9e2a1. Timeline: release at 12:00 UTC, restarts from 12:02 to 12:06 UTC. Correlation only; cause unknown, termination details and stack trace unavailable.\", \"at\": 1789927315.9186113}",
+              "source": "pod stdout; demo stimuli",
+              "synthetic": true
+            }
+          ],
+          "phase": "context",
+          "status": "waiting",
+          "request_id": "028540a7130b5a11b25aa5c7",
+          "revision": 168,
+          "score": 0.33
+        }
+      }
+    },
+    {
+      "phase": "evidence",
+      "receipt": {
+        "seq": 181,
+        "at": 1789927328.545276,
+        "stage": "investigated",
+        "pod": "checkout-api",
+        "namespace": "jev-label-demo",
+        "key": null,
+        "value": null,
+        "operation": "investigate",
+        "origin": null,
+        "source_pods": [],
+        "noul": 0.84,
+        "message": "investigated",
+        "event_id": 181,
+        "request_id": "2ce1f8c6f5d2d819426b1c57",
+        "scenario": "investigate_evidence",
+        "investigation": {
+          "id": "e5e24cd3ce66c7f71ff4c674",
+          "namespace": "jev-label-demo",
+          "pod": "checkout-api",
+          "uid": "adb2c74a-fa56-4d53-8e2b-299624ff4ad8",
+          "evidence": [
+            {
+              "id": "E947767d0",
+              "kind": "pod",
+              "text": "{\"name\": \"checkout-api\", \"namespace\": \"jev-label-demo\", \"uid\": \"adb2c74a-fa56-4d53-8e2b-299624ff4ad8\", \"labels\": {\"app\": \"checkout\", \"istio.io/rev\": \"default\", \"team\": \"payments\", \"version\": \"v3.1.0\"}, \"phase\": \"Running\", \"containers\": [{\"name\": \"checkout\", \"image\": \"python:3.13-alpine\"}], \"runtime_note\": \"Live simulator metadata; incident evidence is the marked synthetic stdout. The simulator itself stays healthy.\"}",
+              "source": "Kubernetes API",
+              "synthetic": false
+            },
+            {
+              "id": "E27158fd9",
+              "kind": "logs",
+              "text": "{\"event\": \"investigation_restart\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 1, \"message\": \"Synthetic incident: container restarted once; termination details and stack trace are unavailable. Cause unknown.\", \"at\": 1789927313.7671168}",
+              "source": "pod stdout; demo stimuli",
+              "synthetic": true
+            },
+            {
+              "id": "Ef5d6cb95",
+              "kind": "previous_logs",
+              "text": "Unavailable",
+              "source": "Kubernetes API",
+              "synthetic": false
+            },
+            {
+              "id": "Eb60ab1bf",
+              "kind": "events",
+              "text": "[{\"reason\": \"Scheduled\", \"message\": \"Successfully assigned jev-label-demo/checkout-api to k3d-jev-label-demo-server-0\", \"type\": \"Normal\", \"count\": null, \"at\": \"2026-09-20T18:00:00.436347Z\"}, {\"reason\": \"Pulled\", \"message\": \"Container image \\\"python:3.13-alpine\\\" already present on machine and can be accessed by the pod\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-09-20T18:00:01Z\"}, {\"reason\": \"Created\", \"message\": \"Container created\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-09-20T18:00:01Z\"}, {\"reason\": \"Started\", \"message\": \"Container started\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-09-20T18:00:01Z\"}]",
+              "source": "Kubernetes API",
+              "synthetic": false
+            },
+            {
+              "id": "E50419947",
+              "kind": "logs",
+              "text": "{\"event\": \"investigation_context\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 5, \"window\": \"4m\", \"release_sha\": \"7c9e2a1\", \"timeline\": [\"12:00 UTC: release 7c9e2a1 deployed (synthetic)\", \"12:02-12:06 UTC: five container restarts (synthetic)\"], \"message\": \"Synthetic incident: five restarts in four minutes after recent release 7c9e2a1. Timeline: release at 12:00 UTC, restarts from 12:02 to 12:06 UTC. Correlation only; cause unknown, termination details and stack trace unavailable.\", \"at\": 1789927315.9186113}",
+              "source": "pod stdout; demo stimuli",
+              "synthetic": true
+            },
+            {
+              "id": "E08ceb408",
+              "kind": "logs",
+              "text": "{\"event\": \"investigation_evidence\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"reason\": \"OOMKilled\", \"exit_code\": 137, \"memory_limit\": \"512Mi\", \"stack\": \"java.lang.OutOfMemoryError: Java heap space at OrderCache.load:212\", \"release_sha\": \"7c9e2a1\", \"recent_change\": \"Release 7c9e2a1 increased the cache limit from 10000 to 100000 entries (synthetic)\", \"message\": \"Synthetic incident: OOMKilled, exit 137, memory limit 512Mi. java.lang.OutOfMemoryError: Java heap space at OrderCache.load:212. Recent release 7c9e2a1 increased the cache limit from 10000 to 100000 entries. Evidence supports investigating cache memory growth; the change is not a proven root cause.\", \"at\": 1789927317.8577178}",
+              "source": "pod stdout; demo stimuli",
+              "synthetic": true
+            }
+          ],
+          "phase": "evidence",
+          "status": "investigated",
+          "request_id": "2ce1f8c6f5d2d819426b1c57",
+          "revision": 177,
+          "score": 0.84,
+          "diagnosis": "**Diagnosis (hypothesis, not proven):** Synthetic incident evidence points to memory exhaustion in checkout-api, plausibly linked to release 7c9e2a1's cache-limit increase.\n\n**Facts (as reported by evidence)**\n- Synthetic stdout reports OOMKilled, exit 137, 512Mi limit, and `java.lang.OutOfMemoryError: Java heap space at OrderCache.load:212` (E08ceb408).\n- Same record states release 7c9e2a1 raised the cache limit from 10,000 to 100,000 entries (E08ceb408).\n- Synthetic timeline: release at 12:00 UTC, five restarts 12:02–12:06 (E50419947). An earlier record reports one restart with cause unknown (E27158fd9).\n- Kubernetes API shows the pod Running, with only normal Scheduled/Pulled/Created/Started events at 18:00 and no OOM or BackOff events (Eb60ab1bf, E947767d0). Previous logs are unavailable (Ef5d6cb95).\n\n**Hypothesis**\n- A 10x larger OrderCache exceeds heap/container memory, causing repeated OOM kills. E08ceb408 itself says this is not a proven root cause; E50419947 is correlation only.\n\n**Inconsistencies / caveats**\n- All incident signals are synthetic stdout; the Kubernetes API does not corroborate any restart or OOM kill (Eb60ab1bf).\n- Restart counts differ (1 vs 5) across E27158fd9 and E50419947.\n- The stack trace is Java, but the container image is `python:3.13-alpine` (E947767d0), consistent with simulated rather than real failure.\n- Timeline times (12:00 UTC) do not match event timestamps (18:00Z).\n\n**Missing evidence**\n- Container `lastState.terminated` (reason, exit code), actual restartCount, memory usage metrics, JVM heap settings, the 7c9e2a1 diff, previous container logs.\n\n**Next verification**\n- Inspect pod container statuses for a terminated reason/restart count, and compare memory metrics before and after 7c9e2a1 to confirm cache growth toward the 512Mi limit.\n\nNo fix has been performed."
+        }
+      }
+    }
+  ],
+  "browser_errors": []
+}

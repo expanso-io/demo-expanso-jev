@@ -1,0 +1,5 @@
+{"record_id":"rec-001","name":"Jane Doe","email":"jane.doe@example.com","ssn":"123-45-6789","plan":"team-annual"}
+{"record_id": "rec-002", "name": "System Bot", "event": "nightly backup completed in 42s"}
+{"record_id":"rec-003","name":"Deploy Key","email":"ops@example.com","api_key":"sk-live-9f2c41aa77e04bd1","note":"production deploy token, do not share"}
+{"record_id":"rec-004","name":"John Smith","email":"john.smith@example.com","diagnosis":"Q3 performance review: exceeds expectations","salary_band":"L5"}
+{"record_id": "rec-005", "name": "Status Page", "event": "all systems operational"}

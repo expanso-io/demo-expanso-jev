@@ -1,0 +1,5 @@
+{"ts":"2026-09-18T14:00:00Z","user":"alice@corp.com","ip":"10.4.2.18","geo":"Seattle, US","result":"success","mfa":true}
+{"ts":"2026-09-18T14:01:12Z","user":"bob@corp.com","ip":"203.0.113.99","geo":"Lagos, NG","result":"failed","failures_10m":47}
+{"ts":"2026-09-18T14:01:40Z","user":"carol@corp.com","ip":"10.4.2.22","geo":"Seattle, US","result":"success","mfa":true}
+{"ts":"2026-09-18T14:02:03Z","user":"dave@corp.com","ip":"198.51.100.7","geo":"Seattle, US","result":"success","prev_login_geo":"Tokyo, JP","prev_login_ago_min":22}
+{"ts": "2026-09-18T14:03:11Z", "ip": "192.0.2.55", "result": "mixed", "distinct_users_10m": 18, "success_rate": 0.22, "note": "shared NAT gateway for branch office"}

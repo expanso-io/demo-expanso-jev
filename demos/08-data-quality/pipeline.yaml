@@ -1,0 +1,102 @@
+name: jev-data-quality
+type: pipeline
+description: Data quality firewall with Jev — warehouse-bound rows are judged for quality and schema conformance at the edge. Bad rows quarantine with reasons attached; good rows flow through.
+namespace: production
+labels:
+  category: data-transformation
+  pattern: ai-decision
+  model: jev
+
+config:
+  input:
+    http_server:
+      address: "0.0.0.0:8080"
+      path: /rows
+      allowed_verbs: ["POST"]
+
+  pipeline:
+    processors:
+      - mapping: |
+          # http_server already parses JSON bodies; only parse raw strings
+          root = if this.type() == "string" { this.parse_json() } else { this }
+
+      - mapping: |
+          root = this
+          root.received_at = now()
+
+      # ── Ask Jev ──
+      - mutation: |
+          meta jev_start = timestamp_unix_milli()
+
+      - branch:
+          request_map: |
+            root = {
+              "state": this.string(),
+              "model": "jev-latest",
+              "questions": {
+                "quality": {
+                  "type": "score",
+                  "instructions": "Rate the data quality of this row for analytics use.",
+                  "criteria": [
+                    "Corrupt or unusable",
+                    "Poor, major issues",
+                    "Acceptable with caveats",
+                    "Good, minor issues only",
+                    "Pristine"
+                  ]
+                },
+                "conformant": {
+                  "type": "noul",
+                  "instructions": "Does this row conform to the expected schema and plausible value ranges? Expected: order_id (string), customer_id (string), amount (positive number), currency (3-letter code), ts (ISO timestamp)."
+                }
+              }
+            }
+          processors:
+            - http:
+                url: "${JEV_API_URL:https://api.typesafe.ai/v1/systemone}"
+                verb: POST
+                headers:
+                  Content-Type: application/json
+                  Authorization: "Bearer ${TYPESAFE_API_KEY}"
+                timeout: 2s
+                retries: 1
+            - catch:
+              - mapping: |
+                  root = {"answers": {}, "model": "jev-unavailable"}
+          result_map: |
+            root.jev = {
+              "answers": this.answers,
+              "model": this.model.or("jev-latest"),
+              "ms": timestamp_unix_milli() - metadata("jev_start")
+            }
+
+      # ── Confidence-gated cascade ──
+      - mapping: |
+          root = this
+          let quality = this.jev.answers.quality.score.or(0)
+          let conformant = this.jev.answers.conformant.noul.or(0)
+
+          root.jev_decision = if $quality < 1 || $conformant < 0.3 {
+            "quarantine"
+          } else {
+            "warehouse"
+          }
+
+  output:
+    broker:
+      pattern: fan_out
+      outputs:
+        - stdout:
+            codec: lines
+        - switch:
+            cases:
+              - check: this.jev_decision == "quarantine"
+                output:
+                  file:
+                    path: ./data/jev-data-quality/quarantine-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: "true"
+                output:
+                  file:
+                    path: ./data/jev-data-quality/warehouse-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
