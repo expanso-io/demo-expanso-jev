@@ -1,0 +1,143 @@
+name: jev-inbox-triage
+type: pipeline
+description: Inbox triage with Jev — every email gets a tray, an urgency score and a human-written judgment inline. Urgent human mail raises an alert; uncertain mail queues for review; everything else files itself.
+namespace: production
+labels:
+  category: integrations
+  pattern: ai-decision
+  model: jev
+
+config:
+  input:
+    http_server:
+      address: "0.0.0.0:8080"
+      path: /inbox
+      allowed_verbs: ["POST"]
+
+  pipeline:
+    processors:
+      # Deterministic dedupe happens one step upstream: gmail_fetch.py only
+      # POSTs message IDs it has never forwarded (./data/gmail_fetch_seen.json).
+      - mapping: |
+          # http_server already parses JSON bodies; only parse raw strings
+          root = if this.type() == "string" { this.parse_json() } else { this }
+
+      - mapping: |
+          root = this
+          root.received_at = now()
+
+      # ── Ask Jev ──
+      - mutation: |
+          meta jev_start = timestamp_unix_milli()
+
+      - branch:
+          request_map: |
+            root = {
+              "state": this.string(),
+              "model": "jev-latest",
+              "questions": {
+                "tray": {
+                  "type": "choice",
+                  "instructions": "Which tray does this email belong in?",
+                  "criteria": {
+                    "needs_reply": "A real person writing to you expecting a reply: questions, requests, follow-ups, introductions, meeting planning",
+                    "updates": "Machine notifications you only read: receipts, order updates, shipping alerts, one-time passcodes, password resets, calendar reminders",
+                    "promos": "Marketing you opted into: newsletters, new feature announcements, sales events from vendors you use",
+                    "sales": "Cold outbound: sales pitches, recruiter outreach, partnership proposals from strangers",
+                    "spam": "Unsolicited junk: phishing, crypto doubling schemes, prize scams, fake invoices, lookalike domains"
+                  }
+                },
+                "urgency": {
+                  "type": "score",
+                  "instructions": "How urgent is this email?",
+                  "criteria": [
+                    "No urgency: informational, read at leisure",
+                    "Low urgency: worth reading this week",
+                    "Moderate urgency: needs action in the next couple of days",
+                    "High urgency: needs action today",
+                    "Critical: act immediately, something is on fire or someone is waiting"
+                  ]
+                },
+                "human_written": {
+                  "type": "noul",
+                  "instructions": "Was this email written by a human, rather than an automated system, bot, or mass-marketing sender?"
+                }
+              }
+            }
+          processors:
+            - http:
+                url: "${JEV_API_URL:https://api.typesafe.ai/v1/systemone}"
+                verb: POST
+                headers:
+                  Content-Type: application/json
+                  Authorization: "Bearer ${TYPESAFE_API_KEY}"
+                timeout: 2s
+                retries: 1
+            - catch:
+              - mapping: |
+                  root = {"answers": {}, "model": "jev-unavailable"}
+          result_map: |
+            root.jev = {
+              "answers": this.answers,
+              "model": this.model.or("jev-latest"),
+              "ms": timestamp_unix_milli() - metadata("jev_start")
+            }
+
+      # ── Confidence-gated cascade ──
+      - mapping: |
+          root = this
+          let tray = this.jev.answers.tray.choice.or("updates")
+          let tray_conf = this.jev.answers.tray.confidence.or(0)
+          let urgency = this.jev.answers.urgency.score.or(0)
+
+          root.jev_decision = if $tray_conf < 0.5 {
+            "review"
+          } else if $tray == "needs_reply" && $urgency >= 4 {
+            "alert"
+          } else if $tray == "needs_reply" {
+            "reply_queue"
+          } else if $tray == "spam" {
+            "archive"
+          } else {
+            "filed_" + $tray
+          }
+          root.tray = $tray
+
+  output:
+    broker:
+      pattern: fan_out
+      outputs:
+        - stdout:
+            codec: lines
+        - switch:
+            cases:
+              # Production: swap for http_client -> on-call alerting webhook
+              - check: this.jev_decision == "alert"
+                output:
+                  file:
+                    path: ./data/jev-inbox-triage/alert-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              # Production: swap for http_client -> reply-task queue API
+              - check: this.jev_decision == "reply_queue"
+                output:
+                  file:
+                    path: ./data/jev-inbox-triage/reply-queue-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              # Production: swap for http_client -> human review queue
+              - check: this.jev_decision == "review"
+                output:
+                  file:
+                    path: ./data/jev-inbox-triage/review-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              # Production: swap for http_client -> archive bucket
+              - check: this.jev_decision == "archive"
+                output:
+                  file:
+                    path: ./data/jev-inbox-triage/archive-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              # filed_updates / filed_promos / filed_sales, one queue per tray
+              - check: "true"
+                output:
+                  file:
+                    path: ./data/jev-inbox-triage/${! this.jev_decision }-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines

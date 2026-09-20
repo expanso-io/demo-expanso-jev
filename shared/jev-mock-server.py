@@ -66,8 +66,24 @@ CHOICE_LEXICON = {
                    "credential", "regulated", "legal"},
     "confidential": {"salary", "compensation", "performance", "review",
                       "diagnosis", "medical", "confidential", "band"},
-    "spam": {"spam", "crypto", "doubling", "guaranteed", "shady", "promo",
-             "scam", "winner", "prize", "unsolicited"},
+    "spam": {"spam", "crypto", "bitcoin", "btc", "doubling", "guaranteed",
+             "shady", "promo", "scam", "winner", "prize", "unsolicited",
+             "phishing", "lookalike", "fake"},
+    "needs_reply": {"review", "draft", "chance", "thanks", "could", "would",
+                    "question", "ask", "asked", "meet", "meeting", "call",
+                    "chat", "talk", "follow", "introduce", "introduction",
+                    "wondering", "need", "needs", "plan", "planning"},
+    "updates": {"receipt", "order", "shipped", "shipping", "delivered",
+                "otp", "passcode", "code", "verify", "verification", "reset",
+                "password", "invoice", "statement", "reminder", "alert",
+                "notification", "automated", "charged", "payment", "invited",
+                "calendar"},
+    "promos": {"newsletter", "webinar", "unsubscribe", "browser", "digest",
+               "deals", "discount", "sale", "sales", "announcement",
+               "subscribe", "subscribers"},
+    "sales": {"recruiter", "recruiting", "pitch", "pitches", "partnership",
+              "opportunity", "reaching", "cold", "proposal", "proposals",
+              "outbound", "demo", "trial", "role", "hiring"},
     "hate": {"hate", "shouldn", "ruining", "demean", "attack"},
     "self_harm": {"suicide", "disappeared", "harm", "kill", "die", "worthless"},
     "brute_force": {"brute", "failed", "failure", "failures", "login",
@@ -194,7 +210,14 @@ def record_issues(record):
 
 def answer_noul(qid, q, state_words, state_text, state):
     # Structural special cases first.
-    if qid == "intent_match" and isinstance(state, dict) and "user_intent" in state:
+    if qid == "human_written":
+        # jevmail-style human check: automation and mass-mail markers mean
+        # no human wrote it. Anything else is treated as human-written.
+        automated = {"unsubscribe", "noreply", "no-reply", "donotreply",
+                     "automated", "receipt", "otp", "passcode", "newsletter",
+                     "webinar", "digest", "list-unsubscribe"}
+        hit = not (expanded(state_words) & automated)
+    elif qid == "intent_match" and isinstance(state, dict) and "user_intent" in state:
         intent = content_words(str(state.get("user_intent", "")))
         tool_text = json.dumps({"tool": state.get("tool"), "args": state.get("args")})
         tool_words = expanded(words(tool_text))
@@ -286,6 +309,20 @@ def answer_score(qid, q, state_words, state):
     sw = state_words
     if qid == "quality" and isinstance(state, dict):
         score = max(0, (n - 1) - record_issues(state))
+    elif qid == "urgency":
+        # Strong urgency signals pin the top of the 1-5 scale so the inbox
+        # alert threshold (>= 4) is reachable in fixture traffic.
+        strong = {"outage", "down", "breach", "asap", "immediately",
+                  "emergency", "critical", "production", "blocking",
+                  "downtime", "failover", "deadline"}
+        if expanded(sw) & strong:
+            score = n - 1
+        elif NEGATIVE & sw:
+            score = (n - 1) * 0.85
+        elif POSITIVE & sw:
+            score = (n - 1) * 0.15
+        else:
+            score = (n - 1) * 0.35
     elif qid in INVERTED_SCORE:
         if POSITIVE & sw:
             score = (n - 1) * 0.85
