@@ -104,7 +104,7 @@ Details, environment variables and troubleshooting:
 |---|---|
 | `demos/01-log-triage/` | The full live demo: generator, two pipelines, dashboard, tests. |
 | `demos/02-…` to `demos/10-…` | Nine more Expanso + Jev pipelines, each a `pipeline.yaml`, sample `input.jsonl` and a README: ticket routing, sensitivity masking, sensor triage, agent guardrails, smart sampling, SOC pre-filtering, data quality, moderation, feedback mining. Pipelines only; no dashboard yet. |
-| [`demos/11-pod-labels/`](demos/11-pod-labels/README.md) | Cloud-driven Kubernetes label agent: discover labels, ask Jev, apply additions, and undo owned changes when signals change. Includes a real Service membership fixture and local tests. |
+| [`demos/11-pod-labels/`](demos/11-pod-labels/README.md) | Keeps Kubernetes pod labels true: Expanso reads pod logs, asks Jev one question when the evidence might change a label, and patches or un-patches it. Runs on a local k3d cluster with one command; the adapter and pipeline work on your own cluster too. |
 | `shared/jev-mock-server.py` | A zero-credential stand-in for Jev's API. |
 | `display/fancy/jev-flow.html` | A standalone animated walkthrough of the idea. `just flow`. |
 | `tools/expanso-agent-help.py`, `AGENTS.md` | How the Expanso CLIs take credentials from the environment, for people and coding agents. `just agent-help`. |

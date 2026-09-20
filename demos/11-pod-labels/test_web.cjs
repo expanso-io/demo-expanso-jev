@@ -6,95 +6,81 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {chromium}=require('playwright');
 const root=__dirname;
-const baseState={mode:'live',apply_enabled:true,cluster_context:'test-fixture',namespace:'jev-label-demo',available_labels:[{key:'routing-tier',value:'stable',meaning:'Eligible for healthy HTTP traffic'},{key:'routing-tier',value:'batch',meaning:'Eligible for batch processing'}],cloud:{state:'running'},pods:['analytics-worker','checkout-api','orders-api'].map(name=>({name,namespace:'jev-label-demo',event_enabled:true,status:'Running',node:'test-node',labels:{app:name.includes('analytics')?'analytics':name.includes('orders')?'orders':'checkout'},logs:[]})),events:[]};
-const server=http.createServer((req,res)=>{const known={'/':'web/index.html','/web/style.css':'web/style.css','/web/app.js':'web/app.js','/assets/expanso-logo-full-violet.svg':'../01-log-triage/assets/expanso-logo-full-violet.svg','/assets/typesafe-mark.png':'../01-log-triage/assets/typesafe-mark.png'};let file=known[req.url];if(req.url.startsWith('/fonts/')&&/^[\w-]+\.woff2$/.test(req.url.slice(7)))file='../01-log-triage/fonts/'+req.url.slice(7);if(!file){res.writeHead(404);res.end();return;}res.setHeader('Content-Type',req.url.endsWith('.svg')?'image/svg+xml':req.url.endsWith('.png')?'image/png':req.url.endsWith('.js')?'text/javascript':req.url.endsWith('.css')?'text/css':req.url.endsWith('.woff2')?'font/woff2':'text/html');res.end(fs.readFileSync(path.join(root,file)));});
-(async()=>{await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const browser=await chromium.launch({headless:true,channel:'chrome'});try{
- const page=await browser.newPage({viewport:{width:1440,height:1100}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
- let state=structuredClone(baseState),events=[],seq=0,posted=[],stageDelay=65,outcome='applied';
+const fonts=path.join(root,'../01-log-triage/fonts');
+const base={app:'x',team:'payments',version:'v1.0.0','istio.io/rev':'default'};
+const pod=(name,labels={})=>({name,namespace:'jev-label-demo',status:'Running',event_enabled:true,logs:[],labels:{...base,app:name.split('-')[0],...labels}});
+const scenarios=[['crashloop','Crash loop',[['undo','routing-tier','stable'],['add','health','degraded']]],['restart','One restart',[['add','health','degraded']]],['healthy','Back to healthy',[['undo','health','degraded'],['add','routing-tier','stable']]]]
+  .map(([id,title,prefer])=>({id,title,prefer,why:`why ${id}`,message:`log line for ${id}`}));
+const baseState={mode:'live',apply_enabled:true,threshold:0.8,auto:true,cluster_context:'test',namespace:'jev-label-demo',scenarios,
+  available_labels:[{key:'routing-tier',value:'stable',meaning:'m'},{key:'health',value:'degraded',meaning:'m'}],
+  pods:[pod('analytics-worker'),pod('checkout-api',{'routing-tier':'stable'}),pod('orders-api')],cloud:{state:'running'}};
+const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.woff2':'font/woff2'};
+const server=http.createServer((req,res)=>{
+  const file=req.url==='/'?path.join(root,'web/index.html'):req.url.startsWith('/web/')?path.join(root,req.url):req.url.startsWith('/fonts/')?path.join(fonts,path.basename(req.url)):null;
+  if(!file||!fs.existsSync(file)){res.writeHead(404);res.end();return;}
+  res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream'});res.end(fs.readFileSync(file));});
+(async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,channel:'chrome'});let page,errors=[],posted=[],events=[];try{
+ page=await browser.newPage({viewport:{width:1600,height:900}});page.on('pageerror',e=>errors.push(e.message));
+ let state=structuredClone(baseState),seq=0,autoCalls=[],outcome='applied';
+ const run=(podName,scenario,op,key,value,noul)=>{const request_id='r'+(posted.length+seq);const common={request_id,pod:podName,namespace:'jev-label-demo'};
+   const stages=[['queued',{scenario}],['event',{scenario}],['collected',{key,value,operation:op}],['judging',{key,value,operation:op}],['judged',{key,value,operation:op,noul}],[outcome==='held'?'held':op==='undo'?'undone':'applied',{key,value,operation:op,noul}]];
+   stages.forEach(([stage,extra],i)=>setTimeout(()=>{if(stage==='applied')state.pods.find(p=>p.name===podName).labels[key]=value;if(stage==='undone')delete state.pods.find(p=>p.name===podName).labels[key];
+     events.push({...common,...extra,stage,seq:++seq,at:Date.now()/1000,message:stage});},i*60));};
  await page.route('**/api/**',async route=>{const url=new URL(route.request().url());let body;
-  if(url.pathname==='/api/session')body={csrf_token:'test-csrf'};
+  if(url.pathname==='/api/session')body={csrf_token:'t'};
   else if(url.pathname==='/api/state')body={...state,events};
   else if(url.pathname==='/api/events')body={events:events.filter(e=>e.seq>Number(url.searchParams.get('after'))),cursor:seq};
-  else if(url.pathname==='/api/event'){
-   const request=route.request().postDataJSON();posted.push(request);const request_id='test-'+posted.length;
-   const stages=['queued','event','collected','judging','judged',outcome];
-   for(const [index,stage] of stages.entries())setTimeout(()=>{const event={...request,request_id,seq:++seq,stage,at:Date.now()/1000,message:stage,noul:stage==='judged'||stage==='applied'?.96:undefined};if(['applied','undone'].includes(stage)){event.key='routing-tier';event.value='stable';event.elapsed_ms=400;const labels=state.pods.find(p=>p.name===request.pod).labels;if(stage==='applied')labels['routing-tier']='stable';else delete labels['routing-tier'];}events.push(event);},index*stageDelay);
-   body={request_id,stage:'queued'};
-  }else{await route.fulfill({status:404,body:'{}'});return;}
-  await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body)});
- });
+  else if(url.pathname==='/api/auto'){const b=route.request().postDataJSON();autoCalls.push(b);state.auto=b.on;body={auto:b.on};}
+  else if(url.pathname==='/api/event'){const b=route.request().postDataJSON();posted.push(b);const s=scenarios.find(x=>x.id===b.scenario);const target=state.pods.find(p=>p.name===b.pod);
+    const [op,key,value]=s.prefer.find(([o,k,v])=>o==='undo'?target.labels[k]===v:!(k in target.labels))||s.prefer[0];run(b.pod,b.scenario,op,key,value,outcome==='held'?0.08:0.93);body={request_id:'x',stage:'queued'};}
+  else{await route.fulfill({status:404,body:'{}'});return;}
+  await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body)});});
  await page.goto(`http://127.0.0.1:${server.address().port}`);await page.locator('[data-pod]').first().waitFor();
- assert.equal(await page.locator('#kube-node').count(),1);
- assert.equal(await page.locator('#runtime-details').isVisible(),false);
- assert.ok(!/click to inject|round trip|choose an event|send it to any pod/i.test(await page.locator('body').innerText()));
- await page.waitForFunction(()=>[...document.querySelectorAll('.processor img')].every(i=>i.complete&&i.naturalWidth>0));
+
+ assert.equal(await page.locator('[data-pod]').count(),3);
+ assert.equal(await page.locator('.legend-item').count(),scenarios.length);
  assert.equal(await page.locator('.processor img').count(),2);
- assert.equal(await page.locator('.label-catalog h2').textContent(),'Available labels');
- assert.equal(await page.locator('.label-choice').count(),2);
- assert.equal(await page.locator('.pod-phase').filter({hasText:'Running'}).count(),3);
- assert.equal(await page.locator('[data-scenario]').count(),5);assert.equal(await page.locator('[data-pod]:enabled').count(),3);
- await page.evaluate(()=>{window.testRoutes=[];new MutationObserver(records=>{for(const r of records)for(const n of r.addedNodes)if(n.dataset?.route)window.testRoutes.push(n.dataset.route);}).observe(document.getElementById('packets'),{childList:true});});
- for(const pod of state.pods)events.push({seq:++seq,stage:'routine',pod:pod.name,namespace:pod.namespace,count:8,at:Date.now()/1000});
- await page.waitForFunction(()=>document.querySelectorAll('.routine-packet').length>=3);assert.equal(posted.length,0);assert.equal(await page.locator('#packets .packet').count(),0);
- console.log('PASS real-receipt routine visualization bypasses signal route');
- const target=page.locator('[data-pod="jev-label-demo/checkout-api"]');await target.click();
- await page.waitForFunction(()=>document.querySelector('.packet[data-route="event-to-pod"]'),{},{timeout:500});
- assert.equal(await target.locator('.label').filter({hasText:'routing-tier=stable'}).count(),0,'No optimistic label before confirmed return');
- await page.waitForFunction(()=>document.getElementById('result-title').textContent.includes('label added'),{},{timeout:5000});
- assert.deepEqual(await page.evaluate(()=>window.testRoutes),['event-to-pod','pod-to-cloud','cloud-to-jev','jev-to-cloud','cloud-to-kubernetes','kubernetes-to-pod']);
- await target.locator('.label-change.added').waitFor();
- assert.equal(await target.locator('.label-change.added').count(),1);
- assert.ok(await target.locator('.label-change strong').evaluate(n=>parseFloat(getComputedStyle(n).fontSize)>=29));
- assert.equal(await target.locator('.label-change').evaluate(n=>getComputedStyle(n).backgroundColor),'rgb(37, 92, 229)');
- await page.waitForTimeout(4700);assert.equal(await target.locator('.label-change.added').count(),1);
- await target.locator('.label-change').waitFor({state:'detached'});
- assert.equal(state.pods.find(p=>p.name==='checkout-api').labels['routing-tier'],'stable');
- console.log('PASS immediate injection, Expanso → Jev → Expanso → Kubernetes → pod flow, and confirmation-gated labels');
- for(const [pod,scenario] of [['analytics-worker','analytics'],['orders-api','security']]){await page.locator(`[data-scenario="${scenario}"]`).click();await page.locator(`[data-pod="jev-label-demo/${pod}"]`).click();await page.waitForFunction(p=>document.getElementById('result-title').textContent.startsWith(p+': label added'),pod);}
- assert.deepEqual(posted.map(e=>[e.pod,e.scenario]),[['checkout-api','checkout'],['analytics-worker','analytics'],['orders-api','security']]);
- console.log('PASS all three pod targets and multiple event types');
- stageDelay=300;
- const startCount=posted.length;
- for(const [index,pod] of ['checkout-api','analytics-worker','orders-api'].entries()){
-  const button=page.locator(`[data-pod="jev-label-demo/${pod}"]`);
-  assert.equal(await button.isEnabled(),true,`${pod} remains clickable while other pods process`);
-  await button.click();
-  assert.equal(await page.locator('[data-pod]:disabled').count(),index+1);
- }
- await page.waitForFunction(()=>document.querySelectorAll('[data-pod]:enabled').length===3);
- assert.deepEqual(posted.slice(startCount).map(e=>e.pod),['checkout-api','analytics-worker','orders-api']);
- console.log('PASS simultaneous injection into all three pods and re-enabled controls');
- outcome='undone';stageDelay=65;
- await target.click();
- await page.waitForFunction(()=>document.getElementById('result-title').textContent.includes('label removed'));
- assert.equal(await target.locator('.label.routing').count(),0);
- assert.equal(await target.locator('.label-change.removed').count(),1);
- await page.waitForFunction(()=>!document.querySelector('.label-change.removed'));
- console.log('PASS prominent confirmed additions and event-colored removal feedback');
- for(const terminal of ['held','dry-run']){
-  outcome=terminal;stageDelay=65;
-  await page.evaluate(()=>{window.testRoutes=[];});
-  await target.click();
-  await page.waitForFunction(()=>document.querySelectorAll('[data-pod]:enabled').length===3);
-  assert.deepEqual(await page.evaluate(()=>window.testRoutes),['event-to-pod','pod-to-cloud','cloud-to-jev','jev-to-cloud']);
-  assert.ok(!(await page.locator('#result-detail').textContent()).includes('confirmed'));
- }
- console.log('PASS held and dry-run decisions stop at Expanso without Kubernetes mutation animation');
- for(const width of [1440,1024,768,390]){await page.setViewportSize({width,height:1100});await page.waitForTimeout(80);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`overflow at ${width}`);
-  const ports=await page.evaluate(()=>{const b=document.querySelector('[data-pod="jev-label-demo/checkout-api"]').getBoundingClientRect(),t=document.getElementById('topology').getBoundingClientRect(),out=document.getElementById('to-cloud'),back=document.getElementById('to-pod');return {outY:out.getPointAtLength(0).y,backY:back.getPointAtLength(back.getTotalLength()).y,top:b.top-t.top,bottom:b.bottom-t.top};});assert.ok(ports.outY<ports.top&&ports.backY>ports.bottom,'log and update arrows use opposite pod edges');
-  if(process.env.POD_UI_SCREENSHOT&&width===390){await page.locator('#mode').evaluate(n=>{n.textContent='BROWSER TEST';});await page.locator('#cloud-status').evaluate(n=>{n.textContent='TEST';});await page.locator('.shell').screenshot({path:process.env.POD_UI_SCREENSHOT.replace('.png','-mobile.png')});}
-  const geometry=await page.evaluate(()=>{const top=document.getElementById('topology').getBoundingClientRect(),c=document.getElementById('cloud-node').getBoundingClientRect(),j=document.getElementById('jev-node').getBoundingClientRect(),label=[...document.querySelectorAll('.wire-label')].find(x=>x.textContent==='evidence');return {expected:(c.right+j.left)/2-top.x,actual:Number(label.getAttribute('x')),anchor:label.getAttribute('class'),source:document.getElementById('event-source').getBoundingClientRect().bottom,pod:document.querySelector('[data-pod]').getBoundingClientRect().top};});assert.ok(Math.abs(geometry.expected-geometry.actual)<1);assert.ok(geometry.source<geometry.pod);console.log('PASS layout and centered arrow label at '+width);}
- if(process.env.POD_UI_SCREENSHOT){
-  await page.setViewportSize({width:1846,height:980});
-  outcome='applied';await target.click();await target.locator('.label-change.added').waitFor();
-  for(const pod of state.pods)events.push({seq:++seq,stage:'routine',pod:pod.name,namespace:pod.namespace,count:12,at:Date.now()/1000});
-  await page.waitForTimeout(450);
-  await page.evaluate(()=>{
-   document.getElementById('mode').textContent='BROWSER TEST · SYNTHETIC EVENTS';
-   document.getElementById('connection').textContent='Browser test · no Cloud connection';
-   document.getElementById('cloud-status').textContent='TEST';
-  });
-  await page.locator('.shell').screenshot({path:process.env.POD_UI_SCREENSHOT});
- }
- await page.emulateMedia({reducedMotion:'reduce'});await page.locator('[data-scenario="recovery"]').focus();await page.keyboard.press('Enter');assert.equal(await page.locator('[data-scenario="recovery"]').getAttribute('aria-pressed'),'true');assert.deepEqual(errors,[]);console.log('PASS keyboard selection, reduced motion, no browser errors');
-}finally{await browser.close();await new Promise(resolve=>server.close(resolve));}})().catch(e=>{console.error(e);process.exitCode=1;server.close();});
+ const checkout=page.locator('[data-pod="jev-label-demo/checkout-api"]');
+ assert.equal(await checkout.locator('.label').count(),5);
+ assert.equal(await checkout.locator('.label.managed').count(),1,'only catalog labels are marked as managed');
+ assert.ok(await checkout.locator('.label').first().evaluate(n=>parseFloat(getComputedStyle(n).fontSize)<=13),'labels stay small');
+ assert.match(await page.locator('#mode').textContent(),/acts at ≥ 80% yes/);
+ console.log('PASS pods render base and managed labels as small chips, with a legend entry per event');
+
+ for(const p of state.pods)events.push({seq:++seq,stage:'routine',pod:p.name,namespace:p.namespace,count:6,at:Date.now()/1000});
+ await page.waitForFunction(()=>document.querySelectorAll('.routine-packet').length>=3);
+ assert.equal(await page.locator('#packets .packet').count(),0);assert.equal(posted.length,0);
+ assert.equal(await page.locator('#routine-count').textContent(),'18');assert.equal(await page.locator('#asked-count').textContent(),'0');
+ console.log('PASS routine lines animate and are counted without any Jev question');
+
+ await checkout.click();await page.locator('[data-scenario="crashloop"]').click();
+ await page.waitForFunction(()=>document.querySelector('#feed li .did')?.textContent.includes('− routing-tier=stable'),{},{timeout:5000});
+ assert.deepEqual(posted[0],{namespace:'jev-label-demo',pod:'checkout-api',scenario:'crashloop'});
+ await page.waitForFunction(()=>!document.querySelector('[data-pod="jev-label-demo/checkout-api"] .label[data-key="routing-tier"]:not(.leaving)'));
+ assert.match(await page.locator('#feed li .said').first().textContent(),/no longer true\? Jev 93% yes/);
+ assert.match(await page.locator('#api-line').textContent(),/PATCH .*checkout-api.*− routing-tier=stable/);
+ console.log('PASS a removal is shown only after the confirmed receipt, with the question and answer');
+
+ await page.locator('[data-scenario="crashloop"]').click();
+ await page.waitForFunction(()=>document.querySelector('[data-pod="jev-label-demo/checkout-api"] .label[data-key="health"]'),{},{timeout:5000});
+ assert.equal(await page.locator('#asked-count').textContent(),'2');
+ console.log('PASS the next event adds the warning label');
+
+ outcome='held';const before=await checkout.locator('.label:not(.leaving)').count();
+ await page.locator('[data-scenario="restart"]').click();
+ await page.waitForFunction(()=>document.querySelector('#feed li .did')?.textContent==='no change',{},{timeout:5000});
+ assert.equal(await checkout.locator('.label:not(.leaving)').count(),before);
+ assert.equal(await page.locator('#packets .packet').count(),0);
+ console.log('PASS a low answer changes nothing and sends nothing to Kubernetes');
+
+ await page.locator('#auto-toggle').click();await page.waitForFunction(()=>document.getElementById('auto-toggle').textContent==='Resume events');
+ assert.deepEqual(autoCalls,[{on:false}]);
+ console.log('PASS events can be paused');
+
+ for(const width of [1600,1280,1024,768,390]){await page.setViewportSize({width,height:900});await page.waitForTimeout(80);
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`no horizontal scroll at ${width}`);}
+ await page.setViewportSize({width:1600,height:900});await page.waitForTimeout(80);
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight),'fits one 1600x900 screen');
+ assert.deepEqual(errors,[]);
+ console.log('PASS no page errors, no horizontal scroll at any width, fits one screen');
+}catch(e){console.error('page errors:',errors,'\nfeed:',await page.locator('#feed').innerText().catch(()=>'?'),'\nposted:',JSON.stringify(posted),'\nevents:',events.map(x=>x.stage).join(','));throw e;}finally{await browser.close();await new Promise(r=>server.close(r));}})().catch(e=>{console.error(e);process.exitCode=1;server.close();});

@@ -1,216 +1,220 @@
 'use strict';
+// The board only draws what the adapter reports: pod labels come from the
+// Kubernetes API, routine counts from collected stdout, and every signal
+// animation is replayed from a real stage receipt (event, judging, judged,
+// applied/undone/held). A label chip changes only after Kubernetes confirms.
 const $ = id => document.getElementById(id);
 const NS = 'http://www.w3.org/2000/svg';
-const eventColors={checkout:'#255ce5',failure:'#c92d4b',analytics:'#7839bc',recovery:'#087f6a',security:'#b85106'};
-const highlightMs=5000;
-const highlights=new Map();
-let routineCount=0,routineEpoch=0;
-const scenarios = {checkout:'Checkout',failure:'Route failure',analytics:'Batch job',recovery:'Recovery',security:'Security'};
-const names = {queued:'QUEUED',event:'POD LOG',collected:'CLOUD',judging:'JEV',judged:'VERDICT',applied:'APPLIED',undone:'UNDONE',held:'HELD',error:'ERROR','dry-run':'DRY RUN'};
-const cube = '<svg class="pod-icon" viewBox="0 0 72 76" aria-hidden="true"><path d="M36 5 65 21v34L36 72 7 55V21Z" fill="#f1ebfe" stroke="currentColor" stroke-width="1.5"/><path d="m7 21 29 17 29-17M36 38v34" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m36 5 29 16-29 17L7 21Z" fill="white" stroke="currentColor" stroke-width="1.5"/><path d="m22 20 14-8 14 8-14 8Z" fill="currentColor" opacity=".12"/><path d="m16 36 10 6m-10 3 10 6m20-9 10-6m-10 15 10-6" fill="none" stroke="currentColor" opacity=".45" stroke-width="2"/></svg>';
-let state=null,session=null,scenario='checkout',selected=null,cursor=0,initialized=false,refreshing=null,stateGeneration=0;
-const flows=new Map(),pending=new Map();
-let events=[],eventPollTimer=null;
-const text=(id,value)=>{$(id).textContent=value??'';};
+const SIG = {crashloop:'#cf2e3d',restart:'#6b7280',oom:'#b8530a',squeeze:'#a21caf',probe:'#2563eb',egress:'#7c3aed',healthy:'#187a3c',attested:'#0a8f8f',batch:'#475569'};
+const LABEL_COLOR = {'routing-tier':'#187a3c',health:'#cf2e3d',pressure:'#b8530a',traffic:'#2563eb',security:'#7c3aed'};
+const STAGE = {queued:'QUEUED',event:'POD LOG',collected:'READ',judging:'ASKED',judged:'ANSWER',applied:'APPLIED',undone:'REMOVED',held:'NO CHANGE',error:'ERROR','dry-run':'DRY RUN'};
+const cube = '<svg class="pod-icon" viewBox="0 0 72 76" aria-hidden="true"><path d="M36 5 65 21v34L36 72 7 55V21Z" fill="#f1ebfe" stroke="currentColor" stroke-width="2"/><path d="m7 21 29 17 29-17M36 38v34" fill="none" stroke="currentColor" stroke-width="2"/><path d="m36 5 29 16-29 17L7 21Z" fill="white" stroke="currentColor" stroke-width="2"/></svg>';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let state=null,session=null,selected=null,cursor=0,initialized=false,refreshing=null;
+let routineCount=0,askedCount=0,events=[],pollTimer=null;
+const flows=new Map(), feed=[];
+
+const text=(id,v)=>{$(id).textContent=v??'';};
 function el(tag,cls,value){const n=document.createElement(tag);if(cls)n.className=cls;if(value!==undefined)n.textContent=value;return n;}
 function svg(tag,attrs={}){const n=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));return n;}
-const key=pod=>`${pod.namespace}/${pod.name}`;
-const podButton=id=>[...document.querySelectorAll('[data-pod]')].find(p=>p.dataset.pod===id);
-const timeLabel=value=>new Date(typeof value==='number'?value*1000:value).toLocaleTimeString([],{hour12:false});
-function showError(message){text('error',message);$('error').hidden=false;}
-function point(node){const box=node.getBoundingClientRect(),base=$('topology').getBoundingClientRect();return{x:box.x-base.x+box.width/2,y:box.y-base.y+box.height/2,w:box.width,h:box.height};}
-function geometry(podKey,chosenScenario=scenario){
-  const pod=podButton(podKey);if(!pod)return null;
-  const p=point(pod),cluster=point($('cluster')),c=point($('cloud-node')),j=point($('jev-node')),k=point($('kube-node'));
-  const source=point(document.querySelector(`[data-scenario="${chosenScenario}"]`));
-  const mobile=matchMedia('(max-width:850px)').matches;
-  const injectionY=cluster.y-cluster.h/2-20;
-  const inject=`M${source.x} ${source.y+source.h/2+2} V${injectionY} H${p.x} V${p.y-p.h/2-4}`;
-  const cLeft=c.x-c.w/2,cRight=c.x+c.w/2,jLeft=j.x-j.w/2;
-  const busY=p.y-p.h/2-18;
-  const outboundY=c.y-20,returnY=c.y+28;
-  const outside=cluster.x+cluster.w/2+20;
-  const toCloud=mobile
-    ?`M${p.x+24} ${p.y-p.h/2-2} V${busY} H${cluster.x+cluster.w/2+9} V${cluster.y+cluster.h/2+29} H${c.x} V${c.y-c.h/2-3}`
-    :`M${p.x+24} ${p.y-p.h/2-2} V${busY} H${outside} V${outboundY} H${cLeft-3}`;
-  const bottom=$('topology').clientHeight-27;
-  const toKube=mobile
-    ?`M${c.x-c.w/2} ${returnY} H9 V${k.y} H${k.x-k.w/2-3}`
-    :`M${c.x} ${c.y-c.h/2-3} V${k.y+k.h/2+3}`;
-  const toPod=mobile
-    ?`M${k.x} ${k.y-k.h/2-3} V${p.y+p.h/2+26} H${p.x} V${p.y+p.h/2+2}`
-    :`M${k.x-k.w/2-3} ${k.y} H${cluster.x+cluster.w/2+38} V${bottom} H${p.x} V${p.y+p.h/2+2}`;
-  return{inject,toCloud,toJev:`M${cRight+3} ${outboundY} H${jLeft-3}`,fromJev:`M${jLeft-3} ${returnY} H${cRight+3}`,toKube,toPod,
-    labels:[['evidence',(cRight+jLeft)/2,outboundY-11,false],['interpretation',(cRight+jLeft)/2,returnY+18,true],['labels',mobile?64:(p.x+cluster.x+cluster.w/2+38)/2,mobile?cluster.y+cluster.h/2+8:bottom-10,true]]};
+const key=p=>`${p.namespace}/${p.name}`;
+const podEl=id=>[...document.querySelectorAll('[data-pod]')].find(p=>p.dataset.pod===id);
+const clock=v=>new Date(v*1000).toLocaleTimeString([],{hour12:false});
+const scenarioOf=id=>(state?.scenarios||[]).find(s=>s.id===id);
+function showError(m){text('error',m);$('error').hidden=false;setTimeout(()=>{$('error').hidden=true;},6000);}
+
+/* ---------------------------------------------------------------- geometry */
+function box(node){const b=node.getBoundingClientRect(),o=$('topology').getBoundingClientRect();return{l:b.left-o.left,r:b.right-o.left,t:b.top-o.top,b:b.bottom-o.top,x:b.left-o.left+b.width/2,y:b.top-o.top+b.height/2};}
+function geometry(podKey){
+  const node=podEl(podKey);if(!node||matchMedia('(max-width:1100px)').matches)return null;
+  const p=box(node),cl=box($('cluster')),c=box($('cloud-node')),j=box($('jev-node')),k=box($('kube-node'));
+  const bus=p.t-14, lane=cl.r+30, inY=c.y-16, askY=c.y-16, ansY=c.y+16;
+  return{
+    toCloud:`M${p.x} ${p.t} V${bus} H${lane} V${inY} H${c.l}`,
+    toJev:`M${c.r} ${askY} H${j.l}`, fromJev:`M${j.l} ${ansY} H${c.r}`,
+    toKube:`M${c.x} ${c.b} V${k.y} H${k.r}`,
+    toPod:`M${p.x} ${k.t} V${p.b}`,
+    mid:{ask:[(c.r+j.l)/2,askY-8],ans:[(c.r+j.l)/2,ansY+18],patch:[c.x+8,c.b+22]},
+  };
 }
 function drawWires(){
-  const box=$('topology').getBoundingClientRect();$('wires').setAttribute('viewBox',`0 0 ${box.width} ${box.height}`);
-  const g=geometry(selected);if(!g)return;
-  for(const [id,path] of [['to-cloud',g.toCloud],['to-jev',g.toJev],['from-jev',g.fromJev],['to-kube',g.toKube],['to-pod',g.toPod]])$(id).setAttribute('d',path);
-  $('wire-labels').replaceChildren(...g.labels.map(([label,x,y,back])=>{const n=svg('text',{x,y,class:'wire-label'+(back?' return':'')});n.textContent=label;return n;}));
-  $('routine-wires').replaceChildren(...(state?.pods||[]).map(p=>geometry(key(p))).filter(Boolean).map(p=>svg('path',{d:p.toCloud,class:'routine-wire'})));
-  $('injection-wires').replaceChildren(...(state?.pods||[]).map(p=>geometry(key(p))).filter(Boolean).map(p=>svg('path',{d:p.inject,class:'injection-wire'})));
-}
-function travel(path,color,route,duration=220,kind='signal'){
-  if(!path||matchMedia('(prefers-reduced-motion: reduce)').matches)return Promise.resolve();
-  const measure=svg('path',{d:path,fill:'none',stroke:'none'});
-  const packet=svg('g',{class:kind==='routine'?'routine-packet':'packet','data-route':route,style:`color:${color}`});
-  packet.append(svg('circle',{r:kind==='routine'?4:21,fill:color,class:'packet-halo'}),svg('circle',{r:kind==='routine'?2.5:9,fill:color,class:'packet-core'}));
-  $(kind==='routine'?'routine-packets':'packets').append(measure,packet);
-  const length=measure.getTotalLength();
-  const first=measure.getPointAtLength(0);packet.setAttribute('transform',`translate(${first.x} ${first.y})`);
-  return new Promise(resolve=>{const start=performance.now();function frame(now){const progress=Math.min(1,(now-start)/duration),p=measure.getPointAtLength(length*progress);packet.setAttribute('transform',`translate(${p.x} ${p.y})`);if(progress<1)requestAnimationFrame(frame);else{packet.remove();measure.remove();resolve();}}requestAnimationFrame(frame);});
-}
-function animate(flow,stage){
-  flow.chain=flow.chain.then(async()=>{
-    const g=geometry(flow.podKey,flow.scenario);if(!g)return;
-    const color=eventColors[flow.scenario]||eventColors.checkout;
-    const steps={inject:[g.inject,color,'event-to-pod',180],event:[g.toCloud,color,'pod-to-cloud',300],judging:[g.toJev,color,'cloud-to-jev',240],judged:[g.fromJev,color,'jev-to-cloud',240],request:[g.toKube,color,'cloud-to-kubernetes',240],terminal:[g.toPod,color,'kubernetes-to-pod',260]};
-    const args=steps[stage];if(args)await travel(...args);
-  });
-  return flow.chain;
-}
-function updateBusy(){
-  for(const button of document.querySelectorAll('[data-pod]')){
-    const flow=pending.get(button.dataset.pod);
-    button.disabled=Boolean(flow)||button.dataset.enabled==='false';
-    button.classList.toggle('busy',Boolean(flow));button.classList.toggle('selected',button.dataset.pod===selected);
-    button.setAttribute('aria-pressed',String(button.dataset.pod===selected));
-    button.setAttribute('aria-label',`Send ${scenarios[scenario]} to ${button.dataset.name}`);
-    button.title=flow?flow.hint:button.dataset.name;
+  const o=$('topology').getBoundingClientRect();$('wires').setAttribute('viewBox',`0 0 ${o.width} ${o.height}`);
+  const paths=[];let any=null;
+  for(const p of state?.pods||[]){const g=geometry(key(p));if(!g)continue;any=g;paths.push(svg('path',{d:g.toCloud,class:'wire'}),svg('path',{d:g.toPod,class:'wire patch'}));}
+  if(any){
+    paths.push(svg('path',{d:any.toJev,class:'wire ask'}),svg('path',{d:any.fromJev,class:'wire ask'}),svg('path',{d:any.toKube,class:'wire patch'}));
+    for(const [label,[x,y]] of [['question',any.mid.ask],['answer',any.mid.ans],['PATCH labels',any.mid.patch]]){const t=svg('text',{x,y,class:'wire-label','text-anchor':label==='PATCH labels'?'start':'middle'});t.textContent=label;paths.push(t);}
   }
-  $('jev-node').classList.toggle('processing',[...pending.values()].some(f=>f.hint==='Jev is judging…'));
-  $('cloud-node').classList.toggle('processing',pending.size>0);
+  $('wire-paths').replaceChildren(...paths);
+}
+function travel(path,color,duration,routine){
+  if(!path||reduced||document.hidden)return Promise.resolve();
+  const measure=svg('path',{d:path,fill:'none',stroke:'none'}),size=routine?7:16;
+  const packet=svg('g',{class:routine?'routine-packet':'packet'});
+  if(!routine)packet.append(svg('rect',{x:-size,y:-size,width:size*2,height:size*2,rx:4,fill:color,class:'packet-halo'}));
+  packet.append(svg('rect',{x:-size/2,y:-size/2,width:size,height:size,rx:2,...(routine?{}:{fill:color})}));
+  $(routine?'routine-packets':'packets').append(measure,packet);
+  const length=measure.getTotalLength();
+  return new Promise(resolve=>{const start=performance.now();(function frame(now){const t=Math.min(1,(now-start)/duration),pt=measure.getPointAtLength(length*t);packet.setAttribute('transform',`translate(${pt.x} ${pt.y})`);if(t<1)requestAnimationFrame(frame);else{packet.remove();measure.remove();resolve();}})(start);});
+}
+
+/* -------------------------------------------------------------------- pods */
+function labelChip(k,v,managed){
+  const chip=el('span','label'+(managed?' managed':''));chip.dataset.key=k;
+  if(managed)chip.style.setProperty('--lc',LABEL_COLOR[k]||'#6d3aed');
+  chip.append(el('i','',k+'='),el('b','',v));chip.title=`${k}=${v}`;return chip;
+}
+function renderLabels(node,pod){
+  const managedKeys=new Set((state?.available_labels||[]).map(l=>l.key));
+  const holder=node.querySelector('.pod-labels'),want=Object.entries(pod.labels||{}).sort(([a],[b])=>(managedKeys.has(a)-managedKeys.has(b))||a.localeCompare(b));
+  const have=new Map([...holder.querySelectorAll('.label:not(.leaving)')].map(c=>[c.dataset.key+'='+c.querySelector('b').textContent,c]));
+  for(const [k,v] of want){const id=k+'='+v;if(have.has(id)){have.delete(id);continue;}const chip=labelChip(k,v,managedKeys.has(k));if(initialized)chip.classList.add('entering');holder.append(chip);}
+  for(const chip of have.values()){chip.classList.add('leaving');setTimeout(()=>chip.remove(),reduced?0:700);}
 }
 function renderPods(){
   const pods=state?.pods||[];
-  if(!pods.length){$('pods').replaceChildren(el('p','empty','No pods found in the configured namespace.'));text('pod-count','0 pods');selected=null;return;}
-  if(!pods.some(p=>key(p)===selected))selected=key(pods.find(p=>p.name==='checkout-api')||pods[0]);
-  const keys=pods.map(key);
-  for(const old of $('pods').querySelectorAll('[data-pod]'))if(!keys.includes(old.dataset.pod))old.remove();
+  if(!pods.length){$('pods').replaceChildren(el('p','empty','No pods found in the configured namespace.'));return;}
   $('pods').querySelector('.empty')?.remove();
   for(const pod of pods){
-    const id=key(pod);let button=podButton(id);
-    if(!button){button=el('button','pod');button.dataset.pod=id;button.dataset.name=pod.name;button.innerHTML=cube;button.append(el('span','pod-name',pod.name),el('span','pod-phase'),el('span','pod-labels'));button.addEventListener('click',()=>sendEvent(pod));$('pods').append(button);}
-    button.dataset.enabled=String(pod.event_enabled!==false);
-    button.querySelector('.pod-phase').textContent=pod.status||'Unknown';
-
+    const id=key(pod);let node=podEl(id);
+    if(!node){node=el('button','pod');node.dataset.pod=id;node.innerHTML=cube;node.append(el('span','pod-name',pod.name),el('span','pod-phase'),el('span','pod-event'),el('span','pod-labels'));node.addEventListener('click',()=>{selected=id;renderLogs();document.querySelectorAll('.pod').forEach(n=>n.classList.toggle('selected',n===node));});$('pods').append(node);}
+    node.querySelector('.pod-phase').textContent=pod.status||'Unknown';
+    renderLabels(node,pod);
   }
-  text('pod-count',`${pods.length} pods`);text('node-name',[...new Set(pods.map(p=>p.node).filter(Boolean))].join(' · ')||'Kubernetes workloads');updateBusy();requestAnimationFrame(drawWires);
+  if(!selected)selected=key(pods[0]);
+  text('pod-count',`${pods.length} pods`);requestAnimationFrame(drawWires);
 }
 function renderLogs(){
-  const pod=state?.pods.find(p=>key(p)===selected);text('selected-name',pod?`/ ${pod.name}`:'/ no workload');
-  const logs=pod?.logs||[];
-  $('logs').replaceChildren(...(logs.length?logs.slice(-8).map(line=>{const s=typeof line==='string'?line:JSON.stringify(line);return el('div','log-line'+(/error|failure|denied/i.test(s)?' error':''),s);}):[el('p','placeholder','Inject an event to see this pod’s logs.')]));
+  const pod=state?.pods.find(p=>key(p)===selected);text('selected-name',pod?`· ${pod.name}`:'');
+  const logs=(pod?.logs||[]).slice(-12);
+  $('logs').replaceChildren(...(logs.length?logs.map(line=>{const s=typeof line==='string'?line:JSON.stringify(line);return el('div','log-line'+(/routine_heartbeat/.test(s)?'':' signal'),s);}):[el('p','empty','No log lines yet.')]));
 }
-function describe(event){if(event.key)return `${event.pod} · ${event.key}=${event.value}${Number.isFinite(event.noul)?` · ${(event.noul*100).toFixed(0)}% yes`:''}`;return `${event.pod||''}${event.pod?' · ':''}${event.message||names[event.stage]||event.stage}`;}
-function renderTrail(){text('event-count',`${events.length} EVENTS`);$('trail').replaceChildren(...events.slice(-16).reverse().map(event=>{const row=el('li');row.append(el('time','',timeLabel(event.at)),el('span',`stage ${event.stage}`,names[event.stage]||event.stage),el('span','trail-description',describe(event)));return row;}));}
-function acceptEvents(incoming,animateNew=true){
-  for(const event of [...incoming].sort((a,b)=>a.seq-b.seq)){
-    if(event.seq<=cursor)continue;
-    const id=`${event.namespace}/${event.pod}`,localFlow=pending.get(id);
-    if(animateNew&&localFlow&&!localFlow.requestId)break;
-    cursor=event.seq;if(event.stage==='routine'){if(animateNew)showRoutine(event);continue;}events.push(event);if(!animateNew)continue;
-    let flow=flows.get(event.request_id);
-    if(!flow&&localFlow&&localFlow.requestId===event.request_id)flow=localFlow;
-    if(!flow&&localFlow)continue;
-    if(!flow&&event.request_id){flow={podKey:id,scenario:event.scenario||'checkout',requestId:event.request_id,started:performance.now(),chain:Promise.resolve(),hint:'Queued for Cloud',steps:new Set()};pending.set(id,flow);}
-    if(!flow)continue;
-    if(event.request_id){flow.requestId=event.request_id;flows.set(event.request_id,flow);}
-    if(flow.steps.has(event.stage))continue;flow.steps.add(event.stage);
-    if(event.stage==='queued'){flow.hint='Queued for Cloud';}
-    if(event.stage==='event'){flow.hint='Logs → Expanso';animate(flow,'event');text('activity',`${event.pod}: workload log emitted`);refreshState();}
-    if(event.stage==='collected'){flow.hint='Cloud collected logs';text('cloud-detail','Evidence collected');}
-    if(event.stage==='judging'){flow.hint='Jev is judging…';animate(flow,'judging');text('jev-status','JUDGING');text('activity',`${event.pod}: waiting for Jev`);}
-    if(event.stage==='judged'){flow.hint='Interpretation → Expanso';animate(flow,'judged');text('jev-status',Number.isFinite(event.noul)?`${Math.round(event.noul*100)}% YES`:'VERDICT');text('cloud-detail','Checking Jev’s interpretation');}
-    if(['applied','undone','held','error','dry-run'].includes(event.stage)){
-      flow.outcome=event.stage;flow.hint=event.stage==='error'?'Event failed':'Expanso checks result';
-      if(['applied','undone'].includes(event.stage)){flow.hint='Expanso → Kubernetes → pod';animate(flow,'request');animate(flow,'terminal');}
-      flow.chain=flow.chain.then(()=>finish(flow,event));
-    }
+
+/* ------------------------------------------------------------------ legend */
+function renderLegend(){
+  if($('legend').childElementCount||!(state?.scenarios||[]).length)return;
+  for(const s of state.scenarios){
+    const item=el('button','legend-item');item.dataset.scenario=s.id;item.style.setProperty('--sig',SIG[s.id]||'#6d3aed');
+    const title=el('b','',s.title);const [op,k,v]=s.prefer[s.prefer.length-1];title.append(el('code','',`${op==='add'?'+':'−'} ${k}=${v}`));
+    item.append(el('i','sw'),title,el('span','',s.why));item.title=s.message;
+    item.addEventListener('click',()=>sendEvent(s.id));$('legend').append(item);
   }
-  events=events.slice(-100);renderTrail();updateBusy();
 }
-async function finish(flow,event){
-  if(pending.get(flow.podKey)===flow)pending.delete(flow.podKey);
-  if(flow.requestId)flows.delete(flow.requestId);
-  const applied=event.stage==='applied',undone=event.stage==='undone';
-  if((applied||undone)&&event.key){const pod=state?.pods.find(p=>key(p)===flow.podKey);if(pod){if(applied)pod.labels[event.key]=event.value;else delete pod.labels[event.key];}stateGeneration++;renderPods();}
-  if(applied||undone)showLabelChange(flow,event);
-  text('result-mark',applied?'+':undone?'−':event.stage==='error'?'!':'◎');
-  text('result-title',`${event.pod}: ${applied?'label added':undone?'label removed':event.stage==='error'?'event failed':event.stage==='dry-run'?'dry run completed':'labels unchanged'}.`);
-  const explanation=event.message&&event.message!==event.stage?event.message:(event.stage==='held'?(Number.isFinite(event.noul)?`Jev returned ${Math.round(event.noul*100)}% yes; the threshold is 90%.`:'No safe label change for this evidence.'):event.stage==='dry-run'?'Expanso evaluated the request; no Kubernetes change was submitted.':event.stage==='error'?'The request failed; no pod change is confirmed.':'Kubernetes confirmed Expanso’s requested change.');
-  text('result-detail',(event.key?`${event.key}=${event.value} · `:'')+explanation);
-  const elapsed=Number.isFinite(event.elapsed_ms)?event.elapsed_ms:performance.now()-flow.started;
-  text('timing',`${(elapsed/1000).toFixed(2)}s end to end`);text('activity',`${event.pod}: ${names[event.stage].toLowerCase()}`);text('cloud-detail','Read logs → ask → request');
-  if(event.stage==='error')showError(explanation);
-  updateBusy();await refreshState();renderPods();renderLogs();
+
+/* --------------------------------------------------------------- decisions */
+function renderFeed(){
+  $('feed').replaceChildren(...feed.slice(0,3).map(f=>{
+    const li=el('li');li.style.setProperty('--sig',SIG[f.scenario]||'#6d3aed');
+    li.append(el('time','',clock(f.at)),el('span','who',f.pod),el('span','what',scenarioOf(f.scenario)?.title||f.scenario||'event'),el('span','said',f.said),el('span','did '+f.cls,f.did));return li;}));
+}
+function renderTrail(){text('event-count',`${events.length} receipts`);$('trail').replaceChildren(...events.slice(-16).reverse().map(e=>{const li=el('li');li.append(el('time','',clock(e.at)),el('span','',STAGE[e.stage]||e.stage),el('span','',`${e.pod||''} ${e.key?e.key+'='+e.value:''} ${e.message&&e.message!==e.stage?e.message:''}`));return li;}));}
+
+const hist=new Map();
+function remember(event){
+  if(!event.request_id)return null;
+  const h=hist.get(event.request_id)||{pod:event.pod};hist.set(event.request_id,h);
+  if(event.scenario)h.scenario=event.scenario;
+  if(event.stage==='judging'||event.stage==='collected'){h.key=event.key;h.value=event.value;h.op=event.operation;}
+  if(event.stage==='judged')h.noul=event.noul;
+  if(hist.size>200)hist.delete(hist.keys().next().value);
+  return h;
+}
+function pushFeed(event,h){
+  const pct=Number.isFinite(h.noul)?`Jev ${Math.round(h.noul*100)}% yes`:'Jev not asked';
+  const asked=h.key?`“${h.key}=${h.value}” ${h.op==='undo'?'no longer true?':'true now?'} `:'';
+  feed.unshift({at:event.at,pod:h.pod||event.pod,scenario:h.scenario,said:`${asked}${pct}`,
+    did:event.stage==='applied'?`+ ${event.key}=${event.value}`:event.stage==='undone'?`− ${event.key}=${event.value}`:event.stage==='error'?'error':event.stage==='dry-run'?'dry run':'no change',
+    cls:event.stage==='applied'?'add':event.stage==='undone'?'rm':event.stage==='error'?'err':''});
+  feed.length=Math.min(feed.length,12);renderFeed();
+}
+const TERMINAL=['applied','undone','held','error','dry-run'];
+function flowFor(event){
+  let f=flows.get(event.request_id);
+  if(!f){f={id:event.request_id,podKey:`${event.namespace}/${event.pod}`,pod:event.pod,scenario:event.scenario,chain:Promise.resolve(),steps:new Set()};flows.set(event.request_id,f);}
+  if(event.scenario)f.scenario=event.scenario;return f;
+}
+function acceptEvents(incoming,live=true){
+  for(const event of [...incoming].sort((a,b)=>a.seq-b.seq)){
+    if(event.seq<=cursor)continue;cursor=event.seq;
+    if(event.stage==='routine'){if(live)showRoutine(event);else routineCount+=Number(event.count)||0;continue;}
+    events.push(event);const h=remember(event);
+    if(event.stage==='judging')askedCount++;
+    if(!live&&h&&TERMINAL.includes(event.stage))pushFeed(event,h);
+    if(!live||!event.request_id)continue;
+    const f=flowFor(event);if(f.steps.has(event.stage))continue;f.steps.add(event.stage);
+    const color=SIG[f.scenario]||'#6d3aed',node=podEl(f.podKey),g=()=>geometry(f.podKey);
+    const then=fn=>{f.chain=f.chain.then(fn).catch(()=>{});};
+    if(event.stage==='event')then(async()=>{
+      const s=scenarioOf(f.scenario);
+      if(node){node.classList.add('busy');node.style.setProperty('--sig',color);node.querySelector('.pod-event').textContent=s?.message||'';}
+      document.querySelectorAll('.legend-item').forEach(n=>n.classList.toggle('live',n.dataset.scenario===f.scenario));
+      await travel(g()?.toCloud,color,420);$('cloud-node').classList.add('processing');});
+    if(event.stage==='judging')then(async()=>{
+      f.key=event.key;f.value=event.value;f.op=event.operation;
+      text('jev-question',event.key?`${f.pod}: is ${event.key}=${event.value} true right now?`:'');text('jev-status','…');
+      await travel(g()?.toJev,color,260);$('jev-node').classList.add('processing');});
+    if(event.stage==='judged')then(async()=>{
+      f.noul=event.noul;text('jev-status',Number.isFinite(event.noul)?`${Math.round(event.noul*100)}% YES`:'ANSWERED');
+      $('jev-node').classList.remove('processing');await travel(g()?.fromJev,color,260);});
+    if(['applied','undone','held','error','dry-run'].includes(event.stage))then(async()=>{
+      const changed=event.stage==='applied'||event.stage==='undone';
+      if(changed){
+        text('api-line',`PATCH /api/v1/namespaces/${event.namespace}/pods/${event.pod}  ${event.stage==='applied'?'+':'−'} ${event.key}=${event.value}`);
+        await travel(g()?.toKube,color,300);$('kube-node').classList.add('fire');await travel(g()?.toPod,color,240);
+        setTimeout(()=>$('kube-node').classList.remove('fire'),600);
+        const pod=state?.pods.find(p=>key(p)===f.podKey);
+        if(pod){if(event.stage==='applied')pod.labels[event.key]=event.value;else delete pod.labels[event.key];renderPods();}
+      }
+      pushFeed(event,h||{pod:f.pod,scenario:f.scenario});
+      $('cloud-node').classList.toggle('processing',[...flows.values()].some(x=>x!==f));
+      if(node){node.classList.remove('busy');setTimeout(()=>{if(!node.classList.contains('busy'))node.querySelector('.pod-event').textContent='';},4000);}
+      flows.delete(f.id);refreshState();});
+  }
+  events=events.slice(-100);text('routine-count',routineCount.toLocaleString());text('asked-count',askedCount.toLocaleString());renderTrail();
 }
 function showRoutine(event){
-  const id=`${event.namespace}/${event.pod}`;
-  const count=Math.max(0,Math.min(12,Number(event.count)||0));
-  routineCount+=Number(event.count)||0;text('routine-count',`${routineCount.toLocaleString()} logs`);
-  const epoch=routineEpoch;
-  for(let i=0;i<count;i++)setTimeout(()=>{
-    if(epoch!==routineEpoch||document.hidden||state?.cloud?.state!=='running')return;
-    const g=geometry(id);if(g)travel(g.toCloud,'#9892a8','routine-to-cloud',1400,'routine');
-  },i*140);
+  const id=`${event.namespace}/${event.pod}`,n=Number(event.count)||0;routineCount+=n;
+  for(let i=0;i<Math.min(n,14);i++)setTimeout(()=>{const g=geometry(id);if(g)travel(g.toCloud,null,1100,true);},Math.random()*950);
 }
-function showLabelChange(flow,event){
-  const button=podButton(flow.podKey);if(!button)return;
-  clearTimeout(highlights.get(flow.podKey)?.timer);
-  button.querySelectorAll('.label-change').forEach(n=>n.remove());
-  const color=eventColors[flow.scenario]||eventColors.checkout;
-  const removed=event.stage==='undone';
-  const change=el('span','label-change '+(removed?'removed':'added'));
-  change.style.setProperty('--event-color',color);
-  change.append(el('strong','',event.value),el('span','',removed?`${event.key} removed`:event.key));
-  change.dataset.scenario=flow.scenario;change.dataset.value=event.value;
-  button.append(change);button.style.setProperty('--signal-color',color);button.classList.add('signal-highlight');
-  const record={node:change,timer:null};highlights.set(flow.podKey,record);
-  record.timer=setTimeout(()=>{
-    if(highlights.get(flow.podKey)!==record)return;
-    change.remove();button.classList.remove('signal-highlight');highlights.delete(flow.podKey);
-  },highlightMs);
+
+/* -------------------------------------------------------------------- I/O */
+async function post(path,body){
+  if(!session){const r=await fetch('/api/session',{cache:'no-store'});if(!r.ok)throw Error('Could not establish a local session.');session=await r.json();}
+  const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':session.csrf_token},body:JSON.stringify(body)});
+  const out=await r.json().catch(()=>({}));if(!r.ok)throw Error(out.message||out.error||'Request rejected.');return out;
 }
-async function sendEvent(pod){
-  const id=key(pod);if(pending.has(id))return;
-  selected=id;$('error').hidden=true;
-  const flow={podKey:id,scenario,started:performance.now(),chain:Promise.resolve(),hint:'Injecting event…',steps:new Set()};pending.set(id,flow);
-  updateBusy();drawWires();animate(flow,'inject');renderLogs();
-  text('result-mark','↓');text('result-title',`${scenarios[scenario]} → ${pod.name}`);text('result-detail','Event queued');text('timing','In flight');
-  try{
-    if(!session){const r=await fetch('/api/session',{cache:'no-store'});if(!r.ok)throw Error('Could not establish a local session.');session=await r.json();}
-    const r=await fetch('/api/event',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':session.csrf_token},body:JSON.stringify({namespace:pod.namespace,pod:pod.name,scenario:flow.scenario})});
-    const body=await r.json();if(!r.ok)throw Error(body.message||body.error||'Event rejected.');
-    if(!body.request_id)throw Error('Restart the adapter to load the event-driven backend.');flow.requestId=body.request_id;flows.set(body.request_id,flow);
-    flow.hint='Queued for Cloud';updateBusy();
-  }catch(err){pending.delete(id);updateBusy();showError(err.message);text('result-title','Event was not accepted.');text('result-detail',err.message);text('timing','Not submitted');}
+async function sendEvent(scenario){
+  const busy=new Set([...flows.values()].map(f=>f.podKey)),idle=(state?.pods||[]).filter(p=>p.event_enabled!==false&&!busy.has(key(p)));
+  const pod=idle.find(p=>key(p)===selected)||idle[Math.floor(Math.random()*idle.length)];
+  if(!pod)return showError('Every pod is busy. Try again in a second.');
+  try{await post('/api/event',{namespace:pod.namespace,pod:pod.name,scenario});}catch(e){showError(e.message);}
 }
 function renderState(){
-  const cloud=state.cloud||{};
-  $('current-labels').replaceChildren(...(state.pods||[]).map(p=>{const row=el('p');row.append(el('b','',p.name+' '),el('code','',JSON.stringify(p.labels||{})));return row;}));
-  $('available-labels').replaceChildren(...(state.available_labels||[]).map(label=>{const item=el('div','label-choice');item.append(el('code','',`${label.key}=${label.value}`),el('span','',label.meaning));return item;}));
-  text('connection',cloud.state==='running'?'Cloud execution running':cloud.state==='stopped'?'Cloud job stopped':'Cloud execution unverified');$('connection-dot').className='dot'+(cloud.state==='running'?' live':'');
-  text('mode',state.apply_enabled?'LIVE':'DRY RUN');$('mode').classList.toggle('dry',!state.apply_enabled);
-  text('cluster-name',state.cluster_context||'k3s cluster');text('namespace',state.namespace||'Target namespace');text('cloud-status',(cloud.state||'unknown').toUpperCase());renderPods();renderLogs();
-  const fields={'Kubernetes context':state.cluster_context,'Cloud job':cloud.job_id,'Execution':cloud.execution_id,'Edge node':cloud.node_id,'Adapter':location.origin,'Label writes':state.apply_enabled?'Enabled':'Disabled'};
+  const cloud=state.cloud||{},running=cloud.state==='running';
+  text('connection',running?'Pipeline running in Expanso Cloud':cloud.state==='stopped'?'Cloud job stopped':'Cloud job unverified');$('connection-dot').className='dot'+(running?' live':'');
+  text('mode',(state.apply_enabled?'LIVE · labels are really patched':'DRY RUN · no patches')+(Number.isFinite(state.threshold)?` · acts at ≥ ${Math.round(state.threshold*100)}% yes`:''));$('mode').classList.toggle('dry',!state.apply_enabled);
+  text('cluster-name','Kubernetes cluster');text('namespace','namespace '+(state.namespace||''));text('cloud-status',(cloud.state||'unknown').toUpperCase());
+  $('auto-toggle').textContent=state.auto?'Pause events':'Resume events';$('auto-toggle').setAttribute('aria-pressed',String(Boolean(state.auto)));
+  renderPods();renderLogs();renderLegend();
+  $('available-labels').replaceChildren(...(state.available_labels||[]).map(l=>{const row=el('div','label-choice');row.append(el('code','',`${l.key}=${l.value}`),el('span','',l.meaning));return row;}));
+  const fields={'Kubernetes context':state.cluster_context,'Cloud job':cloud.job_id,'Execution':cloud.execution_id,'Edge node':cloud.node_id,'Label writes':state.apply_enabled?'Enabled':'Disabled'};
   $('runtime-fields').replaceChildren(...Object.entries(fields).flatMap(([k,v])=>[el('dt','',k),el('dd','',v||'Not verified')]));
 }
 function refreshState(){
   if(refreshing)return refreshing;
-  const generation=stateGeneration;
-  refreshing=(async()=>{try{const r=await fetch('/api/state',{cache:'no-store'});if(!r.ok)throw Error('State unavailable');const observed=await r.json();if(generation!==stateGeneration)return;state=observed;if(!initialized){acceptEvents(state.events||[],false);initialized=true;}renderState();}catch{ text('connection','Adapter unavailable');$('connection-dot').className='dot error';text('cloud-status','UNVERIFIED');}finally{refreshing=null;if(generation!==stateGeneration)refreshState();}})();
+  refreshing=(async()=>{try{const r=await fetch('/api/state',{cache:'no-store'});if(!r.ok)throw Error();state=await r.json();if(!initialized){acceptEvents(state.events||[],false);renderState();initialized=true;}else renderState();}
+    catch{text('connection','Adapter unavailable');$('connection-dot').className='dot error';}finally{refreshing=null;}})();
   return refreshing;
 }
 async function pollEvents(){
-  try{if(initialized){const r=await fetch(`/api/events?after=${cursor}`,{cache:'no-store'});if(!r.ok)throw Error('Event feed unavailable');const body=await r.json();if(Number.isFinite(body.cursor)&&body.cursor<cursor){cursor=0;initialized=false;events=[];flows.clear();pending.clear();session=null;routineEpoch++;routineCount=0;for(const h of highlights.values()){clearTimeout(h.timer);h.node.remove();}highlights.clear();document.querySelectorAll(".signal-highlight").forEach(n=>n.classList.remove("signal-highlight"));stateGeneration++;text('result-title','Adapter reconnected.');text('result-detail','Ready for a new event. Previous in-flight results are unverified.');text('timing','—');await refreshState();}else acceptEvents(body.events||[]);}}
-  catch{if(pending.size)text('activity','Event feed disconnected; waiting to reconnect.');}
-  finally{eventPollTimer=setTimeout(pollEvents,200);}
+  try{if(initialized){const r=await fetch(`/api/events?after=${cursor}`,{cache:'no-store'});if(r.ok){const body=await r.json();
+    if(Number.isFinite(body.cursor)&&body.cursor<cursor){cursor=0;events=[];flows.clear();session=null;document.querySelectorAll('.pod.busy').forEach(n=>n.classList.remove('busy'));await refreshState();}
+    else acceptEvents(body.events||[]);}}}
+  catch{}finally{pollTimer=setTimeout(pollEvents,200);}
 }
-for(const button of document.querySelectorAll('[data-scenario]'))button.style.setProperty('--event-color',eventColors[button.dataset.scenario]);
-for(const button of document.querySelectorAll('[data-scenario]'))button.addEventListener('click',()=>{scenario=button.dataset.scenario;for(const b of document.querySelectorAll('[data-scenario]')){b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));}updateBusy();drawWires();});
-$('details-toggle').addEventListener('click',()=>{const hidden=!$('runtime-details').hidden;$('runtime-details').hidden=hidden;$('details-toggle').setAttribute('aria-expanded',String(!hidden));$('details-toggle').textContent=hidden?'Details':'Close';});
-window.addEventListener('resize',drawWires);new ResizeObserver(drawWires).observe($('topology'));
-window.addEventListener('pagehide',()=>{clearTimeout(eventPollTimer);routineEpoch++;for(const h of highlights.values())clearTimeout(h.timer);});
+$('auto-toggle').addEventListener('click',async()=>{try{const out=await post('/api/auto',{on:!state?.auto});state.auto=out.auto;renderState();}catch(e){showError(e.message);}});
+$('details-toggle').addEventListener('click',()=>{const hide=!$('runtime-details').hidden;$('runtime-details').hidden=hide;$('details-toggle').setAttribute('aria-expanded',String(!hide));$('details-toggle').textContent=hide?'Details':'Close details';});
+new ResizeObserver(drawWires).observe($('topology'));
+window.addEventListener('pagehide',()=>clearTimeout(pollTimer));
 refreshState().then(pollEvents);setInterval(refreshState,2500);

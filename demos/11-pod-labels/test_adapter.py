@@ -84,7 +84,7 @@ class Tests(unittest.TestCase):
         e.namespaces = {"jev-label-demo"}
         e.kube.target["metadata"]["namespace"] = "jev-label-demo"
         e.kube.target["metadata"]["annotations"]["jev.expanso.io/workload-version"] = (
-            "noise-v4"
+            "signals-v6"
         )
         return e
 
@@ -120,7 +120,7 @@ class Tests(unittest.TestCase):
             {
                 "namespace": "jev-label-demo",
                 "pod": "checkout-api",
-                "scenario": "checkout",
+                "scenario": "healthy",
             }
         )
         with patch.object(e.kube, "logs", return_value=[noise, signal, noise]):
@@ -128,7 +128,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(item["candidate"]["pod"]["logs"], [signal])
 
     def test_workload_emits_real_routine_stdout(self):
-        text = Path(__file__).with_name("fixtures.yaml").read_text()
+        text = (Path(__file__).parent / "simulation/fixtures.yaml").read_text()
         source = text.split("  workload.py: |\n", 1)[1].split("\n---", 1)[0]
         source = "\n".join(line[4:] for line in source.splitlines())
         scope = {"__name__": "test_workload"}
@@ -146,9 +146,9 @@ class Tests(unittest.TestCase):
 
     def test_ordinary_pods_have_routing_choices_without_reference_pods(self):
         for name, scenario, expected in (
-            ("checkout-api", "checkout", "stable"),
-            ("orders-api", "recovery", "stable"),
-            ("analytics-worker", "analytics", "batch"),
+            ("checkout-api", "healthy", "stable"),
+            ("orders-api", "healthy", "stable"),
+            ("analytics-worker", "batch", "batch"),
         ):
             e = self.owned_engine(name)
             e.kube.target["metadata"]["namespace"] = "jev-label-demo"
@@ -159,7 +159,7 @@ class Tests(unittest.TestCase):
             e.kube.target["metadata"]["labels"] = {"app": name, "team": "payments"}
             with patch.object(e.kube, "pods", side_effect=lambda: [e.kube.target]):
                 state = e.state()
-                self.assertEqual(len(state["available_labels"]), 2)
+                self.assertEqual(len(state["available_labels"]), len(a.ROUTING_LABELS))
                 self.assertTrue(state["pods"][0]["event_enabled"])
                 e.stimulus(
                     {"namespace": "jev-label-demo", "pod": name, "scenario": scenario}
@@ -187,7 +187,7 @@ class Tests(unittest.TestCase):
         options = a.candidates([target, source], {"jev-label-demo"})
         self.assertEqual(
             {(c["key"], c["value"]) for c in options},
-            {("routing-tier", "stable"), ("routing-tier", "batch")},
+            {(c["key"], c["value"]) for c in a.ROUTING_LABELS},
         )
 
     def test_demo_catalog_does_not_apply_to_unrelated_pods(self):
@@ -201,7 +201,7 @@ class Tests(unittest.TestCase):
         e = self.owned_engine()
         with patch.object(e.kube, "get") as get, patch.object(e.kube, "event") as event:
             receipt = e.stimulus(
-                {"namespace": "demo", "pod": "checkout-api", "scenario": "recovery"}
+                {"namespace": "demo", "pod": "checkout-api", "scenario": "healthy"}
             )
             get.assert_not_called()
             event.assert_not_called()
@@ -213,7 +213,7 @@ class Tests(unittest.TestCase):
         for name in a.FIXTURES:
             e = self.owned_engine(name)
             queued = e.stimulus(
-                {"namespace": "demo", "pod": name, "scenario": "checkout"}
+                {"namespace": "demo", "pod": name, "scenario": "healthy"}
             )
             request = e.next_event(0)
             item = e.snapshot(request)[0]
@@ -228,7 +228,7 @@ class Tests(unittest.TestCase):
 
     def test_cloud_rechecks_fixture_ownership_before_exec(self):
         e = self.owned_engine()
-        e.stimulus({"namespace": "demo", "pod": "checkout-api", "scenario": "security"})
+        e.stimulus({"namespace": "demo", "pod": "checkout-api", "scenario": "egress"})
         e.kube.target["metadata"]["annotations"].clear()
         with patch.object(e.kube, "event") as event, self.assertRaises(ValueError):
             e.snapshot(e.next_event(0))
@@ -251,7 +251,7 @@ class Tests(unittest.TestCase):
 
     def test_cursor_feed_and_bounded_queue(self):
         e = self.owned_engine()
-        body = {"namespace": "demo", "pod": "checkout-api", "scenario": "analytics"}
+        body = {"namespace": "demo", "pod": "checkout-api", "scenario": "batch"}
         for _ in range(32):
             e.stimulus(body)
         with self.assertRaises(a.queue.Full):
@@ -282,7 +282,7 @@ class Tests(unittest.TestCase):
         try:
             self.assertEqual(request("POST", "/next-event", auth=False)[0], 401)
             e.stimulus(
-                {"namespace": "demo", "pod": "checkout-api", "scenario": "checkout"}
+                {"namespace": "demo", "pod": "checkout-api", "scenario": "healthy"}
             )
             status, event = request("POST", "/next-event")
             self.assertEqual(status, 200)
@@ -311,7 +311,7 @@ class Tests(unittest.TestCase):
                 {
                     "namespace": "demo",
                     "pod": "orders-api",
-                    "scenario": "failure",
+                    "scenario": "probe",
                 }
             )
             item = e.snapshot(e.next_event(0))[0]
@@ -346,7 +346,7 @@ class Tests(unittest.TestCase):
     def test_no_safe_existing_label_still_skips_model(self):
         e = self.owned_engine()
         e.kube.target["metadata"]["labels"] = {"app": "checkout"}
-        e.stimulus({"namespace": "demo", "pod": "checkout-api", "scenario": "failure"})
+        e.stimulus({"namespace": "demo", "pod": "checkout-api", "scenario": "probe"})
         with patch.object(e.kube, "pods", return_value=[e.kube.target]):
             self.assertEqual(e.snapshot(e.next_event(0)), [])
         self.assertFalse(e.events[-1]["model_called"])
@@ -457,7 +457,7 @@ class Tests(unittest.TestCase):
         token = self.decision(e)
         with patch.object(a.urllib.request, "urlopen") as model:
             result = e.stimulus(
-                {"namespace": "demo", "pod": "checkout-api", "scenario": "checkout"}
+                {"namespace": "demo", "pod": "checkout-api", "scenario": "healthy"}
             )
         self.assertEqual(result["stage"], "queued")
         self.assertEqual(e.kube.patches, [])
@@ -471,7 +471,7 @@ class Tests(unittest.TestCase):
             None,
             [],
             {},
-            {"namespace": "demo", "pod": "--help", "scenario": "failure"},
+            {"namespace": "demo", "pod": "--help", "scenario": "probe"},
             {"namespace": "demo", "pod": "checkout-api", "scenario": "shell"},
         ]:
             with self.subTest(body=body), self.assertRaises((ValueError, TypeError)):
@@ -509,7 +509,7 @@ class Tests(unittest.TestCase):
             csrf = json.loads(payload)["csrf_token"]
             origin = "http://127.0.0.1:" + str(server.server_port)
             body = json.dumps(
-                {"namespace": "demo", "pod": "checkout-api", "scenario": "checkout"}
+                {"namespace": "demo", "pod": "checkout-api", "scenario": "healthy"}
             )
             for headers in [
                 {},
@@ -764,6 +764,40 @@ class Tests(unittest.TestCase):
         ]:
             with self.assertRaises(ValueError):
                 deploy.selected_node(nodes)
+
+
+class SignalCatalogTests(unittest.TestCase):
+    def test_fixture_embeds_the_workload_verbatim(self):
+        import pathlib, textwrap
+        here = pathlib.Path(__file__).parent
+        source = (here / "simulation/workload.py").read_text()
+        fixture = (here / "simulation/fixtures.yaml").read_text()
+        start = fixture.index("  workload.py: |\n") + len("  workload.py: |\n")
+        embedded = textwrap.dedent(fixture[start:fixture.index("\n---\n", start)] + "\n")
+        self.assertEqual(embedded.strip(), source.strip())
+
+    def test_every_scenario_only_proposes_catalog_labels(self):
+        catalog = {(c["key"], c["value"]) for c in a.ROUTING_LABELS}
+        for name, spec in a.workload.SCENARIOS.items():
+            self.assertTrue(spec["title"] and spec["why"] and spec["message"], name)
+            for op, key, value in spec["prefer"]:
+                self.assertIn(op, {"add", "undo"}, name)
+                self.assertIn((key, value), catalog, name)
+
+    def test_auto_pick_recovers_loaded_pods_and_skips_busy_ones(self):
+        import random
+        e = a.Reconciler.__new__(a.Reconciler)
+        rng = random.Random(7)
+        loaded = {"name": "checkout-api", "labels": {"app": "checkout", "health": "degraded", "traffic": "drain"}}
+        for _ in range(50):
+            self.assertEqual(e.auto_pick([loaded], rng), ("checkout-api", "healthy"))
+        self.assertIsNone(e.auto_pick([dict(loaded, busy=True)], rng))
+        calm = {"name": "orders-api", "labels": {"app": "orders"}}
+        seen = {e.auto_pick([calm], rng)[1] for _ in range(300)}
+        self.assertTrue({"healthy", "crashloop", "restart", "oom", "probe", "egress"} <= seen)
+        held = {"name": "orders-api", "labels": {"health": "degraded"}}
+        for _ in range(200):
+            self.assertNotIn(e.auto_pick([held], rng)[1], {"crashloop", "squeeze"})
 
 
 if __name__ == "__main__":

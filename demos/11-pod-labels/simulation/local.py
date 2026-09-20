@@ -14,7 +14,8 @@ import sys
 import time
 import urllib.request
 
-HERE = Path(__file__).resolve().parent
+SIM = Path(__file__).resolve().parent
+HERE = SIM.parent  # the example itself: adapter.py, pipeline.yaml, edge.yaml
 ROOT = HERE.parents[1]
 STATE_DIR = ROOT / ".expanso/pod-labels"
 CLUSTER = "jev-label-demo"
@@ -36,6 +37,9 @@ def environment(home):
         POD_LABEL_TOKEN=token_file.read_text().strip(),
         POD_LABEL_PORT="8901",
         POD_LABEL_APPLY=os.environ.get("POD_LABEL_APPLY", "true"),
+        # The disposable local cluster acts at 80%. The adapter's own default,
+        # used anywhere else, stays at 90%.
+        POD_LABEL_THRESHOLD=os.environ.get("POD_LABEL_THRESHOLD", "0.8"),
     )
     return env
 
@@ -71,7 +75,7 @@ def fixture_upgrade_targets(pods):
             )
         if (
             meta["name"] in {"checkout-api", "orders-api", "analytics-worker"}
-            and annotations.get("jev.expanso.io/workload-version") == "noise-v4"
+            and annotations.get("jev.expanso.io/workload-version") == "signals-v6"
         ):
             continue
         targets.append(meta["name"])
@@ -284,7 +288,7 @@ class Session:
                 "--wait=true",
             )
         self.run(
-            "kubectl", "--context", CLUSTER, "apply", "-f", str(HERE / "fixtures.yaml")
+            "kubectl", "--context", CLUSTER, "apply", "-f", str(SIM / "fixtures.yaml")
         )
         self.run(
             "kubectl",

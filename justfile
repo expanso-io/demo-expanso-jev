@@ -271,7 +271,7 @@ pod-labels-nodes:
 # Local tests do not use a cluster, Cloud, or paid inference.
 pod-labels-test:
     uv run "{{ root }}/demos/11-pod-labels/test_adapter.py"
-    uv run "{{ root }}/demos/11-pod-labels/test_local.py"
+    uv run "{{ root }}/demos/11-pod-labels/simulation/test_local.py"
     POD_LABEL_TOKEN=offline-validation-placeholder-only expanso-edge validate "{{ root }}/demos/11-pod-labels/pipeline.yaml"
 
 # Run after inspecting pod-labels-nodes; selectors are validated by Cloud.
