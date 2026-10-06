@@ -264,9 +264,14 @@ pod-labels-up:
 pod-labels-down:
     just --justfile "{{ root }}/demos/11-pod-labels/justfile" down
 
-# Pod-label demo: foreground adapter, driven only by the Cloud pipeline.
+# Pod-label demo: foreground adapter, driven only by the Cloud pipeline. It
+# runs with the least-privilege kubeconfig, never the administrator one.
 pod-labels-adapter:
-    uv run "{{ root }}/demos/11-pod-labels/adapter.py"
+    #!/usr/bin/env bash
+    set -euo pipefail
+    : "${POD_LABEL_AGENT_KUBECONFIG:?Mint it first: demos/11-pod-labels/MANUAL_SETUP.md, step 1}"
+    KUBECONFIG="$POD_LABEL_AGENT_KUBECONFIG" \
+      exec uv run "{{ root }}/demos/11-pod-labels/adapter.py"
 
 # Dedicated Cloud-connected node; Ctrl-C stops this foreground agent.
 pod-labels-edge:
@@ -295,6 +300,7 @@ pod-labels-test:
     uv run "{{ root }}/demos/11-pod-labels/test_investigation.py"
     uv run "{{ root }}/demos/11-pod-labels/test_routing.py"
     uv run "{{ root }}/demos/11-pod-labels/simulation/test_local.py"
+    uv run "{{ root }}/demos/11-pod-labels/test_rbac.py"
     POD_LABEL_TOKEN=offline-validation-placeholder-only expanso-edge validate "{{ root }}/demos/11-pod-labels/pipeline.yaml"
 
 # Run after inspecting pod-labels-nodes; selectors are validated by Cloud.

@@ -95,12 +95,39 @@ wait pod --all --for=condition=Ready --timeout=180s
 
 For an existing k3s cluster, use its kubeconfig and explicit context instead
 of installing another cluster. The adapter reads pods cluster-wide but only
-patches namespaces named in `POD_LABEL_NAMESPACES`. Its Kubernetes identity
-needs `list` on pods cluster-wide, plus `get` and `patch` in the target
-namespaces. Reading workload logs also needs `get` on `pods/log`; the
-browser's fixed fixture stimulus needs `create` on `pods/exec` there.
-The disposable setup uses k3s's administrator kubeconfig; use
-scoped credentials when adapting this to a shared cluster.
+patches namespaces named in `POD_LABEL_NAMESPACES`.
+
+The adapter does not run as a cluster administrator. `rbac/rbac.yaml` defines
+a `pod-label-agent` ServiceAccount whose grants match the adapter's kubectl
+calls one for one:
+
+| Grant | Scope | Used for |
+|---|---|---|
+| `pods`: list | cluster-wide | inventory of the labels in use |
+| `pods`: get, patch | target namespace | read one pod, add or remove a label |
+| `pods/log`: get | target namespace | the log lines Jev reads as evidence |
+| `pods/exec`: get, create | target namespace | the browser's fixed stimulus only |
+
+Pod specs can contain environment values, so the cluster-wide list is read
+access to every pod definition. On a shared cluster, leave the `pods/exec`
+Role out unless you use the browser stimulus. Apply the manifests, mint a
+kubeconfig that holds only the agent's token (it expires after eight hours;
+run the second command again to renew it), and prove the grants:
+
+```bash
+kubectl --context "$KUBE_CONTEXT" apply -k demos/11-pod-labels/rbac
+uv run -s demos/11-pod-labels/rbac/mint_kubeconfig.py \
+--admin-kubeconfig "$KUBECONFIG" --admin-context "$KUBE_CONTEXT" \
+--namespace jev-label-demo \
+--out "$PWD/.expanso/pod-labels/agent.kubeconfig"
+uv run -s demos/11-pod-labels/rbac/verify.py \
+--kubeconfig "$KUBECONFIG" --context "$KUBE_CONTEXT"
+```
+
+To use another namespace, change `namespace` in `rbac/kustomization.yaml` to
+match `POD_LABEL_NAMESPACES`. The disposable `just up` path does all of this
+itself: it uses the administrator kubeconfig only to create the cluster and
+apply the manifests, then starts the adapter with the minted token.
 
 ### 2. Connect Expanso Cloud and Jev
 
@@ -121,7 +148,9 @@ Edit root `.env` and fill these existing settings:
 - `TYPESAFE_API_KEY`: your real Jev/TypeSafe API key.
 
 Add the settings from this directory's [`.env.example`](.env.example),
-including `KUBECONFIG` set to the **absolute path** printed by this command:
+including `KUBECONFIG` set to the **absolute path** printed by this command,
+and `POD_LABEL_AGENT_KUBECONFIG` set to the absolute path of the file the
+mint command above wrote:
 
 ```bash
 printf '%s\n' "$KUBECONFIG"

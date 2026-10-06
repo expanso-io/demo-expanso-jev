@@ -16,6 +16,8 @@ import urllib.request
 
 SIM = Path(__file__).resolve().parent
 HERE = SIM.parent  # the example itself: adapter.py, pipeline.yaml, edge.yaml
+sys.path.insert(0, str(HERE / "rbac"))
+from mint_kubeconfig import mint as mint_agent_kubeconfig  # noqa: E402
 ROOT = HERE.parents[1]
 STATE_DIR = ROOT / ".expanso/pod-labels"
 CLUSTER = "jev-label-demo"
@@ -303,7 +305,23 @@ class Session:
             "--timeout=180s",
             timeout=190,
         )
-        self.start("adapter", "uv", "run", str(HERE / "adapter.py"))
+        # The administrator kubeconfig stops here. The adapter runs with a
+        # short-lived token for a ServiceAccount that can only do what
+        # rbac/rbac.yaml grants.
+        self.run(
+            "kubectl", "--context", CLUSTER, "apply", "-k", str(HERE / "rbac")
+        )
+        agent_kubeconfig = STATE_DIR / "agent.kubeconfig"
+        mint_agent_kubeconfig(
+            Path(self.env["KUBECONFIG"]), CLUSTER, CLUSTER, agent_kubeconfig, "8h"
+        )
+        self.start(
+            "adapter",
+            "uv",
+            "run",
+            str(HERE / "adapter.py"),
+            env=dict(self.env, KUBECONFIG=str(agent_kubeconfig)),
+        )
         self.wait(
             "Waiting for local adapter and Kubernetes…",
             lambda: bool(self.state().get("pods")),

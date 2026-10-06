@@ -1,0 +1,96 @@
+# Least-privilege identity for the pod-label adapter.
+#
+# Apply with the namespace set once in kustomization.yaml:
+#   kubectl apply -k demos/11-pod-labels/rbac
+#
+# Every rule here matches one kubectl call the adapter makes (adapter.py,
+# class Kubernetes). test_rbac.py fails if the adapter gains a call that
+# is not listed, and verify.py proves the grants against a real cluster.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pod-label-agent
+  namespace: jev-label-demo
+automountServiceAccountToken: false
+---
+# The one cluster-wide grant: `kubectl get pods --all-namespaces`, used to
+# inventory which labels are in use. List returns whole pod specs, so on a
+# shared cluster treat this as read access to every pod definition.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pod-label-agent-inventory
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pod-label-agent-inventory
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pod-label-agent-inventory
+subjects:
+  - kind: ServiceAccount
+    name: pod-label-agent
+    namespace: jev-label-demo
+---
+# Namespaced: read one pod, patch its labels and annotations, read its logs.
+# No create, delete, update or access to anything but pods.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-label-agent
+  namespace: jev-label-demo
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "patch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-label-agent
+  namespace: jev-label-demo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pod-label-agent
+subjects:
+  - kind: ServiceAccount
+    name: pod-label-agent
+    namespace: jev-label-demo
+---
+# Only for the browser's fixed stimulus, which runs workload.py inside a demo
+# pod. Leave this Role and its binding out on a cluster that is not the
+# disposable demo. kubectl exec needs create, and get for the WebSocket
+# upgrade newer clients use.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-label-agent-stimulus
+  namespace: jev-label-demo
+rules:
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-label-agent-stimulus
+  namespace: jev-label-demo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pod-label-agent-stimulus
+subjects:
+  - kind: ServiceAccount
+    name: pod-label-agent
+    namespace: jev-label-demo

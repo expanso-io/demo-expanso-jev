@@ -1293,7 +1293,7 @@ class Reconciler(investigation.Investigations):
         item.pop("score", None)
         self.emit("judging", item["candidate"])
         req = urllib.request.Request(
-            "https://api.typesafe.ai/v1/systemone",
+            os.environ.get("JEV_API_URL", "https://api.typesafe.ai/v1/systemone"),
             data=json.dumps(
                 investigation.question(item["candidate"])
                 if item["candidate"]["operation"] == "investigate"
