@@ -1,0 +1,2 @@
+
+Error = failed to open live log stream: websocket: bad handshake

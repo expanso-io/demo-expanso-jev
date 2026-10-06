@@ -1,0 +1,25 @@
+run 1789843492
+target: job log-triage (j-d08c2d08-14c7-4e22-a716-72befb89e956) ns=demo  before: state=stopped version=18
+preserved: data/*.jsonl and spec v18 -> .codex-work/2026-09-19/jev-cloud-logs/preserve
+started: counter pid 86540, edge pid 86541
+node 0c2d2a69 connected after 42s
+deployed: Job 'log-triage' updated successfully in namespace 'demo' (version: 19)
+pipeline input live after 0.5s; state=deploying
+job state=running 2.3s after deploy
+  stream open attempt 1 exited 1: Error = failed to open live log stream: websocket: bad handshake
+  stream open attempt 2 exited 1: Error = failed to open live log stream: websocket: bad handshake
+  stream open attempt 3 exited 1: Error = failed to open live log stream: websocket: bad handshake
+  stream open attempt 4 exited 1: Error = failed to open live log stream: websocket: bad handshake
+  stream open attempt 5 exited 1: Error = failed to open live log stream: websocket: bad handshake
+
+ABORTED: log stream reader could not stay connected after 5 attempts
+
+--- cleanup
+job stop: Job 'log-triage' stopped successfully
+  stream pid 3582: exited 1
+  edge pid 86541: exited 0
+  counter pid 86540: exited -15
+Cloud: job log-triage state=stopped version=19
+listeners: :8080=none :8898=none
+
+VERDICT: INCONCLUSIVE  (backend log-stream delivery; NOT a visual check of the console Logs tab)

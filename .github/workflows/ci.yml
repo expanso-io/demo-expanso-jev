@@ -1,0 +1,132 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  EXPANSO_VERSION: v2.1.21
+  EDGE_INSTALLER_SHA256: >-
+    6dac113fdbaab206aa1c152f6c9a7b6ec4affedb4dce443a06e17516086061a9
+  CLI_INSTALLER_SHA256: >-
+    38c3b93063fbb4b2172bf0d87ea2ef0b7cc72b74c0658b6a8753d60566c9a485
+  K3D_VERSION: v5.9.0
+  K3D_SHA256: 06d8f25bc3a971c4eb29e0ff08429b180402db0f4dec838c9eac427e296800a0
+
+jobs:
+  local-gates:
+    name: Tests, generated files and pipeline fixtures
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out the example
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e
+        with:
+          version: "0.12.17"
+          enable-cache: true
+
+      - name: Install pinned Expanso tools
+        env:
+          EXPANSO_DISABLEANALYTICS: "true"
+        run: |
+          mkdir -p "$RUNNER_TEMP/expanso-bin"
+          curl -fsSL https://get.expanso.io/edge/install.sh -o "$RUNNER_TEMP/install-edge.sh"
+          curl -fsSL https://get.expanso.io/cli/install.sh -o "$RUNNER_TEMP/install-cli.sh"
+          echo "$EDGE_INSTALLER_SHA256  $RUNNER_TEMP/install-edge.sh" | sha256sum -c -
+          echo "$CLI_INSTALLER_SHA256  $RUNNER_TEMP/install-cli.sh" | sha256sum -c -
+          bash "$RUNNER_TEMP/install-edge.sh" "$EXPANSO_VERSION" --dir "$RUNNER_TEMP/expanso-bin"
+          bash "$RUNNER_TEMP/install-cli.sh" "$EXPANSO_VERSION" --dir "$RUNNER_TEMP/expanso-bin"
+          echo "$RUNNER_TEMP/expanso-bin" >> "$GITHUB_PATH"
+
+      - name: Lint the workflows
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/v1.7.7/scripts/download-actionlint.bash \
+            -o "$RUNNER_TEMP/download-actionlint.bash"
+          bash "$RUNNER_TEMP/download-actionlint.bash" 1.7.7 "$RUNNER_TEMP"
+          "$RUNNER_TEMP/actionlint" .github/workflows/ci.yml
+
+      - name: Generated files match the fixtures
+        run: |
+          uv run -s tools/build-explorers.py --check
+          uv run -s tools/fixture-runner.py check
+
+      - name: Unit tests
+        run: |
+          uv run demos/11-pod-labels/test_adapter.py
+          uv run demos/11-pod-labels/test_investigation.py
+          uv run demos/11-pod-labels/test_routing.py
+          uv run demos/11-pod-labels/scenario/test_local.py
+          uv run demos/11-pod-labels/test_rbac.py
+          uv run -s demos/01-log-triage/tests/ui_server_tests.py
+          uv run -s demos/01-log-triage/tests/log_safety_test.py
+
+      - name: Run every pipeline on its shipped input
+        run: uv run -s tools/fixture-runner.py run --skip 11
+
+  pod-labels:
+    name: Pod labels on a real cluster
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out the example
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e
+        with:
+          version: "0.12.17"
+          enable-cache: true
+
+      - name: Install pinned Expanso tools
+        env:
+          EXPANSO_DISABLEANALYTICS: "true"
+        run: |
+          mkdir -p "$RUNNER_TEMP/expanso-bin"
+          curl -fsSL https://get.expanso.io/edge/install.sh -o "$RUNNER_TEMP/install-edge.sh"
+          curl -fsSL https://get.expanso.io/cli/install.sh -o "$RUNNER_TEMP/install-cli.sh"
+          echo "$EDGE_INSTALLER_SHA256  $RUNNER_TEMP/install-edge.sh" | sha256sum -c -
+          echo "$CLI_INSTALLER_SHA256  $RUNNER_TEMP/install-cli.sh" | sha256sum -c -
+          bash "$RUNNER_TEMP/install-edge.sh" "$EXPANSO_VERSION" --dir "$RUNNER_TEMP/expanso-bin"
+          bash "$RUNNER_TEMP/install-cli.sh" "$EXPANSO_VERSION" --dir "$RUNNER_TEMP/expanso-bin"
+          echo "$RUNNER_TEMP/expanso-bin" >> "$GITHUB_PATH"
+
+      - name: Install k3d
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/k3d" \
+            "https://github.com/k3d-io/k3d/releases/download/${K3D_VERSION}/k3d-linux-amd64"
+          echo "$K3D_SHA256  $RUNNER_TEMP/k3d" | sha256sum -c -
+          sudo install -m 0755 "$RUNNER_TEMP/k3d" /usr/local/bin/k3d
+
+      - name: Run the pod-labels pipeline against a throwaway cluster
+        run: uv run -s tools/fixture-runner.py run --only 11
+
+      - name: Prove the RBAC grants on a cluster
+        run: |
+          k3d cluster create ci-rbac \
+            --kubeconfig-update-default=false \
+            --kubeconfig-switch-context=false --wait
+          (umask 077; k3d kubeconfig get ci-rbac > "$RUNNER_TEMP/rbac.kubeconfig")
+          kubectl --kubeconfig "$RUNNER_TEMP/rbac.kubeconfig" --context k3d-ci-rbac \
+            apply -f demos/11-pod-labels/scenario/fixtures.yaml
+          kubectl --kubeconfig "$RUNNER_TEMP/rbac.kubeconfig" --context k3d-ci-rbac \
+            apply -k demos/11-pod-labels/rbac
+          kubectl --kubeconfig "$RUNNER_TEMP/rbac.kubeconfig" --context k3d-ci-rbac \
+            -n jev-label-demo wait pod --all --for=condition=Ready --timeout=240s
+          uv run -s demos/11-pod-labels/rbac/verify.py \
+            --kubeconfig "$RUNNER_TEMP/rbac.kubeconfig" --context k3d-ci-rbac
+
+      - name: Delete the cluster
+        if: always()
+        run: k3d cluster delete ci-rbac || true

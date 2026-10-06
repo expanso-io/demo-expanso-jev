@@ -1,0 +1,5 @@
+source STOPPED gracefully, then 6s (real Cloud-deployed pipeline; Jev endpoint DOWN, so judged=0)
+produced=1004 accepted=1015 received=1012  (skipped=878 judged=0 unanswered=134)
+produced == accepted == received: False
+skipped + judged + unanswered == received: True
+bypass fraction this run: 878/1012 = 86.8%

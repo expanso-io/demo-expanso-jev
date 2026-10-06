@@ -1,0 +1,21 @@
+run 1789843295
+target: job log-triage (j-d08c2d08-14c7-4e22-a716-72befb89e956) ns=demo  before: state=stopped version=17
+preserved: data/*.jsonl and spec v17 -> .codex-work/2026-09-19/jev-cloud-logs/preserve
+started: counter pid 28348, edge pid 28351
+node 0c2d2a69 connected after 58s
+deployed: Job 'log-triage' updated successfully in namespace 'demo' (version: 18)
+pipeline input live after 0.5s; state=deploying
+log stream reader pid 48895 (orchestrator proxy -> Loki)
+stream readiness: NO probe came back through the Cloud stream within the window
+
+ABORTED: stream never delivered a line: INCONCLUSIVE, not a pass
+
+--- cleanup
+job stop: Job 'log-triage' stopped successfully
+  stream pid 48895: exited 1
+  edge pid 28351: exited 0
+  counter pid 28348: exited -15
+Cloud: job log-triage state=stopped version=18
+listeners: :8080=none :8898=none
+
+VERDICT: INCONCLUSIVE  (backend log-stream delivery; NOT a visual check of the console Logs tab)

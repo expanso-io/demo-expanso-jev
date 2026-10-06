@@ -9,6 +9,21 @@ Cloud console, the CLI, or the Jev switch, and the board follows.
 Start at the [repository README](../../README.md) for setup. This page is the
 detail: how the board reads, how the pieces fit, and what to do when it breaks.
 
+## Verify it with no account
+
+```bash
+uv run -s tools/fixture-runner.py run --only 01
+```
+
+This deploys both pipelines, unmodified, to a local Edge agent, starts the
+recurrence counter, posts the 16 lines in `input.jsonl`, and compares what each
+pipeline wrote with `fixtures/*.expected/`. A third case makes Jev answer 503 and
+shows the hold: two routine lines reach the archive with no model call, and the
+WARN record is written once to `held`, re-submitted every 2 to 4 seconds and
+handed to review after 15 attempts. Jev's answers are replayed from
+`fixtures/recurrence.answers.json`. Step through the same runs, stage by stage,
+in [`index.html`](../../index.html#example=01-log-triage).
+
 ## Prerequisites
 
 - macOS or Linux, `python3`, `just`

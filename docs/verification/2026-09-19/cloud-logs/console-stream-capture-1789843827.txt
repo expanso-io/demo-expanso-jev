@@ -1,0 +1,9 @@
+Consumed 1 messages from POST to '/logs'.
+HTTP request to 'http://127.0.0.1:8899/v1/systemone' failed: http://127.0.0.1:8899/v1/systemone: Post "http://127.0.0.1:8899/v1/systemone": dial tcp 127.0.0.1:8899: connect: connection refused
+triage fallback -> REVIEW selected, output pending: Jev gave no answer, nothing guessed (severity-only baseline: notify; logged on a fingerprint's first 2 occurrences, then every 50th) event=ab7ab76931a1 fp=ce248a777bc6 occ=1 svc=net lvl=WARN
+Attempting to write 1 messages to 'file'.
+Successfully wrote 1 messages to 'file'.
+Consumed 1 messages from POST to '/logs'.
+triage bypass -> ARCHIVE selected, output pending: known-routine line, no model call (checkpoint: a fingerprint's first occurrence, then every 250th) event=473d8390ccaa fp=2375b9c133c1 occ=1 svc=api lvl=INFO
+Attempting to write 1 messages to 'file'.
+Successfully wrote 1 messages to 'file'.

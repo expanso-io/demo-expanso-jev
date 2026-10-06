@@ -1,0 +1,14 @@
+case                               level  bypass  inference              baseline  -> landed in      verdict
+known benign, exact                INFO   True    none                   archive   -> archive.jsonl  PASS
+known benign, exact                INFO   True    none                   archive   -> archive.jsonl  PASS
+changed status 200 -> 500          INFO   False   judged by Jev          archive   -> notify.jsonl   PASS
+changed latency 2ms -> 9000ms      INFO   False   judged by Jev          archive   -> review.jsonl   PASS
+changed rate 0.94 -> 0.01          INFO   False   judged by Jev          archive   -> notify.jsonl   PASS
+changed gc pause 12ms -> 8400ms    INFO   False   judged by Jev          archive   -> notify.jsonl   PASS
+WARN carrying a benign message     WARN   False   judged by Jev          notify    -> review.jsonl   PASS
+ERROR carrying a benign message    ERROR  False   judged by Jev          page      -> archive.jsonl  PASS
+benign message, wrong service      INFO   False   judged by Jev          archive   -> archive.jsonl  PASS
+novel INFO (the quiet one)         INFO   False   judged by Jev          archive   -> notify.jsonl   PASS
+
+10/10 passed
+exit=0

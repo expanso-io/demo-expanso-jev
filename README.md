@@ -22,17 +22,52 @@ handle both in a single pipeline:
 In our runs about nine lines in ten never touched the model. Your number will
 differ; the board measures it live.
 
-## What you need
+## Step through every example
 
-- macOS or Linux, [`just`](https://github.com/casey/just), `python3`, `curl`.
-  [`uv`](https://docs.astral.sh/uv/) if you want to run the tests.
+Open [`index.html`](index.html) for all eleven examples. Each one has an
+explanation, a stage-by-stage explorer that shows the real message going in and
+coming out of every processor (page with the buttons or the Left and Right arrow
+keys), and run and deploy instructions. To serve it locally:
+
+```bash
+python3 tools/serve.py static 8777
+```
+
+Then open http://127.0.0.1:8777 and stop it with
+`python3 tools/serve.py stop 8777`. Every value on the page was captured from a
+run of the pipeline in this repository.
+
+## Check that every pipeline runs, with no account
+
+```bash
+uv run -s tools/fixture-runner.py run
+```
+
+The runner deploys each shipped pipeline, unmodified, to a local
+`expanso-edge run --local` agent, posts every line of its `input.jsonl`, and
+compares what the pipeline wrote with the expected output in `fixtures/`.
+Examples 02 to 10 and the log-triage outage also run with Jev unreachable. The
+pod-labels example runs on a throwaway k3d cluster with the least-privilege
+ServiceAccount in [`demos/11-pod-labels/rbac`](demos/11-pod-labels/rbac). Jev's
+answers are replayed from recorded files, so nothing calls a model and no
+Expanso Cloud credentials are needed. It writes a dated report to
+[`docs/verification/`](docs/verification/); the latest is linked from
+`index.html`.
+
+It needs `expanso-edge`, `expanso-cli` and [`uv`](https://docs.astral.sh/uv/),
+plus Docker and `k3d` for the pod-labels case.
+
+## What you need for the live demos
+
+- macOS or Linux, [`just`](https://github.com/casey/just), `python3`, `curl`,
+  and `uv`.
 - Expanso Edge and the Expanso CLI, v2 or later, on your `PATH`
   (`expanso-edge`, `expanso-cli`). See the [Expanso docs](https://docs.expanso.io).
-- An [Expanso Cloud](https://cloud.expanso.io) network. Pipelines here are always
-  deployed through Expanso Cloud; the agent on your machine runs them.
-- A TypeSafe API key for Jev. No key yet? Use the bundled mock (below). The
-  board labels mock answers in red, because they are keyword heuristics and
-  not inference.
+- An [Expanso Cloud](https://cloud.expanso.io) network. The live demos deploy
+  through Expanso Cloud; the agent on your machine runs the pipelines.
+- A TypeSafe API key for Jev. No key yet? Use the bundled responder (below).
+  The board labels its answers in red, because they are keyword rules and not
+  inference.
 
 ## Pod-label browser demo
 
@@ -110,9 +145,13 @@ Details, environment variables and troubleshooting:
 | Path | What |
 |---|---|
 | `demos/01-log-triage/` | The full live demo: generator, two pipelines, dashboard, tests. |
-| `demos/02-…` to `demos/10-…` | Nine more Expanso + Jev pipelines, each a `pipeline.yaml`, sample `input.jsonl` and a README: ticket routing, sensitivity masking, sensor triage, agent guardrails, smart sampling, SOC pre-filtering, data quality, moderation, feedback mining. Pipelines only; no dashboard yet. |
+| `demos/02-…` to `demos/10-…` | Nine more Expanso + Jev pipelines, each with a `pipeline.yaml`, a sample `input.jsonl`, recorded fixtures and a README: ticket routing, sensitivity masking, sensor triage, agent guardrails, smart sampling, SOC pre-filtering, data quality, moderation, feedback mining. Each is explained and stepped through in `index.html`. |
 | [`demos/11-pod-labels/`](demos/11-pod-labels/README.md) | Keeps Kubernetes pod labels true: Expanso reads pod logs, asks Jev one question when the evidence might change a label, and patches or un-patches it. Runs on a local k3d cluster with one command; the adapter and pipeline work on your own cluster too. |
-| `shared/jev-mock-server.py` | A zero-credential stand-in for Jev's API. |
+| `shared/jev-mock-server.py` | A zero-credential responder for Jev's API, using keyword rules. It produced the recorded answers the fixture runs replay. |
+| `index.html` | The explorer for all eleven examples. Built by `tools/build-explorers.py` from the fixture runs. |
+| `tools/fixture-runner.py` | Runs every pipeline on its shipped input and asserts the output; writes the dated report. |
+| `public-bar.toml`, `public-features.json`, `.demo-kit/` | The shared public-example check and the retained-feature baseline. See [`docs/RUNBOOK.md`](docs/RUNBOOK.md). |
+| `docs/verification/` | Dated run reports and the earlier Cloud and real-Jev verification reports. |
 | `display/fancy/jev-flow.html` | A standalone animated walkthrough of the idea. `just flow`. |
 | `tools/expanso-agent-help.py`, `AGENTS.md` | How the Expanso CLIs take credentials from the environment, for people and coding agents. `just agent-help`. |
 

@@ -38,6 +38,28 @@ When it prints **READY**, open http://127.0.0.1:8901. Everything it creates
 lives in a dedicated `jev-label-demo` cluster and the ignored
 `.expanso/pod-labels/` directory.
 
+## Verify it without Cloud
+
+```bash
+uv run -s tools/fixture-runner.py run --only 11
+uv run test_rbac.py
+```
+
+The first command builds a throwaway k3d cluster, applies the fixture pods and
+the RBAC, runs the real adapter with a token for the least-privilege
+ServiceAccount, runs `pipeline.yaml` on a local Edge agent, sends six events
+through the adapter's own endpoints (three investigations, three label events),
+waits for the ten-second label leases to expire, compares the adapter's event
+feed, the pods' labels and the pipeline's receipts with `fixtures/main.expected/`,
+and deletes the cluster. It needs Docker, k3d, kubectl, `expanso-edge`,
+`expanso-cli` and uv. The investigation answers it replays are the real Jev
+values in [`docs/investigation-live-proof.json`](../../docs/investigation-live-proof.json);
+the label answers come from the offline responder in `shared/jev-mock-server.py`.
+The second command checks, offline, that the RBAC grants exactly what the
+adapter's kubectl calls need. To prove them on a cluster, run
+[`rbac/verify.py`](rbac/verify.py). See the explorer page for the stage-by-stage
+view of this run: [`index.html`](../../index.html#example=11-pod-labels).
+
 ## Two lanes through Cloud
 
 **Labels:** Expanso Cloud schedules evidence collection and Jev judgment;
@@ -128,8 +150,11 @@ Outside the launcher, the adapter proposes labels it observes on other pods
 in the namespaces you allow (`POD_LABEL_NAMESPACES`), asks Jev whether each
 fits the target pod, and records every change it makes in a pod annotation so
 it can undo only its own work. It starts in dry run: set
-`POD_LABEL_APPLY=true` to let it patch. It needs `get`/`list`/`patch` on pods
-and `get` on `pods/log`.
+`POD_LABEL_APPLY=true` to let it patch. It runs as the ServiceAccount in
+[`rbac/rbac.yaml`](rbac/rbac.yaml): cluster-wide `list` on pods, and in the
+target namespace `get` and `patch` on pods, `get` on `pods/log`, `list` on
+`events` and, for the browser stimulus only, `get` and `create` on `pods/exec`.
+Nothing else: no secrets, no delete, no other namespace.
 
 Step-by-step setup for native k3s or an existing cluster, the RBAC, and how
 to stop and verify: [MANUAL_SETUP.md](MANUAL_SETUP.md).

@@ -1,0 +1,12 @@
+shutdown state, 2026-09-19 10:54:57 PDT
+--- local ports (expect none)
+  :8890 listeners=0
+  :8898 listeners=0
+  :8080 listeners=0
+  :8899 listeners=0
+  :8099 listeners=0
+--- this checkout's processes (expect 0 each)
+  generator2.py=0 server.py=0 counter.py=0 expanso-edge=0
+--- Expanso Cloud, namespace demo
+ j-d08c2d08 │ log-triage │ demo      │ pipeline │ stopped │ 17      │ ca
+ 0c2d2a69 │ Mac.localdomain │ disconnected │ v2.1.21 │      

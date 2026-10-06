@@ -1,0 +1,14 @@
+case                               level  bypass  inference              baseline  -> landed in      verdict
+known benign, exact                INFO   True    none                   archive   -> archive.jsonl  PASS
+known benign, exact                INFO   True    none                   archive   -> archive.jsonl  PASS
+changed status 200 -> 500          INFO   False   attempted -> fallback  archive   -> review.jsonl   PASS
+changed latency 2ms -> 9000ms      INFO   False   attempted -> fallback  archive   -> review.jsonl   PASS
+changed rate 0.94 -> 0.01          INFO   False   attempted -> fallback  archive   -> review.jsonl   PASS
+changed gc pause 12ms -> 8400ms    INFO   False   attempted -> fallback  archive   -> review.jsonl   PASS
+WARN carrying a benign message     WARN   False   attempted -> fallback  notify    -> review.jsonl   PASS
+ERROR carrying a benign message    ERROR  False   attempted -> fallback  page      -> review.jsonl   PASS
+benign message, wrong service      INFO   False   attempted -> fallback  archive   -> review.jsonl   PASS
+novel INFO (the quiet one)         INFO   False   attempted -> fallback  archive   -> review.jsonl   PASS
+
+10/10 passed
+exit=0

@@ -1,0 +1,9 @@
+decoy pid 85713 cwd /Users/daaronch/code/second-brain/.codex-work/2026-09-19/jev-independent-review/stop-scope-decoy
+this checkout's generators before: [47296]
+  stop.sh: leaving pid 85713 alone: not started from /Users/daaronch/code/second-brain/projects/demos/demo-expanso-jev/demos/01-log-triage
+  stop.sh: stopped.
+this checkout's generators after:  []
+decoy still alive: True
+PASS
+decoy pid 85713 terminated by its owner (exit -15)
+exit=0

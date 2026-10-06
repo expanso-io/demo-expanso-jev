@@ -1,0 +1,51 @@
+--- pipeline-logging.yaml
+PASS  has operational log processors (1)
+PASS  no raw log message text
+PASS  no whole raw payload
+PASS  no source timestamp is fine in data, but keep log lines to operational metadata
+PASS  no an endpoint URL
+PASS  no the Jev prompt
+PASS  no the whole Jev response body
+PASS  no the whole record or all metadata
+PASS  no a credential
+PASS  no the raw fingerprint (hash it)
+PASS  no the raw event id (hash it; a pattern match is not proof it was generated)
+PASS  says 'selected, output pending'; never claims a write or retention
+PASS  write_confirmed is false on every log line
+PASS  producer/model strings are read only on allowlisting `let` lines  []
+PASS  service, level, team, severity go through closed allowlists
+PASS  event id is hashed unconditionally (no pattern pass-through)
+PASS  sampling is described per fingerprint, never as a global '1 in N' rate
+PASS  every log level is INFO or WARN (no global level change, no DEBUG/ERROR spam added)  ['INFO']
+PASS  every log processor sits inside a switch case with a `check` (none fires per record)  [True]
+--- pipeline-recurrence.yaml
+PASS  has operational log processors (2)
+PASS  no raw log message text
+PASS  no whole raw payload
+PASS  no source timestamp is fine in data, but keep log lines to operational metadata
+PASS  no an endpoint URL
+PASS  no the Jev prompt
+PASS  no the whole Jev response body
+PASS  no the whole record or all metadata
+PASS  no a credential
+PASS  no the raw fingerprint (hash it)
+PASS  no the raw event id (hash it; a pattern match is not proof it was generated)
+PASS  says 'selected, output pending'; never claims a write or retention
+PASS  write_confirmed is false on every log line
+PASS  producer/model strings are read only on allowlisting `let` lines  []
+PASS  service, level, team, severity go through closed allowlists
+PASS  event id is hashed unconditionally (no pattern pass-through)
+PASS  sampling is described per fingerprint, never as a global '1 in N' rate
+PASS  every log level is INFO or WARN (no global level change, no DEBUG/ERROR spam added)  ['WARN', 'INFO']
+PASS  every log processor sits inside a switch case with a `check` (none fires per record)  [True, True]
+--- pipeline-recurrence.yaml: only the routine path may be sampled
+PASS  bypass checkpoint is sampled per fingerprint
+PASS  every non-bypass selection logs: no occurrence test on the judged/fallback branch  } else if !this.jev_ok.or(false) {             "fallback"           } else {             "judged"           }
+--- pipeline-recurrence.yaml wording
+PASS  fallback line exists, is WARN-routed, and claims only a selection
+PASS  fallback line never calls itself a judgment
+PASS  bypass line states no model call
+PASS  judged line attributes scores to the model ('Jev reported'), not to accuracy
+
+44/44 passed
+exit=0

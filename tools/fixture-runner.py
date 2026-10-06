@@ -328,7 +328,7 @@ class Case:
         return self.fx / f"{self.name}.trace.json"
 
 
-def discover(only: str | None) -> list[Case]:
+def discover(only: str | None, skip: str | None = None) -> list[Case]:
     cases = []
     for fixture in sorted(DEMOS.glob("*/fixture.json")):
         spec = json.loads(fixture.read_text())
@@ -336,6 +336,8 @@ def discover(only: str | None) -> list[Case]:
             case = dict(case)
             case["id"] = f"{fixture.parent.name}:{name}" if len(spec["cases"]) > 1 else fixture.parent.name
             if only and only not in case["id"]:
+                continue
+            if skip and skip in case["id"]:
                 continue
             cases.append(Case(fixture.parent, name, case))
     return cases
@@ -992,6 +994,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("mode", choices=["run", "record", "check"])
     ap.add_argument("--only")
+    ap.add_argument("--skip", help="leave out cases whose id contains this text")
     ap.add_argument("--report", help="report path (default docs/verification/<date>-fixture-run.md)")
     args = ap.parse_args()
     if args.mode == "check":
@@ -1000,7 +1003,7 @@ def main() -> int:
         if not shutil.which(tool):
             print(f"FAIL: {tool} is not on PATH")
             return 1
-    cases = discover(args.only)
+    cases = discover(args.only, args.skip)
     if not cases:
         print("FAIL: no matching cases")
         return 1
@@ -1016,7 +1019,7 @@ def main() -> int:
         )
         for p in res["problems"]:
             print("   problem:", p)
-    if args.mode == "run" and not args.only:
+    if args.mode == "run" and not args.only and not args.skip:
         path = Path(args.report) if args.report else REPORT_DIR / f"{dt.date.today().isoformat()}-fixture-run.md"
         write_report(results, path)
         print("report:", path.relative_to(ROOT) if path.is_relative_to(ROOT) else path)

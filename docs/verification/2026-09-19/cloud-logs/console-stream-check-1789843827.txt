@@ -1,0 +1,27 @@
+run 1789843827  job log-triage j-d08c2d08-14c7-4e22-a716-72befb89e956  before: state=stopped version=19  (data + spec preserved)
+started counter pid 83935, edge pid 83936
+node 0c2d2a69 connected after 37s
+rerun (no redeploy): Job 'j-d08c2d08-14c7-4e22-a716-72befb89e956' rerun triggered successfully
+job running v20, execution running on node 0c2d2a69, input :8080 bound, 3.5s after rerun
+--- CLI path, by UUID, for comparison
+  WSS /jobs/<uuid>/logs: CONNECTED (101)
+--- console-equivalent sequence
+  POST /jobs/<uuid>/logs (enableLogStream): HTTP 404 | {   "code": "NOT_FOUND",   "message": "resource not found: /api/v1/jobs/j-d08c2d08-14c7-4e22-a716-72befb89e956/logs",   "details": {     "hint": "The requested resource/URL was not found. Check if the
+  WSS /jobs/<uuid>/logs/proxy: CONNECTED (101)
+posted 1 novel WARN (expect fallback) and 1 first-sighting known-routine INFO (expect bypass)
+
+received through Cloud: 9 log lines, 2 'triage' lines
+PASS  fallback line arrived, by event hash
+PASS  bypass line arrived, by event hash
+PASS  no message text in any triage line
+PASS  no line claims a Jev judgment
+  > triage fallback -> REVIEW selected, output pending: Jev gave no answer, nothing guessed (severity-only baseline: notify; logged on a fingerprint's first 2 occurrences, then every 50th) event=ab7ab76931a1 fp=ce248a777bc6 occ=1 svc=net lvl=WARN
+  > triage bypass -> ARCHIVE selected, output pending: known-routine line, no model call (checkpoint: a fingerprint's first occurrence, then every 250th) event=473d8390ccaa fp=2375b9c133c1 occ=1 svc=api lvl=INFO
+
+--- cleanup
+  job stop: Job 'j-d08c2d08-14c7-4e22-a716-72befb89e956' stopped successfully
+  edge pid 83936: exited 0
+  counter pid 83935: exited -15
+  Cloud: job state=stopped version=20; listeners: :8080=none :8898=none
+
+VERDICT: PASS  (console-BACKEND sequence with an API key; not a browser, not the rendered tab)

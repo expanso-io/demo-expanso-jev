@@ -1,6 +1,6 @@
 {
-  "seq": 8,
-  "at": 1791257806.774206,
+  "seq": 7,
+  "at": 1791259456.218076,
   "stage": "investigation_waiting",
   "pod": "checkout-api",
   "namespace": "jev-label-demo",
@@ -11,47 +11,47 @@
   "source_pods": [],
   "noul": 0.12,
   "message": "investigation_waiting",
-  "event_id": 8,
-  "request_id": "22beeafb805c3a07e6c35c05",
+  "event_id": 7,
+  "request_id": "cefea389c082422ec07c5f31",
   "scenario": "investigate_restart",
   "investigation": {
-    "id": "e0742f549b4b4f70def209a5",
+    "id": "b79991ab06f047eecdc599d4",
     "namespace": "jev-label-demo",
     "pod": "checkout-api",
-    "uid": "b16120d4-99ea-48b1-9b18-8b952c2ae2ed",
+    "uid": "961c6393-2430-40e4-98be-0a11a84a0063",
     "evidence": [
       {
-        "id": "E10457fa7",
+        "id": "Ea718e7cb",
         "kind": "pod",
-        "text": "{\"name\": \"checkout-api\", \"namespace\": \"jev-label-demo\", \"uid\": \"b16120d4-99ea-48b1-9b18-8b952c2ae2ed\", \"labels\": {\"app\": \"checkout\", \"istio.io/rev\": \"default\", \"team\": \"payments\", \"version\": \"v3.1.0\"}, \"phase\": \"Running\", \"containers\": [{\"name\": \"checkout\", \"image\": \"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\"}], \"runtime_note\": \"Live simulator metadata; incident evidence is the marked synthetic stdout. The simulator itself stays healthy.\"}",
+        "text": "{\"name\": \"checkout-api\", \"namespace\": \"jev-label-demo\", \"uid\": \"961c6393-2430-40e4-98be-0a11a84a0063\", \"labels\": {\"app\": \"checkout\", \"istio.io/rev\": \"default\", \"team\": \"payments\", \"version\": \"v3.1.0\"}, \"phase\": \"Running\", \"containers\": [{\"name\": \"checkout\", \"image\": \"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\"}], \"runtime_note\": \"Live workload metadata; incident evidence is the marked synthetic stdout. The workload itself stays healthy.\"}",
         "source": "Kubernetes API",
         "synthetic": false
       },
       {
-        "id": "Ec42ecf9f",
+        "id": "E494fd138",
         "kind": "logs",
-        "text": "{\"event\": \"investigation_restart\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 1, \"message\": \"Synthetic incident: container restarted once; termination details and stack trace are unavailable. Cause unknown.\", \"at\": 1791257806.3573117}",
+        "text": "{\"event\": \"investigation_restart\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 1, \"message\": \"Synthetic incident: container restarted once; termination details and stack trace are unavailable. Cause unknown.\", \"at\": 1791259456.0350258}",
         "source": "pod stdout; demo stimuli",
         "synthetic": true
       },
       {
-        "id": "Ea494360a",
+        "id": "E253ac1ec",
         "kind": "previous_logs",
         "text": "Unavailable",
         "source": "Kubernetes API",
         "synthetic": false
       },
       {
-        "id": "Ece3bb57b",
+        "id": "Eec114eb6",
         "kind": "events",
-        "text": "[{\"reason\": \"Scheduled\", \"message\": \"Successfully assigned jev-label-demo/checkout-api to k3d-jev-rbac-check-server-0\", \"type\": \"Normal\", \"count\": null, \"at\": \"2026-10-06T03:36:43.964376Z\"}, {\"reason\": \"Pulled\", \"message\": \"Container image \\\"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\\\" already present on machine and can be accessed by the pod\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}, {\"reason\": \"Created\", \"message\": \"Container created\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}, {\"reason\": \"Started\", \"message\": \"Container started\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}]",
+        "text": "[{\"reason\": \"Scheduled\", \"message\": \"Successfully assigned jev-label-demo/checkout-api to k3d-jev-fixture-19943c-server-0\", \"type\": \"Normal\", \"count\": null, \"at\": \"2026-10-06T04:04:12.970510Z\"}, {\"reason\": \"Pulled\", \"message\": \"Container image \\\"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\\\" already present on machine and can be accessed by the pod\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T04:04:13Z\"}, {\"reason\": \"Created\", \"message\": \"Container created\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T04:04:13Z\"}, {\"reason\": \"Started\", \"message\": \"Container started\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T04:04:13Z\"}]",
         "source": "Kubernetes API",
         "synthetic": false
       }
     ],
     "phase": "restart",
     "status": "waiting",
-    "request_id": "22beeafb805c3a07e6c35c05",
+    "request_id": "cefea389c082422ec07c5f31",
     "revision": 3,
     "score": 0.12
   }

@@ -1,0 +1,19 @@
+LOCAL evidence only: the node's own pipeline.log. This is NOT the Cloud stream.
+file: .expanso/edge/executions/j-d08c2d08-14c7-4e22-a716-72befb89e956/logs/pipeline.log
+triage lines total: 12
+--- by kind and level
+  12 level=WARN msg="triage fallback -> REVIEW
+--- sensitive-content scan of those lines (expect all 0)
+  'readiness probe': 0
+  'GET /health': 0
+  'http://': 0
+  'systemone': 0
+  ' kept': 0
+  'written': 0
+  'retained': 0
+--- two lines verbatim
+time=2026-09-19T11:42:39.108-07:00 level=WARN msg="triage fallback -> REVIEW selected, output pending: Jev gave no answer, nothing guessed (severity-only baseline: notify; logged on a fingerprint's first 2 occurrences, then every 50th) event=7d3d4ee6e98b fp=dafe836417c4 occ=1 svc=net lvl=WARN" execution_id=e-b9e90a8e-a959-47ad-b4d7-f79f0858bfe5 pipeline_id=j-d08c2d08-14c7-4e22-a716-72befb89e956 pipeline_version=18 pa
+time=2026-09-19T11:42:45.146-07:00 level=WARN msg="triage fallback -> REVIEW selected, output pending: Jev gave no answer, nothing guessed (severity-only baseline: notify; logged on a fingerprint's first 2 occurrences, then every 50th) event=aef22e375631 fp=997b71b2b938 occ=1 svc=net lvl=WARN" execution_id=e-b9e90a8e-a959-47ad-b4d7-f79f0858bfe5 pipeline_id=j-d08c2d08-14c7-4e22-a716-72befb89e956 pipeline_version=18 pa
+--- correlation: recompute the event hash from the local receipt
+logcheck receipts in review.jsonl: 12; of those, sha256(id)[:12] found in a logged triage line: 12
+example: logcheck-1789843295-ready-alpha -> 7d3d4ee6e98b

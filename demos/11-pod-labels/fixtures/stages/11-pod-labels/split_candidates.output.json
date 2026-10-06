@@ -3,51 +3,51 @@
     "investigation": {
       "evidence": [
         {
-          "id": "E10457fa7",
+          "id": "Ea718e7cb",
           "kind": "pod",
           "source": "Kubernetes API",
           "synthetic": false,
-          "text": "{\"name\": \"checkout-api\", \"namespace\": \"jev-label-demo\", \"uid\": \"b16120d4-99ea-48b1-9b18-8b952c2ae2ed\", \"labels\": {\"app\": \"checkout\", \"istio.io/rev\": \"default\", \"team\": \"payments\", \"version\": \"v3.1.0\"}, \"phase\": \"Running\", \"containers\": [{\"name\": \"checkout\", \"image\": \"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\"}], \"runtime_note\": \"Live simulator metadata; incident evidence is the marked synthetic stdout. The simulator itself stays healthy.\"}"
+          "text": "{\"name\": \"checkout-api\", \"namespace\": \"jev-label-demo\", \"uid\": \"961c6393-2430-40e4-98be-0a11a84a0063\", \"labels\": {\"app\": \"checkout\", \"istio.io/rev\": \"default\", \"team\": \"payments\", \"version\": \"v3.1.0\"}, \"phase\": \"Running\", \"containers\": [{\"name\": \"checkout\", \"image\": \"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\"}], \"runtime_note\": \"Live workload metadata; incident evidence is the marked synthetic stdout. The workload itself stays healthy.\"}"
         },
         {
-          "id": "Ec42ecf9f",
+          "id": "E494fd138",
           "kind": "logs",
           "source": "pod stdout; demo stimuli",
           "synthetic": true,
-          "text": "{\"event\": \"investigation_restart\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 1, \"message\": \"Synthetic incident: container restarted once; termination details and stack trace are unavailable. Cause unknown.\", \"at\": 1791257806.3573117}"
+          "text": "{\"event\": \"investigation_restart\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 1, \"message\": \"Synthetic incident: container restarted once; termination details and stack trace are unavailable. Cause unknown.\", \"at\": 1791259456.0350258}"
         },
         {
-          "id": "Ea494360a",
+          "id": "E253ac1ec",
           "kind": "previous_logs",
           "source": "Kubernetes API",
           "synthetic": false,
           "text": "Unavailable"
         },
         {
-          "id": "Ece3bb57b",
+          "id": "Eec114eb6",
           "kind": "events",
           "source": "Kubernetes API",
           "synthetic": false,
-          "text": "[{\"reason\": \"Scheduled\", \"message\": \"Successfully assigned jev-label-demo/checkout-api to k3d-jev-rbac-check-server-0\", \"type\": \"Normal\", \"count\": null, \"at\": \"2026-10-06T03:36:43.964376Z\"}, {\"reason\": \"Pulled\", \"message\": \"Container image \\\"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\\\" already present on machine and can be accessed by the pod\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}, {\"reason\": \"Created\", \"message\": \"Container created\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}, {\"reason\": \"Started\", \"message\": \"Container started\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}]"
+          "text": "[{\"reason\": \"Scheduled\", \"message\": \"Successfully assigned jev-label-demo/checkout-api to k3d-jev-fixture-19943c-server-0\", \"type\": \"Normal\", \"count\": null, \"at\": \"2026-10-06T04:04:12.970510Z\"}, {\"reason\": \"Pulled\", \"message\": \"Container image \\\"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\\\" already present on machine and can be accessed by the pod\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T04:04:13Z\"}, {\"reason\": \"Created\", \"message\": \"Container created\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T04:04:13Z\"}, {\"reason\": \"Started\", \"message\": \"Container started\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T04:04:13Z\"}]"
         }
       ],
-      "id": "e0742f549b4b4f70def209a5",
+      "id": "b79991ab06f047eecdc599d4",
       "namespace": "jev-label-demo",
       "phase": "restart",
       "pod": "checkout-api",
-      "request_id": "22beeafb805c3a07e6c35c05",
+      "request_id": "cefea389c082422ec07c5f31",
       "revision": 3,
       "status": "collected",
-      "uid": "b16120d4-99ea-48b1-9b18-8b952c2ae2ed"
+      "uid": "961c6393-2430-40e4-98be-0a11a84a0063"
     },
     "operation": "investigate",
     "pod": {
       "name": "checkout-api",
       "namespace": "jev-label-demo",
-      "uid": "b16120d4-99ea-48b1-9b18-8b952c2ae2ed"
+      "uid": "961c6393-2430-40e4-98be-0a11a84a0063"
     },
-    "request_id": "22beeafb805c3a07e6c35c05",
+    "request_id": "cefea389c082422ec07c5f31",
     "scenario": "investigate_restart"
   },
-  "id": "a7b63e7a7d419ec065127d5f6d0dc7af8c0bdec666148cd1"
+  "id": "46e5783929d9053e16fd58751b7b5aabe3454db3ec778f3b"
 }
