@@ -123,12 +123,14 @@ jobs:
             --kubeconfig-update-default=false \
             --kubeconfig-switch-context=false --wait
           (umask 077; k3d kubeconfig get ci-rbac > "$RUNNER_TEMP/rbac.kubeconfig")
-          kubectl --kubeconfig "$RUNNER_TEMP/rbac.kubeconfig" --context k3d-ci-rbac \
-            apply -f demos/11-pod-labels/scenario/fixtures.yaml
-          kubectl --kubeconfig "$RUNNER_TEMP/rbac.kubeconfig" --context k3d-ci-rbac \
-            apply -k demos/11-pod-labels/rbac
-          kubectl --kubeconfig "$RUNNER_TEMP/rbac.kubeconfig" --context k3d-ci-rbac \
-            -n jev-label-demo wait pod --all --for=condition=Ready --timeout=240s
+          kc() { kubectl --kubeconfig "$RUNNER_TEMP/rbac.kubeconfig" --context k3d-ci-rbac "$@"; }
+          # The API server answers before every aggregated API is ready; retry the first apply.
+          for _ in 1 2 3 4 5 6 7 8 9 10; do
+            kc apply -f demos/11-pod-labels/scenario/fixtures.yaml && break
+            sleep 5
+          done
+          kc apply -k demos/11-pod-labels/rbac
+          kc -n jev-label-demo wait pod --all --for=condition=Ready --timeout=240s
           uv run -s demos/11-pod-labels/rbac/verify.py \
             --kubeconfig "$RUNNER_TEMP/rbac.kubeconfig" --context k3d-ci-rbac
 
