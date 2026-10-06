@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="fonts/fonts.css">
 <title>Expanso × Jev — log triage</title>
@@ -13,19 +13,30 @@
    decision was made": an unprocessed log is plain ink. */
 :root{
   color-scheme:light;
-  --bg:#f4f2f9; --surface:#fdfcff; --surface-2:#ebe7f5; --line:#cfc8e0;
+  --bg:#f4f2f9; --surface:#fdfcff; --surface-2:#ebe7f5; --line:#8c82a8; --soft:#cfc8e0;
+  --tint-ex:#f3effe; --tint-jev:#fdf3ea; --tint-err:#fdeeef; --lane:rgba(27,21,48,.28); --scrim:rgba(27,21,48,.42); --shadow:rgba(27,21,48,.35);
   --text:#1b1530; --text-dim:#5b5473;
   --accent:#6d3aed;            /* Expanso */
-  --jev:#b8530a;               /* Jev */
+  --jev:#a84a08;               /* Jev */
   --ok:#187a3c; --warn:#a85c00; --err:#cf2e3d;
-  --page:#cf2e3d; --notify:#a85c00; --review:#2563eb; --archive:#5d5872; --raw:#1b1530; --held:#b8530a; --hero:#0a8f8f;
+  --page:#cf2e3d; --notify:#a85c00; --review:#2563eb; --archive:#5d5872; --raw:#1b1530; --held:#a84a08; --hero:#0a8f8f;
   --sans:"IBM Plex Sans",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,monospace;
   --display:"Big Shoulders Display","IBM Plex Sans",sans-serif;
 }
+/* Light is the default. The reader switches to dark with the button in the header. */
+:root[data-theme=dark]{
+  color-scheme:dark;
+  --bg:#14111f; --surface:#1d1830; --surface-2:#2a2342; --line:#8a80a6; --soft:#3a3452;
+  --tint-ex:#261d45; --tint-jev:#33211a; --tint-err:#3a1d24; --lane:rgba(236,232,247,.35); --scrim:rgba(5,3,12,.66); --shadow:rgba(0,0,0,.6);
+  --text:#ece8f7; --text-dim:#bdb5d3;
+  --accent:#b9a0ff; --jev:#ff9f57;
+  --ok:#74d894; --warn:#f0b24d; --err:#ff9aa2;
+  --page:#ff9aa2; --notify:#f0b24d; --review:#8db6ff; --archive:#bdb5d3; --raw:#ece8f7; --held:#ff9f57; --hero:#4fd1d1;
+}
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;overflow:hidden;color:var(--text);font:14px/1.45 var(--sans);background:#f4f2f9}
+body{margin:0;overflow:hidden;color:var(--text);font:14px/1.45 var(--sans);background:var(--bg)}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
@@ -48,7 +59,7 @@ button{font:inherit;color:inherit}
 .flow{position:relative;min-height:0}
 .flow canvas{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;z-index:0}
 .srcbox{position:absolute;left:0;width:176px;height:56px;z-index:1;background:var(--surface);border:2px solid var(--text);border-radius:8px;padding:7px 12px}
-.srcbox small{display:block;font:500 13px/1.2 var(--mono);color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase}
+.srcbox small{display:block;font:500 13px/1.2 var(--mono);color:var(--text-dim)}
 .srcbox b{font:500 14px var(--mono)}
 
 /* Expanso and Jev are not on the board until they are doing something. */
@@ -77,7 +88,7 @@ body:not(.act-jev) .j3{display:none}
 .jevnode.down .step{border-color:var(--err);color:var(--err)}
 .node .num{font-size:13px;line-height:1.3;color:var(--text-dim);margin-top:3px}
 .node .num b{color:var(--text);font-weight:600}
-.node.expanso{height:104px;border:2px solid var(--accent);background:#f3effe;box-shadow:0 8px 22px -12px var(--accent)}
+.node.expanso{height:104px;border:2px solid var(--accent);background:var(--tint-ex);box-shadow:0 8px 22px -12px var(--accent)}
 .node.expanso h2{color:var(--accent)}
 /* Real marks, not lookalikes: Expanso's own violet wordmark, and TypeSafe's mark
    as published on typesafe.ai. "TypeSafe" beside it is a plain label in our
@@ -86,7 +97,7 @@ body:not(.act-jev) .j3{display:none}
 .node h2 img.mark{height:30px;width:30px;border-radius:50%;display:block}
 .node h2 .by{font:500 13px/1.1 var(--sans);letter-spacing:0;text-transform:none;color:var(--text-dim);align-self:flex-end;padding-bottom:3px}
 .node.expanso h2:before,.node.jevnode h2:before{order:-1}
-.node.jevnode{width:460px;height:96px;border:2px dashed var(--jev);background:#fdf3ea}
+.node.jevnode{width:460px;height:96px;border:2px dashed var(--jev);background:var(--tint-jev)}
 .node.jevnode h2{color:var(--jev)}
 /* Jev is present but dormant until switched on: muted, no live dot. */
 .node.jevnode.off{border-color:var(--line);background:var(--surface)}
@@ -99,14 +110,14 @@ body:not(.act-jev) .j3{display:none}
   box-shadow:0 1px 3px rgba(27,21,48,.35),0 0 0 .5px rgba(27,21,48,.08);transition:transform .22s cubic-bezier(.3,.7,.3,1)}
 .sw[aria-checked=true]{background:var(--jev)} .sw[aria-checked=true]:before{transform:translateX(18px)}
 .sw:disabled{cursor:progress;opacity:.7}
-.node.jevnode.down{border-color:var(--err);background:#fdeeef}
+.node.jevnode.down{border-color:var(--err);background:var(--tint-err)}
 .node.jevnode.down h2{color:var(--err)}
 .node.jevnode.down h2:before{animation:none}
 
 .buckets{position:absolute;right:0;top:0;bottom:0;width:300px;z-index:1}
 .bucket{--c:var(--archive);position:absolute;left:0;right:0;height:64px;overflow:hidden;
   display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:12px;text-align:left;
-  background:var(--surface);border:2px solid var(--line);border-left:6px solid var(--c);border-radius:8px;padding:0 14px;cursor:pointer;
+  background:var(--surface);border:2px solid var(--c);border-radius:8px;padding:0 14px;cursor:pointer;
   transition:opacity .45s,transform .45s,top .55s cubic-bezier(.3,.8,.3,1),height .55s cubic-bezier(.3,.8,.3,1),border-color .2s,background .3s}
 .bucket[data-bin=page]{--c:var(--page)} .bucket[data-bin=notify]{--c:var(--notify)} .bucket[data-bin=review]{--c:var(--review)}
 .bucket.gone{opacity:0;transform:translateX(20px);pointer-events:none}
@@ -136,7 +147,7 @@ body:not(.act-jev) .j3{display:none}
 .inject,.outage{position:absolute;z-index:1;display:flex;flex-direction:column;align-items:stretch;gap:8px;transition:opacity .5s}
 .inject{left:0;width:176px}
 .inject.gone,.outage.gone{opacity:0;pointer-events:none}
-.inject .lbl,.outage .lbl{font:500 13px var(--mono);color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase}
+.inject .lbl,.outage .lbl{font:500 13px var(--mono);color:var(--text-dim)}
 .btn{height:30px;padding:0 12px;border-radius:4px;border:1px solid var(--text-dim);cursor:pointer;background:var(--surface);font-size:13px;font-weight:500;box-shadow:0 2px 0 var(--line)}
 .btn:hover{background:var(--surface-2)} .btn:active{transform:translateY(2px);box-shadow:none}
 .btn.fired{border-color:var(--hero);color:var(--hero)}
@@ -158,10 +169,10 @@ body.tab-yaml .yaml{display:grid}
 body:not(.inspect) .detail{display:none}
 
 /* ---------- record modal: the full JSON, coloured by who added each field ---------- */
-.modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(27,21,48,.42);padding:32px}
+.modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:var(--scrim);padding:32px}
 .modal.open{display:flex}
 .sheet{width:min(920px,100%);max-height:100%;display:grid;grid-template-rows:auto auto minmax(0,1fr);background:var(--surface);border-radius:16px;
-  box-shadow:0 30px 80px -20px rgba(27,21,48,.55);overflow:hidden}
+  box-shadow:0 30px 80px -20px var(--shadow);overflow:hidden}
 .sheet header{display:flex;align-items:baseline;gap:14px;padding:18px 24px 6px}
 .sheet header b{font:800 32px/1 var(--display);letter-spacing:.04em;text-transform:uppercase}
 .sheet header span{font-size:14px;color:var(--text-dim)}
@@ -169,16 +180,19 @@ body:not(.inspect) .detail{display:none}
 .legend{display:flex;gap:18px;padding:0 24px 12px;font-size:14px;color:var(--text-dim);border-bottom:2px solid var(--line)}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:7px;vertical-align:-1px}
 .sheet pre{margin:0;padding:16px 24px 22px;overflow:auto;font:14px/1.65 var(--mono);tab-size:2}
-.sheet pre .row{display:block;padding-left:10px;border-left:3px solid transparent}
-.sheet pre .row.ex{border-left-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,transparent)}
-.sheet pre .row.jv{border-left-color:var(--jev);background:color-mix(in srgb,var(--jev) 7%,transparent)}
+.sheet pre .row{display:block;padding-left:2ch;text-indent:-2ch}
+.sheet pre .row::before{content:"  "}
+.sheet pre .row.ex::before{content:"E "}
+.sheet pre .row.ex{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.sheet pre .row.jv::before{content:"J "}
+.sheet pre .row.jv{background:color-mix(in srgb,var(--jev) 14%,transparent)}
 .j-k{color:var(--text)} .row.ex>.j-k:first-child{color:var(--accent);font-weight:500} .row.jv>.j-k:first-child{color:var(--jev);font-weight:500}
 .j-s{color:var(--ok)} .j-n{color:var(--review)} .j-b{color:var(--warn)} .j-p{color:var(--text-dim)}
 
 /* ---------- evidence: one strip, input -> decided by -> destination ---------- */
 .evidence{display:grid;grid-template-columns:640px minmax(0,1fr);gap:10px;min-height:0}
 .panel{background:var(--surface);border:2px solid var(--line);border-radius:8px;min-height:0;overflow:hidden;padding:12px 16px}
-.cap{font:500 13px/1.2 var(--mono);color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}
+.cap{font:500 13px/1.2 var(--mono);color:var(--text-dim);margin:0 0 6px}
 .ledger{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 18px;align-content:start}
 .ledger .cap{grid-column:1/5;margin:0}
 .stat b{display:block;font:800 32px/1 var(--display);letter-spacing:.02em}
@@ -193,7 +207,7 @@ body:not(.inspect) .detail{display:none}
 .stages{display:flex;gap:14px;font-size:13px;color:var(--text-dim);flex-wrap:wrap;line-height:1.35}
 .stages b{color:var(--text);font-weight:600;font-family:var(--mono)}
 .card{display:grid;grid-template-columns:minmax(0,1.15fr) 24px minmax(0,1.25fr) 24px minmax(0,.9fr);align-items:start}
-.card .arrow{font:500 24px/1 var(--mono);color:var(--line);text-align:center;padding-top:30px}
+.card .arrow{font:500 24px/1 var(--mono);color:var(--text-dim);text-align:center;padding-top:30px}
 .card .msg{font:500 18px/1.35 var(--mono);word-break:break-word;max-height:76px;overflow:hidden}
 .card .meta{font-size:13px;color:var(--text-dim);margin-top:4px;line-height:1.35}
 .card .said{font-size:18px;line-height:1.35}
@@ -208,6 +222,37 @@ body:not(.inspect) .detail{display:none}
 .ex{color:var(--accent)} .jv{color:var(--jev)}
 
 @media(max-height:640px),(max-width:1180px){body{overflow:auto}.shell{height:auto;min-height:100dvh;grid-template-rows:44px 460px 168px}}
+/* Compact: the diagram needs room; a phone gets the same facts as a stack. */
+@media(max-width:1000px){
+  html,body{height:auto}
+  .shell{display:flex;flex-direction:column;gap:14px;height:auto;padding:12px 16px 28px}
+  .top{flex-wrap:wrap;gap:10px 14px;height:auto}
+  .brand{font-size:28px}
+  .claim{order:5;flex:1 1 100%;white-space:normal;overflow:visible;font-size:20px;border-left:0;padding-left:0}
+  .fine{order:6;flex:1 1 100%;text-align:left;white-space:normal}
+  .tabs{flex-wrap:wrap}
+  .flow{position:static;display:flex;flex-direction:column;gap:12px;min-height:0}
+  .flow canvas,.fork,.heldtag,.srcbox,.gone{display:none!important}
+  .node,.inject,.outage,.buckets{position:static!important;left:auto!important;top:auto!important;bottom:auto!important;width:auto!important;height:auto!important;transform:none!important}
+  .node.expanso,.node.jevnode{padding-bottom:10px}
+  .steps{flex-wrap:wrap;justify-content:flex-start}
+  .buckets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .bucket{position:static!important;height:auto!important;min-height:64px;padding:8px 12px}
+  .inject,.outage{flex-direction:row;flex-wrap:wrap;align-items:center}
+  .evidence{grid-template-columns:minmax(0,1fr)}
+  .ledger{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ledger .cap{grid-column:1/3}
+  .card{grid-template-columns:minmax(0,1fr);gap:10px}
+  .card .arrow{display:none}
+  .yaml{display:none;grid-row:auto}
+  body.tab-yaml .yaml{display:grid}
+  .yaml pre{white-space:pre-wrap;overflow-wrap:anywhere;overflow:visible;padding:14px}
+  .modal{padding:12px}
+  .sheet header{flex-wrap:wrap}
+  .sheet pre{white-space:pre-wrap;overflow-wrap:anywhere}
+  .legend{flex-wrap:wrap}
+}
+@media(max-width:480px){.buckets{grid-template-columns:minmax(0,1fr)}}
 @media(prefers-reduced-motion:reduce){.node h2:before,.bucket.hit .count{animation:none}}
 </style>
 </head>
@@ -216,7 +261,8 @@ body:not(.inspect) .detail{display:none}
   <header class="top">
     <div class="brand">Expanso<i>×</i>Jev</div>
     <div class="claim" id="claim">Connecting…</div>
-    <nav class="tabs" role="tablist"><button role="tab" data-tab="flow" aria-selected="true">Live flow</button><button role="tab" data-tab="yaml" aria-selected="false">Pipeline YAML</button></nav>
+    <nav class="tabs" role="tablist" title="Left and Right arrow keys switch views"><button role="tab" data-tab="flow" aria-selected="true">Live flow</button><button role="tab" data-tab="yaml" aria-selected="false">Pipeline YAML</button></nav>
+    <button class="btn tbtn" id="themeBtn" type="button" aria-pressed="false">Dark mode</button>
     <div class="fine" id="fine">Synthetic demo events<br>Buckets are local demo files</div>
   </header>
 
@@ -279,7 +325,9 @@ body:not(.inspect) .detail{display:none}
 (() => {
 const $ = s => document.querySelector(s);
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const COLORS = {page:css('--page'), notify:css('--notify'), review:css('--review'), archive:css('--archive'), raw:css('--raw'), err:css('--err'), jev:css('--jev'), hero:css('--hero')};
+const COLORS = {};
+function refreshColors(){ for (const [k,v] of Object.entries({page:'--page', notify:'--notify', review:'--review', archive:'--archive', raw:'--raw', err:'--err', jev:'--jev', hero:'--hero', lane:'--lane', ring:'--surface'})) COLORS[k] = css(v); }
+refreshColors();
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 // Representative and labelled as such on screen. The RATE it fills at is real.
 const SINK = {held:'held.jsonl', page:'page.jsonl', notify:'notify.jsonl', review:'review.jsonl', archive:'archive.jsonl', raw:'raw.jsonl'};
@@ -377,7 +425,7 @@ function frame(){
   requestAnimationFrame(frame);
 }
 function drawLanes(piped){
-  ctx.lineWidth = 2; ctx.setLineDash([]); ctx.strokeStyle = 'rgba(27,21,48,.16)';
+  ctx.lineWidth = 2; ctx.setLineDash([]); ctx.strokeStyle = COLORS.lane;
   ctx.beginPath(); ctx.moveTo(G.srcR,G.lane); ctx.lineTo(piped ? G.gateIn : G.bucketX, G.lane); ctx.stroke();
   if (!piped) return;
   const jev = S.mode==='jev', x1 = G.gateOut, dx = G.bucketX-x1;
@@ -435,7 +483,7 @@ function drawHeroes(dt){
       const x1 = G.gateOut, dx = G.bucketX-x1, y3 = G.ends[h.dest] ?? G.lane, t = Math.min(1,h.k);
       x = bez(x1, x1+dx*.4, x1+dx*.6, G.bucketX, t); y = bez(G.lane, G.lane, y3, y3, t); }
     const s0 = 14 + (h.ph==='wait' ? 2*Math.sin(now/180) : 0);
-    ctx.fillStyle = '#fdfcff'; sq(x, y, s0+6); ctx.fillStyle = COLORS.hero; sq(x, y, s0);
+    ctx.fillStyle = COLORS.ring; sq(x, y, s0+6); ctx.fillStyle = COLORS.hero; sq(x, y, s0);
   }
 }
 let lastPulse = 0;
@@ -590,8 +638,8 @@ async function openRecord(bin){
   $('#mSub').textContent = r ? `latest of ${fmt(d.total)} · local demo file ${SINK[bin]}` : 'nothing here yet';
   const used = r ? new Set(Object.keys(r).map(k => originOf(k, r)).filter(Boolean)) : new Set();
   $('#mLegend').innerHTML = `<span><i style="background:var(--line)"></i>sent by production</span>`
-    + (used.has('ex') ? `<span><i style="background:var(--accent)"></i>added by Expanso</span>` : '')
-    + (used.has('jv') ? `<span><i style="background:var(--jev)"></i>added by Jev</span>` : '')
+    + (used.has('ex') ? `<span><i style="background:var(--accent)"></i>E added by Expanso</span>` : '')
+    + (used.has('jv') ? `<span><i style="background:var(--jev)"></i>J added by Jev</span>` : '')
     + (r && !used.size ? `<span>stored verbatim · nothing added</span>` : '');
   $('#mPre').innerHTML = r ? jrecord(r) : ''; $('#mPre').scrollTop = 0;
   $('#modal').classList.add('open'); $('#mPre').focus();   // frozen while open: the record does not change under the reader
@@ -671,6 +719,28 @@ async function loadYaml(){
     pre.innerHTML = paint(src); pre.scrollTop = 0;
   } catch (e) { $('#yamlWhat').textContent = ''; pre.textContent = 'Could not load the pipeline file ('+e.message+'). Is the dashboard server running?'; }
 }
+
+/* ------------------------------------------------------------ theme + views */
+const rootEl = document.documentElement;
+function applyTheme(t){ rootEl.setAttribute('data-theme', t); const b = $('#themeBtn'); b.setAttribute('aria-pressed', String(t==='dark')); b.textContent = t==='dark' ? 'Light mode' : 'Dark mode'; refreshColors(); }
+let savedTheme = null; try { savedTheme = localStorage.getItem('jev-theme'); } catch (e) { savedTheme = null; }
+applyTheme(savedTheme==='dark' ? 'dark' : 'light');
+$('#themeBtn').onclick = () => { const n = rootEl.getAttribute('data-theme')==='dark' ? 'light' : 'dark'; applyTheme(n); try { localStorage.setItem('jev-theme', n); } catch (e) { /* the choice still applies for this visit */ } render(); card(); };
+// Left and Right page through the board's views in order: the live flow, then
+// each pipeline's source. Paging replaces content in place and keeps the scroll.
+const VIEWS = [['flow', null], ['yaml', 'logging'], ['yaml', 'recurrence']];
+const viewNow = () => document.body.classList.contains('tab-yaml') ? (pipeKey==='logging' ? 1 : 2) : 0;
+function setView(i){ const [tab, pipe] = VIEWS[i], y = scrollY, x = scrollX;
+  document.querySelector(`.top .tabs button[data-tab=${tab}]`).click();
+  if (pipe){ yamlUserPicked = true; pipeKey = pipe; loadYaml(); }
+  scrollTo(x, y); }
+addEventListener('keydown', e => {
+  if (e.key!=='ArrowLeft' && e.key!=='ArrowRight') return;
+  if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || $('#modal').classList.contains('open')) return;
+  const t = e.target; if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+  const n = viewNow() + (e.key==='ArrowRight' ? 1 : -1); if (n < 0 || n >= VIEWS.length) return;
+  e.preventDefault(); setView(n);
+});
 
 // Preview/test hook only: lets a static layout check drive render() with a given
 // state. Nothing in the board reads it.

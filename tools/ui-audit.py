@@ -34,12 +34,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SESSION = "pbjev-audit"
 WIDTHS = [(320, 800), (400, 860), (768, 1024), (1440, 900)]
 
-PAGES = [
-    "index.html",
-    *sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "demos").glob("*/explorer.html")),
-    "demos/01-log-triage/index.html",
-    "demos/11-pod-labels/web/index.html",
-]
+PAGES = ["index.html"]
 
 CONTRAST_JS = r"""
 (() => {
@@ -64,7 +59,9 @@ CONTRAST_JS = r"""
     const t = walker.currentNode; if (!t.nodeValue.trim()) continue;
     const el = t.parentElement; if (!el || seen.has(el)) continue; seen.add(el);
     const cs = getComputedStyle(el);
-    if (cs.visibility === "hidden" || cs.display === "none" || +cs.opacity === 0) continue;
+    let gone = false;
+    for (let a = el; a && a.nodeType === 1; a = a.parentElement) { const c2 = getComputedStyle(a); if (c2.display === "none" || c2.visibility === "hidden" || +c2.opacity === 0) { gone = true; break; } }
+    if (gone) continue;
     const r = el.getBoundingClientRect(); if (r.width < 2 || r.height < 2) continue;
     if (el.closest(".vh")) continue;
     const fg0 = parse(cs.color); if (!fg0) continue;
@@ -117,9 +114,18 @@ def ev(js: str):
         return out
 
 
+def calm():
+    """Switch off transitions and animations so a measurement never catches one mid-way."""
+    ev(
+        "(() => { const s = document.createElement('style'); "
+        "s.textContent = '*,*::before,*::after{transition:none!important;animation:none!important}'; "
+        "document.head.appendChild(s); return 1; })()"
+    )
+
+
 def set_theme(want: str):
     ev(
-        "(() => { const b = document.getElementById('theme'); "
+        "(() => { const b = document.getElementById('theme-toggle') || document.getElementById('themeBtn') || document.getElementById('theme'); "
         "if (b && document.documentElement.getAttribute('data-theme') !== '" + want + "') b.click(); "
         "return document.documentElement.getAttribute('data-theme'); })()"
     )
@@ -129,20 +135,28 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--only")
     ap.add_argument("--quick", action="store_true")
+    ap.add_argument("--url", action="append", default=[], help="an extra page served over http, such as a live board")
     args = ap.parse_args()
     widths = [WIDTHS[0], WIDTHS[-1]] if args.quick else WIDTHS
-    pages = [p for p in PAGES if (ROOT / p).exists() and (not args.only or args.only in p)]
+    pages = [p for p in PAGES if (ROOT / p).exists() and (not args.only or args.only in p)] + args.url
     failures: list[str] = []
     try:
         for page in pages:
-            states = ["#case=main&record=0&stage=0", "#case=main&record=2&stage=4", "#case=main&record=2&stage=99"]
-            is_explorer = page.endswith("explorer.html")
+            states = [
+                "#example=02-ticket-router&scenario=main&record=0&stage=0",
+                "#example=02-ticket-router&scenario=main&record=2&stage=4",
+                "#example=11-pod-labels&scenario=main&record=3&stage=4",
+                "#example=01-log-triage&scenario=outage&record=2&stage=99",
+            ]
+            is_explorer = page == "index.html"
+            target = page if page.startswith("http") else f"file://{ROOT / page}"
             for w, h in widths:
                 for theme in ("light", "dark"):
                     ab("set", "viewport", str(w), str(h))
                     for st in states if is_explorer else [""]:
-                        ab("open", f"file://{ROOT / page}{st}")
+                        ab("open", f"{target}{st}")
                         ab("reload")
+                        calm()
                         set_theme(theme)
                         label = f"{page} {w}px {theme} {st}".strip()
                         o = ev(OVERFLOW_JS)
@@ -152,7 +166,7 @@ def main() -> int:
                         for b in c if isinstance(c, list) else []:
                             failures.append(f"{label}: contrast {b['got']} < {b['need']} on {b['el']} '{b['text']}'")
                     if is_explorer and w in (320, 1440):
-                        ab("open", f"file://{ROOT / page}#case=main&record=0&stage=1")
+                        ab("open", f"{target}#example=02-ticket-router&scenario=main&record=0&stage=1")
                         ab("reload")
                         ev("document.getElementById('explore-h').scrollIntoView(); window.scrollBy(0, 40); 0")
                         before = ev(KEYS_JS)
