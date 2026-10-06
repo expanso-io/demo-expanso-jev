@@ -44,7 +44,7 @@ and one of two live workflows:
 - **Investigate:** Jev assesses restart evidence and returns Wait or
   Investigate. Details stay collapsed; no additional model is invoked.
 
-Source incidents are explicitly simulated. Cloud execution, Jev responses,
+Source incidents are scripted by the workload in `demos/11-pod-labels/scenario/`. Cloud execution, Jev responses,
 Kubernetes patches, and Service membership are real.
 
 ```bash
@@ -98,7 +98,7 @@ local execution store if it ever restarts a pipeline Cloud no longer knows about
 
 On the board you can inject a log line and follow it as one large square
 through the pipeline, up to Jev and back, and into the bucket it really landed
-in. **Break the link to Jev** simulates an outage so you can watch the hold and
+in. **Break the link to Jev** makes every Jev call fail so you can watch the hold and
 the release. Click any bucket for the latest record's full JSON, grouped by who
 added each field.
 
@@ -124,7 +124,7 @@ Details, environment variables and troubleshooting:
   judgments on sample events. This repository makes no accuracy claim.
 - The routine-line allowlist matches exact messages on purpose. A fingerprint
   erases numbers, and `GET /health 500` must not pass as `GET /health 200`.
-- The outage is simulated by a local gate that every Jev call passes through.
+- The outage comes from a local gate that every Jev call passes through.
   The failed calls, the hold and the release are the pipeline's real behavior.
 - Credentials live in `.env` and in a project-local agent directory, both
   gitignored. The TypeSafe key never enters a pipeline file, Expanso Cloud, or

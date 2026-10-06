@@ -293,7 +293,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(item["candidate"]["pod"]["logs"], [signal])
 
     def test_workload_emits_real_routine_stdout(self):
-        text = (Path(__file__).parent / "simulation/fixtures.yaml").read_text()
+        text = (Path(__file__).parent / "scenario/fixtures.yaml").read_text()
         source = text.split("  workload.py: |\n", 1)[1].split("\n---", 1)[0]
         source = "\n".join(line[4:] for line in source.splitlines())
         scope = {"__name__": "test_workload"}
@@ -1250,8 +1250,8 @@ class SignalCatalogTests(unittest.TestCase):
         import textwrap
 
         here = pathlib.Path(__file__).parent
-        source = (here / "simulation/workload.py").read_text()
-        fixture = (here / "simulation/fixtures.yaml").read_text()
+        source = (here / "scenario/workload.py").read_text()
+        fixture = (here / "scenario/fixtures.yaml").read_text()
         start = fixture.index("  workload.py: |\n") + len("  workload.py: |\n")
         embedded = textwrap.dedent(
             fixture[start : fixture.index("\n---\n", start)] + "\n"

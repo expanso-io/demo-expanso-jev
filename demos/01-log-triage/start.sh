@@ -135,7 +135,7 @@ if [ ! -f "$EDGE_DATA/auth/credentials.creds" ]; then
 fi
 
 # The agent reaches Jev through the dashboard server's local fault-injection gate,
-# so an outage can be simulated with a real failed call. The real endpoint goes
+# so an outage can be injected with a real failed call. The real endpoint goes
 # to the server as JEV_UPSTREAM_URL; the agent only ever sees the gate.
 export JEV_UPSTREAM_URL="$JEV_API_URL"
 # The Jev key, if there is one, is for the dashboard server's gate and nobody

@@ -785,7 +785,7 @@ input = "demos/11-pod-labels/fixtures/stages/11-pod-labels/route.input.json"
 output = "demos/11-pod-labels/fixtures/stages/11-pod-labels/route.output.json"
 
 [[yaml]]
-path = "demos/11-pod-labels/simulation/fixtures.yaml"
+path = "demos/11-pod-labels/scenario/fixtures.yaml"
 role = "fixture"
 
 [[yaml]]

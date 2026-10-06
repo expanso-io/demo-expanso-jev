@@ -33,7 +33,7 @@ Endpoints:
   GET  /api/bucket/<bin>  the most recent records that landed in a bucket
   GET  /api/evidence      records where Jev and the severity-only baseline disagreed
   GET  /api/pipeline/<logging|recurrence>  the checked-in pipeline YAML, verbatim
-  POST /api/gate          {"mode": open|overloaded|credential}: simulate a Jev outage at the local gate
+  POST /api/gate          {"mode": open|overloaded|credential}: inject a Jev outage at the local gate
   POST /api/jev           {"on": true|false}: deploy the Jev / Expanso-only version via Cloud
   POST /beacon            from the generator: {"n": k} lines just emitted
   POST /raw               from the generator: a log line the pipeline refused
@@ -81,7 +81,7 @@ HOLD_MAX_ATTEMPTS = 15      # mirrors the gate in pipeline-recurrence.yaml
 # (start.sh points the agent's JEV_API_URL at it and hands the real endpoint to
 # this process as JEV_UPSTREAM_URL). Open, it forwards verbatim. Blocked, it
 # answers the way a struggling Jev would, so the pipeline's hold path is
-# exercised by a real failed call rather than an animation. It is a SIMULATED
+# exercised by a real failed call rather than an animation. It is an INJECTED
 # outage and the board says so.
 GATE_PORT = int(os.environ.get("JEV_GATE_PORT", "8897"))
 UPSTREAM = os.environ.get("JEV_UPSTREAM_URL", "")
@@ -93,8 +93,8 @@ UPSTREAM = os.environ.get("JEV_UPSTREAM_URL", "")
 # never written to the pipeline spec, and so never reaches Expanso Cloud.
 _JEV_KEY = os.environ.pop("TYPESAFE_API_KEY", "") or ""
 GATE_FAULTS = {
-    "overloaded": (503, {"error": "simulated outage: Jev overloaded", "simulated": True}),
-    "credential": (401, {"error": "simulated outage: credential rejected", "simulated": True}),
+    "overloaded": (503, {"error": "injected outage: Jev overloaded", "injected": True}),
+    "credential": (401, {"error": "injected outage: credential rejected", "injected": True}),
 }
 
 STATIC_TYPES = {"css": "text/css", "woff2": "font/woff2", "woff": "font/woff",
@@ -632,7 +632,7 @@ class Gate(BaseHTTPRequestHandler):
             ok = True
         except urllib.error.HTTPError as e:
             code, body, ctype, ok = e.code, e.read(), e.headers.get("Content-Type", "application/json"), True
-        except Exception:  # noqa: BLE001 - endpoint unreachable: a real outage, not a simulated one
+        except Exception:  # noqa: BLE001 - endpoint unreachable: a real outage, not an injected one
             code, body, ctype, ok = 502, b'{"error": "Jev endpoint unreachable"}', "application/json", False
         with HUB.lock:
             HUB.upstream_ok = ok
@@ -776,7 +776,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send_json({"error": "mode must be open|overloaded|credential"}, 400)
             with HUB.lock:
                 HUB.gate = mode
-            log("gate -> %s%s" % (mode, "" if mode == "open" else " (SIMULATED outage)"))
+            log("gate -> %s%s" % (mode, "" if mode == "open" else " (INJECTED outage)"))
             HUB.publish(HUB.stats())
             return self._send_json({"ok": True, "gate": mode})
         if self.path == "/api/jev":

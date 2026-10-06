@@ -3,7 +3,7 @@
 `just up` does all of this for a disposable local cluster. Use this page to run
 the same pieces by hand, on native k3s or a cluster you already have.
 
-For the standard simulator, use `just up`, `just open`, `just down` and
+For the standard launcher, use `just up`, `just open`, `just down` and
 `just test` from the demo directory. The commands below are the explicit
 manual setup for operators bringing their own cluster. `just open` requires
 the coordinating command integration; until then, open the localhost URL directly.
@@ -88,7 +88,7 @@ export KUBE_CONTEXT=jev-label-demo
 kubectl --context "$KUBE_CONTEXT" wait node --all \
 --for=condition=Ready --timeout=120s
 kubectl --context "$KUBE_CONTEXT" apply \
--f demos/11-pod-labels/simulation/fixtures.yaml
+-f demos/11-pod-labels/scenario/fixtures.yaml
 kubectl --context "$KUBE_CONTEXT" -n jev-label-demo \
 wait pod --all --for=condition=Ready --timeout=180s
 ```
@@ -232,7 +232,7 @@ clears the threshold. Jev never calls Kubernetes, and the adapter never
 removes a label it did not add. **Not supported** means the judgment did not clear the threshold.
 
 The adapter's default threshold is 90% (`POD_LABEL_THRESHOLD`). The local
-simulator sets 80%. Source events are synthetic; the pod logs, Cloud
+launcher sets 80%. Source events are synthetic; the pod logs, Cloud
 execution, inference and Kubernetes patches are real.
 
 ## Supply your own signal

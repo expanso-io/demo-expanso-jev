@@ -398,7 +398,7 @@ Share: Demo; gallery where resources qualify.
 
 Angle: Inspectable logs → Jev judgment → guarded Kubernetes label patch.
 
-Check: Concrete decision, source evidence, affiliation disclosure and live/simulated boundary. No unsupported performance claims.
+Check: Concrete decision, source evidence, affiliation disclosure and live/scripted boundary. No unsupported performance claims.
 
 Research status: Contribution route verified.
 Guide / source: https://github.com/cobanov/awesome-jev/blob/main/CONTRIBUTING.md

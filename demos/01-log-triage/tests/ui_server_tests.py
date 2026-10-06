@@ -59,7 +59,7 @@ try:
         check(f"GET /api/pipeline/{key} -> 200, byte-identical to {fn}", st == 200 and data == disk, f"{len(data)} bytes")
         check(f"  declares its file name ({hdr.get('X-Pipeline-File')})", hdr.get("X-Pipeline-File") == fn)
     st, data, _ = req("GET", "/api/pipeline/recurrence")
-    check("  ${JEV_API_URL} is served as a literal placeholder, not interpolated", b"${JEV_API_URL}" in data)
+    check("  ${JEV_API_URL} is served as a literal placeholder, not interpolated", b"${JEV_API_URL:" in data)
     check("  served YAML contains no credential-shaped content", not SECRETish.search(data.replace(b"${JEV_API_URL}", b"")))
 
     print("--- 2. positive control: the static route really does serve files")
@@ -178,16 +178,16 @@ try:
         for mode, code in (("overloaded", 503), ("credential", 401)):
             st, _, _ = req("POST", "/api/gate", body=json.dumps({"mode": mode}).encode())
             gs, gd = gpost()
-            check(f"gate {mode}: control 200, the pipeline's call gets HTTP {code}, body marked simulated",
-                  st == 200 and gs == code and json.loads(gd).get("simulated") is True)
+            check(f"gate {mode}: control 200, the pipeline's call gets HTTP {code}, body marked injected",
+                  st == 200 and gs == code and json.loads(gd).get("injected") is True)
         st, _, _ = req("POST", "/api/gate", body=b'{"mode": "open"}')
         server.UPSTREAM = ""
         gs, _ = gpost()
         check("gate open with no upstream configured -> 502, never a fabricated answer", st == 200 and gs == 502)
         server.UPSTREAM = "http://127.0.0.1:9/nothing-listens-here"
         gs, gd = gpost()
-        check("gate open, upstream unreachable -> 502 and upstream_ok false (a REAL outage, not labelled simulated)",
-              gs == 502 and b"simulated" not in gd and H.stats()["upstream_ok"] is False)
+        check("gate open, upstream unreachable -> 502 and upstream_ok false (a REAL outage, not labelled injected)",
+              gs == 502 and b"injected" not in gd and H.stats()["upstream_ok"] is False)
         # an upstream that records what the gate sent it
         from http.server import BaseHTTPRequestHandler
         seen = {}

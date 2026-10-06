@@ -63,7 +63,7 @@ in the Cloud console, or `just act1` / `just act2`.
 
 **A Jev outage, and Expanso holding.** *Break the link to Jev* flips a local
 fault-injection gate that every Jev call passes through, so Jev appears to
-answer 503. It is a **simulated** outage and the board
+answer 503. It is an outage produced at a local gate, and the board
 says so, but the failed call is real and so is what happens next, which is all
 in `pipeline-recurrence.yaml`: a record Jev did not answer is neither guessed nor
 dropped. It is written once to `data/held.jsonl`, re-submitted to the pipeline's

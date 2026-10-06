@@ -118,11 +118,11 @@ validate:
 
 # Start the pod demo. Use `just up triage` for the log-triage demo.
 up target="pods":
-    @case "{{ target }}" in pods) uv run "{{ root }}/demos/11-pod-labels/simulation/local.py" up ;; triage) just --justfile "{{ root }}/justfile" _triage-up ;; *) echo "Choose pods or triage" >&2; exit 2 ;; esac
+    @case "{{ target }}" in pods) uv run "{{ root }}/demos/11-pod-labels/scenario/local.py" up ;; triage) just --justfile "{{ root }}/justfile" _triage-up ;; *) echo "Choose pods or triage" >&2; exit 2 ;; esac
 
 # Stop the selected demo.
 down target="pods":
-    @case "{{ target }}" in pods) uv run "{{ root }}/demos/11-pod-labels/simulation/local.py" down ;; triage) just --justfile "{{ root }}/justfile" _triage-down ;; *) echo "Choose pods or triage" >&2; exit 2 ;; esac
+    @case "{{ target }}" in pods) uv run "{{ root }}/demos/11-pod-labels/scenario/local.py" down ;; triage) just --justfile "{{ root }}/justfile" _triage-down ;; *) echo "Choose pods or triage" >&2; exit 2 ;; esac
 
 restart: down up
 
@@ -299,7 +299,7 @@ pod-labels-test:
     uv run "{{ root }}/demos/11-pod-labels/test_adapter.py"
     uv run "{{ root }}/demos/11-pod-labels/test_investigation.py"
     uv run "{{ root }}/demos/11-pod-labels/test_routing.py"
-    uv run "{{ root }}/demos/11-pod-labels/simulation/test_local.py"
+    uv run "{{ root }}/demos/11-pod-labels/scenario/test_local.py"
     uv run "{{ root }}/demos/11-pod-labels/test_rbac.py"
     POD_LABEL_TOKEN=offline-validation-placeholder-only expanso-edge validate "{{ root }}/demos/11-pod-labels/pipeline.yaml"
 

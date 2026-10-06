@@ -8,11 +8,11 @@ _default:
 
 # One terminal; Ctrl-C stops this session's job and services.
 up:
-    uv run "{{ justfile_directory() }}/simulation/local.py" up
+    uv run "{{ justfile_directory() }}/scenario/local.py" up
 
 # Stop the foreground launcher from another terminal.
 down:
-    uv run "{{ justfile_directory() }}/simulation/local.py" down
+    uv run "{{ justfile_directory() }}/scenario/local.py" down
 
 open:
     @open http://127.0.0.1:8901

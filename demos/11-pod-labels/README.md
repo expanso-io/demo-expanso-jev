@@ -106,10 +106,10 @@ annotate a pod with `jev.expanso.io/signal` describing what changed, and the
 next evaluation asks Jev whether the label still holds. The blast radius
 is visible in the demo, not theoretical.
 
-## What is real and what is simulated
+## What is real and what is scripted
 
 When run and verified: the pods, their stdout, Cloud execution, provider
-responses and Kubernetes patches are real. Simulated: the source incidents
+responses and Kubernetes patches are real. Scripted: the source incidents
 and their release, timeline and stack evidence. The demo pods write the log lines a
 troubled workload would write; their actual containers stay healthy, so their
 real status is not sent to Jev as evidence.
@@ -117,14 +117,14 @@ real status is not sent to Jev as evidence.
 Jev's answers are judgments, not guarantees. In one session the same healthy
 evidence scored between 25% and 89% depending on what the pod had logged
 before it. That is why a threshold exists and why **Not supported** is a first-class
-outcome. The adapter defaults to 90%; the local simulator uses 80%.
+outcome. The adapter defaults to 90%; the local launcher uses 80%.
 
 ## Use it on your own cluster
 
 `adapter.py`, `pipeline.yaml`, `edge.yaml` and `deploy.py` are the example.
-Everything under `simulation/` exists only to produce events on a laptop.
+Everything under `scenario/` exists only to produce events on a laptop.
 
-Outside the simulator, the adapter proposes labels it observes on other pods
+Outside the launcher, the adapter proposes labels it observes on other pods
 in the namespaces you allow (`POD_LABEL_NAMESPACES`), asks Jev whether each
 fits the target pod, and records every change it makes in a pod annotation so
 it can undo only its own work. It starts in dry run: set
@@ -142,8 +142,8 @@ to stop and verify: [MANUAL_SETUP.md](MANUAL_SETUP.md).
 | `adapter.py` | Local HTTP service the pipeline calls: Kubernetes access, the Jev call, guarded patches, the board |
 | `edge.yaml`, `deploy.py` | Edge agent config and the Cloud deploy |
 | `web/` | The board |
-| `simulation/` | `local.py` launcher, `workload.py` event catalog, `fixtures.yaml` pods |
-| `test_adapter.py`, `simulation/test_local.py` | Tests; no network, no cluster |
+| `scenario/` | `local.py` launcher, `workload.py` event catalog, `fixtures.yaml` pods |
+| `test_adapter.py`, `scenario/test_local.py` | Tests; no network, no cluster |
 
 ## Verified live
 

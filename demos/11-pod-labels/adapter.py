@@ -26,9 +26,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from http.server import HTTPServer as HTTPServer
 import random
 
-# The scenario catalog belongs to the local simulation. The adapter only needs
-# it to accept and rank simulated events; without it, none are accepted.
-sys.path.insert(0, str(Path(__file__).resolve().parent / "simulation"))
+# The scenario catalog belongs to the local scenario. The adapter only needs
+# it to accept and rank scripted events; without it, none are accepted.
+sys.path.insert(0, str(Path(__file__).resolve().parent / "scenario"))
 try:
     import workload
 except ImportError:  # adapter deployed on its own
@@ -208,12 +208,12 @@ def candidates(pods, namespaces, request_id=None):
         choices = dict(inventory)
         catalog = {}
         if ordinary_fixture(pod):
-            # The demo pods simulate a workload by writing its log lines. Their
+            # The demo pods run a scripted workload that writes its log lines. Their
             # real container is always Ready with zero restarts, which would
-            # contradict the simulated evidence, so it is not sent as evidence.
+            # contradict the scripted evidence, so it is not sent as evidence.
             target["status"] = {
                 "phase": pod.get("status", {}).get("phase"),
-                "note": "simulated workload; its logs are the evidence",
+                "note": "scripted workload; its logs are the evidence",
             }
             catalog = {(c["key"], c["value"]): c for c in ROUTING_LABELS}
             choices = {pair: inventory.get(pair, []) for pair in catalog}
@@ -1207,7 +1207,7 @@ class Reconciler(investigation.Investigations):
                     if ordinary_fixture(pod):
                         target["status"] = {
                             "phase": pod.get("status", {}).get("phase"),
-                            "note": "simulated workload; its logs are the evidence",
+                            "note": "scripted workload; its logs are the evidence",
                         }
                     options.append(
                         {

@@ -465,7 +465,7 @@ def run(case, record: bool, lib, result: dict) -> None:
             with os.fdopen(fd, "w") as stream:
                 stream.write(subprocess.run(["k3d", "kubeconfig", "get", created],
                                             capture_output=True, text=True, check=True).stdout)
-        sim = case.dir / "simulation" / "fixtures.yaml"
+        sim = case.dir / "scenario" / "fixtures.yaml"
 
         def fresh_pods():
             kubectl(admin, "delete", "pod", "--all", "-n", NS, "--wait=true", "--ignore-not-found",

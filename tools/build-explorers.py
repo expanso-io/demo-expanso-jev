@@ -528,7 +528,7 @@ def build() -> dict[Path, str]:
     for s in stage_entries:
         manifest.append(toml_table("stages", s, array=True))
     for path, role in [
-        ("demos/11-pod-labels/simulation/fixtures.yaml", "fixture"),
+        ("demos/11-pod-labels/scenario/fixtures.yaml", "fixture"),
         ("demos/11-pod-labels/edge.yaml", "support"),
     ]:
         manifest.append(toml_table("yaml", {"path": path, "role": role}, array=True))

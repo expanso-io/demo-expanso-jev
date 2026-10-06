@@ -517,7 +517,7 @@ function render(){
     : S.switchError ? 'Switch failed: '+S.switchError
     : !S.gen ? 'Source paused.'
     : !piped ? 'Every line kept. None understood.'
-    : down && blocked ? `Jev is blocked (simulated). Expanso is holding ${fmt(holding)} records, not guessing.`
+    : down && blocked ? `Jev is blocked at the local gate. Expanso is holding ${fmt(holding)} records, not guessing.`
     : down ? `Jev is unreachable. Expanso is holding ${fmt(holding)} records, not guessing.`
     : jev ? 'Stop paying to analyze noise. Catch the quiet problem that matters.'
     : 'Structured, counted, and archived. No model needed.';
@@ -639,7 +639,7 @@ async function card(){
     return note(`${top.reduce((s,[,c])=>s+c,0)} of the last ${d.records.length} lines are the same ${top.length} messages.`, `Stored again and again: ${top.map(([m])=>esc(m)).join(' · ')}. No fingerprint, no owner, no way to tell which line is the one that matters.`); }
   if (!jev){ const d = await get('/api/bucket/archive'); return d?.records?.length ? show(d.records[0], 'archive', 'latest') : note('Expanso is running.','Waiting for the first shaped record.'); }
   if (S.jevDown || S.gate!=='open'){ const d = await get('/api/bucket/held'); const r = d?.records?.[0];
-    return r ? show(r, 'held', S.gate!=='open' ? 'Jev blocked (simulated) · held, not guessed' : 'Jev unreachable · held, not guessed') : note('Jev is not answering.', 'Known-benign lines still skip the model. Everything else is held for REVIEW rather than guessed.'); }
+    return r ? show(r, 'held', S.gate!=='open' ? 'Jev blocked at the local gate · held, not guessed' : 'Jev unreachable · held, not guessed') : note('Jev is not answering.', 'Known-benign lines still skip the model. Everything else is held for REVIEW rather than guessed.'); }
   const e = await get('/api/evidence');
   if (e?.caught?.length) return show(e.caught[0], e.caught[0].jev_decision, `a quiet one · ${S.run.caught} this run`);
   for (const b of ['page','notify','review']){ const d = await get('/api/bucket/'+b); const r = d?.records?.find(x => x.jev_ok); if (r) return show(r, b, 'latest judged'); }
