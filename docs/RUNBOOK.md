@@ -30,14 +30,15 @@ Commit all of it together: `tools/fixture-runner.py check` and
 ## 2. Read the explorer
 
 ```bash
-python3 tools/serve.py static 8777
+just explorer
 ```
 
 Open http://127.0.0.1:8777, choose an example, a scenario and a record, then page
-through the stages with the buttons or the Left and Right arrow keys. Stop it:
+through the stages with the buttons or the Left and Right arrow keys. Stop it
+with Ctrl-C, or from another terminal:
 
 ```bash
-python3 tools/serve.py stop 8777
+just explorer-down
 ```
 
 ## 3. The shared public-example check

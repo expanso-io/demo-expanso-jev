@@ -30,12 +30,12 @@ coming out of every processor (page with the buttons or the Left and Right arrow
 keys), and run and deploy instructions. To serve it locally:
 
 ```bash
-python3 tools/serve.py static 8777
+just explorer
 ```
 
-Then open http://127.0.0.1:8777 and stop it with
-`python3 tools/serve.py stop 8777`. Every value on the page was captured from a
-run of the pipeline in this repository.
+Then open http://127.0.0.1:8777 and stop it with Ctrl-C, or with
+`just explorer-down` from another terminal. Every value on the page was
+captured from a run of the pipeline in this repository.
 
 ## Check that every pipeline runs, with no account
 
@@ -115,7 +115,7 @@ just down triage # stop everything, including the job in Cloud
 You can also deploy the two YAML files from the Expanso Cloud console, or flip
 the Jev switch on the board. The board follows whatever is actually running.
 
-**Without a TypeSafe key:** run `uv run shared/jev-mock-server.py` in another
+**Without a TypeSafe key:** run `just jev-mock` in another
 terminal, set `JEV_API_URL=http://127.0.0.1:8099/v1/systemone` in `.env`, and
 skip `just jev-key`.
 

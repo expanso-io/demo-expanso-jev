@@ -126,6 +126,18 @@ down target="pods":
 
 restart: down up
 
+# Serve the step-through page for all eleven examples on 127.0.0.1; Ctrl-C stops it.
+explorer port="8777":
+    python3 "{{ root }}/tools/serve.py" static {{ port }}
+
+# Stop an explorer server left running on that port.
+explorer-down port="8777":
+    python3 "{{ root }}/tools/serve.py" stop {{ port }}
+
+# Zero-credential stand-in for Jev's API on 127.0.0.1:8099; Ctrl-C stops it.
+jev-mock:
+    uv run "{{ root }}/shared/jev-mock-server.py"
+
 # Open the selected demo's local browser UI.
 open target="pods":
     @case "{{ target }}" in pods) open http://127.0.0.1:8901 ;; triage) just --justfile "{{ root }}/justfile" _triage-open ;; *) echo "Choose pods or triage" >&2; exit 2 ;; esac
