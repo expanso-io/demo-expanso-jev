@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run -s
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pyyaml>=6"]
+# dependencies = ["pyyaml>=6", "jsonschema>=4.23,<5"]
 # ///
 """Run every shipped pipeline on its shipped input and assert the output.
 
@@ -344,7 +344,11 @@ def discover(only: str | None) -> list[Case]:
 class Run:
     """One edge agent, one deploy, one pass over the input."""
 
-    def __init__(self, case: Case, pipeline_text: Path, replay: Replay, tmp: Path):
+    def __init__(
+        self, case: Case, pipeline_text: Path, replay: Replay, tmp: Path, ingest: bool = True
+    ):
+        self.ingest = ingest
+        self.extra_env: dict = {}
         self.case = case
         self.pipeline_file = pipeline_text
         self.replay = replay
@@ -373,6 +377,7 @@ class Run:
             INGEST_ADDRESS=f"127.0.0.1:{self.ingest_port}",
             INGEST_PORT=str(self.ingest_port),
             NODE_ID="fixture-node",
+            **self.extra_env,
         )
 
     def start(self):
@@ -414,7 +419,8 @@ class Run:
         )
         if deploy.returncode:
             raise RunError("deploy failed: " + (deploy.stderr or deploy.stdout).strip())
-        wait_for(lambda: port_open(self.ingest_port), 40, "the pipeline's input")
+        if self.ingest:
+            wait_for(lambda: port_open(self.ingest_port), 40, "the pipeline's input")
 
     def endpoint(self):
         spec = yaml.safe_load(self.case.pipeline.read_text())
@@ -629,6 +635,8 @@ def run_case(case: Case, record: bool) -> dict:
             )
             if not replay.down:
                 replay.save()
+        if case.spec.get("replay"):
+            replay_check(case, replay, tmp, record, result)
         result["ok"] = not result["problems"]
     except (RunError, subprocess.TimeoutExpired) as exc:
         result["problems"].append(str(exc))
@@ -647,6 +655,84 @@ def run_case(case: Case, record: bool) -> dict:
     return result
 
 
+def render_replay(case: Case, folder: Path) -> tuple[Path, Path]:
+    """The shipped pipeline with a file for input and one file for output."""
+    doc = yaml.safe_load(case.pipeline.read_text())
+    config = doc.get("config", doc)
+    out = folder / "actual.jsonl"
+    config["input"] = {"file": {"paths": [str(case.input.resolve())], "codec": "lines"}}
+    config["output"] = {"file": {"path": str(out), "codec": "lines"}}
+    doc["name"] = "replay-" + re.sub(r"[^a-z0-9-]", "-", case.id.lower())
+    doc["type"] = "pipeline"
+    doc["config"] = config
+    path = folder / "pipeline.yaml"
+    path.write_text(yaml.safe_dump(doc, sort_keys=False))
+    return path, out
+
+
+def replay_pass(
+    case: Case, replay: Replay, tmp: Path, want: int | None, settle: float, extra_env=None
+):
+    """Run the replay form once and return the records it wrote, in order."""
+    folder = tmp / "replay"
+    folder.mkdir()
+    path, out = render_replay(case, folder)
+    run = Run(case, path, replay, folder, ingest=False)
+    run.extra_env = dict(extra_env or {})
+    try:
+        run.start()
+        wait_for(lambda: out.exists(), settle, "the first output")
+        if want:
+            wait_for(
+                lambda: len([l for l in out.read_text().splitlines() if l.strip()]) >= want,
+                settle, "all replay output",
+            )
+        last, since = -1, time.time()
+        deadline = time.time() + settle
+        while time.time() < deadline:
+            n = len([l for l in out.read_text().splitlines() if l.strip()])
+            if n != last:
+                last, since = n, time.time()
+            elif time.time() - since >= 1.5:
+                break
+            time.sleep(0.2)
+        records = [json.loads(l) for l in out.read_text().splitlines() if l.strip()]
+    finally:
+        run.stop()
+    return records
+
+
+def schema_for(value, volatile: list[str], prefix: str = ""):
+    """A JSON Schema that pins every field except the volatile ones."""
+    if isinstance(value, dict):
+        props, required = {}, []
+        for key, child in value.items():
+            path = f"{prefix}{key}"
+            if path in volatile:
+                continue
+            props[key] = schema_for(child, volatile, path + ".")
+            required.append(key)
+        return {"type": "object", "required": sorted(required), "properties": props}
+    return {"const": value}
+
+
+def replay_schema(records: list, volatile: list[str], ordered: bool) -> dict:
+    items = [schema_for(r, volatile) for r in records]
+    schema: dict = {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "array",
+        "minItems": len(items),
+        "maxItems": len(items),
+    }
+    if ordered:
+        schema["prefixItems"] = items
+    else:
+        schema["allOf"] = [
+            {"contains": it, "minContains": 1, "maxContains": 1} for it in items
+        ]
+    return schema
+
+
 def expected_total(case: Case, record: bool):
     """Records the run must produce before it may settle (None: unknown)."""
     if record or not case.expected_dir.exists():
@@ -655,6 +741,49 @@ def expected_total(case: Case, record: bool):
         len([l for l in p.read_text().splitlines() if l.strip()])
         for p in case.expected_dir.glob("*.jsonl")
     ) or None
+
+
+def pods_replay_check(case: Case, result: dict) -> None:
+    """The file-in, file-out form, with recorded adapter answers instead of a cluster."""
+    from jsonschema import Draft202012Validator
+
+    port = free_port()
+    server = subprocess.Popen(
+        [sys.executable, str(ROOT / "tools" / "serve.py"), "pods", str(port)],
+        start_new_session=True,
+    )
+    replay = Replay(case.answers, [], False)
+    replay.start()
+    tmp = Path(tempfile.mkdtemp(prefix="jev-pods-replay-"))
+    try:
+        wait_for(lambda: port_open(port), 15, "the recorded adapter")
+        records = replay_pass(
+            case, replay, tmp, len(pod_labels_case_script()), 40.0,
+            {"POD_LABEL_PORT": str(port), "POD_LABEL_TOKEN": "fixture-run-no-key"},
+        )
+        schema = json.loads((case.fx / f"{case.name}.replay.schema.json").read_text())
+        errors = list(Draft202012Validator(schema).iter_errors(records))
+        result["replay_records"] = len(records)
+        if errors:
+            result["problems"].append("replay form differs: " + errors[0].message[:200])
+    except RunError as exc:
+        result["problems"].append(str(exc))
+    finally:
+        replay.stop()
+        try:
+            os.killpg(server.pid, signal.SIGTERM)
+            server.wait(timeout=10)
+        except (ProcessLookupError, subprocess.TimeoutExpired):
+            pass
+        shutil.rmtree(tmp, ignore_errors=True)
+        if port_open(port):
+            result["problems"].append(f"recorded adapter port {port} still open")
+
+
+def pod_labels_case_script():
+    import pod_labels_case
+
+    return pod_labels_case.SCRIPT
 
 
 def run_pod_labels(case: Case, record: bool) -> dict:
@@ -672,6 +801,8 @@ def run_pod_labels(case: Case, record: bool) -> dict:
         "problems": [],
     }
     pod_labels_case.run(case, record, sys.modules[__name__], result)
+    if not result["problems"]:
+        pods_replay_check(case, result)
     if case.input.exists():
         result["input"] = case.input.relative_to(ROOT).as_posix()
         result["input_sha256"] = sha256_file(case.input)
@@ -680,6 +811,31 @@ def run_pod_labels(case: Case, record: bool) -> dict:
     result["ok"] = not result["problems"]
     result["seconds"] = round(time.time() - started, 1)
     return result
+
+
+def replay_check(case: Case, replay: Replay, tmp: Path, record: bool, result: dict):
+    """Run the file-in, file-out form the shared public-bar check uses."""
+    from jsonschema import Draft202012Validator
+
+    schema_path = case.fx / f"{case.name}.replay.schema.json"
+    volatile = case.spec.get("volatile", []) + case.spec.get("replay_volatile", [])
+    ordered = case.spec.get("replay_order", "any") == "strict"
+    want = None
+    if schema_path.exists() and not record:
+        want = json.loads(schema_path.read_text())["minItems"]
+    records = replay_pass(case, replay, tmp, want, case.spec.get("settle", 30.0))
+    result["replay_records"] = len(records)
+    if record:
+        schema_path.write_text(
+            json.dumps(replay_schema(records, volatile, ordered), indent=2) + "\n"
+        )
+        return
+    if not schema_path.exists():
+        result["problems"].append(f"missing {schema_path.relative_to(ROOT)}; run `record`")
+        return
+    errors = list(Draft202012Validator(json.loads(schema_path.read_text())).iter_errors(records))
+    if errors:
+        result["problems"].append("replay form differs: " + errors[0].message[:200])
 
 
 def compare(case: Case, shipped_norm: dict) -> list[str]:

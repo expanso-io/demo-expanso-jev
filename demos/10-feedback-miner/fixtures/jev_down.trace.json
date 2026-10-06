@@ -33,7 +33,7 @@
             "customer": "acme-corp",
             "feedback_id": "f-001",
             "rating": 2,
-            "received_at": "2026-10-05T19:42:15.471887-07:00",
+            "received_at": "2026-10-05T20:34:58.191472-07:00",
             "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
           }
         },
@@ -43,7 +43,7 @@
             "customer": "acme-corp",
             "feedback_id": "f-001",
             "rating": 2,
-            "received_at": "2026-10-05T19:42:15.471887-07:00",
+            "received_at": "2026-10-05T20:34:58.191472-07:00",
             "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
           }
         },
@@ -55,10 +55,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1006
+              "ms": 1004
             },
             "rating": 2,
-            "received_at": "2026-10-05T19:42:15.471887-07:00",
+            "received_at": "2026-10-05T20:34:58.191472-07:00",
             "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
           }
         },
@@ -70,11 +70,11 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1006
+              "ms": 1004
             },
             "jev_decision": "analytics",
             "rating": 2,
-            "received_at": "2026-10-05T19:42:15.471887-07:00",
+            "received_at": "2026-10-05T20:34:58.191472-07:00",
             "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
           }
         }
@@ -193,7 +193,7 @@
             "customer": "globex",
             "feedback_id": "f-002",
             "rating": 5,
-            "received_at": "2026-10-05T19:42:16.483303-07:00",
+            "received_at": "2026-10-05T20:34:59.198778-07:00",
             "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
           }
         },
@@ -203,7 +203,7 @@
             "customer": "globex",
             "feedback_id": "f-002",
             "rating": 5,
-            "received_at": "2026-10-05T19:42:16.483303-07:00",
+            "received_at": "2026-10-05T20:34:59.198778-07:00",
             "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
           }
         },
@@ -215,10 +215,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1006
+              "ms": 1002
             },
             "rating": 5,
-            "received_at": "2026-10-05T19:42:16.483303-07:00",
+            "received_at": "2026-10-05T20:34:59.198778-07:00",
             "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
           }
         },
@@ -230,11 +230,11 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1006
+              "ms": 1002
             },
             "jev_decision": "analytics",
             "rating": 5,
-            "received_at": "2026-10-05T19:42:16.483303-07:00",
+            "received_at": "2026-10-05T20:34:59.198778-07:00",
             "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
           }
         }
@@ -353,7 +353,7 @@
             "customer": "initech",
             "feedback_id": "f-003",
             "rating": 1,
-            "received_at": "2026-10-05T19:42:17.500625-07:00",
+            "received_at": "2026-10-05T20:35:00.205377-07:00",
             "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
           }
         },
@@ -363,7 +363,7 @@
             "customer": "initech",
             "feedback_id": "f-003",
             "rating": 1,
-            "received_at": "2026-10-05T19:42:17.500625-07:00",
+            "received_at": "2026-10-05T20:35:00.205377-07:00",
             "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
           }
         },
@@ -375,10 +375,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1022
+              "ms": 1004
             },
             "rating": 1,
-            "received_at": "2026-10-05T19:42:17.500625-07:00",
+            "received_at": "2026-10-05T20:35:00.205377-07:00",
             "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
           }
         },
@@ -390,11 +390,11 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1022
+              "ms": 1004
             },
             "jev_decision": "analytics",
             "rating": 1,
-            "received_at": "2026-10-05T19:42:17.500625-07:00",
+            "received_at": "2026-10-05T20:35:00.205377-07:00",
             "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
           }
         }
@@ -513,7 +513,7 @@
             "customer": "umbrella",
             "feedback_id": "f-004",
             "rating": 4,
-            "received_at": "2026-10-05T19:42:18.530747-07:00",
+            "received_at": "2026-10-05T20:35:01.217318-07:00",
             "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
           }
         },
@@ -523,7 +523,7 @@
             "customer": "umbrella",
             "feedback_id": "f-004",
             "rating": 4,
-            "received_at": "2026-10-05T19:42:18.530747-07:00",
+            "received_at": "2026-10-05T20:35:01.217318-07:00",
             "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
           }
         },
@@ -538,7 +538,7 @@
               "ms": 1005
             },
             "rating": 4,
-            "received_at": "2026-10-05T19:42:18.530747-07:00",
+            "received_at": "2026-10-05T20:35:01.217318-07:00",
             "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
           }
         },
@@ -554,7 +554,7 @@
             },
             "jev_decision": "analytics",
             "rating": 4,
-            "received_at": "2026-10-05T19:42:18.530747-07:00",
+            "received_at": "2026-10-05T20:35:01.217318-07:00",
             "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
           }
         }
@@ -673,7 +673,7 @@
             "customer": "hooli",
             "feedback_id": "f-005",
             "rating": 3,
-            "received_at": "2026-10-05T19:42:19.543358-07:00",
+            "received_at": "2026-10-05T20:35:02.228606-07:00",
             "text": "It's fine. Does what we need."
           }
         },
@@ -683,7 +683,7 @@
             "customer": "hooli",
             "feedback_id": "f-005",
             "rating": 3,
-            "received_at": "2026-10-05T19:42:19.543358-07:00",
+            "received_at": "2026-10-05T20:35:02.228606-07:00",
             "text": "It's fine. Does what we need."
           }
         },
@@ -698,7 +698,7 @@
               "ms": 1005
             },
             "rating": 3,
-            "received_at": "2026-10-05T19:42:19.543358-07:00",
+            "received_at": "2026-10-05T20:35:02.228606-07:00",
             "text": "It's fine. Does what we need."
           }
         },
@@ -714,7 +714,7 @@
             },
             "jev_decision": "analytics",
             "rating": 3,
-            "received_at": "2026-10-05T19:42:19.543358-07:00",
+            "received_at": "2026-10-05T20:35:02.228606-07:00",
             "text": "It's fine. Does what we need."
           }
         }

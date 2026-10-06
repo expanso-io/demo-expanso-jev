@@ -28,7 +28,7 @@
             "level": "INFO",
             "msg": "GET /health 200 2ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.058389-07:00",
+            "received_at": "2026-10-05T20:28:23.70872-07:00",
             "service": "api",
             "ts": "2026-10-05T09:00:01Z"
           }
@@ -42,7 +42,7 @@
             "level": "INFO",
             "msg": "GET /health 200 2ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.058389-07:00",
+            "received_at": "2026-10-05T20:28:23.70872-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -62,7 +62,7 @@
             "level": "INFO",
             "msg": "GET /health 200 2ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.058389-07:00",
+            "received_at": "2026-10-05T20:28:23.70872-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -83,7 +83,7 @@
             "level": "INFO",
             "msg": "GET /health 200 2ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.058389-07:00",
+            "received_at": "2026-10-05T20:28:23.70872-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -104,7 +104,7 @@
             "level": "INFO",
             "msg": "GET /health 200 2ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.058389-07:00",
+            "received_at": "2026-10-05T20:28:23.70872-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -143,7 +143,7 @@
             "level": "INFO",
             "msg": "GET /metrics 200 5ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.063765-07:00",
+            "received_at": "2026-10-05T20:28:23.712501-07:00",
             "service": "api",
             "ts": "2026-10-05T09:00:02Z"
           }
@@ -157,7 +157,7 @@
             "level": "INFO",
             "msg": "GET /metrics 200 5ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.063765-07:00",
+            "received_at": "2026-10-05T20:28:23.712501-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -177,7 +177,7 @@
             "level": "INFO",
             "msg": "GET /metrics 200 5ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.063765-07:00",
+            "received_at": "2026-10-05T20:28:23.712501-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -198,7 +198,7 @@
             "level": "INFO",
             "msg": "GET /metrics 200 5ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.063765-07:00",
+            "received_at": "2026-10-05T20:28:23.712501-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -219,7 +219,7 @@
             "level": "INFO",
             "msg": "GET /metrics 200 5ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.063765-07:00",
+            "received_at": "2026-10-05T20:28:23.712501-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -258,7 +258,7 @@
             "level": "INFO",
             "msg": "cron heartbeat ok job=nightly-rollup",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.06896-07:00",
+            "received_at": "2026-10-05T20:28:23.71517-07:00",
             "service": "worker",
             "ts": "2026-10-05T09:00:03Z"
           }
@@ -272,7 +272,7 @@
             "level": "INFO",
             "msg": "cron heartbeat ok job=nightly-rollup",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.06896-07:00",
+            "received_at": "2026-10-05T20:28:23.71517-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -292,7 +292,7 @@
             "level": "INFO",
             "msg": "cron heartbeat ok job=nightly-rollup",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.06896-07:00",
+            "received_at": "2026-10-05T20:28:23.71517-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -313,7 +313,7 @@
             "level": "INFO",
             "msg": "cron heartbeat ok job=nightly-rollup",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.06896-07:00",
+            "received_at": "2026-10-05T20:28:23.71517-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -334,7 +334,7 @@
             "level": "INFO",
             "msg": "cron heartbeat ok job=nightly-rollup",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.06896-07:00",
+            "received_at": "2026-10-05T20:28:23.71517-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -373,7 +373,7 @@
             "level": "INFO",
             "msg": "GET /health 500 9000ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.072571-07:00",
+            "received_at": "2026-10-05T20:28:23.717658-07:00",
             "service": "api",
             "ts": "2026-10-05T09:00:04Z"
           }
@@ -387,7 +387,7 @@
             "level": "INFO",
             "msg": "GET /health 500 9000ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.072571-07:00",
+            "received_at": "2026-10-05T20:28:23.717658-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 2,
@@ -407,7 +407,7 @@
             "level": "INFO",
             "msg": "GET /health 500 9000ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.072571-07:00",
+            "received_at": "2026-10-05T20:28:23.717658-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 2,
@@ -428,7 +428,7 @@
             "level": "INFO",
             "msg": "GET /health 500 9000ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.072571-07:00",
+            "received_at": "2026-10-05T20:28:23.717658-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 2,
@@ -449,7 +449,7 @@
             "level": "INFO",
             "msg": "GET /health 500 9000ms",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.072571-07:00",
+            "received_at": "2026-10-05T20:28:23.717658-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 2,
@@ -488,7 +488,7 @@
             "level": "INFO",
             "msg": "config reload requested by unknown actor",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.076398-07:00",
+            "received_at": "2026-10-05T20:28:23.719808-07:00",
             "service": "api",
             "ts": "2026-10-05T09:00:05Z"
           }
@@ -502,7 +502,7 @@
             "level": "INFO",
             "msg": "config reload requested by unknown actor",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.076398-07:00",
+            "received_at": "2026-10-05T20:28:23.719808-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -522,7 +522,7 @@
             "level": "INFO",
             "msg": "config reload requested by unknown actor",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.076398-07:00",
+            "received_at": "2026-10-05T20:28:23.719808-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -543,7 +543,7 @@
             "level": "INFO",
             "msg": "config reload requested by unknown actor",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.076398-07:00",
+            "received_at": "2026-10-05T20:28:23.719808-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -564,7 +564,7 @@
             "level": "INFO",
             "msg": "config reload requested by unknown actor",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.076398-07:00",
+            "received_at": "2026-10-05T20:28:23.719808-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -603,7 +603,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.081902-07:00",
+            "received_at": "2026-10-05T20:28:23.721934-07:00",
             "service": "auth",
             "ts": "2026-10-05T09:00:06Z"
           }
@@ -617,7 +617,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.081902-07:00",
+            "received_at": "2026-10-05T20:28:23.721934-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -637,7 +637,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.081902-07:00",
+            "received_at": "2026-10-05T20:28:23.721934-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -658,7 +658,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.081902-07:00",
+            "received_at": "2026-10-05T20:28:23.721934-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -679,7 +679,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.081902-07:00",
+            "received_at": "2026-10-05T20:28:23.721934-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -718,7 +718,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.086819-07:00",
+            "received_at": "2026-10-05T20:28:23.724672-07:00",
             "service": "auth",
             "ts": "2026-10-05T09:00:07Z"
           }
@@ -732,7 +732,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.086819-07:00",
+            "received_at": "2026-10-05T20:28:23.724672-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 2,
@@ -752,7 +752,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.086819-07:00",
+            "received_at": "2026-10-05T20:28:23.724672-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 2,
@@ -773,7 +773,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.086819-07:00",
+            "received_at": "2026-10-05T20:28:23.724672-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 2,
@@ -794,7 +794,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.086819-07:00",
+            "received_at": "2026-10-05T20:28:23.724672-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 2,
@@ -833,7 +833,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.090614-07:00",
+            "received_at": "2026-10-05T20:28:23.727056-07:00",
             "service": "auth",
             "ts": "2026-10-05T09:00:08Z"
           }
@@ -847,7 +847,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.090614-07:00",
+            "received_at": "2026-10-05T20:28:23.727056-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 3,
@@ -867,7 +867,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.090614-07:00",
+            "received_at": "2026-10-05T20:28:23.727056-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 3,
@@ -888,7 +888,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.090614-07:00",
+            "received_at": "2026-10-05T20:28:23.727056-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 3,
@@ -909,7 +909,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.090614-07:00",
+            "received_at": "2026-10-05T20:28:23.727056-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 3,
@@ -948,7 +948,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.094166-07:00",
+            "received_at": "2026-10-05T20:28:23.729094-07:00",
             "service": "auth",
             "ts": "2026-10-05T09:00:09Z"
           }
@@ -962,7 +962,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.094166-07:00",
+            "received_at": "2026-10-05T20:28:23.729094-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 4,
@@ -982,7 +982,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.094166-07:00",
+            "received_at": "2026-10-05T20:28:23.729094-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 4,
@@ -1003,7 +1003,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.094166-07:00",
+            "received_at": "2026-10-05T20:28:23.729094-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 4,
@@ -1024,7 +1024,7 @@
             "level": "WARN",
             "msg": "auth failed for user admin from 10.0.9.12",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.094166-07:00",
+            "received_at": "2026-10-05T20:28:23.729094-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 4,
@@ -1063,7 +1063,7 @@
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.097625-07:00",
+            "received_at": "2026-10-05T20:28:23.731051-07:00",
             "service": "db",
             "ts": "2026-10-05T09:00:10Z"
           }
@@ -1077,7 +1077,7 @@
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.097625-07:00",
+            "received_at": "2026-10-05T20:28:23.731051-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1097,7 +1097,7 @@
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.097625-07:00",
+            "received_at": "2026-10-05T20:28:23.731051-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1118,7 +1118,7 @@
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.097625-07:00",
+            "received_at": "2026-10-05T20:28:23.731051-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1139,7 +1139,7 @@
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.097625-07:00",
+            "received_at": "2026-10-05T20:28:23.731051-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1178,7 +1178,7 @@
             "level": "ERROR",
             "msg": "OOMKilled container api-7 exit=137",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.101712-07:00",
+            "received_at": "2026-10-05T20:28:23.733035-07:00",
             "service": "api",
             "ts": "2026-10-05T09:00:11Z"
           }
@@ -1192,7 +1192,7 @@
             "level": "ERROR",
             "msg": "OOMKilled container api-7 exit=137",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.101712-07:00",
+            "received_at": "2026-10-05T20:28:23.733035-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1212,7 +1212,7 @@
             "level": "ERROR",
             "msg": "OOMKilled container api-7 exit=137",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.101712-07:00",
+            "received_at": "2026-10-05T20:28:23.733035-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1233,7 +1233,7 @@
             "level": "ERROR",
             "msg": "OOMKilled container api-7 exit=137",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.101712-07:00",
+            "received_at": "2026-10-05T20:28:23.733035-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1254,7 +1254,7 @@
             "level": "ERROR",
             "msg": "OOMKilled container api-7 exit=137",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.101712-07:00",
+            "received_at": "2026-10-05T20:28:23.733035-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1293,7 +1293,7 @@
             "level": "ERROR",
             "msg": "database primary unreachable, failover initiated",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.10661-07:00",
+            "received_at": "2026-10-05T20:28:23.735044-07:00",
             "service": "db",
             "ts": "2026-10-05T09:00:12Z"
           }
@@ -1307,7 +1307,7 @@
             "level": "ERROR",
             "msg": "database primary unreachable, failover initiated",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.10661-07:00",
+            "received_at": "2026-10-05T20:28:23.735044-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1327,7 +1327,7 @@
             "level": "ERROR",
             "msg": "database primary unreachable, failover initiated",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.10661-07:00",
+            "received_at": "2026-10-05T20:28:23.735044-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1348,7 +1348,7 @@
             "level": "ERROR",
             "msg": "database primary unreachable, failover initiated",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.10661-07:00",
+            "received_at": "2026-10-05T20:28:23.735044-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1369,7 +1369,7 @@
             "level": "ERROR",
             "msg": "database primary unreachable, failover initiated",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.10661-07:00",
+            "received_at": "2026-10-05T20:28:23.735044-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1408,7 +1408,7 @@
             "level": "INFO",
             "msg": "cache hit rate 0.94 window=5m",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.110998-07:00",
+            "received_at": "2026-10-05T20:28:23.737212-07:00",
             "service": "cache",
             "ts": "2026-10-05T09:00:13Z"
           }
@@ -1422,7 +1422,7 @@
             "level": "INFO",
             "msg": "cache hit rate 0.94 window=5m",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.110998-07:00",
+            "received_at": "2026-10-05T20:28:23.737212-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1442,7 +1442,7 @@
             "level": "INFO",
             "msg": "cache hit rate 0.94 window=5m",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.110998-07:00",
+            "received_at": "2026-10-05T20:28:23.737212-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1463,7 +1463,7 @@
             "level": "INFO",
             "msg": "cache hit rate 0.94 window=5m",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.110998-07:00",
+            "received_at": "2026-10-05T20:28:23.737212-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1484,7 +1484,7 @@
             "level": "INFO",
             "msg": "cache hit rate 0.94 window=5m",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.110998-07:00",
+            "received_at": "2026-10-05T20:28:23.737212-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1523,7 +1523,7 @@
             "level": "WARN",
             "msg": "TLS certificate expiring in 72 hours, renewal failed twice",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.115636-07:00",
+            "received_at": "2026-10-05T20:28:23.739175-07:00",
             "service": "edge",
             "ts": "2026-10-05T09:00:14Z"
           }
@@ -1537,7 +1537,7 @@
             "level": "WARN",
             "msg": "TLS certificate expiring in 72 hours, renewal failed twice",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.115636-07:00",
+            "received_at": "2026-10-05T20:28:23.739175-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1557,7 +1557,7 @@
             "level": "WARN",
             "msg": "TLS certificate expiring in 72 hours, renewal failed twice",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.115636-07:00",
+            "received_at": "2026-10-05T20:28:23.739175-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1578,7 +1578,7 @@
             "level": "WARN",
             "msg": "TLS certificate expiring in 72 hours, renewal failed twice",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.115636-07:00",
+            "received_at": "2026-10-05T20:28:23.739175-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1599,7 +1599,7 @@
             "level": "WARN",
             "msg": "TLS certificate expiring in 72 hours, renewal failed twice",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.115636-07:00",
+            "received_at": "2026-10-05T20:28:23.739175-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1638,7 +1638,7 @@
             "level": "INFO",
             "msg": "rollout step 3/8 complete service=checkout",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.119832-07:00",
+            "received_at": "2026-10-05T20:28:23.741113-07:00",
             "service": "deploy",
             "ts": "2026-10-05T09:00:15Z"
           }
@@ -1652,7 +1652,7 @@
             "level": "INFO",
             "msg": "rollout step 3/8 complete service=checkout",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.119832-07:00",
+            "received_at": "2026-10-05T20:28:23.741113-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1672,7 +1672,7 @@
             "level": "INFO",
             "msg": "rollout step 3/8 complete service=checkout",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.119832-07:00",
+            "received_at": "2026-10-05T20:28:23.741113-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1693,7 +1693,7 @@
             "level": "INFO",
             "msg": "rollout step 3/8 complete service=checkout",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.119832-07:00",
+            "received_at": "2026-10-05T20:28:23.741113-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1714,7 +1714,7 @@
             "level": "INFO",
             "msg": "rollout step 3/8 complete service=checkout",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.119832-07:00",
+            "received_at": "2026-10-05T20:28:23.741113-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 1,
@@ -1753,7 +1753,7 @@
             "level": "INFO",
             "msg": "cache hit rate 0.01 window=5m",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.124219-07:00",
+            "received_at": "2026-10-05T20:28:23.743121-07:00",
             "service": "cache",
             "ts": "2026-10-05T09:00:16Z"
           }
@@ -1767,7 +1767,7 @@
             "level": "INFO",
             "msg": "cache hit rate 0.01 window=5m",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.124219-07:00",
+            "received_at": "2026-10-05T20:28:23.743121-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 2,
@@ -1787,7 +1787,7 @@
             "level": "INFO",
             "msg": "cache hit rate 0.01 window=5m",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.124219-07:00",
+            "received_at": "2026-10-05T20:28:23.743121-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 2,
@@ -1808,7 +1808,7 @@
             "level": "INFO",
             "msg": "cache hit rate 0.01 window=5m",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.124219-07:00",
+            "received_at": "2026-10-05T20:28:23.743121-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 2,
@@ -1829,7 +1829,7 @@
             "level": "INFO",
             "msg": "cache hit rate 0.01 window=5m",
             "node_id": "fixture-node",
-            "received_at": "2026-10-05T19:44:20.124219-07:00",
+            "received_at": "2026-10-05T20:28:23.743121-07:00",
             "recurrence": {
               "first_seen_ago_s": 0,
               "occurrence": 2,

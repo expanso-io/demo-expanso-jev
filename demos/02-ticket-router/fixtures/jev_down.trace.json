@@ -33,7 +33,7 @@
             "body": "Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \u2014 please refund it when you get a chance.",
             "customer": "acme-corp",
             "id": "tkt-1001",
-            "received_at": "2026-10-05T19:39:42.21957-07:00",
+            "received_at": "2026-10-05T20:32:12.222736-07:00",
             "subject": "Invoice #INV-2041 charged twice"
           }
         },
@@ -43,7 +43,7 @@
             "body": "Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \u2014 please refund it when you get a chance.",
             "customer": "acme-corp",
             "id": "tkt-1001",
-            "received_at": "2026-10-05T19:39:42.21957-07:00",
+            "received_at": "2026-10-05T20:32:12.222736-07:00",
             "subject": "Invoice #INV-2041 charged twice"
           }
         },
@@ -56,9 +56,9 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1001
             },
-            "received_at": "2026-10-05T19:39:42.21957-07:00",
+            "received_at": "2026-10-05T20:32:12.222736-07:00",
             "subject": "Invoice #INV-2041 charged twice"
           }
         },
@@ -72,10 +72,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1001
             },
             "jev_decision": "triage",
-            "received_at": "2026-10-05T19:39:42.21957-07:00",
+            "received_at": "2026-10-05T20:32:12.222736-07:00",
             "subject": "Invoice #INV-2041 charged twice"
           }
         }
@@ -214,7 +214,7 @@
             "body": "Our webhook endpoint started receiving 500s from your API about an hour ago. Nothing changed on our side. Can someone take a look?",
             "customer": "globex",
             "id": "tkt-1002",
-            "received_at": "2026-10-05T19:39:43.230975-07:00",
+            "received_at": "2026-10-05T20:32:13.226672-07:00",
             "subject": "API returns 500 on webhook delivery"
           }
         },
@@ -224,7 +224,7 @@
             "body": "Our webhook endpoint started receiving 500s from your API about an hour ago. Nothing changed on our side. Can someone take a look?",
             "customer": "globex",
             "id": "tkt-1002",
-            "received_at": "2026-10-05T19:39:43.230975-07:00",
+            "received_at": "2026-10-05T20:32:13.226672-07:00",
             "subject": "API returns 500 on webhook delivery"
           }
         },
@@ -237,9 +237,9 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1004
+              "ms": 1002
             },
-            "received_at": "2026-10-05T19:39:43.230975-07:00",
+            "received_at": "2026-10-05T20:32:13.226672-07:00",
             "subject": "API returns 500 on webhook delivery"
           }
         },
@@ -253,10 +253,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1004
+              "ms": 1002
             },
             "jev_decision": "triage",
-            "received_at": "2026-10-05T19:39:43.230975-07:00",
+            "received_at": "2026-10-05T20:32:13.226672-07:00",
             "subject": "API returns 500 on webhook delivery"
           }
         }
@@ -395,7 +395,7 @@
             "body": "I have asked THREE TIMES to delete our account and all data under GDPR and nobody has done it. If this isn't resolved today I am escalating to our legal team.",
             "customer": "initech",
             "id": "tkt-1003",
-            "received_at": "2026-10-05T19:39:44.241565-07:00",
+            "received_at": "2026-10-05T20:32:14.230941-07:00",
             "subject": "This is the THIRD time I'm asking"
           }
         },
@@ -405,7 +405,7 @@
             "body": "I have asked THREE TIMES to delete our account and all data under GDPR and nobody has done it. If this isn't resolved today I am escalating to our legal team.",
             "customer": "initech",
             "id": "tkt-1003",
-            "received_at": "2026-10-05T19:39:44.241565-07:00",
+            "received_at": "2026-10-05T20:32:14.230941-07:00",
             "subject": "This is the THIRD time I'm asking"
           }
         },
@@ -418,9 +418,9 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1004
+              "ms": 1003
             },
-            "received_at": "2026-10-05T19:39:44.241565-07:00",
+            "received_at": "2026-10-05T20:32:14.230941-07:00",
             "subject": "This is the THIRD time I'm asking"
           }
         },
@@ -434,10 +434,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1004
+              "ms": 1003
             },
             "jev_decision": "triage",
-            "received_at": "2026-10-05T19:39:44.241565-07:00",
+            "received_at": "2026-10-05T20:32:14.230941-07:00",
             "subject": "This is the THIRD time I'm asking"
           }
         }
@@ -576,7 +576,7 @@
             "body": "We're evaluating your platform for a 200-seat rollout. Do you offer annual plans with a discount? Would love a quick call next week.",
             "customer": "umbrella",
             "id": "tkt-1004",
-            "received_at": "2026-10-05T19:39:45.250627-07:00",
+            "received_at": "2026-10-05T20:32:15.236357-07:00",
             "subject": "Do you offer annual pricing?"
           }
         },
@@ -586,7 +586,7 @@
             "body": "We're evaluating your platform for a 200-seat rollout. Do you offer annual plans with a discount? Would love a quick call next week.",
             "customer": "umbrella",
             "id": "tkt-1004",
-            "received_at": "2026-10-05T19:39:45.250627-07:00",
+            "received_at": "2026-10-05T20:32:15.236357-07:00",
             "subject": "Do you offer annual pricing?"
           }
         },
@@ -599,9 +599,9 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1005
+              "ms": 1003
             },
-            "received_at": "2026-10-05T19:39:45.250627-07:00",
+            "received_at": "2026-10-05T20:32:15.236357-07:00",
             "subject": "Do you offer annual pricing?"
           }
         },
@@ -615,10 +615,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1005
+              "ms": 1003
             },
             "jev_decision": "triage",
-            "received_at": "2026-10-05T19:39:45.250627-07:00",
+            "received_at": "2026-10-05T20:32:15.236357-07:00",
             "subject": "Do you offer annual pricing?"
           }
         }
@@ -757,7 +757,7 @@
             "body": "Would be great if team plans supported SSO/SAML. No rush, just wanted to put it on your radar. Thanks!",
             "customer": "hooli",
             "id": "tkt-1005",
-            "received_at": "2026-10-05T19:39:46.264112-07:00",
+            "received_at": "2026-10-05T20:32:16.241803-07:00",
             "subject": "Feature request: SSO for teams"
           }
         },
@@ -767,7 +767,7 @@
             "body": "Would be great if team plans supported SSO/SAML. No rush, just wanted to put it on your radar. Thanks!",
             "customer": "hooli",
             "id": "tkt-1005",
-            "received_at": "2026-10-05T19:39:46.264112-07:00",
+            "received_at": "2026-10-05T20:32:16.241803-07:00",
             "subject": "Feature request: SSO for teams"
           }
         },
@@ -780,9 +780,9 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1009
+              "ms": 1003
             },
-            "received_at": "2026-10-05T19:39:46.264112-07:00",
+            "received_at": "2026-10-05T20:32:16.241803-07:00",
             "subject": "Feature request: SSO for teams"
           }
         },
@@ -796,10 +796,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1009
+              "ms": 1003
             },
             "jev_decision": "triage",
-            "received_at": "2026-10-05T19:39:46.264112-07:00",
+            "received_at": "2026-10-05T20:32:16.241803-07:00",
             "subject": "Feature request: SSO for teams"
           }
         }
@@ -938,7 +938,7 @@
             "body": "This is absolutely infuriating. THIRD ticket about the same duplicate charge on INV-2041 and I keep getting canned responses from people who clearly didn't read a word I wrote. I'm at my wit's end here. Please escalate this to someone senior who will actually fix it. I need it resolved this week \u2014 no huge rush, just a real answer.",
             "customer": "initech",
             "id": "tkt-1006",
-            "received_at": "2026-10-05T19:39:47.285717-07:00",
+            "received_at": "2026-10-05T20:32:17.248443-07:00",
             "subject": "Billing error still not fixed after 3 tickets"
           }
         },
@@ -948,7 +948,7 @@
             "body": "This is absolutely infuriating. THIRD ticket about the same duplicate charge on INV-2041 and I keep getting canned responses from people who clearly didn't read a word I wrote. I'm at my wit's end here. Please escalate this to someone senior who will actually fix it. I need it resolved this week \u2014 no huge rush, just a real answer.",
             "customer": "initech",
             "id": "tkt-1006",
-            "received_at": "2026-10-05T19:39:47.285717-07:00",
+            "received_at": "2026-10-05T20:32:17.248443-07:00",
             "subject": "Billing error still not fixed after 3 tickets"
           }
         },
@@ -961,9 +961,9 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1004
+              "ms": 1002
             },
-            "received_at": "2026-10-05T19:39:47.285717-07:00",
+            "received_at": "2026-10-05T20:32:17.248443-07:00",
             "subject": "Billing error still not fixed after 3 tickets"
           }
         },
@@ -977,10 +977,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1004
+              "ms": 1002
             },
             "jev_decision": "triage",
-            "received_at": "2026-10-05T19:39:47.285717-07:00",
+            "received_at": "2026-10-05T20:32:17.248443-07:00",
             "subject": "Billing error still not fixed after 3 tickets"
           }
         }

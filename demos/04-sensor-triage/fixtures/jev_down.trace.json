@@ -37,7 +37,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "received_at": "2026-10-05T19:40:20.249308-07:00",
+            "received_at": "2026-10-05T20:32:52.882511-07:00",
             "rpm": 1750,
             "sensor_id": "pump-07",
             "temp_c": 72.4,
@@ -53,7 +53,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "received_at": "2026-10-05T19:40:20.249308-07:00",
+            "received_at": "2026-10-05T20:32:52.882511-07:00",
             "rpm": 1750,
             "sensor_id": "pump-07",
             "temp_c": 72.4,
@@ -72,9 +72,9 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1005
+              "ms": 1002
             },
-            "received_at": "2026-10-05T19:40:20.249308-07:00",
+            "received_at": "2026-10-05T20:32:52.882511-07:00",
             "rpm": 1750,
             "sensor_id": "pump-07",
             "temp_c": 72.4,
@@ -93,10 +93,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1005
+              "ms": 1002
             },
             "jev_decision": "flag",
-            "received_at": "2026-10-05T19:40:20.249308-07:00",
+            "received_at": "2026-10-05T20:32:52.882511-07:00",
             "rpm": 1750,
             "sensor_id": "pump-07",
             "temp_c": 72.4,
@@ -211,7 +211,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "received_at": "2026-10-05T19:40:21.259435-07:00",
+            "received_at": "2026-10-05T20:32:53.887279-07:00",
             "rpm": 1750,
             "sensor_id": "pump-07",
             "temp_c": 73.1,
@@ -227,7 +227,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "received_at": "2026-10-05T19:40:21.259435-07:00",
+            "received_at": "2026-10-05T20:32:53.887279-07:00",
             "rpm": 1750,
             "sensor_id": "pump-07",
             "temp_c": 73.1,
@@ -246,9 +246,9 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1005
+              "ms": 1004
             },
-            "received_at": "2026-10-05T19:40:21.259435-07:00",
+            "received_at": "2026-10-05T20:32:53.887279-07:00",
             "rpm": 1750,
             "sensor_id": "pump-07",
             "temp_c": 73.1,
@@ -267,10 +267,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1005
+              "ms": 1004
             },
             "jev_decision": "flag",
-            "received_at": "2026-10-05T19:40:21.259435-07:00",
+            "received_at": "2026-10-05T20:32:53.887279-07:00",
             "rpm": 1750,
             "sensor_id": "pump-07",
             "temp_c": 73.1,
@@ -388,7 +388,7 @@
               "vibration_mm_s_max": 4.5
             },
             "note": "audible grinding from bearing housing",
-            "received_at": "2026-10-05T19:40:22.268618-07:00",
+            "received_at": "2026-10-05T20:32:54.893526-07:00",
             "rpm": 1748,
             "sensor_id": "pump-07",
             "temp_c": 94.6,
@@ -405,7 +405,7 @@
               "vibration_mm_s_max": 4.5
             },
             "note": "audible grinding from bearing housing",
-            "received_at": "2026-10-05T19:40:22.268618-07:00",
+            "received_at": "2026-10-05T20:32:54.893526-07:00",
             "rpm": 1748,
             "sensor_id": "pump-07",
             "temp_c": 94.6,
@@ -424,10 +424,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1004
             },
             "note": "audible grinding from bearing housing",
-            "received_at": "2026-10-05T19:40:22.268618-07:00",
+            "received_at": "2026-10-05T20:32:54.893526-07:00",
             "rpm": 1748,
             "sensor_id": "pump-07",
             "temp_c": 94.6,
@@ -446,11 +446,11 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1004
             },
             "jev_decision": "flag",
             "note": "audible grinding from bearing housing",
-            "received_at": "2026-10-05T19:40:22.268618-07:00",
+            "received_at": "2026-10-05T20:32:54.893526-07:00",
             "rpm": 1748,
             "sensor_id": "pump-07",
             "temp_c": 94.6,
@@ -567,7 +567,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "received_at": "2026-10-05T19:40:23.279005-07:00",
+            "received_at": "2026-10-05T20:32:55.900094-07:00",
             "rpm": 1750,
             "sensor_id": "pump-12",
             "temp_c": 68.0,
@@ -583,7 +583,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "received_at": "2026-10-05T19:40:23.279005-07:00",
+            "received_at": "2026-10-05T20:32:55.900094-07:00",
             "rpm": 1750,
             "sensor_id": "pump-12",
             "temp_c": 68.0,
@@ -604,7 +604,7 @@
               "model": "jev-unavailable",
               "ms": 1004
             },
-            "received_at": "2026-10-05T19:40:23.279005-07:00",
+            "received_at": "2026-10-05T20:32:55.900094-07:00",
             "rpm": 1750,
             "sensor_id": "pump-12",
             "temp_c": 68.0,
@@ -626,7 +626,7 @@
               "ms": 1004
             },
             "jev_decision": "flag",
-            "received_at": "2026-10-05T19:40:23.279005-07:00",
+            "received_at": "2026-10-05T20:32:55.900094-07:00",
             "rpm": 1750,
             "sensor_id": "pump-12",
             "temp_c": 68.0,
@@ -744,7 +744,7 @@
               "vibration_mm_s_max": 4.5
             },
             "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday",
-            "received_at": "2026-10-05T19:40:24.288617-07:00",
+            "received_at": "2026-10-05T20:32:56.906244-07:00",
             "rpm": 1749,
             "sensor_id": "pump-07",
             "temp_c": 96.8,
@@ -761,7 +761,7 @@
               "vibration_mm_s_max": 4.5
             },
             "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday",
-            "received_at": "2026-10-05T19:40:24.288617-07:00",
+            "received_at": "2026-10-05T20:32:56.906244-07:00",
             "rpm": 1749,
             "sensor_id": "pump-07",
             "temp_c": 96.8,
@@ -780,10 +780,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1004
             },
             "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday",
-            "received_at": "2026-10-05T19:40:24.288617-07:00",
+            "received_at": "2026-10-05T20:32:56.906244-07:00",
             "rpm": 1749,
             "sensor_id": "pump-07",
             "temp_c": 96.8,
@@ -802,11 +802,11 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1004
             },
             "jev_decision": "flag",
             "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday",
-            "received_at": "2026-10-05T19:40:24.288617-07:00",
+            "received_at": "2026-10-05T20:32:56.906244-07:00",
             "rpm": 1749,
             "sensor_id": "pump-07",
             "temp_c": 96.8,

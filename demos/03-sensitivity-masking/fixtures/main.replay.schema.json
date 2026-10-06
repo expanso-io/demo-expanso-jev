@@ -1,0 +1,707 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "minItems": 5,
+  "maxItems": 5,
+  "allOf": [
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "api_key",
+          "email",
+          "event",
+          "jev",
+          "jev_decision",
+          "name",
+          "policy_applied",
+          "record_id",
+          "ssn"
+        ],
+        "properties": {
+          "api_key": {
+            "const": null
+          },
+          "email": {
+            "const": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "event": {
+            "const": "all systems operational"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "contains_credentials",
+                  "contains_pii",
+                  "sensitivity"
+                ],
+                "properties": {
+                  "contains_credentials": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "contains_pii": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "sensitivity": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "confidential"
+                      },
+                      "confidence": {
+                        "const": 0.35
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "confidential",
+                          "internal",
+                          "public",
+                          "restricted"
+                        ],
+                        "properties": {
+                          "confidential": {
+                            "const": 0.92
+                          },
+                          "internal": {
+                            "const": 0.027
+                          },
+                          "public": {
+                            "const": 0.027
+                          },
+                          "restricted": {
+                            "const": 0.027
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "tokenize"
+          },
+          "name": {
+            "const": "Status Page"
+          },
+          "policy_applied": {
+            "const": "tokenize"
+          },
+          "record_id": {
+            "const": "rec-005"
+          },
+          "ssn": {
+            "const": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "api_key",
+          "email",
+          "jev",
+          "jev_decision",
+          "name",
+          "plan",
+          "policy_applied",
+          "record_id",
+          "ssn"
+        ],
+        "properties": {
+          "api_key": {
+            "const": "QUARANTINED"
+          },
+          "email": {
+            "const": "jane.doe@example.com"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "contains_credentials",
+                  "contains_pii",
+                  "sensitivity"
+                ],
+                "properties": {
+                  "contains_credentials": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "contains_pii": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.92
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "sensitivity": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "restricted"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "confidential",
+                          "internal",
+                          "public",
+                          "restricted"
+                        ],
+                        "properties": {
+                          "confidential": {
+                            "const": 0.027
+                          },
+                          "internal": {
+                            "const": 0.027
+                          },
+                          "public": {
+                            "const": 0.027
+                          },
+                          "restricted": {
+                            "const": 0.92
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "quarantine"
+          },
+          "name": {
+            "const": "Jane Doe"
+          },
+          "plan": {
+            "const": "team-annual"
+          },
+          "policy_applied": {
+            "const": "quarantine"
+          },
+          "record_id": {
+            "const": "rec-001"
+          },
+          "ssn": {
+            "const": "MASKED"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "api_key",
+          "email",
+          "jev",
+          "jev_decision",
+          "name",
+          "note",
+          "policy_applied",
+          "record_id",
+          "ssn"
+        ],
+        "properties": {
+          "api_key": {
+            "const": "QUARANTINED"
+          },
+          "email": {
+            "const": "ops@example.com"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "contains_credentials",
+                  "contains_pii",
+                  "sensitivity"
+                ],
+                "properties": {
+                  "contains_credentials": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.92
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "contains_pii": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.92
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "sensitivity": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "restricted"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "confidential",
+                          "internal",
+                          "public",
+                          "restricted"
+                        ],
+                        "properties": {
+                          "confidential": {
+                            "const": 0.027
+                          },
+                          "internal": {
+                            "const": 0.027
+                          },
+                          "public": {
+                            "const": 0.027
+                          },
+                          "restricted": {
+                            "const": 0.92
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "quarantine"
+          },
+          "name": {
+            "const": "Deploy Key"
+          },
+          "note": {
+            "const": "production deploy token, do not share"
+          },
+          "policy_applied": {
+            "const": "quarantine"
+          },
+          "record_id": {
+            "const": "rec-003"
+          },
+          "ssn": {
+            "const": "MASKED"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "api_key",
+          "diagnosis",
+          "email",
+          "jev",
+          "jev_decision",
+          "name",
+          "policy_applied",
+          "record_id",
+          "salary_band",
+          "ssn"
+        ],
+        "properties": {
+          "api_key": {
+            "const": null
+          },
+          "diagnosis": {
+            "const": "Q3 performance review: exceeds expectations"
+          },
+          "email": {
+            "const": "8e621e3d0368631d263d07a351fa8d34fba0d17c15fbcdec11a5f58008d022a0"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "contains_credentials",
+                  "contains_pii",
+                  "sensitivity"
+                ],
+                "properties": {
+                  "contains_credentials": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "contains_pii": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.92
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "sensitivity": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "confidential"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "confidential",
+                          "internal",
+                          "public",
+                          "restricted"
+                        ],
+                        "properties": {
+                          "confidential": {
+                            "const": 0.92
+                          },
+                          "internal": {
+                            "const": 0.027
+                          },
+                          "public": {
+                            "const": 0.027
+                          },
+                          "restricted": {
+                            "const": 0.027
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "tokenize"
+          },
+          "name": {
+            "const": "John Smith"
+          },
+          "policy_applied": {
+            "const": "tokenize"
+          },
+          "record_id": {
+            "const": "rec-004"
+          },
+          "salary_band": {
+            "const": "L5"
+          },
+          "ssn": {
+            "const": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "api_key",
+          "email",
+          "event",
+          "jev",
+          "jev_decision",
+          "name",
+          "policy_applied",
+          "record_id",
+          "ssn"
+        ],
+        "properties": {
+          "api_key": {
+            "const": null
+          },
+          "email": {
+            "const": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "event": {
+            "const": "nightly backup completed in 42s"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "contains_credentials",
+                  "contains_pii",
+                  "sensitivity"
+                ],
+                "properties": {
+                  "contains_credentials": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "contains_pii": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "sensitivity": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "confidential"
+                      },
+                      "confidence": {
+                        "const": 0.35
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "confidential",
+                          "internal",
+                          "public",
+                          "restricted"
+                        ],
+                        "properties": {
+                          "confidential": {
+                            "const": 0.92
+                          },
+                          "internal": {
+                            "const": 0.027
+                          },
+                          "public": {
+                            "const": 0.027
+                          },
+                          "restricted": {
+                            "const": 0.027
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "tokenize"
+          },
+          "name": {
+            "const": "System Bot"
+          },
+          "policy_applied": {
+            "const": "tokenize"
+          },
+          "record_id": {
+            "const": "rec-002"
+          },
+          "ssn": {
+            "const": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    }
+  ]
+}

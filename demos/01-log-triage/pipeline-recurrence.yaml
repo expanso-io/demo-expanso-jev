@@ -191,7 +191,7 @@ config:
                   }
                 processors:
                   - http:
-                      url: ${JEV_API_URL}
+                      url: ${JEV_API_URL:http://127.0.0.1:8099/v1/systemone}
                       verb: POST
                       headers:
                         Content-Type: application/json

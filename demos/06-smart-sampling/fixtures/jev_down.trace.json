@@ -29,7 +29,7 @@
           "n": 2,
           "state": {
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:59.235153-07:00",
+            "received_at": "2026-10-05T20:33:35.116521-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:01Z"
           }
@@ -38,7 +38,7 @@
           "n": 3,
           "state": {
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:59.235153-07:00",
+            "received_at": "2026-10-05T20:33:35.116521-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:01Z"
           }
@@ -49,10 +49,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1002
             },
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:59.235153-07:00",
+            "received_at": "2026-10-05T20:33:35.116521-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:01Z"
           }
@@ -63,12 +63,12 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1002
             },
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:59.235153-07:00",
+            "received_at": "2026-10-05T20:33:35.116521-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:01Z"
           }
@@ -79,12 +79,12 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1002
             },
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:59.235153-07:00",
+            "received_at": "2026-10-05T20:33:35.116521-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:01Z"
           }
@@ -166,7 +166,7 @@
           "n": 2,
           "state": {
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:41:00.243715-07:00",
+            "received_at": "2026-10-05T20:33:36.12193-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:02Z"
           }
@@ -175,7 +175,7 @@
           "n": 3,
           "state": {
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:41:00.243715-07:00",
+            "received_at": "2026-10-05T20:33:36.12193-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:02Z"
           }
@@ -186,10 +186,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1004
             },
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:41:00.243715-07:00",
+            "received_at": "2026-10-05T20:33:36.12193-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:02Z"
           }
@@ -200,12 +200,12 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1004
             },
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:41:00.243715-07:00",
+            "received_at": "2026-10-05T20:33:36.12193-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:02Z"
           }
@@ -216,12 +216,12 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1004
             },
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:41:00.243715-07:00",
+            "received_at": "2026-10-05T20:33:36.12193-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:02Z"
           }
@@ -303,7 +303,7 @@
           "n": 2,
           "state": {
             "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
-            "received_at": "2026-10-05T19:41:01.251041-07:00",
+            "received_at": "2026-10-05T20:33:37.128746-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:03Z"
           }
@@ -312,7 +312,7 @@
           "n": 3,
           "state": {
             "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
-            "received_at": "2026-10-05T19:41:01.251041-07:00",
+            "received_at": "2026-10-05T20:33:37.128746-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:03Z"
           }
@@ -326,7 +326,7 @@
               "ms": 1003
             },
             "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
-            "received_at": "2026-10-05T19:41:01.251041-07:00",
+            "received_at": "2026-10-05T20:33:37.128746-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:03Z"
           }
@@ -342,7 +342,7 @@
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
-            "received_at": "2026-10-05T19:41:01.251041-07:00",
+            "received_at": "2026-10-05T20:33:37.128746-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:03Z"
           }
@@ -358,7 +358,7 @@
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
-            "received_at": "2026-10-05T19:41:01.251041-07:00",
+            "received_at": "2026-10-05T20:33:37.128746-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:03Z"
           }
@@ -440,7 +440,7 @@
           "n": 2,
           "state": {
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:41:02.258089-07:00",
+            "received_at": "2026-10-05T20:33:38.134397-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:04Z"
           }
@@ -449,7 +449,7 @@
           "n": 3,
           "state": {
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:41:02.258089-07:00",
+            "received_at": "2026-10-05T20:33:38.134397-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:04Z"
           }
@@ -460,10 +460,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1007
             },
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:41:02.258089-07:00",
+            "received_at": "2026-10-05T20:33:38.134397-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:04Z"
           }
@@ -474,12 +474,12 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1007
             },
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:41:02.258089-07:00",
+            "received_at": "2026-10-05T20:33:38.134397-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:04Z"
           }
@@ -490,12 +490,12 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1007
             },
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:41:02.258089-07:00",
+            "received_at": "2026-10-05T20:33:38.134397-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:04Z"
           }
@@ -577,7 +577,7 @@
           "n": 2,
           "state": {
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
-            "received_at": "2026-10-05T19:41:03.263952-07:00",
+            "received_at": "2026-10-05T20:33:39.152784-07:00",
             "service": "worker-3",
             "ts": "2026-09-18T14:00:05Z"
           }
@@ -586,7 +586,7 @@
           "n": 3,
           "state": {
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
-            "received_at": "2026-10-05T19:41:03.263952-07:00",
+            "received_at": "2026-10-05T20:33:39.152784-07:00",
             "service": "worker-3",
             "ts": "2026-09-18T14:00:05Z"
           }
@@ -597,10 +597,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1013
             },
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
-            "received_at": "2026-10-05T19:41:03.263952-07:00",
+            "received_at": "2026-10-05T20:33:39.152784-07:00",
             "service": "worker-3",
             "ts": "2026-09-18T14:00:05Z"
           }
@@ -611,12 +611,12 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1013
             },
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
-            "received_at": "2026-10-05T19:41:03.263952-07:00",
+            "received_at": "2026-10-05T20:33:39.152784-07:00",
             "service": "worker-3",
             "ts": "2026-09-18T14:00:05Z"
           }
@@ -627,12 +627,12 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1013
             },
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
-            "received_at": "2026-10-05T19:41:03.263952-07:00",
+            "received_at": "2026-10-05T20:33:39.152784-07:00",
             "service": "worker-3",
             "ts": "2026-09-18T14:00:05Z"
           }
@@ -714,7 +714,7 @@
           "n": 2,
           "state": {
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:41:04.270661-07:00",
+            "received_at": "2026-10-05T20:33:40.174825-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:06Z"
           }
@@ -723,7 +723,7 @@
           "n": 3,
           "state": {
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:41:04.270661-07:00",
+            "received_at": "2026-10-05T20:33:40.174825-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:06Z"
           }
@@ -737,7 +737,7 @@
               "ms": 1004
             },
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:41:04.270661-07:00",
+            "received_at": "2026-10-05T20:33:40.174825-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:06Z"
           }
@@ -753,7 +753,7 @@
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:41:04.270661-07:00",
+            "received_at": "2026-10-05T20:33:40.174825-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:06Z"
           }
@@ -769,7 +769,7 @@
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:41:04.270661-07:00",
+            "received_at": "2026-10-05T20:33:40.174825-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:06Z"
           }
@@ -851,7 +851,7 @@
           "n": 2,
           "state": {
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
-            "received_at": "2026-10-05T19:41:05.278589-07:00",
+            "received_at": "2026-10-05T20:33:41.182539-07:00",
             "service": "db-proxy",
             "ts": "2026-09-18T14:00:07Z"
           }
@@ -860,7 +860,7 @@
           "n": 3,
           "state": {
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
-            "received_at": "2026-10-05T19:41:05.278589-07:00",
+            "received_at": "2026-10-05T20:33:41.182539-07:00",
             "service": "db-proxy",
             "ts": "2026-09-18T14:00:07Z"
           }
@@ -871,10 +871,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1004
             },
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
-            "received_at": "2026-10-05T19:41:05.278589-07:00",
+            "received_at": "2026-10-05T20:33:41.182539-07:00",
             "service": "db-proxy",
             "ts": "2026-09-18T14:00:07Z"
           }
@@ -885,12 +885,12 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1004
             },
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
-            "received_at": "2026-10-05T19:41:05.278589-07:00",
+            "received_at": "2026-10-05T20:33:41.182539-07:00",
             "service": "db-proxy",
             "ts": "2026-09-18T14:00:07Z"
           }
@@ -901,12 +901,12 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1003
+              "ms": 1004
             },
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
-            "received_at": "2026-10-05T19:41:05.278589-07:00",
+            "received_at": "2026-10-05T20:33:41.182539-07:00",
             "service": "db-proxy",
             "ts": "2026-09-18T14:00:07Z"
           }
@@ -988,7 +988,7 @@
           "n": 2,
           "state": {
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:41:06.286176-07:00",
+            "received_at": "2026-10-05T20:33:42.188861-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:08Z"
           }
@@ -997,7 +997,7 @@
           "n": 3,
           "state": {
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:41:06.286176-07:00",
+            "received_at": "2026-10-05T20:33:42.188861-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:08Z"
           }
@@ -1008,10 +1008,10 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1002
+              "ms": 1004
             },
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:41:06.286176-07:00",
+            "received_at": "2026-10-05T20:33:42.188861-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:08Z"
           }
@@ -1022,12 +1022,12 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1002
+              "ms": 1004
             },
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:41:06.286176-07:00",
+            "received_at": "2026-10-05T20:33:42.188861-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:08Z"
           }
@@ -1038,12 +1038,12 @@
             "jev": {
               "answers": {},
               "model": "jev-unavailable",
-              "ms": 1002
+              "ms": 1004
             },
             "jev_decision": "keep",
             "jev_score": 0,
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:41:06.286176-07:00",
+            "received_at": "2026-10-05T20:33:42.188861-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:08Z"
           }

@@ -1,0 +1,493 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "minItems": 5,
+  "maxItems": 5,
+  "allOf": [
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "amount",
+          "currency",
+          "customer_id",
+          "jev",
+          "jev_decision",
+          "order_id",
+          "ts"
+        ],
+        "properties": {
+          "amount": {
+            "const": 129.99
+          },
+          "currency": {
+            "const": "USD"
+          },
+          "customer_id": {
+            "const": "cus-88121"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "conformant",
+                  "quality"
+                ],
+                "properties": {
+                  "conformant": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.92
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "quality": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "warehouse"
+          },
+          "order_id": {
+            "const": "ord-9001"
+          },
+          "ts": {
+            "const": "2026-09-18T14:00:00Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "amount",
+          "currency",
+          "customer_id",
+          "jev",
+          "jev_decision",
+          "order_id",
+          "ts"
+        ],
+        "properties": {
+          "amount": {
+            "const": 99999999.99
+          },
+          "currency": {
+            "const": "US"
+          },
+          "customer_id": {
+            "const": null
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "conformant",
+                  "quality"
+                ],
+                "properties": {
+                  "conformant": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "quality": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 1
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "quarantine"
+          },
+          "order_id": {
+            "const": "ord-9005"
+          },
+          "ts": {
+            "const": "2026-09-18T14:04:00Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "amount",
+          "currency",
+          "customer_id",
+          "jev",
+          "jev_decision",
+          "order_id",
+          "ts"
+        ],
+        "properties": {
+          "amount": {
+            "const": -45.0
+          },
+          "currency": {
+            "const": "USD"
+          },
+          "customer_id": {
+            "const": "cus-10422"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "conformant",
+                  "quality"
+                ],
+                "properties": {
+                  "conformant": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "quality": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 3
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "quarantine"
+          },
+          "order_id": {
+            "const": "ord-9002"
+          },
+          "ts": {
+            "const": "2026-09-18T14:01:00Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "amount",
+          "currency",
+          "customer_id",
+          "jev",
+          "jev_decision",
+          "order_id",
+          "ts"
+        ],
+        "properties": {
+          "amount": {
+            "const": "a lot"
+          },
+          "currency": {
+            "const": "USDD"
+          },
+          "customer_id": {
+            "const": null
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "conformant",
+                  "quality"
+                ],
+                "properties": {
+                  "conformant": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "quality": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 0
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "quarantine"
+          },
+          "order_id": {
+            "const": "ord-9003"
+          },
+          "ts": {
+            "const": "yesterday-ish"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "amount",
+          "currency",
+          "customer_id",
+          "jev",
+          "jev_decision",
+          "order_id",
+          "ts"
+        ],
+        "properties": {
+          "amount": {
+            "const": 9.99
+          },
+          "currency": {
+            "const": "USD"
+          },
+          "customer_id": {
+            "const": "cus-77190"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "conformant",
+                  "quality"
+                ],
+                "properties": {
+                  "conformant": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.92
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "quality": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "warehouse"
+          },
+          "order_id": {
+            "const": "ord-9004"
+          },
+          "ts": {
+            "const": "2026-09-18T14:03:00Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    }
+  ]
+}

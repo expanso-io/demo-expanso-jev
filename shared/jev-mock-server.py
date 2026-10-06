@@ -350,6 +350,14 @@ def answer_all(questions, state_text):
 
 
 class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        data = b'{"status": "ok"}'
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+
     def do_POST(self):
         length = int(self.headers.get("Content-Length", 0))
         try:

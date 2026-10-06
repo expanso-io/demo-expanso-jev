@@ -1,0 +1,1166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "minItems": 6,
+  "maxItems": 6,
+  "allOf": [
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "assigned_department",
+          "body",
+          "customer",
+          "id",
+          "jev",
+          "jev_decision",
+          "subject"
+        ],
+        "properties": {
+          "assigned_department": {
+            "const": "billing"
+          },
+          "body": {
+            "const": "Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \u2014 please refund it when you get a chance."
+          },
+          "customer": {
+            "const": "acme-corp"
+          },
+          "id": {
+            "const": "tkt-1001"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "department",
+                  "frustration",
+                  "intent",
+                  "urgent"
+                ],
+                "properties": {
+                  "department": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "billing"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "billing",
+                          "other",
+                          "sales",
+                          "technical"
+                        ],
+                        "properties": {
+                          "billing": {
+                            "const": 0.92
+                          },
+                          "other": {
+                            "const": 0.027
+                          },
+                          "sales": {
+                            "const": 0.027
+                          },
+                          "technical": {
+                            "const": 0.027
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "frustration": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 1.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "intent": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "billing_dispute"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "account_deletion",
+                          "billing_dispute",
+                          "bug",
+                          "feature_request",
+                          "how_to",
+                          "other"
+                        ],
+                        "properties": {
+                          "account_deletion": {
+                            "const": 0.016
+                          },
+                          "billing_dispute": {
+                            "const": 0.92
+                          },
+                          "bug": {
+                            "const": 0.016
+                          },
+                          "feature_request": {
+                            "const": 0.016
+                          },
+                          "how_to": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "urgent": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "route"
+          },
+          "subject": {
+            "const": "Invoice #INV-2041 charged twice"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "assigned_department",
+          "body",
+          "customer",
+          "id",
+          "jev",
+          "jev_decision",
+          "subject"
+        ],
+        "properties": {
+          "assigned_department": {
+            "const": "technical"
+          },
+          "body": {
+            "const": "Our webhook endpoint started receiving 500s from your API about an hour ago. Nothing changed on our side. Can someone take a look?"
+          },
+          "customer": {
+            "const": "globex"
+          },
+          "id": {
+            "const": "tkt-1002"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "department",
+                  "frustration",
+                  "intent",
+                  "urgent"
+                ],
+                "properties": {
+                  "department": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "technical"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "billing",
+                          "other",
+                          "sales",
+                          "technical"
+                        ],
+                        "properties": {
+                          "billing": {
+                            "const": 0.027
+                          },
+                          "other": {
+                            "const": 0.027
+                          },
+                          "sales": {
+                            "const": 0.027
+                          },
+                          "technical": {
+                            "const": 0.92
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "frustration": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 1.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "intent": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "other"
+                      },
+                      "confidence": {
+                        "const": 0.35
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "account_deletion",
+                          "billing_dispute",
+                          "bug",
+                          "feature_request",
+                          "how_to",
+                          "other"
+                        ],
+                        "properties": {
+                          "account_deletion": {
+                            "const": 0.016
+                          },
+                          "billing_dispute": {
+                            "const": 0.016
+                          },
+                          "bug": {
+                            "const": 0.016
+                          },
+                          "feature_request": {
+                            "const": 0.016
+                          },
+                          "how_to": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.92
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "urgent": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "route"
+          },
+          "subject": {
+            "const": "API returns 500 on webhook delivery"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "assigned_department",
+          "body",
+          "customer",
+          "id",
+          "jev",
+          "jev_decision",
+          "subject"
+        ],
+        "properties": {
+          "assigned_department": {
+            "const": "billing"
+          },
+          "body": {
+            "const": "This is absolutely infuriating. THIRD ticket about the same duplicate charge on INV-2041 and I keep getting canned responses from people who clearly didn't read a word I wrote. I'm at my wit's end here. Please escalate this to someone senior who will actually fix it. I need it resolved this week \u2014 no huge rush, just a real answer."
+          },
+          "customer": {
+            "const": "initech"
+          },
+          "id": {
+            "const": "tkt-1006"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "department",
+                  "frustration",
+                  "intent",
+                  "urgent"
+                ],
+                "properties": {
+                  "department": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "billing"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "billing",
+                          "other",
+                          "sales",
+                          "technical"
+                        ],
+                        "properties": {
+                          "billing": {
+                            "const": 0.92
+                          },
+                          "other": {
+                            "const": 0.027
+                          },
+                          "sales": {
+                            "const": 0.027
+                          },
+                          "technical": {
+                            "const": 0.027
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "frustration": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 3.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "intent": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "billing_dispute"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "account_deletion",
+                          "billing_dispute",
+                          "bug",
+                          "feature_request",
+                          "how_to",
+                          "other"
+                        ],
+                        "properties": {
+                          "account_deletion": {
+                            "const": 0.016
+                          },
+                          "billing_dispute": {
+                            "const": 0.92
+                          },
+                          "bug": {
+                            "const": 0.016
+                          },
+                          "feature_request": {
+                            "const": 0.016
+                          },
+                          "how_to": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "urgent": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "priority"
+          },
+          "subject": {
+            "const": "Billing error still not fixed after 3 tickets"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "assigned_department",
+          "body",
+          "customer",
+          "id",
+          "jev",
+          "jev_decision",
+          "subject"
+        ],
+        "properties": {
+          "assigned_department": {
+            "const": "technical"
+          },
+          "body": {
+            "const": "Would be great if team plans supported SSO/SAML. No rush, just wanted to put it on your radar. Thanks!"
+          },
+          "customer": {
+            "const": "hooli"
+          },
+          "id": {
+            "const": "tkt-1005"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "department",
+                  "frustration",
+                  "intent",
+                  "urgent"
+                ],
+                "properties": {
+                  "department": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "technical"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "billing",
+                          "other",
+                          "sales",
+                          "technical"
+                        ],
+                        "properties": {
+                          "billing": {
+                            "const": 0.027
+                          },
+                          "other": {
+                            "const": 0.027
+                          },
+                          "sales": {
+                            "const": 0.027
+                          },
+                          "technical": {
+                            "const": 0.92
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "frustration": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 0.6
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "intent": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "feature_request"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "account_deletion",
+                          "billing_dispute",
+                          "bug",
+                          "feature_request",
+                          "how_to",
+                          "other"
+                        ],
+                        "properties": {
+                          "account_deletion": {
+                            "const": 0.016
+                          },
+                          "billing_dispute": {
+                            "const": 0.016
+                          },
+                          "bug": {
+                            "const": 0.016
+                          },
+                          "feature_request": {
+                            "const": 0.92
+                          },
+                          "how_to": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "urgent": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "route"
+          },
+          "subject": {
+            "const": "Feature request: SSO for teams"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "assigned_department",
+          "body",
+          "customer",
+          "id",
+          "jev",
+          "jev_decision",
+          "subject"
+        ],
+        "properties": {
+          "assigned_department": {
+            "const": "sales"
+          },
+          "body": {
+            "const": "We're evaluating your platform for a 200-seat rollout. Do you offer annual plans with a discount? Would love a quick call next week."
+          },
+          "customer": {
+            "const": "umbrella"
+          },
+          "id": {
+            "const": "tkt-1004"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "department",
+                  "frustration",
+                  "intent",
+                  "urgent"
+                ],
+                "properties": {
+                  "department": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "sales"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "billing",
+                          "other",
+                          "sales",
+                          "technical"
+                        ],
+                        "properties": {
+                          "billing": {
+                            "const": 0.027
+                          },
+                          "other": {
+                            "const": 0.027
+                          },
+                          "sales": {
+                            "const": 0.92
+                          },
+                          "technical": {
+                            "const": 0.027
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "frustration": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 0.6
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "intent": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "other"
+                      },
+                      "confidence": {
+                        "const": 0.35
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "account_deletion",
+                          "billing_dispute",
+                          "bug",
+                          "feature_request",
+                          "how_to",
+                          "other"
+                        ],
+                        "properties": {
+                          "account_deletion": {
+                            "const": 0.016
+                          },
+                          "billing_dispute": {
+                            "const": 0.016
+                          },
+                          "bug": {
+                            "const": 0.016
+                          },
+                          "feature_request": {
+                            "const": 0.016
+                          },
+                          "how_to": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.92
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "urgent": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "route"
+          },
+          "subject": {
+            "const": "Do you offer annual pricing?"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "assigned_department",
+          "body",
+          "customer",
+          "id",
+          "jev",
+          "jev_decision",
+          "subject"
+        ],
+        "properties": {
+          "assigned_department": {
+            "const": "other"
+          },
+          "body": {
+            "const": "I have asked THREE TIMES to delete our account and all data under GDPR and nobody has done it. If this isn't resolved today I am escalating to our legal team."
+          },
+          "customer": {
+            "const": "initech"
+          },
+          "id": {
+            "const": "tkt-1003"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "department",
+                  "frustration",
+                  "intent",
+                  "urgent"
+                ],
+                "properties": {
+                  "department": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "other"
+                      },
+                      "confidence": {
+                        "const": 0.35
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "billing",
+                          "other",
+                          "sales",
+                          "technical"
+                        ],
+                        "properties": {
+                          "billing": {
+                            "const": 0.027
+                          },
+                          "other": {
+                            "const": 0.92
+                          },
+                          "sales": {
+                            "const": 0.027
+                          },
+                          "technical": {
+                            "const": 0.027
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "frustration": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 3.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "intent": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "account_deletion"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "account_deletion",
+                          "billing_dispute",
+                          "bug",
+                          "feature_request",
+                          "how_to",
+                          "other"
+                        ],
+                        "properties": {
+                          "account_deletion": {
+                            "const": 0.92
+                          },
+                          "billing_dispute": {
+                            "const": 0.016
+                          },
+                          "bug": {
+                            "const": 0.016
+                          },
+                          "feature_request": {
+                            "const": 0.016
+                          },
+                          "how_to": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "urgent": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.92
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "page"
+          },
+          "subject": {
+            "const": "This is the THIRD time I'm asking"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    }
+  ]
+}

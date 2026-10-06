@@ -11,7 +11,8 @@
       ],
       "volatile_request": [
         "received_at"
-      ]
+      ],
+      "replay": true
     },
     "jev_down": {
       "pipeline": "pipeline.yaml",

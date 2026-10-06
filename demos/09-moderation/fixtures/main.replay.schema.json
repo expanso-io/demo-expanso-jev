@@ -1,0 +1,603 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "minItems": 5,
+  "maxItems": 5,
+  "allOf": [
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "author",
+          "content_id",
+          "jev",
+          "jev_decision",
+          "review_priority",
+          "text"
+        ],
+        "properties": {
+          "author": {
+            "const": "user_9917"
+          },
+          "content_id": {
+            "const": "c-002"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "category",
+                  "needs_human"
+                ],
+                "properties": {
+                  "category": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "spam"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "hate",
+                          "other",
+                          "safe",
+                          "self_harm",
+                          "sexual",
+                          "spam"
+                        ],
+                        "properties": {
+                          "hate": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "safe": {
+                            "const": 0.016
+                          },
+                          "self_harm": {
+                            "const": 0.016
+                          },
+                          "sexual": {
+                            "const": 0.016
+                          },
+                          "spam": {
+                            "const": 0.92
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "needs_human": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.92
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "review"
+          },
+          "review_priority": {
+            "const": 0.07999999999999996
+          },
+          "text": {
+            "const": "CHECK OUT my crypto doubling service at shady-link.example, 100% guaranteed returns!!!"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "author",
+          "content_id",
+          "jev",
+          "jev_decision",
+          "review_priority",
+          "text"
+        ],
+        "properties": {
+          "author": {
+            "const": "user_6108"
+          },
+          "content_id": {
+            "const": "c-005"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "category",
+                  "needs_human"
+                ],
+                "properties": {
+                  "category": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "self_harm"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "hate",
+                          "other",
+                          "safe",
+                          "self_harm",
+                          "sexual",
+                          "spam"
+                        ],
+                        "properties": {
+                          "hate": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "safe": {
+                            "const": 0.016
+                          },
+                          "self_harm": {
+                            "const": 0.92
+                          },
+                          "sexual": {
+                            "const": 0.016
+                          },
+                          "spam": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "needs_human": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.92
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "review"
+          },
+          "review_priority": {
+            "const": 0.07999999999999996
+          },
+          "text": {
+            "const": "I don't see the point anymore. Nothing matters. Maybe everyone would be better off if I just disappeared."
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "author",
+          "content_id",
+          "jev",
+          "jev_decision",
+          "review_priority",
+          "text"
+        ],
+        "properties": {
+          "author": {
+            "const": "user_7712"
+          },
+          "content_id": {
+            "const": "c-004"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "category",
+                  "needs_human"
+                ],
+                "properties": {
+                  "category": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "safe"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "hate",
+                          "other",
+                          "safe",
+                          "self_harm",
+                          "sexual",
+                          "spam"
+                        ],
+                        "properties": {
+                          "hate": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "safe": {
+                            "const": 0.92
+                          },
+                          "self_harm": {
+                            "const": 0.016
+                          },
+                          "sexual": {
+                            "const": 0.016
+                          },
+                          "spam": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "needs_human": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "allow"
+          },
+          "review_priority": {
+            "const": 0.07999999999999996
+          },
+          "text": {
+            "const": "Has anyone tried the new API? The rate limits seem a bit low for our use case."
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "author",
+          "content_id",
+          "jev",
+          "jev_decision",
+          "review_priority",
+          "text"
+        ],
+        "properties": {
+          "author": {
+            "const": "user_4821"
+          },
+          "content_id": {
+            "const": "c-001"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "category",
+                  "needs_human"
+                ],
+                "properties": {
+                  "category": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "safe"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "hate",
+                          "other",
+                          "safe",
+                          "self_harm",
+                          "sexual",
+                          "spam"
+                        ],
+                        "properties": {
+                          "hate": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "safe": {
+                            "const": 0.92
+                          },
+                          "self_harm": {
+                            "const": 0.016
+                          },
+                          "sexual": {
+                            "const": 0.016
+                          },
+                          "spam": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "needs_human": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "allow"
+          },
+          "review_priority": {
+            "const": 0.07999999999999996
+          },
+          "text": {
+            "const": "Just finished the new onboarding flow, super smooth! Great work team."
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "author",
+          "content_id",
+          "jev",
+          "jev_decision",
+          "review_priority",
+          "text"
+        ],
+        "properties": {
+          "author": {
+            "const": "user_3355"
+          },
+          "content_id": {
+            "const": "c-003"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "category",
+                  "needs_human"
+                ],
+                "properties": {
+                  "category": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "hate"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "hate",
+                          "other",
+                          "safe",
+                          "self_harm",
+                          "sexual",
+                          "spam"
+                        ],
+                        "properties": {
+                          "hate": {
+                            "const": 0.92
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "safe": {
+                            "const": 0.016
+                          },
+                          "self_harm": {
+                            "const": 0.016
+                          },
+                          "sexual": {
+                            "const": 0.016
+                          },
+                          "spam": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  },
+                  "needs_human": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.92
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "review"
+          },
+          "review_priority": {
+            "const": 0.07999999999999996
+          },
+          "text": {
+            "const": "People from [group] shouldn't be allowed to post here, they're ruining everything."
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    }
+  ]
+}

@@ -1,0 +1,638 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "minItems": 6,
+  "maxItems": 6,
+  "allOf": [
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "at",
+          "event_id",
+          "investigation",
+          "key",
+          "message",
+          "namespace",
+          "noul",
+          "operation",
+          "origin",
+          "pod",
+          "request_id",
+          "scenario",
+          "seq",
+          "source_pods",
+          "stage",
+          "value"
+        ],
+        "properties": {
+          "seq": {
+            "const": 8
+          },
+          "at": {
+            "const": 1791257806.774206
+          },
+          "stage": {
+            "const": "investigation_waiting"
+          },
+          "pod": {
+            "const": "checkout-api"
+          },
+          "namespace": {
+            "const": "jev-label-demo"
+          },
+          "key": {
+            "const": null
+          },
+          "value": {
+            "const": null
+          },
+          "operation": {
+            "const": "investigate"
+          },
+          "origin": {
+            "const": null
+          },
+          "source_pods": {
+            "const": []
+          },
+          "noul": {
+            "const": 0.12
+          },
+          "message": {
+            "const": "investigation_waiting"
+          },
+          "event_id": {
+            "const": 8
+          },
+          "request_id": {
+            "const": "22beeafb805c3a07e6c35c05"
+          },
+          "scenario": {
+            "const": "investigate_restart"
+          },
+          "investigation": {
+            "type": "object",
+            "required": [
+              "evidence",
+              "id",
+              "namespace",
+              "phase",
+              "pod",
+              "request_id",
+              "revision",
+              "score",
+              "status",
+              "uid"
+            ],
+            "properties": {
+              "id": {
+                "const": "e0742f549b4b4f70def209a5"
+              },
+              "namespace": {
+                "const": "jev-label-demo"
+              },
+              "pod": {
+                "const": "checkout-api"
+              },
+              "uid": {
+                "const": "b16120d4-99ea-48b1-9b18-8b952c2ae2ed"
+              },
+              "evidence": {
+                "const": [
+                  {
+                    "id": "E10457fa7",
+                    "kind": "pod",
+                    "text": "{\"name\": \"checkout-api\", \"namespace\": \"jev-label-demo\", \"uid\": \"b16120d4-99ea-48b1-9b18-8b952c2ae2ed\", \"labels\": {\"app\": \"checkout\", \"istio.io/rev\": \"default\", \"team\": \"payments\", \"version\": \"v3.1.0\"}, \"phase\": \"Running\", \"containers\": [{\"name\": \"checkout\", \"image\": \"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\"}], \"runtime_note\": \"Live simulator metadata; incident evidence is the marked synthetic stdout. The simulator itself stays healthy.\"}",
+                    "source": "Kubernetes API",
+                    "synthetic": false
+                  },
+                  {
+                    "id": "Ec42ecf9f",
+                    "kind": "logs",
+                    "text": "{\"event\": \"investigation_restart\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 1, \"message\": \"Synthetic incident: container restarted once; termination details and stack trace are unavailable. Cause unknown.\", \"at\": 1791257806.3573117}",
+                    "source": "pod stdout; demo stimuli",
+                    "synthetic": true
+                  },
+                  {
+                    "id": "Ea494360a",
+                    "kind": "previous_logs",
+                    "text": "Unavailable",
+                    "source": "Kubernetes API",
+                    "synthetic": false
+                  },
+                  {
+                    "id": "Ece3bb57b",
+                    "kind": "events",
+                    "text": "[{\"reason\": \"Scheduled\", \"message\": \"Successfully assigned jev-label-demo/checkout-api to k3d-jev-rbac-check-server-0\", \"type\": \"Normal\", \"count\": null, \"at\": \"2026-10-06T03:36:43.964376Z\"}, {\"reason\": \"Pulled\", \"message\": \"Container image \\\"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\\\" already present on machine and can be accessed by the pod\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}, {\"reason\": \"Created\", \"message\": \"Container created\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}, {\"reason\": \"Started\", \"message\": \"Container started\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}]",
+                    "source": "Kubernetes API",
+                    "synthetic": false
+                  }
+                ]
+              },
+              "phase": {
+                "const": "restart"
+              },
+              "status": {
+                "const": "waiting"
+              },
+              "request_id": {
+                "const": "22beeafb805c3a07e6c35c05"
+              },
+              "revision": {
+                "const": 3
+              },
+              "score": {
+                "const": 0.12
+              }
+            }
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "at",
+          "event_id",
+          "investigation",
+          "key",
+          "message",
+          "namespace",
+          "noul",
+          "operation",
+          "origin",
+          "pod",
+          "request_id",
+          "scenario",
+          "seq",
+          "source_pods",
+          "stage",
+          "value"
+        ],
+        "properties": {
+          "seq": {
+            "const": 19
+          },
+          "at": {
+            "const": 1791257807.546577
+          },
+          "stage": {
+            "const": "investigation_waiting"
+          },
+          "pod": {
+            "const": "checkout-api"
+          },
+          "namespace": {
+            "const": "jev-label-demo"
+          },
+          "key": {
+            "const": null
+          },
+          "value": {
+            "const": null
+          },
+          "operation": {
+            "const": "investigate"
+          },
+          "origin": {
+            "const": null
+          },
+          "source_pods": {
+            "const": []
+          },
+          "noul": {
+            "const": 0.33
+          },
+          "message": {
+            "const": "investigation_waiting"
+          },
+          "event_id": {
+            "const": 19
+          },
+          "request_id": {
+            "const": "8200818258e8d5e31a0cce3e"
+          },
+          "scenario": {
+            "const": "investigate_context"
+          },
+          "investigation": {
+            "type": "object",
+            "required": [
+              "evidence",
+              "id",
+              "namespace",
+              "phase",
+              "pod",
+              "request_id",
+              "revision",
+              "score",
+              "status",
+              "uid"
+            ],
+            "properties": {
+              "id": {
+                "const": "e0742f549b4b4f70def209a5"
+              },
+              "namespace": {
+                "const": "jev-label-demo"
+              },
+              "pod": {
+                "const": "checkout-api"
+              },
+              "uid": {
+                "const": "b16120d4-99ea-48b1-9b18-8b952c2ae2ed"
+              },
+              "evidence": {
+                "const": [
+                  {
+                    "id": "E10457fa7",
+                    "kind": "pod",
+                    "text": "{\"name\": \"checkout-api\", \"namespace\": \"jev-label-demo\", \"uid\": \"b16120d4-99ea-48b1-9b18-8b952c2ae2ed\", \"labels\": {\"app\": \"checkout\", \"istio.io/rev\": \"default\", \"team\": \"payments\", \"version\": \"v3.1.0\"}, \"phase\": \"Running\", \"containers\": [{\"name\": \"checkout\", \"image\": \"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\"}], \"runtime_note\": \"Live simulator metadata; incident evidence is the marked synthetic stdout. The simulator itself stays healthy.\"}",
+                    "source": "Kubernetes API",
+                    "synthetic": false
+                  },
+                  {
+                    "id": "Ec42ecf9f",
+                    "kind": "logs",
+                    "text": "{\"event\": \"investigation_restart\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 1, \"message\": \"Synthetic incident: container restarted once; termination details and stack trace are unavailable. Cause unknown.\", \"at\": 1791257806.3573117}",
+                    "source": "pod stdout; demo stimuli",
+                    "synthetic": true
+                  },
+                  {
+                    "id": "Ea494360a",
+                    "kind": "previous_logs",
+                    "text": "Unavailable",
+                    "source": "Kubernetes API",
+                    "synthetic": false
+                  },
+                  {
+                    "id": "Ece3bb57b",
+                    "kind": "events",
+                    "text": "[{\"reason\": \"Scheduled\", \"message\": \"Successfully assigned jev-label-demo/checkout-api to k3d-jev-rbac-check-server-0\", \"type\": \"Normal\", \"count\": null, \"at\": \"2026-10-06T03:36:43.964376Z\"}, {\"reason\": \"Pulled\", \"message\": \"Container image \\\"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\\\" already present on machine and can be accessed by the pod\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}, {\"reason\": \"Created\", \"message\": \"Container created\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}, {\"reason\": \"Started\", \"message\": \"Container started\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}]",
+                    "source": "Kubernetes API",
+                    "synthetic": false
+                  },
+                  {
+                    "id": "E76f7140c",
+                    "kind": "logs",
+                    "text": "{\"event\": \"investigation_context\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 5, \"window\": \"4m\", \"release_sha\": \"7c9e2a1\", \"timeline\": [\"12:00 UTC: release 7c9e2a1 deployed (synthetic)\", \"12:02-12:06 UTC: five container restarts (synthetic)\"], \"message\": \"Synthetic incident: five restarts in four minutes after recent release 7c9e2a1. Timeline: release at 12:00 UTC, restarts from 12:02 to 12:06 UTC. Correlation only; cause unknown, termination details and stack trace unavailable.\", \"at\": 1791257807.340828}",
+                    "source": "pod stdout; demo stimuli",
+                    "synthetic": true
+                  }
+                ]
+              },
+              "phase": {
+                "const": "context"
+              },
+              "status": {
+                "const": "waiting"
+              },
+              "request_id": {
+                "const": "8200818258e8d5e31a0cce3e"
+              },
+              "revision": {
+                "const": 15
+              },
+              "score": {
+                "const": 0.33
+              }
+            }
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "at",
+          "event_id",
+          "investigation",
+          "key",
+          "message",
+          "namespace",
+          "noul",
+          "operation",
+          "origin",
+          "pod",
+          "request_id",
+          "scenario",
+          "seq",
+          "source_pods",
+          "stage",
+          "value"
+        ],
+        "properties": {
+          "seq": {
+            "const": 29
+          },
+          "at": {
+            "const": 1791257808.6236632
+          },
+          "stage": {
+            "const": "investigation_ready"
+          },
+          "pod": {
+            "const": "checkout-api"
+          },
+          "namespace": {
+            "const": "jev-label-demo"
+          },
+          "key": {
+            "const": null
+          },
+          "value": {
+            "const": null
+          },
+          "operation": {
+            "const": "investigate"
+          },
+          "origin": {
+            "const": null
+          },
+          "source_pods": {
+            "const": []
+          },
+          "noul": {
+            "const": 0.84
+          },
+          "message": {
+            "const": "investigation_ready"
+          },
+          "event_id": {
+            "const": 29
+          },
+          "request_id": {
+            "const": "ff7eb5fb11bb6b52131d4bd8"
+          },
+          "scenario": {
+            "const": "investigate_evidence"
+          },
+          "investigation": {
+            "type": "object",
+            "required": [
+              "evidence",
+              "id",
+              "namespace",
+              "phase",
+              "pod",
+              "request_id",
+              "revision",
+              "score",
+              "status",
+              "uid"
+            ],
+            "properties": {
+              "id": {
+                "const": "e0742f549b4b4f70def209a5"
+              },
+              "namespace": {
+                "const": "jev-label-demo"
+              },
+              "pod": {
+                "const": "checkout-api"
+              },
+              "uid": {
+                "const": "b16120d4-99ea-48b1-9b18-8b952c2ae2ed"
+              },
+              "evidence": {
+                "const": [
+                  {
+                    "id": "E10457fa7",
+                    "kind": "pod",
+                    "text": "{\"name\": \"checkout-api\", \"namespace\": \"jev-label-demo\", \"uid\": \"b16120d4-99ea-48b1-9b18-8b952c2ae2ed\", \"labels\": {\"app\": \"checkout\", \"istio.io/rev\": \"default\", \"team\": \"payments\", \"version\": \"v3.1.0\"}, \"phase\": \"Running\", \"containers\": [{\"name\": \"checkout\", \"image\": \"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\"}], \"runtime_note\": \"Live simulator metadata; incident evidence is the marked synthetic stdout. The simulator itself stays healthy.\"}",
+                    "source": "Kubernetes API",
+                    "synthetic": false
+                  },
+                  {
+                    "id": "Ec42ecf9f",
+                    "kind": "logs",
+                    "text": "{\"event\": \"investigation_restart\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 1, \"message\": \"Synthetic incident: container restarted once; termination details and stack trace are unavailable. Cause unknown.\", \"at\": 1791257806.3573117}",
+                    "source": "pod stdout; demo stimuli",
+                    "synthetic": true
+                  },
+                  {
+                    "id": "Ea494360a",
+                    "kind": "previous_logs",
+                    "text": "Unavailable",
+                    "source": "Kubernetes API",
+                    "synthetic": false
+                  },
+                  {
+                    "id": "Ece3bb57b",
+                    "kind": "events",
+                    "text": "[{\"reason\": \"Scheduled\", \"message\": \"Successfully assigned jev-label-demo/checkout-api to k3d-jev-rbac-check-server-0\", \"type\": \"Normal\", \"count\": null, \"at\": \"2026-10-06T03:36:43.964376Z\"}, {\"reason\": \"Pulled\", \"message\": \"Container image \\\"python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a\\\" already present on machine and can be accessed by the pod\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}, {\"reason\": \"Created\", \"message\": \"Container created\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}, {\"reason\": \"Started\", \"message\": \"Container started\", \"type\": \"Normal\", \"count\": 1, \"at\": \"2026-10-06T03:36:44Z\"}]",
+                    "source": "Kubernetes API",
+                    "synthetic": false
+                  },
+                  {
+                    "id": "E76f7140c",
+                    "kind": "logs",
+                    "text": "{\"event\": \"investigation_context\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 5, \"window\": \"4m\", \"release_sha\": \"7c9e2a1\", \"timeline\": [\"12:00 UTC: release 7c9e2a1 deployed (synthetic)\", \"12:02-12:06 UTC: five container restarts (synthetic)\"], \"message\": \"Synthetic incident: five restarts in four minutes after recent release 7c9e2a1. Timeline: release at 12:00 UTC, restarts from 12:02 to 12:06 UTC. Correlation only; cause unknown, termination details and stack trace unavailable.\", \"at\": 1791257807.340828}",
+                    "source": "pod stdout; demo stimuli",
+                    "synthetic": true
+                  },
+                  {
+                    "id": "E46dbc175",
+                    "kind": "logs",
+                    "text": "{\"event\": \"investigation_evidence\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"reason\": \"OOMKilled\", \"exit_code\": 137, \"memory_limit\": \"512Mi\", \"stack\": \"java.lang.OutOfMemoryError: Java heap space at OrderCache.load:212\", \"release_sha\": \"7c9e2a1\", \"recent_change\": \"Release 7c9e2a1 increased the cache limit from 10000 to 100000 entries (synthetic)\", \"message\": \"Synthetic incident: OOMKilled, exit 137, memory limit 512Mi. java.lang.OutOfMemoryError: Java heap space at OrderCache.load:212. Recent release 7c9e2a1 increased the cache limit from 10000 to 100000 entries. Evidence supports investigating cache memory growth; the change is not a proven root cause.\", \"at\": 1791257808.34817}",
+                    "source": "pod stdout; demo stimuli",
+                    "synthetic": true
+                  }
+                ]
+              },
+              "phase": {
+                "const": "evidence"
+              },
+              "status": {
+                "const": "ready"
+              },
+              "request_id": {
+                "const": "ff7eb5fb11bb6b52131d4bd8"
+              },
+              "revision": {
+                "const": 25
+              },
+              "score": {
+                "const": 0.84
+              }
+            }
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "id",
+          "key",
+          "namespace",
+          "noul",
+          "operation",
+          "pod",
+          "request_id",
+          "resource_version",
+          "result",
+          "uid",
+          "value"
+        ],
+        "properties": {
+          "id": {
+            "const": "272bae4fd4c70cf7e675e2fd51dc1c6785f2ceb55651748c0aa85d731cac1b66"
+          },
+          "request_id": {
+            "const": "cf96629c0b5ea7492518433c"
+          },
+          "namespace": {
+            "const": "jev-label-demo"
+          },
+          "pod": {
+            "const": "orders-api"
+          },
+          "uid": {
+            "const": "adb11fb5-338a-43b9-b407-3113236773a9"
+          },
+          "operation": {
+            "const": "add"
+          },
+          "key": {
+            "const": "workload"
+          },
+          "value": {
+            "const": "batch"
+          },
+          "noul": {
+            "const": 0.92
+          },
+          "result": {
+            "const": "applied"
+          },
+          "resource_version": {
+            "const": "1657"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "id",
+          "key",
+          "namespace",
+          "noul",
+          "operation",
+          "pod",
+          "request_id",
+          "resource_version",
+          "result",
+          "uid",
+          "value"
+        ],
+        "properties": {
+          "id": {
+            "const": "d060c8c821ba549e6ad805eee939ec7cdf81ccf0c6528705d3294306fba763dc"
+          },
+          "request_id": {
+            "const": "3387c2fb3b0ff906ce86fb77"
+          },
+          "namespace": {
+            "const": "jev-label-demo"
+          },
+          "pod": {
+            "const": "checkout-api"
+          },
+          "uid": {
+            "const": "b16120d4-99ea-48b1-9b18-8b952c2ae2ed"
+          },
+          "operation": {
+            "const": "add"
+          },
+          "key": {
+            "const": "pressure"
+          },
+          "value": {
+            "const": "memory"
+          },
+          "noul": {
+            "const": 0.92
+          },
+          "result": {
+            "const": "applied"
+          },
+          "resource_version": {
+            "const": "1658"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "id",
+          "key",
+          "namespace",
+          "noul",
+          "operation",
+          "pod",
+          "request_id",
+          "resource_version",
+          "result",
+          "uid",
+          "value"
+        ],
+        "properties": {
+          "id": {
+            "const": "e0411d948fc1a21cb0a62dd152ebcabec18faa6cdc0d9e543b3735fd7b40c168"
+          },
+          "request_id": {
+            "const": "e7308e0022113ada48b0d875"
+          },
+          "namespace": {
+            "const": "jev-label-demo"
+          },
+          "pod": {
+            "const": "analytics-worker"
+          },
+          "uid": {
+            "const": "e8eb4e9f-f312-4715-85c4-b829866e0384"
+          },
+          "operation": {
+            "const": "add"
+          },
+          "key": {
+            "const": "traffic"
+          },
+          "value": {
+            "const": "drain"
+          },
+          "noul": {
+            "const": 0.92
+          },
+          "result": {
+            "const": "applied"
+          },
+          "resource_version": {
+            "const": "1659"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    }
+  ]
+}

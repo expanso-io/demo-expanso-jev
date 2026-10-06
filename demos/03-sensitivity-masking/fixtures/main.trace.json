@@ -35,7 +35,7 @@
             "email": "jane.doe@example.com",
             "name": "Jane Doe",
             "plan": "team-annual",
-            "received_at": "2026-10-05T19:39:52.66668-07:00",
+            "received_at": "2026-10-05T20:32:21.978172-07:00",
             "record_id": "rec-001",
             "ssn": "123-45-6789"
           }
@@ -46,7 +46,7 @@
             "email": "jane.doe@example.com",
             "name": "Jane Doe",
             "plan": "team-annual",
-            "received_at": "2026-10-05T19:39:52.66668-07:00",
+            "received_at": "2026-10-05T20:32:21.978172-07:00",
             "record_id": "rec-001",
             "ssn": "123-45-6789"
           }
@@ -82,7 +82,7 @@
             },
             "name": "Jane Doe",
             "plan": "team-annual",
-            "received_at": "2026-10-05T19:39:52.66668-07:00",
+            "received_at": "2026-10-05T20:32:21.978172-07:00",
             "record_id": "rec-001",
             "ssn": "123-45-6789"
           }
@@ -119,7 +119,7 @@
             "jev_decision": "quarantine",
             "name": "Jane Doe",
             "plan": "team-annual",
-            "received_at": "2026-10-05T19:39:52.66668-07:00",
+            "received_at": "2026-10-05T20:32:21.978172-07:00",
             "record_id": "rec-001",
             "ssn": "123-45-6789"
           }
@@ -158,7 +158,7 @@
             "name": "Jane Doe",
             "plan": "team-annual",
             "policy_applied": "quarantine",
-            "received_at": "2026-10-05T19:39:52.66668-07:00",
+            "received_at": "2026-10-05T20:32:21.978172-07:00",
             "record_id": "rec-001",
             "ssn": "MASKED"
           }
@@ -187,7 +187,7 @@
                 "confidential": "Sensitive business or personal data, restricted distribution",
                 "internal": "Company-internal, not for external sharing",
                 "public": "Safe to share broadly, no personal or secret data",
-                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+                "restricted": "Highly sensitive: records under legal or contractual restriction, secrets, legal hold"
               },
               "instructions": "What is the sensitivity class of this record?",
               "type": "choice"
@@ -246,7 +246,7 @@
           "state": {
             "event": "nightly backup completed in 42s",
             "name": "System Bot",
-            "received_at": "2026-10-05T19:39:52.673-07:00",
+            "received_at": "2026-10-05T20:32:21.981849-07:00",
             "record_id": "rec-002"
           }
         },
@@ -255,7 +255,7 @@
           "state": {
             "event": "nightly backup completed in 42s",
             "name": "System Bot",
-            "received_at": "2026-10-05T19:39:52.673-07:00",
+            "received_at": "2026-10-05T20:32:21.981849-07:00",
             "record_id": "rec-002"
           }
         },
@@ -286,10 +286,10 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 1
+              "ms": 0
             },
             "name": "System Bot",
-            "received_at": "2026-10-05T19:39:52.673-07:00",
+            "received_at": "2026-10-05T20:32:21.981849-07:00",
             "record_id": "rec-002"
           }
         },
@@ -320,11 +320,11 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 1
+              "ms": 0
             },
             "jev_decision": "tokenize",
             "name": "System Bot",
-            "received_at": "2026-10-05T19:39:52.673-07:00",
+            "received_at": "2026-10-05T20:32:21.981849-07:00",
             "record_id": "rec-002"
           }
         },
@@ -357,12 +357,12 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 1
+              "ms": 0
             },
             "jev_decision": "tokenize",
             "name": "System Bot",
             "policy_applied": "tokenize",
-            "received_at": "2026-10-05T19:39:52.673-07:00",
+            "received_at": "2026-10-05T20:32:21.981849-07:00",
             "record_id": "rec-002",
             "ssn": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
           }
@@ -389,7 +389,7 @@
                 "confidential": "Sensitive business or personal data, restricted distribution",
                 "internal": "Company-internal, not for external sharing",
                 "public": "Safe to share broadly, no personal or secret data",
-                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+                "restricted": "Highly sensitive: records under legal or contractual restriction, secrets, legal hold"
               },
               "instructions": "What is the sensitivity class of this record?",
               "type": "choice"
@@ -454,7 +454,7 @@
             "email": "ops@example.com",
             "name": "Deploy Key",
             "note": "production deploy token, do not share",
-            "received_at": "2026-10-05T19:39:52.679365-07:00",
+            "received_at": "2026-10-05T20:32:21.98435-07:00",
             "record_id": "rec-003"
           }
         },
@@ -465,7 +465,7 @@
             "email": "ops@example.com",
             "name": "Deploy Key",
             "note": "production deploy token, do not share",
-            "received_at": "2026-10-05T19:39:52.679365-07:00",
+            "received_at": "2026-10-05T20:32:21.98435-07:00",
             "record_id": "rec-003"
           }
         },
@@ -501,7 +501,7 @@
             },
             "name": "Deploy Key",
             "note": "production deploy token, do not share",
-            "received_at": "2026-10-05T19:39:52.679365-07:00",
+            "received_at": "2026-10-05T20:32:21.98435-07:00",
             "record_id": "rec-003"
           }
         },
@@ -538,7 +538,7 @@
             "jev_decision": "quarantine",
             "name": "Deploy Key",
             "note": "production deploy token, do not share",
-            "received_at": "2026-10-05T19:39:52.679365-07:00",
+            "received_at": "2026-10-05T20:32:21.98435-07:00",
             "record_id": "rec-003"
           }
         },
@@ -576,7 +576,7 @@
             "name": "Deploy Key",
             "note": "production deploy token, do not share",
             "policy_applied": "quarantine",
-            "received_at": "2026-10-05T19:39:52.679365-07:00",
+            "received_at": "2026-10-05T20:32:21.98435-07:00",
             "record_id": "rec-003",
             "ssn": "MASKED"
           }
@@ -605,7 +605,7 @@
                 "confidential": "Sensitive business or personal data, restricted distribution",
                 "internal": "Company-internal, not for external sharing",
                 "public": "Safe to share broadly, no personal or secret data",
-                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+                "restricted": "Highly sensitive: records under legal or contractual restriction, secrets, legal hold"
               },
               "instructions": "What is the sensitivity class of this record?",
               "type": "choice"
@@ -669,7 +669,7 @@
             "diagnosis": "Q3 performance review: exceeds expectations",
             "email": "john.smith@example.com",
             "name": "John Smith",
-            "received_at": "2026-10-05T19:39:52.685106-07:00",
+            "received_at": "2026-10-05T20:32:21.986847-07:00",
             "record_id": "rec-004",
             "salary_band": "L5"
           }
@@ -680,7 +680,7 @@
             "diagnosis": "Q3 performance review: exceeds expectations",
             "email": "john.smith@example.com",
             "name": "John Smith",
-            "received_at": "2026-10-05T19:39:52.685106-07:00",
+            "received_at": "2026-10-05T20:32:21.986847-07:00",
             "record_id": "rec-004",
             "salary_band": "L5"
           }
@@ -713,10 +713,10 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 2
+              "ms": 0
             },
             "name": "John Smith",
-            "received_at": "2026-10-05T19:39:52.685106-07:00",
+            "received_at": "2026-10-05T20:32:21.986847-07:00",
             "record_id": "rec-004",
             "salary_band": "L5"
           }
@@ -749,11 +749,11 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 2
+              "ms": 0
             },
             "jev_decision": "tokenize",
             "name": "John Smith",
-            "received_at": "2026-10-05T19:39:52.685106-07:00",
+            "received_at": "2026-10-05T20:32:21.986847-07:00",
             "record_id": "rec-004",
             "salary_band": "L5"
           }
@@ -787,12 +787,12 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 2
+              "ms": 0
             },
             "jev_decision": "tokenize",
             "name": "John Smith",
             "policy_applied": "tokenize",
-            "received_at": "2026-10-05T19:39:52.685106-07:00",
+            "received_at": "2026-10-05T20:32:21.986847-07:00",
             "record_id": "rec-004",
             "salary_band": "L5",
             "ssn": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
@@ -822,7 +822,7 @@
                 "confidential": "Sensitive business or personal data, restricted distribution",
                 "internal": "Company-internal, not for external sharing",
                 "public": "Safe to share broadly, no personal or secret data",
-                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+                "restricted": "Highly sensitive: records under legal or contractual restriction, secrets, legal hold"
               },
               "instructions": "What is the sensitivity class of this record?",
               "type": "choice"
@@ -881,7 +881,7 @@
           "state": {
             "event": "all systems operational",
             "name": "Status Page",
-            "received_at": "2026-10-05T19:39:52.692043-07:00",
+            "received_at": "2026-10-05T20:32:21.989201-07:00",
             "record_id": "rec-005"
           }
         },
@@ -890,7 +890,7 @@
           "state": {
             "event": "all systems operational",
             "name": "Status Page",
-            "received_at": "2026-10-05T19:39:52.692043-07:00",
+            "received_at": "2026-10-05T20:32:21.989201-07:00",
             "record_id": "rec-005"
           }
         },
@@ -921,10 +921,10 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 1
+              "ms": 0
             },
             "name": "Status Page",
-            "received_at": "2026-10-05T19:39:52.692043-07:00",
+            "received_at": "2026-10-05T20:32:21.989201-07:00",
             "record_id": "rec-005"
           }
         },
@@ -955,11 +955,11 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 1
+              "ms": 0
             },
             "jev_decision": "tokenize",
             "name": "Status Page",
-            "received_at": "2026-10-05T19:39:52.692043-07:00",
+            "received_at": "2026-10-05T20:32:21.989201-07:00",
             "record_id": "rec-005"
           }
         },
@@ -992,12 +992,12 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 1
+              "ms": 0
             },
             "jev_decision": "tokenize",
             "name": "Status Page",
             "policy_applied": "tokenize",
-            "received_at": "2026-10-05T19:39:52.692043-07:00",
+            "received_at": "2026-10-05T20:32:21.989201-07:00",
             "record_id": "rec-005",
             "ssn": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
           }
@@ -1024,7 +1024,7 @@
                 "confidential": "Sensitive business or personal data, restricted distribution",
                 "internal": "Company-internal, not for external sharing",
                 "public": "Safe to share broadly, no personal or secret data",
-                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+                "restricted": "Highly sensitive: records under legal or contractual restriction, secrets, legal hold"
               },
               "instructions": "What is the sensitivity class of this record?",
               "type": "choice"

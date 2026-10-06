@@ -6,7 +6,8 @@
       "harness": "pod-labels",
       "pipeline": "pipeline.yaml",
       "input": "fixtures/events.jsonl",
-      "scenario": "Label and investigate"
+      "scenario": "Label and investigate",
+      "replay": true
     }
   },
   "stages": [

@@ -230,7 +230,7 @@ metadata:
 spec:
   containers:
     - name: checkout
-      image: python:3.13-alpine
+      image: python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a
       command: ["python", "-u", "/app/workload.py"]
       ports:
         - containerPort: 8080
@@ -260,7 +260,7 @@ metadata:
 spec:
   containers:
     - name: checkout
-      image: python:3.13-alpine
+      image: python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a
       command: ["python", "-u", "/app/workload.py"]
       ports:
         - containerPort: 8080
@@ -291,7 +291,7 @@ metadata:
 spec:
   containers:
     - name: checkout
-      image: python:3.13-alpine
+      image: python:3.13-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a
       command: ["python", "-u", "/app/workload.py"]
       ports:
         - containerPort: 8080

@@ -45,7 +45,7 @@ config:
                     "public": "Safe to share broadly, no personal or secret data",
                     "internal": "Company-internal, not for external sharing",
                     "confidential": "Sensitive business or personal data, restricted distribution",
-                    "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+                    "restricted": "Highly sensitive: records under legal or contractual restriction, secrets, legal hold"
                   }
                 },
                 "contains_pii": {
@@ -60,11 +60,11 @@ config:
             }
           processors:
             - http:
-                url: "${JEV_API_URL:https://api.typesafe.ai/v1/systemone}"
+                url: "${JEV_API_URL:http://127.0.0.1:8099/v1/systemone}"
                 verb: POST
                 headers:
                   Content-Type: application/json
-                  Authorization: "Bearer ${TYPESAFE_API_KEY}"
+                  Authorization: "Bearer ${TYPESAFE_API_KEY:unset}"
                 timeout: 2s
                 retries: 1
             - catch:

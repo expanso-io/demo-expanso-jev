@@ -31,6 +31,9 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def do_GET(self):
+        self._send({"status": "ok"})
+
     def do_POST(self):
         try:
             n = int(self.headers.get("Content-Length", 0))

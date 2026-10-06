@@ -29,7 +29,7 @@
           "n": 2,
           "state": {
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:47.213499-07:00",
+            "received_at": "2026-10-05T20:33:21.312123-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:01Z"
           }
@@ -38,7 +38,7 @@
           "n": 3,
           "state": {
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:47.213499-07:00",
+            "received_at": "2026-10-05T20:33:21.312123-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:01Z"
           }
@@ -56,10 +56,10 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 1
+              "ms": 0
             },
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:47.213499-07:00",
+            "received_at": "2026-10-05T20:33:21.312123-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:01Z"
           }
@@ -77,12 +77,12 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 1
+              "ms": 0
             },
             "jev_decision": "sampled",
             "jev_score": 1.4,
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:47.213499-07:00",
+            "received_at": "2026-10-05T20:33:21.312123-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:01Z"
           }
@@ -147,7 +147,7 @@
           "n": 2,
           "state": {
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:40:47.21679-07:00",
+            "received_at": "2026-10-05T20:33:21.31448-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:02Z"
           }
@@ -156,7 +156,7 @@
           "n": 3,
           "state": {
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:40:47.21679-07:00",
+            "received_at": "2026-10-05T20:33:21.31448-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:02Z"
           }
@@ -177,7 +177,7 @@
               "ms": 1
             },
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:40:47.21679-07:00",
+            "received_at": "2026-10-05T20:33:21.31448-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:02Z"
           }
@@ -200,7 +200,7 @@
             "jev_decision": "sampled",
             "jev_score": 1.4,
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:40:47.21679-07:00",
+            "received_at": "2026-10-05T20:33:21.31448-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:02Z"
           }
@@ -265,7 +265,7 @@
           "n": 2,
           "state": {
             "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
-            "received_at": "2026-10-05T19:40:47.22115-07:00",
+            "received_at": "2026-10-05T20:33:21.316691-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:03Z"
           }
@@ -274,7 +274,7 @@
           "n": 3,
           "state": {
             "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
-            "received_at": "2026-10-05T19:40:47.22115-07:00",
+            "received_at": "2026-10-05T20:33:21.316691-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:03Z"
           }
@@ -295,7 +295,7 @@
               "ms": 1
             },
             "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
-            "received_at": "2026-10-05T19:40:47.22115-07:00",
+            "received_at": "2026-10-05T20:33:21.316691-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:03Z"
           }
@@ -318,7 +318,7 @@
             "jev_decision": "sampled",
             "jev_score": 1.4,
             "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
-            "received_at": "2026-10-05T19:40:47.22115-07:00",
+            "received_at": "2026-10-05T20:33:21.316691-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:03Z"
           }
@@ -383,7 +383,7 @@
           "n": 2,
           "state": {
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:47.225907-07:00",
+            "received_at": "2026-10-05T20:33:21.319365-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:04Z"
           }
@@ -392,7 +392,7 @@
           "n": 3,
           "state": {
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:47.225907-07:00",
+            "received_at": "2026-10-05T20:33:21.319365-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:04Z"
           }
@@ -410,10 +410,10 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 0
+              "ms": 1
             },
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:47.225907-07:00",
+            "received_at": "2026-10-05T20:33:21.319365-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:04Z"
           }
@@ -431,12 +431,12 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 0
+              "ms": 1
             },
             "jev_decision": "sampled",
             "jev_score": 1.4,
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:47.225907-07:00",
+            "received_at": "2026-10-05T20:33:21.319365-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:04Z"
           }
@@ -501,7 +501,7 @@
           "n": 2,
           "state": {
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
-            "received_at": "2026-10-05T19:40:47.228806-07:00",
+            "received_at": "2026-10-05T20:33:21.32156-07:00",
             "service": "worker-3",
             "ts": "2026-09-18T14:00:05Z"
           }
@@ -510,7 +510,7 @@
           "n": 3,
           "state": {
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
-            "received_at": "2026-10-05T19:40:47.228806-07:00",
+            "received_at": "2026-10-05T20:33:21.32156-07:00",
             "service": "worker-3",
             "ts": "2026-09-18T14:00:05Z"
           }
@@ -528,10 +528,10 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 0
+              "ms": 1
             },
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
-            "received_at": "2026-10-05T19:40:47.228806-07:00",
+            "received_at": "2026-10-05T20:33:21.32156-07:00",
             "service": "worker-3",
             "ts": "2026-09-18T14:00:05Z"
           }
@@ -549,12 +549,12 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 0
+              "ms": 1
             },
             "jev_decision": "keep",
             "jev_score": 3.4,
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
-            "received_at": "2026-10-05T19:40:47.228806-07:00",
+            "received_at": "2026-10-05T20:33:21.32156-07:00",
             "service": "worker-3",
             "ts": "2026-09-18T14:00:05Z"
           }
@@ -572,12 +572,12 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 0
+              "ms": 1
             },
             "jev_decision": "keep",
             "jev_score": 3.4,
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
-            "received_at": "2026-10-05T19:40:47.228806-07:00",
+            "received_at": "2026-10-05T20:33:21.32156-07:00",
             "service": "worker-3",
             "ts": "2026-09-18T14:00:05Z"
           }
@@ -642,7 +642,7 @@
           "n": 2,
           "state": {
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:40:47.231724-07:00",
+            "received_at": "2026-10-05T20:33:21.325279-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:06Z"
           }
@@ -651,7 +651,7 @@
           "n": 3,
           "state": {
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:40:47.231724-07:00",
+            "received_at": "2026-10-05T20:33:21.325279-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:06Z"
           }
@@ -672,7 +672,7 @@
               "ms": 0
             },
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:40:47.231724-07:00",
+            "received_at": "2026-10-05T20:33:21.325279-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:06Z"
           }
@@ -695,7 +695,7 @@
             "jev_decision": "sampled",
             "jev_score": 1.4,
             "msg": "GET /health 200 2ms",
-            "received_at": "2026-10-05T19:40:47.231724-07:00",
+            "received_at": "2026-10-05T20:33:21.325279-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:06Z"
           }
@@ -760,7 +760,7 @@
           "n": 2,
           "state": {
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
-            "received_at": "2026-10-05T19:40:47.241324-07:00",
+            "received_at": "2026-10-05T20:33:21.327236-07:00",
             "service": "db-proxy",
             "ts": "2026-09-18T14:00:07Z"
           }
@@ -769,7 +769,7 @@
           "n": 3,
           "state": {
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
-            "received_at": "2026-10-05T19:40:47.241324-07:00",
+            "received_at": "2026-10-05T20:33:21.327236-07:00",
             "service": "db-proxy",
             "ts": "2026-09-18T14:00:07Z"
           }
@@ -787,10 +787,10 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 1
+              "ms": 0
             },
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
-            "received_at": "2026-10-05T19:40:47.241324-07:00",
+            "received_at": "2026-10-05T20:33:21.327236-07:00",
             "service": "db-proxy",
             "ts": "2026-09-18T14:00:07Z"
           }
@@ -808,12 +808,12 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 1
+              "ms": 0
             },
             "jev_decision": "keep",
             "jev_score": 3.4,
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
-            "received_at": "2026-10-05T19:40:47.241324-07:00",
+            "received_at": "2026-10-05T20:33:21.327236-07:00",
             "service": "db-proxy",
             "ts": "2026-09-18T14:00:07Z"
           }
@@ -831,12 +831,12 @@
                 }
               },
               "model": "jev-mock",
-              "ms": 1
+              "ms": 0
             },
             "jev_decision": "keep",
             "jev_score": 3.4,
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
-            "received_at": "2026-10-05T19:40:47.241324-07:00",
+            "received_at": "2026-10-05T20:33:21.327236-07:00",
             "service": "db-proxy",
             "ts": "2026-09-18T14:00:07Z"
           }
@@ -901,7 +901,7 @@
           "n": 2,
           "state": {
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:47.245054-07:00",
+            "received_at": "2026-10-05T20:33:21.329617-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:08Z"
           }
@@ -910,7 +910,7 @@
           "n": 3,
           "state": {
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:47.245054-07:00",
+            "received_at": "2026-10-05T20:33:21.329617-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:08Z"
           }
@@ -931,7 +931,7 @@
               "ms": 1
             },
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:47.245054-07:00",
+            "received_at": "2026-10-05T20:33:21.329617-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:08Z"
           }
@@ -954,7 +954,7 @@
             "jev_decision": "sampled",
             "jev_score": 1.4,
             "msg": "GET /health 200 3ms",
-            "received_at": "2026-10-05T19:40:47.245054-07:00",
+            "received_at": "2026-10-05T20:33:21.329617-07:00",
             "service": "api-gw",
             "ts": "2026-09-18T14:00:08Z"
           }

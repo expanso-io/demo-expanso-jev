@@ -1,0 +1,601 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "minItems": 5,
+  "maxItems": 5,
+  "allOf": [
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "baseline",
+          "jev",
+          "jev_decision",
+          "rpm",
+          "sensor_id",
+          "temp_c",
+          "ts",
+          "vibration_mm_s"
+        ],
+        "properties": {
+          "baseline": {
+            "type": "object",
+            "required": [
+              "note",
+              "temp_c_max",
+              "vibration_mm_s_max"
+            ],
+            "properties": {
+              "note": {
+                "const": "Values above these sustained for 5+ minutes are abnormal for this asset class"
+              },
+              "temp_c_max": {
+                "const": 85
+              },
+              "vibration_mm_s_max": {
+                "const": 4.5
+              }
+            }
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "anomaly",
+                  "dispatch"
+                ],
+                "properties": {
+                  "anomaly": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 1.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "dispatch": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "rollup"
+          },
+          "rpm": {
+            "const": 1750
+          },
+          "sensor_id": {
+            "const": "pump-07"
+          },
+          "temp_c": {
+            "const": 73.1
+          },
+          "ts": {
+            "const": "2026-09-18T14:01:00Z"
+          },
+          "vibration_mm_s": {
+            "const": 2.3
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "baseline",
+          "jev",
+          "jev_decision",
+          "note",
+          "rpm",
+          "sensor_id",
+          "temp_c",
+          "ts",
+          "vibration_mm_s"
+        ],
+        "properties": {
+          "baseline": {
+            "type": "object",
+            "required": [
+              "note",
+              "temp_c_max",
+              "vibration_mm_s_max"
+            ],
+            "properties": {
+              "note": {
+                "const": "Values above these sustained for 5+ minutes are abnormal for this asset class"
+              },
+              "temp_c_max": {
+                "const": 85
+              },
+              "vibration_mm_s_max": {
+                "const": 4.5
+              }
+            }
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "anomaly",
+                  "dispatch"
+                ],
+                "properties": {
+                  "anomaly": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 3.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "dispatch": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "flag"
+          },
+          "note": {
+            "const": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday"
+          },
+          "rpm": {
+            "const": 1749
+          },
+          "sensor_id": {
+            "const": "pump-07"
+          },
+          "temp_c": {
+            "const": 96.8
+          },
+          "ts": {
+            "const": "2026-09-18T14:03:00Z"
+          },
+          "vibration_mm_s": {
+            "const": 9.4
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "baseline",
+          "jev",
+          "jev_decision",
+          "rpm",
+          "sensor_id",
+          "temp_c",
+          "ts",
+          "vibration_mm_s"
+        ],
+        "properties": {
+          "baseline": {
+            "type": "object",
+            "required": [
+              "note",
+              "temp_c_max",
+              "vibration_mm_s_max"
+            ],
+            "properties": {
+              "note": {
+                "const": "Values above these sustained for 5+ minutes are abnormal for this asset class"
+              },
+              "temp_c_max": {
+                "const": 85
+              },
+              "vibration_mm_s_max": {
+                "const": 4.5
+              }
+            }
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "anomaly",
+                  "dispatch"
+                ],
+                "properties": {
+                  "anomaly": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 1.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "dispatch": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "rollup"
+          },
+          "rpm": {
+            "const": 1750
+          },
+          "sensor_id": {
+            "const": "pump-07"
+          },
+          "temp_c": {
+            "const": 72.4
+          },
+          "ts": {
+            "const": "2026-09-18T14:00:00Z"
+          },
+          "vibration_mm_s": {
+            "const": 2.1
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "baseline",
+          "jev",
+          "jev_decision",
+          "note",
+          "rpm",
+          "sensor_id",
+          "temp_c",
+          "ts",
+          "vibration_mm_s"
+        ],
+        "properties": {
+          "baseline": {
+            "type": "object",
+            "required": [
+              "note",
+              "temp_c_max",
+              "vibration_mm_s_max"
+            ],
+            "properties": {
+              "note": {
+                "const": "Values above these sustained for 5+ minutes are abnormal for this asset class"
+              },
+              "temp_c_max": {
+                "const": 85
+              },
+              "vibration_mm_s_max": {
+                "const": 4.5
+              }
+            }
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "anomaly",
+                  "dispatch"
+                ],
+                "properties": {
+                  "anomaly": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 3.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "dispatch": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.92
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "dispatch"
+          },
+          "note": {
+            "const": "audible grinding from bearing housing"
+          },
+          "rpm": {
+            "const": 1748
+          },
+          "sensor_id": {
+            "const": "pump-07"
+          },
+          "temp_c": {
+            "const": 94.6
+          },
+          "ts": {
+            "const": "2026-09-18T14:02:00Z"
+          },
+          "vibration_mm_s": {
+            "const": 8.9
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "baseline",
+          "jev",
+          "jev_decision",
+          "rpm",
+          "sensor_id",
+          "temp_c",
+          "ts",
+          "vibration_mm_s"
+        ],
+        "properties": {
+          "baseline": {
+            "type": "object",
+            "required": [
+              "note",
+              "temp_c_max",
+              "vibration_mm_s_max"
+            ],
+            "properties": {
+              "note": {
+                "const": "Values above these sustained for 5+ minutes are abnormal for this asset class"
+              },
+              "temp_c_max": {
+                "const": 85
+              },
+              "vibration_mm_s_max": {
+                "const": 4.5
+              }
+            }
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "anomaly",
+                  "dispatch"
+                ],
+                "properties": {
+                  "anomaly": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 1.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "dispatch": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "rollup"
+          },
+          "rpm": {
+            "const": 1750
+          },
+          "sensor_id": {
+            "const": "pump-12"
+          },
+          "temp_c": {
+            "const": 68.0
+          },
+          "ts": {
+            "const": "2026-09-18T14:02:30Z"
+          },
+          "vibration_mm_s": {
+            "const": 1.8
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    }
+  ]
+}

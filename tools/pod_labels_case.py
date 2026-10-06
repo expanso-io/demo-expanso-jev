@@ -422,6 +422,25 @@ def build_trace(case, done, responder, instrumented: Pass):
     return {"volatile": [], "stage_count": 6, "records": records}
 
 
+def write_replay_files(case, trace, lib):
+    """What the shared check needs to run the pipeline without a cluster."""
+    events, candidates, judge, apply, outputs = [], {}, {}, {}, []
+    for rec in trace["records"]:
+        st = {s["n"]: s["state"] for s in rec["stages"]}
+        events.append(json.dumps(st[0], sort_keys=True))
+        token = st[1][0]["id"]
+        candidates[str(st[0]["request_id"])] = st[1]
+        judge[token] = st[4]
+        apply[token] = st[5]
+        outputs.append(st[5])
+    (case.dir / "fixtures").mkdir(exist_ok=True)
+    case.input.write_text("\n".join(events) + "\n")
+    (case.dir / "fixtures" / "adapter-replay.json").write_text(
+        json.dumps({"candidates": candidates, "judge": judge, "apply": apply}, indent=2) + "\n")
+    (case.fx / f"{case.name}.replay.schema.json").write_text(
+        json.dumps(lib.replay_schema(outputs, [], False), indent=2) + "\n")
+
+
 def run(case, record: bool, lib, result: dict) -> None:
     tmp = Path(tempfile.mkdtemp(prefix="jev-pods-"))
     created = None
@@ -488,8 +507,10 @@ def run(case, record: bool, lib, result: dict) -> None:
             for q in ("events", "labels"):
                 if same[q] != norm[q]:
                     raise lib.RunError(f"the instrumented copy changed the '{q}' output")
-            case.trace_path.write_text(json.dumps(build_trace(case, done2, responder, inst), indent=2) + "\n")
+            trace = build_trace(case, done2, responder, inst)
+            case.trace_path.write_text(json.dumps(trace, indent=2) + "\n")
             responder.save()
+            write_replay_files(case, trace, lib)
         else:
             problems += lib.compare(case, norm)
     except (lib.RunError, subprocess.SubprocessError, RuntimeError) as exc:

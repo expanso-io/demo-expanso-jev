@@ -15,7 +15,7 @@ config:
             verb: POST
             headers:
               Content-Type: application/json
-              Authorization: 'Bearer ${POD_LABEL_TOKEN}'
+              Authorization: 'Bearer ${POD_LABEL_TOKEN:unset}'
             timeout: 30s
             retries: 0
             stream:
@@ -31,7 +31,7 @@ config:
                     verb: POST
                     headers:
                       Content-Type: application/json
-                      Authorization: 'Bearer ${POD_LABEL_TOKEN}'
+                      Authorization: 'Bearer ${POD_LABEL_TOKEN:unset}'
                     timeout: 10s
                     retries: 0
             - mapping: 'root = deleted()'
@@ -46,7 +46,7 @@ config:
                     verb: POST
                     headers:
                       Content-Type: application/json
-                      Authorization: 'Bearer ${POD_LABEL_TOKEN}'
+                      Authorization: 'Bearer ${POD_LABEL_TOKEN:unset}'
                     timeout: 10s
                     retries: 0
             # This branch ends here, before the serial Jev decision path.
@@ -62,7 +62,7 @@ config:
               verb: POST
               headers:
                 Content-Type: application/json
-                Authorization: 'Bearer ${POD_LABEL_TOKEN}'
+                Authorization: 'Bearer ${POD_LABEL_TOKEN:unset}'
               timeout: 30s
               retries: 0
           - label: split_candidates
@@ -77,7 +77,7 @@ config:
               verb: POST
               headers:
                 Content-Type: application/json
-                Authorization: 'Bearer ${POD_LABEL_TOKEN}'
+                Authorization: 'Bearer ${POD_LABEL_TOKEN:unset}'
               timeout: 35s
               retries: 0
           - label: apply
@@ -86,7 +86,7 @@ config:
               verb: POST
               headers:
                 Content-Type: application/json
-                Authorization: 'Bearer ${POD_LABEL_TOKEN}'
+                Authorization: 'Bearer ${POD_LABEL_TOKEN:unset}'
               timeout: 110s
               retries: 0
       - label: hold_on_error

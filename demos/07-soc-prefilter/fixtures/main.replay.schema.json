@@ -1,0 +1,647 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "minItems": 5,
+  "maxItems": 5,
+  "allOf": [
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "failures_10m",
+          "geo",
+          "ip",
+          "jev",
+          "jev_decision",
+          "result",
+          "ts",
+          "user"
+        ],
+        "properties": {
+          "failures_10m": {
+            "const": 47
+          },
+          "geo": {
+            "const": "Lagos, NG"
+          },
+          "ip": {
+            "const": "203.0.113.99"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "escalate",
+                  "threat"
+                ],
+                "properties": {
+                  "escalate": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.92
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "threat": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "brute_force"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "benign",
+                          "brute_force",
+                          "credential_stuffing",
+                          "impossible_travel",
+                          "other",
+                          "token_abuse"
+                        ],
+                        "properties": {
+                          "benign": {
+                            "const": 0.016
+                          },
+                          "brute_force": {
+                            "const": 0.92
+                          },
+                          "credential_stuffing": {
+                            "const": 0.016
+                          },
+                          "impossible_travel": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "token_abuse": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "siem"
+          },
+          "result": {
+            "const": "failed"
+          },
+          "ts": {
+            "const": "2026-09-18T14:01:12Z"
+          },
+          "user": {
+            "const": "bob@corp.com"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "distinct_users_10m",
+          "ip",
+          "jev",
+          "jev_decision",
+          "note",
+          "result",
+          "success_rate",
+          "ts"
+        ],
+        "properties": {
+          "distinct_users_10m": {
+            "const": 18
+          },
+          "ip": {
+            "const": "192.0.2.55"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "escalate",
+                  "threat"
+                ],
+                "properties": {
+                  "escalate": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "threat": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "credential_stuffing"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "benign",
+                          "brute_force",
+                          "credential_stuffing",
+                          "impossible_travel",
+                          "other",
+                          "token_abuse"
+                        ],
+                        "properties": {
+                          "benign": {
+                            "const": 0.016
+                          },
+                          "brute_force": {
+                            "const": 0.016
+                          },
+                          "credential_stuffing": {
+                            "const": 0.92
+                          },
+                          "impossible_travel": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "token_abuse": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "warm"
+          },
+          "note": {
+            "const": "shared NAT gateway for branch office"
+          },
+          "result": {
+            "const": "mixed"
+          },
+          "success_rate": {
+            "const": 0.22
+          },
+          "ts": {
+            "const": "2026-09-18T14:03:11Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "geo",
+          "ip",
+          "jev",
+          "jev_decision",
+          "mfa",
+          "result",
+          "ts",
+          "user"
+        ],
+        "properties": {
+          "geo": {
+            "const": "Seattle, US"
+          },
+          "ip": {
+            "const": "10.4.2.22"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "escalate",
+                  "threat"
+                ],
+                "properties": {
+                  "escalate": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "threat": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "benign"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "benign",
+                          "brute_force",
+                          "credential_stuffing",
+                          "impossible_travel",
+                          "other",
+                          "token_abuse"
+                        ],
+                        "properties": {
+                          "benign": {
+                            "const": 0.92
+                          },
+                          "brute_force": {
+                            "const": 0.016
+                          },
+                          "credential_stuffing": {
+                            "const": 0.016
+                          },
+                          "impossible_travel": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "token_abuse": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "cold"
+          },
+          "mfa": {
+            "const": true
+          },
+          "result": {
+            "const": "success"
+          },
+          "ts": {
+            "const": "2026-09-18T14:01:40Z"
+          },
+          "user": {
+            "const": "carol@corp.com"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "geo",
+          "ip",
+          "jev",
+          "jev_decision",
+          "mfa",
+          "result",
+          "ts",
+          "user"
+        ],
+        "properties": {
+          "geo": {
+            "const": "Seattle, US"
+          },
+          "ip": {
+            "const": "10.4.2.18"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "escalate",
+                  "threat"
+                ],
+                "properties": {
+                  "escalate": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "threat": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "benign"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "benign",
+                          "brute_force",
+                          "credential_stuffing",
+                          "impossible_travel",
+                          "other",
+                          "token_abuse"
+                        ],
+                        "properties": {
+                          "benign": {
+                            "const": 0.92
+                          },
+                          "brute_force": {
+                            "const": 0.016
+                          },
+                          "credential_stuffing": {
+                            "const": 0.016
+                          },
+                          "impossible_travel": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "token_abuse": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "cold"
+          },
+          "mfa": {
+            "const": true
+          },
+          "result": {
+            "const": "success"
+          },
+          "ts": {
+            "const": "2026-09-18T14:00:00Z"
+          },
+          "user": {
+            "const": "alice@corp.com"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "geo",
+          "ip",
+          "jev",
+          "jev_decision",
+          "prev_login_ago_min",
+          "prev_login_geo",
+          "result",
+          "ts",
+          "user"
+        ],
+        "properties": {
+          "geo": {
+            "const": "Seattle, US"
+          },
+          "ip": {
+            "const": "198.51.100.7"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "escalate",
+                  "threat"
+                ],
+                "properties": {
+                  "escalate": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "threat": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "impossible_travel"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "benign",
+                          "brute_force",
+                          "credential_stuffing",
+                          "impossible_travel",
+                          "other",
+                          "token_abuse"
+                        ],
+                        "properties": {
+                          "benign": {
+                            "const": 0.016
+                          },
+                          "brute_force": {
+                            "const": 0.016
+                          },
+                          "credential_stuffing": {
+                            "const": 0.016
+                          },
+                          "impossible_travel": {
+                            "const": 0.92
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "token_abuse": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "warm"
+          },
+          "prev_login_ago_min": {
+            "const": 22
+          },
+          "prev_login_geo": {
+            "const": "Tokyo, JP"
+          },
+          "result": {
+            "const": "success"
+          },
+          "ts": {
+            "const": "2026-09-18T14:02:03Z"
+          },
+          "user": {
+            "const": "dave@corp.com"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "minItems": 2,
+  "maxItems": 2,
+  "allOf": [
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "jev",
+          "jev_decision",
+          "jev_score",
+          "msg",
+          "service",
+          "ts"
+        ],
+        "properties": {
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "interesting"
+                ],
+                "properties": {
+                  "interesting": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 3.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "keep"
+          },
+          "jev_score": {
+            "const": 3.4
+          },
+          "msg": {
+            "const": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections"
+          },
+          "service": {
+            "const": "db-proxy"
+          },
+          "ts": {
+            "const": "2026-09-18T14:00:07Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "jev",
+          "jev_decision",
+          "jev_score",
+          "msg",
+          "service",
+          "ts"
+        ],
+        "properties": {
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "interesting"
+                ],
+                "properties": {
+                  "interesting": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 3.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "keep"
+          },
+          "jev_score": {
+            "const": 3.4
+          },
+          "msg": {
+            "const": "panic: nil pointer dereference in invoice renderer, goroutine 4412"
+          },
+          "service": {
+            "const": "worker-3"
+          },
+          "ts": {
+            "const": "2026-09-18T14:00:05Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    }
+  ]
+}

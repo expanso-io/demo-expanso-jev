@@ -2,46 +2,7 @@
   "note": "Recorded answers, replayed by tools/fixture-runner.py. Produced by the offline responder in shared/jev-mock-server.py; no model was called.",
   "answers": [
     {
-      "key": "bf659d675cdb70ab7bf6b67d28cf9456adaad8248d4f9a682942123477f846f8",
-      "state": {
-        "email": "jane.doe@example.com",
-        "name": "Jane Doe",
-        "plan": "team-annual",
-        "record_id": "rec-001",
-        "ssn": "123-45-6789"
-      },
-      "questions": [
-        "contains_credentials",
-        "contains_pii",
-        "sensitivity"
-      ],
-      "response": {
-        "model": "jev-mock",
-        "answers": {
-          "contains_credentials": {
-            "type": "noul",
-            "noul": 0.12
-          },
-          "contains_pii": {
-            "type": "noul",
-            "noul": 0.92
-          },
-          "sensitivity": {
-            "type": "choice",
-            "choice": "restricted",
-            "probabilities": {
-              "confidential": 0.027,
-              "internal": 0.027,
-              "public": 0.027,
-              "restricted": 0.92
-            },
-            "confidence": 0.92
-          }
-        }
-      }
-    },
-    {
-      "key": "dc2049c0c4c21546d235957420e225cc387789a6c9a0018b8c660ea9c6acbbd6",
+      "key": "067272f4f0740e5859c09caf631e6dbc1ce025409a0b33a0487d1a408b57370e",
       "state": {
         "event": "all systems operational",
         "name": "Status Page",
@@ -78,7 +39,7 @@
       }
     },
     {
-      "key": "eacef4d1cb3f73f9f929c6dc8bfbbf95779f0bbc2ce44add3ae0e2ec96cc3f42",
+      "key": "5692cc39a4027c4f44d4dcf49ee0c13d6b4081b45b09e20b1ca8c8a8d8d14e4b",
       "state": {
         "event": "nightly backup completed in 42s",
         "name": "System Bot",
@@ -115,7 +76,7 @@
       }
     },
     {
-      "key": "f838be6dba421cad21a986f68bfb1509c22f876a4148810295e90ea2cb8475b4",
+      "key": "844a3d159ca960f3c7d0e604d00d43cfc53983bbe0a1207433e21c7a2b54578c",
       "state": {
         "api_key": "sk-live-9f2c41aa77e04bd1",
         "email": "ops@example.com",
@@ -154,7 +115,7 @@
       }
     },
     {
-      "key": "fbff51f75a568d76e40945ba6004496e4a4ecd63da69319ca51a24bfe231a75b",
+      "key": "8e38f704d105fe92763f172ab7058b7c7b1df1ab9fff8ffe1de4911a0ce28691",
       "state": {
         "diagnosis": "Q3 performance review: exceeds expectations",
         "email": "john.smith@example.com",
@@ -186,6 +147,45 @@
               "internal": 0.027,
               "public": 0.027,
               "restricted": 0.027
+            },
+            "confidence": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "c9f5fc3b56a3c4aee2db2b1788d0f3c347d0fc44cec3942ccb54c7b99626bf52",
+      "state": {
+        "email": "jane.doe@example.com",
+        "name": "Jane Doe",
+        "plan": "team-annual",
+        "record_id": "rec-001",
+        "ssn": "123-45-6789"
+      },
+      "questions": [
+        "contains_credentials",
+        "contains_pii",
+        "sensitivity"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "contains_credentials": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "contains_pii": {
+            "type": "noul",
+            "noul": 0.92
+          },
+          "sensitivity": {
+            "type": "choice",
+            "choice": "restricted",
+            "probabilities": {
+              "confidential": 0.027,
+              "internal": 0.027,
+              "public": 0.027,
+              "restricted": 0.92
             },
             "confidence": 0.92
           }

@@ -1,0 +1,733 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "minItems": 5,
+  "maxItems": 5,
+  "allOf": [
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "customer",
+          "feedback_id",
+          "jev",
+          "jev_decision",
+          "rating",
+          "text"
+        ],
+        "properties": {
+          "customer": {
+            "const": "umbrella"
+          },
+          "feedback_id": {
+            "const": "f-004"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "churn_risk",
+                  "sentiment",
+                  "topic"
+                ],
+                "properties": {
+                  "churn_risk": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "sentiment": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 3.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "topic": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "pricing"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "bug",
+                          "feature_request",
+                          "other",
+                          "praise",
+                          "pricing",
+                          "support_experience"
+                        ],
+                        "properties": {
+                          "bug": {
+                            "const": 0.016
+                          },
+                          "feature_request": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "praise": {
+                            "const": 0.016
+                          },
+                          "pricing": {
+                            "const": 0.92
+                          },
+                          "support_experience": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "analytics"
+          },
+          "rating": {
+            "const": 4
+          },
+          "text": {
+            "const": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "customer",
+          "feedback_id",
+          "jev",
+          "jev_decision",
+          "rating",
+          "text"
+        ],
+        "properties": {
+          "customer": {
+            "const": "globex"
+          },
+          "feedback_id": {
+            "const": "f-002"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "churn_risk",
+                  "sentiment",
+                  "topic"
+                ],
+                "properties": {
+                  "churn_risk": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "sentiment": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 3.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "topic": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "support_experience"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "bug",
+                          "feature_request",
+                          "other",
+                          "praise",
+                          "pricing",
+                          "support_experience"
+                        ],
+                        "properties": {
+                          "bug": {
+                            "const": 0.016
+                          },
+                          "feature_request": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "praise": {
+                            "const": 0.016
+                          },
+                          "pricing": {
+                            "const": 0.016
+                          },
+                          "support_experience": {
+                            "const": 0.92
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "analytics"
+          },
+          "rating": {
+            "const": 5
+          },
+          "text": {
+            "const": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "customer",
+          "feedback_id",
+          "jev",
+          "jev_decision",
+          "rating",
+          "text"
+        ],
+        "properties": {
+          "customer": {
+            "const": "initech"
+          },
+          "feedback_id": {
+            "const": "f-003"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "churn_risk",
+                  "sentiment",
+                  "topic"
+                ],
+                "properties": {
+                  "churn_risk": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.92
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "sentiment": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 0.6
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "topic": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "feature_request"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "bug",
+                          "feature_request",
+                          "other",
+                          "praise",
+                          "pricing",
+                          "support_experience"
+                        ],
+                        "properties": {
+                          "bug": {
+                            "const": 0.016
+                          },
+                          "feature_request": {
+                            "const": 0.92
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "praise": {
+                            "const": 0.016
+                          },
+                          "pricing": {
+                            "const": 0.016
+                          },
+                          "support_experience": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "alert"
+          },
+          "rating": {
+            "const": 1
+          },
+          "text": {
+            "const": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "customer",
+          "feedback_id",
+          "jev",
+          "jev_decision",
+          "rating",
+          "text"
+        ],
+        "properties": {
+          "customer": {
+            "const": "acme-corp"
+          },
+          "feedback_id": {
+            "const": "f-001"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "churn_risk",
+                  "sentiment",
+                  "topic"
+                ],
+                "properties": {
+                  "churn_risk": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "sentiment": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 0.6
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "topic": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "bug"
+                      },
+                      "confidence": {
+                        "const": 0.92
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "bug",
+                          "feature_request",
+                          "other",
+                          "praise",
+                          "pricing",
+                          "support_experience"
+                        ],
+                        "properties": {
+                          "bug": {
+                            "const": 0.92
+                          },
+                          "feature_request": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.016
+                          },
+                          "praise": {
+                            "const": 0.016
+                          },
+                          "pricing": {
+                            "const": 0.016
+                          },
+                          "support_experience": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "eng"
+          },
+          "rating": {
+            "const": 2
+          },
+          "text": {
+            "const": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "customer",
+          "feedback_id",
+          "jev",
+          "jev_decision",
+          "rating",
+          "text"
+        ],
+        "properties": {
+          "customer": {
+            "const": "hooli"
+          },
+          "feedback_id": {
+            "const": "f-005"
+          },
+          "jev": {
+            "type": "object",
+            "required": [
+              "answers",
+              "model"
+            ],
+            "properties": {
+              "answers": {
+                "type": "object",
+                "required": [
+                  "churn_risk",
+                  "sentiment",
+                  "topic"
+                ],
+                "properties": {
+                  "churn_risk": {
+                    "type": "object",
+                    "required": [
+                      "noul",
+                      "type"
+                    ],
+                    "properties": {
+                      "noul": {
+                        "const": 0.12
+                      },
+                      "type": {
+                        "const": "noul"
+                      }
+                    }
+                  },
+                  "sentiment": {
+                    "type": "object",
+                    "required": [
+                      "confidence",
+                      "probabilities",
+                      "score",
+                      "type"
+                    ],
+                    "properties": {
+                      "confidence": {
+                        "const": 0.7
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [],
+                        "properties": {}
+                      },
+                      "score": {
+                        "const": 1.4
+                      },
+                      "type": {
+                        "const": "score"
+                      }
+                    }
+                  },
+                  "topic": {
+                    "type": "object",
+                    "required": [
+                      "choice",
+                      "confidence",
+                      "probabilities",
+                      "type"
+                    ],
+                    "properties": {
+                      "choice": {
+                        "const": "other"
+                      },
+                      "confidence": {
+                        "const": 0.35
+                      },
+                      "probabilities": {
+                        "type": "object",
+                        "required": [
+                          "bug",
+                          "feature_request",
+                          "other",
+                          "praise",
+                          "pricing",
+                          "support_experience"
+                        ],
+                        "properties": {
+                          "bug": {
+                            "const": 0.016
+                          },
+                          "feature_request": {
+                            "const": 0.016
+                          },
+                          "other": {
+                            "const": 0.92
+                          },
+                          "praise": {
+                            "const": 0.016
+                          },
+                          "pricing": {
+                            "const": 0.016
+                          },
+                          "support_experience": {
+                            "const": 0.016
+                          }
+                        }
+                      },
+                      "type": {
+                        "const": "choice"
+                      }
+                    }
+                  }
+                }
+              },
+              "model": {
+                "const": "jev-mock"
+              }
+            }
+          },
+          "jev_decision": {
+            "const": "analytics"
+          },
+          "rating": {
+            "const": 3
+          },
+          "text": {
+            "const": "It's fine. Does what we need."
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    }
+  ]
+}
