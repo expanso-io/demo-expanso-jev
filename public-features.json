@@ -448,6 +448,18 @@
     {
       "id": "pod-labels-pause-events",
       "description": "Events fire on their own and can be paused or sent on demand from the legend"
+    },
+    {
+      "id": "verification-report-cloud-logs-2026-09-19",
+      "description": "The dated Cloud log delivery verdict and its evidence, restored under docs/verification/2026-09-19/cloud-logs"
+    },
+    {
+      "id": "verification-report-real-jev-2026-09-19",
+      "description": "The dated real-Jev verification (selective inference, bypass contract, outage and release), restored under docs/verification/2026-09-19/real-jev"
+    },
+    {
+      "id": "operator-runbook",
+      "description": "A public runbook that says what passing looks like: docs/RUNBOOK.md"
     }
   ],
   "routes": [

@@ -933,15 +933,16 @@ def write_report(results: list[dict], path: Path):
         f"- Date: {today}",
         f"- Agent: {tool_version(['expanso-edge', 'version'])}",
         f"- Command: `uv run -s tools/fixture-runner.py run`",
-        f"- Result: **{sum(r['ok'] for r in results)} of {len(results)} pipelines passed**",
+        f"- Result: **{sum(r['ok'] for r in results)} of {len(results)} cases passed** across {len({r['pipeline'] for r in results})} pipelines",
         "",
-        "| Pipeline | Inputs | Jev calls | Queues written | Seconds | Result |",
-        "|---|---|---|---|---|---|",
+        "| Case | Pipeline | Inputs | Jev calls | Queues written | File-in replay | Seconds | Result |",
+        "|---|---|---|---|---|---|---|---|",
     ]
     for r in results:
         queues = ", ".join(f"{q} {n}" for q, n in r["queues"].items()) or "none"
         lines.append(
-            f"| `{r['pipeline']}` | {r['inputs']} | {r.get('jev_calls', 0)} | {queues} | "
+            f"| {r['id']} | `{r['pipeline']}` | {r['inputs']} | {r.get('jev_calls', 0)} | {queues} | "
+            f"{str(r['replay_records']) + ' records' if 'replay_records' in r else 'not run'} | "
             f"{r['seconds']} | {'pass' if r['ok'] else 'FAIL'} |"
         )
     lines += ["", "## Files exercised", "", "| File | sha256 |", "|---|---|"]
