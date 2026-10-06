@@ -1,5 +1,6 @@
 """Submit only to a known connected adapter host in the pinned Cloud network."""
 
+import argparse
 import json
 import os
 from pathlib import Path
@@ -14,7 +15,7 @@ def selected_node(nodes):
     return nodes[0]["id"]
 
 
-def main():
+def verify_target():
     for name in ("EXPANSO_CLI_ENDPOINT", "EXPANSO_CLI_AUTH_API_KEY", "POD_LABEL_TOKEN"):
         if not os.environ.get(name):
             raise ValueError(name + " must be set; no global-profile fallback")
@@ -57,6 +58,17 @@ def main():
     with urllib.request.urlopen(req, timeout=30) as response:
         if not isinstance(json.load(response).get("pods"), int):
             raise ValueError("adapter could not read Kubernetes pods")
+    return node_id
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--verify-only", action="store_true")
+    args = parser.parse_args()
+    node_id = verify_target()
+    if args.verify_only:
+        print("Verified intended Cloud node " + node_id)
+        return
     pipeline = str(Path(__file__).with_name("pipeline.yaml"))
     subprocess.run(["expanso-edge", "validate", pipeline], check=True, timeout=30)
     subprocess.run(["expanso-cli", "job", "deploy", pipeline], check=True, timeout=30)

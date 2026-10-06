@@ -116,13 +116,20 @@ validate:
       expanso-edge validate "$f"
     done
 
-# Start the pod demo. Use `just up triage` for the log-triage demo.
-up target="pods":
-    @case "{{ target }}" in pods) uv run "{{ root }}/demos/11-pod-labels/scenario/local.py" up ;; triage) just --justfile "{{ root }}/justfile" _triage-up ;; *) echo "Choose pods or triage" >&2; exit 2 ;; esac
+# Start the pod demo and deploy or update its Expanso Cloud pipeline.
+up:
+    bash scripts/up.sh
 
-# Stop the selected demo.
-down target="pods":
-    @case "{{ target }}" in pods) uv run "{{ root }}/demos/11-pod-labels/scenario/local.py" down ;; triage) just --justfile "{{ root }}/justfile" _triage-down ;; *) echo "Choose pods or triage" >&2; exit 2 ;; esac
+# Start the original log-triage demo.
+up-triage:
+    @just --justfile "{{ root }}/justfile" _triage-up
+
+# Stop the pod demo.
+down:
+    uv run "{{ root }}/demos/11-pod-labels/scenario/local.py" down
+
+down-triage:
+    @just --justfile "{{ root }}/justfile" _triage-down
 
 restart: down up
 

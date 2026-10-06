@@ -90,8 +90,8 @@ Open **http://127.0.0.1:8901** after READY. See the
 [pod demo prerequisites and runbook](demos/11-pod-labels/README.md).
 Inside `demos/11-pod-labels`, `just up` runs that demo directly.
 At the root, `just up`, `just down`, `just open`, `just status`, and
-`just test` target the pod demo. Add `triage` to lifecycle commands for
-the original log-triage demo.
+`just test` target the pod demo. The original log-triage demo uses the
+separate `just up-triage` and `just down-triage` recipes.
 
 ## Log-triage quickstart
 
@@ -100,7 +100,7 @@ just init        # creates .env from .env.example
 $EDITOR .env     # the three EXPANSO_* values from your Cloud network
 just jev-key     # prompts for your TypeSafe key (hidden input)
 just doctor      # checks tools, credentials and reachability
-just up triage   # takes about a minute; opens on "no pipeline"
+just up-triage   # takes about a minute; opens on "no pipeline"
 just open triage # http://127.0.0.1:8890
 ```
 
@@ -109,7 +109,7 @@ Then walk through it:
 ```bash
 just act2        # deploy the Expanso-only pipeline
 just act3        # deploy the version that adds Jev
-just down triage # stop everything, including the job in Cloud
+just down-triage # stop everything, including the job in Cloud
 ```
 
 You can also deploy the two YAML files from the Expanso Cloud console, or flip

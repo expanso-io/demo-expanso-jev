@@ -14,7 +14,6 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  EXPANSO_VERSION: v2.1.21
   EDGE_INSTALLER_SHA256: >-
     6dac113fdbaab206aa1c152f6c9a7b6ec4affedb4dce443a06e17516086061a9
   CLI_INSTALLER_SHA256: >-
@@ -37,7 +36,7 @@ jobs:
           version: "0.12.17"
           enable-cache: true
 
-      - name: Install pinned Expanso tools
+      - name: Install latest Expanso tools
         env:
           EXPANSO_DISABLEANALYTICS: "true"
         run: |
@@ -46,8 +45,8 @@ jobs:
           curl -fsSL https://get.expanso.io/cli/install.sh -o "$RUNNER_TEMP/install-cli.sh"
           echo "$EDGE_INSTALLER_SHA256  $RUNNER_TEMP/install-edge.sh" | sha256sum -c -
           echo "$CLI_INSTALLER_SHA256  $RUNNER_TEMP/install-cli.sh" | sha256sum -c -
-          bash "$RUNNER_TEMP/install-edge.sh" "$EXPANSO_VERSION" --dir "$RUNNER_TEMP/expanso-bin"
-          bash "$RUNNER_TEMP/install-cli.sh" "$EXPANSO_VERSION" --dir "$RUNNER_TEMP/expanso-bin"
+          bash "$RUNNER_TEMP/install-edge.sh" --dir "$RUNNER_TEMP/expanso-bin"
+          bash "$RUNNER_TEMP/install-cli.sh" --dir "$RUNNER_TEMP/expanso-bin"
           echo "$RUNNER_TEMP/expanso-bin" >> "$GITHUB_PATH"
 
       - name: Lint the workflows
@@ -94,7 +93,7 @@ jobs:
           version: "0.12.17"
           enable-cache: true
 
-      - name: Install pinned Expanso tools
+      - name: Install latest Expanso tools
         env:
           EXPANSO_DISABLEANALYTICS: "true"
         run: |
@@ -103,8 +102,8 @@ jobs:
           curl -fsSL https://get.expanso.io/cli/install.sh -o "$RUNNER_TEMP/install-cli.sh"
           echo "$EDGE_INSTALLER_SHA256  $RUNNER_TEMP/install-edge.sh" | sha256sum -c -
           echo "$CLI_INSTALLER_SHA256  $RUNNER_TEMP/install-cli.sh" | sha256sum -c -
-          bash "$RUNNER_TEMP/install-edge.sh" "$EXPANSO_VERSION" --dir "$RUNNER_TEMP/expanso-bin"
-          bash "$RUNNER_TEMP/install-cli.sh" "$EXPANSO_VERSION" --dir "$RUNNER_TEMP/expanso-bin"
+          bash "$RUNNER_TEMP/install-edge.sh" --dir "$RUNNER_TEMP/expanso-bin"
+          bash "$RUNNER_TEMP/install-cli.sh" --dir "$RUNNER_TEMP/expanso-bin"
           echo "$RUNNER_TEMP/expanso-bin" >> "$GITHUB_PATH"
 
       - name: Install k3d

@@ -19,6 +19,7 @@ HERE = SIM.parent  # the example itself: adapter.py, pipeline.yaml, edge.yaml
 sys.path.insert(0, str(HERE / "rbac"))
 from mint_kubeconfig import mint as mint_agent_kubeconfig  # noqa: E402
 ROOT = HERE.parents[1]
+DEPLOY_SCRIPT = ROOT / "scripts/deploy-pod-labels.sh"
 STATE_DIR = ROOT / ".expanso/pod-labels"
 CLUSTER = "jev-label-demo"
 URL = "http://127.0.0.1:8901"
@@ -350,7 +351,7 @@ class Session:
             self.connected,
         )
         self.deployment_attempted = True
-        self.run("uv", "run", str(HERE / "deploy.py"), timeout=100)
+        self.run("bash", str(DEPLOY_SCRIPT), timeout=100)
         deployed = self.job()
         self.cloud_job = (deployed["id"], deployed["status"]["version"])
         self.wait(
