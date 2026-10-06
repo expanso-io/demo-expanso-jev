@@ -1,6 +1,6 @@
 {
   "title": "Pod labels",
-  "lede": "Kubernetes pod labels go stale the moment a pod behaves differently. Expanso reads pod logs, asks Jev one question when the evidence could change a label, and patches the label or takes it off again.",
+  "lede": "Labels drive routing, scheduling and policy, and they go stale the moment a pod behaves differently. Expanso reads each pod's logs, decides which single label change the evidence could justify, asks Jev one yes or no question about it, and patches the label on or takes it off again.",
   "cases": {
     "main": {
       "harness": "pod-labels",
@@ -12,33 +12,76 @@
   },
   "stages": [
     {
-      "title": "x",
-      "text": "x"
+      "title": "Collect candidate changes",
+      "text": "The pipeline posts the event to the adapter at `/candidates`. The adapter reads the pod's logs and the labels in use across the cluster, picks the single label change the evidence could justify and returns it with an id. Code, not Jev, decides what may be asked."
     },
     {
-      "title": "x",
-      "text": "x"
+      "title": "Take the candidate",
+      "text": "The adapter answers with a JSON array. The `unarchive` processor turns it into one message per element."
     },
     {
-      "title": "x",
-      "text": "x"
+      "title": "Keep only the id",
+      "text": "Only the id travels on. The adapter keeps the candidate on its side, so nothing in the pipeline can change what is judged or applied."
     },
     {
-      "title": "x",
-      "text": "x"
+      "title": "Ask Jev",
+      "text": "The pipeline posts the id to `/judge`. The adapter asks Jev one question about this exact candidate and returns the probability. The Jev key stays in the adapter; it never enters the pipeline, the job file or Expanso Cloud."
     },
     {
-      "title": "x",
-      "text": "x"
+      "title": "Apply or hold",
+      "text": "The pipeline posts the answer to `/apply`. The adapter patches the pod only when the probability clears the threshold (0.8 in these runs), guarded by the pod's UID and resource version, and returns a receipt. Anything else is held and nothing is written."
     },
     {
-      "title": "x",
-      "text": "x"
+      "title": "Print the receipt",
+      "text": "The receipt goes to the output. Investigations never change a label; their receipt says whether the evidence is enough to begin a debugging investigation."
     }
   ],
   "queues": {
-    "events": "Event feed",
-    "labels": "Pod labels",
-    "receipts": "Receipts"
-  }
+    "receipts": "Receipt"
+  },
+  "jev_stage": "judge",
+  "if_down": "The adapter cannot judge, so it returns an error, the pipeline's catch block emits a held result, and no label is written.",
+  "run": [
+    {
+      "title": "Run it on a real cluster, no Cloud account",
+      "intro": "The fixture runner builds a throwaway k3d cluster, applies the fixture pods and the RBAC in `demos/11-pod-labels/rbac`, runs the real adapter with a token for the least-privilege ServiceAccount, runs the shipped pipeline on a local Edge agent, sends six events through the adapter's browser endpoints and compares the adapter's event feed, the pods' labels and the receipts with the expected files. It then deletes the cluster. It needs Docker, k3d, kubectl, expanso-edge, expanso-cli and uv.",
+      "commands": [
+        "uv run -s tools/fixture-runner.py run --only 11"
+      ],
+      "after": "Jev's answers come from a recorded file: the investigation answers are the real values from `docs/investigation-live-proof.json` and the label answers come from the offline responder."
+    },
+    {
+      "title": "Run the live demo with Expanso Cloud and Jev",
+      "intro": "This starts a local k3d cluster, the adapter, an Edge agent and the Cloud job, then serves the board at http://127.0.0.1:8901. It needs Expanso Cloud credentials and a TypeSafe key in the repository-root `.env`.",
+      "commands": [
+        "just up",
+        "just open",
+        "just down"
+      ],
+      "after": "To use your own cluster, follow `demos/11-pod-labels/MANUAL_SETUP.md`."
+    }
+  ],
+  "deploy": [
+    {
+      "title": "Give the adapter a least-privilege identity",
+      "intro": "The adapter never runs as a cluster administrator. `demos/11-pod-labels/rbac/rbac.yaml` defines a ServiceAccount with cluster-wide `list` on pods and, in the target namespace only, `get` and `patch` on pods, `get` on pod logs, `list` on events and `get` and `create` on pod exec for the browser stimulus. Apply it, mint a token-only kubeconfig for the adapter, and prove the grants on your cluster.",
+      "commands": [
+        "kubectl apply -k demos/11-pod-labels/rbac",
+        "uv run -s demos/11-pod-labels/rbac/mint_kubeconfig.py \\\n  --admin-kubeconfig \"$KUBECONFIG\" \\\n  --admin-context \"$KUBE_CONTEXT\" \\\n  --namespace jev-label-demo \\\n  --out .expanso/pod-labels/agent.kubeconfig",
+        "uv run -s demos/11-pod-labels/rbac/verify.py \\\n  --kubeconfig \"$KUBECONFIG\" \\\n  --context \"$KUBE_CONTEXT\""
+      ],
+      "after": "The cluster-wide list reads every pod definition, so on a shared cluster treat it as read access to them. Leave the `pods/exec` Role out unless you use the browser stimulus."
+    },
+    {
+      "title": "Deploy the pipeline through Expanso Cloud",
+      "intro": "Credentials come from the environment, never from flags. Run the adapter and a dedicated Edge agent on the same host, then deploy the job; it selects the node labelled `demo=jev-pod-labels`.",
+      "commands": [
+        "export EXPANSO_CLI_ENDPOINT=https://your-network.example.net\nexport EXPANSO_CLI_AUTH_API_KEY=your-api-key",
+        "just pod-labels-adapter",
+        "just pod-labels-edge",
+        "just pod-labels-deploy"
+      ],
+      "after": "The adapter reads `TYPESAFE_API_KEY`; it never goes in the job file. `demos/11-pod-labels/MANUAL_SETUP.md` has every step, including stopping and cleaning up."
+    }
+  ]
 }

@@ -31,3 +31,6 @@ demos/*/review/
 # Distribution and outreach planning is kept outside this repository.
 docs/*sharing-opportunities*
 docs/*outreach*
+
+# public-bar reports
+artifacts/

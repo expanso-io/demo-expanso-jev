@@ -1,0 +1,36 @@
+{
+  "customer": "acme-corp",
+  "feedback_id": "f-001",
+  "jev": {
+    "answers": {
+      "churn_risk": {
+        "noul": 0.12,
+        "type": "noul"
+      },
+      "sentiment": {
+        "confidence": 0.7,
+        "probabilities": {},
+        "score": 0.6,
+        "type": "score"
+      },
+      "topic": {
+        "choice": "bug",
+        "confidence": 0.92,
+        "probabilities": {
+          "bug": 0.92,
+          "feature_request": 0.016,
+          "other": 0.016,
+          "praise": 0.016,
+          "pricing": 0.016,
+          "support_experience": 0.016
+        },
+        "type": "choice"
+      }
+    },
+    "model": "jev-mock",
+    "ms": 0
+  },
+  "rating": 2,
+  "received_at": "2026-10-05T20:34:47.085779-07:00",
+  "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
+}

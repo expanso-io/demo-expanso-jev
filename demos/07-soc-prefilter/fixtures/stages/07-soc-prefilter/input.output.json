@@ -1,0 +1,8 @@
+{
+  "ts": "2026-09-18T14:00:00Z",
+  "user": "alice@corp.com",
+  "ip": "10.4.2.18",
+  "geo": "Seattle, US",
+  "result": "success",
+  "mfa": true
+}

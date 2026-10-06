@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="{{FONTS}}">
-<title>{{TITLE}}</title>
+<link rel="stylesheet" href="demos/01-log-triage/fonts/fonts.css">
+<title>Expanso and Jev: examples</title>
 <style>
 :root{
   color-scheme:light;
-  --bg:#f6f4fa; --surface:#ffffff; --code:#eeebf5; --text:#1b1530; --muted:#4d4666;
+  --bg:#f6f4fa; --surface:#fdfcff; --code:#eeebf5; --text:#1b1530; --muted:#4d4666;
   --line:#8c82a8; --soft:#d6d0e4;
-  --link:#5224c4; --btn-bg:#5224c4; --btn-text:#ffffff;
+  --link:#5224c4; --btn-bg:#5224c4; --btn-text:#fdfcff;
   --ok:#0f6b32; --err:#a3202c;
   --k:#5224c4; --s:#0b5f46; --n:#8a3f00; --p:#4d4666;
   --add:#d3efdb; --chg:#f8e3a8;
@@ -31,53 +31,48 @@
 html{background:var(--bg);-webkit-text-size-adjust:100%;overflow-anchor:none}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 var(--sans);overflow-wrap:anywhere}
 a{color:var(--link);text-underline-offset:3px}
-a:focus-visible,button:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+a:focus-visible,button:focus-visible,pre:focus-visible{outline:3px solid var(--link);outline-offset:2px}
 .wrap{max-width:1120px;margin:0 auto;padding:0 16px 64px}
 .top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:16px 0}
-.top a{font-weight:500}
 h1{font:600 clamp(28px,5vw,44px)/1.1 var(--sans);letter-spacing:-.01em;margin:16px 0 12px}
 h2{font:600 26px/1.2 var(--sans);margin:48px 0 12px}
-h3{font:600 18px/1.3 var(--sans);margin:24px 0 8px}
+h3{font:600 20px/1.3 var(--sans);margin:24px 0 8px}
+h4{font:600 16px/1.3 var(--sans);margin:0}
 p{margin:0 0 12px;max-width:72ch}
 .lede{font-size:19px;line-height:1.5;max-width:68ch}
 .muted{color:var(--muted)}
 code{font:14px/1.4 var(--mono);background:var(--code);padding:1px 5px;border-radius:4px}
 button{font:500 15px/1.2 var(--sans);color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:11px 14px;min-height:44px;cursor:pointer}
 button:hover{border-color:var(--text)}
-button.primary{background:var(--btn-bg);color:var(--btn-text);border-color:var(--btn-bg)}
-button[aria-pressed=true],button[aria-current=step],button[aria-selected=true]{background:var(--btn-bg);color:var(--btn-text);border-color:var(--btn-bg)}
+button[aria-pressed=true],button[aria-current=step]{background:var(--btn-bg);color:var(--btn-text);border-color:var(--btn-bg)}
 button:disabled{cursor:not-allowed;color:var(--muted);border-color:var(--soft)}
+[hidden]{display:none!important}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .status{font-size:14px;min-height:20px;color:var(--muted)}
 .status.ok{color:var(--ok)} .status.err{color:var(--err)}
 .panel{background:var(--surface);border:1px solid var(--soft);border-radius:8px;padding:16px;margin:12px 0}
 .group{margin:16px 0}
-.group>.label{font:600 15px/1.3 var(--sans);margin:0 0 8px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
+.label{font-weight:600;margin:0 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
 .chips button{text-align:left;font-size:14px}
 .chips button .dest{display:block;font-weight:400;font-size:13px}
 .stagebar{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
 .stagebar button{min-width:44px}
 .pager{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0}
-.pager .where{font-weight:600;margin:0 8px}
-.io{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
-@media (min-width:900px){.io.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
-.io h4{font:600 15px/1.3 var(--sans);margin:0 0 6px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.io{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;margin-top:12px}
+@media (min-width:900px){.io{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.io .head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:6px}
 pre{margin:0;padding:12px;background:var(--code);border:1px solid var(--soft);border-radius:6px;font:14px/1.5 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;color:var(--text)}
-.json .ln{display:block;padding-left:2ch;text-indent:-2ch}
-.json .ln.add{background:var(--add)} .json .ln.chg{background:var(--chg)}
-.json .m{display:inline-block;width:2ch;text-indent:0;color:var(--muted)}
+pre.json .ln{display:block;padding-left:2ch;text-indent:-2ch}
+pre.json .ln::before{content:attr(data-mark);display:inline-block;width:2ch;text-indent:0;color:var(--muted)}
+pre.json .ln.add{background:var(--add)} pre.json .ln.chg{background:var(--chg)}
 .tk{color:var(--k)} .ts{color:var(--s)} .tn{color:var(--n)} .tp{color:var(--p)}
-.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .legend{font-size:14px;color:var(--muted);margin:8px 0}
 dl.qs{margin:0;display:grid;gap:8px}
 dl.qs dt{font:500 14px/1.4 var(--mono)}
 dl.qs dd{margin:0 0 4px;font-size:15px}
 .cmd{margin:12px 0}
 .cmd .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
-.files{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
-.file{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--soft);padding-bottom:12px}
-.file .name{font:500 15px var(--mono)}
 .note{background:var(--surface);border:1px solid var(--soft);border-radius:8px;padding:12px 16px}
 footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--soft);font-size:14px;color:var(--muted)}
 ul.plain{margin:0 0 12px;padding-left:20px;max-width:72ch}
@@ -86,28 +81,98 @@ ul.plain{margin:0 0 12px;padding-left:20px;max-width:72ch}
 <body>
 <div class="wrap">
 <header class="top">
-  <a href="{{HUB}}">All examples</a>
-  <button id="theme" type="button" aria-pressed="false">Dark mode</button>
+  <strong>Expanso Edge and Jev</strong>
+  <button id="theme-toggle" type="button" aria-pressed="false">Dark mode</button>
 </header>
 <main id="main">
-  <h1 id="title"></h1>
-  <p class="lede" id="lede"></p>
-  <div id="what"></div>
+  <h1>Examples that ask Jev only about what rules cannot settle</h1>
+  <p class="lede">Eleven Expanso Edge pipelines. Each one does with rules what rules can do and asks Jev, TypeSafe's structured classifier, about the rest. Every pipeline on this page ran on its shipped input, and every value below was captured from that run.</p>
 
-  <h2 id="explore-h">Step through it</h2>
-  <p id="explore-intro" class="muted"></p>
-  <div id="explore"></div>
+  <section id="explanation" aria-labelledby="explanation-h">
+    <h2 id="explanation-h">What each example does</h2>
+    <div class="group">
+      <p class="label" id="example-label">Choose an example</p>
+      <ul class="chips" id="examples" aria-labelledby="example-label">
+{{EXAMPLE_NAV}}
+      </ul>
+    </div>
+{{EXPLANATIONS}}
+  </section>
 
-  <h2 id="run-h">Run it</h2>
-  <div id="run"></div>
+  <section id="explorer" aria-labelledby="explorer-h">
+    <h2 id="explorer-h">Step through it</h2>
+    <p class="muted">Pick a scenario and a record, then page through the stages with the buttons or the Left and Right arrow keys. Each stage shows the message going in and coming out, from a real run of the pipeline in this repository.</p>
+    <div class="group" id="scenario-group" hidden>
+      <p class="label" id="scenario-label">Scenario</p>
+      <ul class="chips" id="scenarios" aria-labelledby="scenario-label"></ul>
+      <p class="muted" id="scenario-note"></p>
+    </div>
+    <div class="group">
+      <p class="label" id="record-label">Record</p>
+      <ul class="chips" id="records" aria-labelledby="record-label"></ul>
+    </div>
+    <div class="group">
+      <p class="label" id="stage-label">Stage</p>
+{{STAGEBARS}}
+    </div>
+    <div class="pager">
+      <button id="prev-stage" type="button">Previous stage</button>
+      <button id="next-stage" type="button">Next stage</button>
+      <span class="muted">Left and Right arrow keys also page.</span>
+    </div>
+    <div id="stage-panel" class="panel" aria-live="polite">
+      <h3 id="stage-title"></h3>
+      <p id="stage-text"></p>
+      <div class="io">
+        <div>
+          <div class="head"><h4 id="input-title">Goes in</h4>
+            <span class="row"><button id="copy-stage-input" type="button">Copy this JSON</button><span id="copy-stage-input-status" class="status" role="status"></span></span></div>
+          <pre id="stage-input" class="json" tabindex="0" aria-labelledby="input-title"></pre>
+        </div>
+        <div>
+          <div class="head"><h4 id="output-title">Comes out</h4></div>
+          <pre id="stage-output" class="json" tabindex="0" aria-labelledby="output-title"></pre>
+        </div>
+      </div>
+      <p class="legend" id="legend" hidden>In the right-hand block, a + in the margin marks a field this stage added and a ~ marks one it changed.</p>
+      <div id="jev-call" hidden>
+        <h3>The call to Jev</h3>
+        <div class="io">
+          <div><div class="head"><h4 id="req-title">State sent to Jev</h4></div><pre id="jev-request" class="json" tabindex="0" aria-labelledby="req-title"></pre></div>
+          <div><div class="head"><h4 id="res-title">Jev's answer</h4></div><pre id="jev-response" class="json" tabindex="0" aria-labelledby="res-title"></pre></div>
+        </div>
+      </div>
+      <div id="stage-source-box">
+        <h3>How this stage is written</h3>
+        <pre id="stage-source" tabindex="0"></pre>
+      </div>
+    </div>
+  </section>
 
-  <h2 id="deploy-h">Deploy it</h2>
-  <div id="deploy"></div>
+  <section id="run" aria-labelledby="run-h">
+    <h2 id="run-h">Run it</h2>
+{{RUN}}
+  </section>
 
-  <h2 id="files-h">Files from this run</h2>
-  <div id="files" class="files"></div>
+  <section id="deploy" aria-labelledby="deploy-h">
+    <h2 id="deploy-h">Deploy it</h2>
+{{DEPLOY}}
+    <h3>Download this example's files</h3>
+    <p>The pipeline and the input it ran on, for the example you chose.</p>
+    <div class="row">
+      <button id="download-pipeline" type="button">Download the pipeline</button>
+      <span id="download-pipeline-status" class="status" role="status"></span>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button id="download-input" type="button">Download the input</button>
+      <span id="download-input-status" class="status" role="status"></span>
+    </div>
+  </section>
 </main>
-<footer id="foot"></footer>
+<footer>
+  <p id="provenance"></p>
+  <p>Source: <a href="https://github.com/expanso-io/demo-expanso-jev">github.com/expanso-io/demo-expanso-jev</a>. Latest dated run report: <a href="docs/verification/{{REPORT}}">{{REPORT}}</a>.</p>
+</footer>
 </div>
 
 <script id="data" type="application/json">{{DATA}}</script>
@@ -115,6 +180,7 @@ ul.plain{margin:0 0 12px;padding-left:20px;max-width:72ch}
 "use strict";
 const D = JSON.parse(document.getElementById("data").textContent);
 const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const el = (tag, attrs = {}, ...kids) => {
   const n = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
@@ -126,32 +192,30 @@ const el = (tag, attrs = {}, ...kids) => {
   for (const kid of kids.flat()) if (kid !== null && kid !== undefined) n.append(kid.nodeType ? kid : document.createTextNode(kid));
   return n;
 };
+const rich = (t) => String(t).split("`").map((seg, i) => i % 2 ? el("code", { text: seg }) : seg);
 
 /* ---------- theme: light unless the reader chose dark ---------- */
 const root = document.documentElement;
 function applyTheme(t) {
   root.setAttribute("data-theme", t);
-  const b = $("#theme");
+  const b = $("#theme-toggle");
   b.setAttribute("aria-pressed", String(t === "dark"));
   b.textContent = t === "dark" ? "Light mode" : "Dark mode";
 }
 let saved = null;
 try { saved = localStorage.getItem("jev-theme"); } catch (e) { saved = null; }
 applyTheme(saved === "dark" ? "dark" : "light");
-$("#theme").addEventListener("click", () => {
+$("#theme-toggle").addEventListener("click", () => {
   const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
   applyTheme(next);
   try { localStorage.setItem("jev-theme", next); } catch (e) { /* the choice still applies for this visit */ }
 });
 
 /* ---------- feedback where the click happened ---------- */
-function say(node, text, ok) {
-  node.textContent = text;
-  node.className = "status " + (ok ? "ok" : "err");
-}
+function say(node, text, ok) { node.textContent = text; node.className = "status " + (ok ? "ok" : "err"); }
 async function copyText(text) {
-  if (navigator.clipboard && window.isSecureContext) {
-    try { await navigator.clipboard.writeText(text); return true; } catch (e) { /* fall through */ }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try { await navigator.clipboard.writeText(text); return true; } catch (e) { return false; }
   }
   const ta = el("textarea", { "aria-hidden": "true", tabindex: "-1" });
   ta.value = text;
@@ -163,36 +227,35 @@ async function copyText(text) {
   ta.remove();
   return ok;
 }
-function copyButton(label, getText, what) {
-  const status = el("span", { class: "status", role: "status" });
-  const b = el("button", { type: "button", onclick: async () => {
+function wireCopy(button, status, getText, what) {
+  button.addEventListener("click", async () => {
     const ok = await copyText(getText());
-    say(status, ok ? "Copied " + what : "Copy failed. Select the text and copy it yourself.", ok);
-  } }, label);
-  return [b, status];
+    say(status, ok ? "Copied " + what + "." : "Copy failed. Select the text and copy it yourself.", ok);
+  });
 }
-function downloadButton(file) {
-  const status = el("span", { class: "status", role: "status" });
-  const b = el("button", { type: "button", onclick: () => {
+function wireDownload(button, status, getUrl) {
+  button.addEventListener("click", async () => {
+    const url = getUrl();
+    const name = url.split("/").pop();
     try {
-      const blob = new Blob([file.text], { type: file.type || "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const a = el("a", { href: url, download: file.name.split("/").pop() });
+      const resp = await fetch(url, { cache: "no-store" });
+      if (!resp.ok) throw new Error("the server answered " + resp.status);
+      const blob = await resp.blob();
+      const href = URL.createObjectURL(blob);
+      const a = el("a", { href, download: name });
       document.body.append(a);
       a.click();
       a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
-      say(status, "Download started: " + file.name + " (" + blob.size + " bytes)", true);
+      setTimeout(() => URL.revokeObjectURL(href), 2000);
+      say(status, "Download started: " + name + " (" + blob.size + " bytes).", true);
     } catch (e) {
-      say(status, "Download failed: " + (e && e.message ? e.message : "the browser refused it") + ". Use Copy and paste it into a file.", false);
+      say(status, "Download failed: " + (e && e.message ? e.message : "the file could not be fetched") + ".", false);
     }
-  } }, "Download");
-  return [b, status];
+  });
 }
 
 /* ---------- JSON, one key per line, with what changed marked ---------- */
 function mark(out, inn) {
-  // returns a function (pathString) -> "add" | "chg" | ""
   const marks = new Map();
   (function walk(o, i, path, forced) {
     if (o && typeof o === "object") {
@@ -210,15 +273,8 @@ function mark(out, inn) {
 }
 function jsonLines(v, marks) {
   const lines = [];
-  const push = (ind, parts, path, comma) => {
-    const m = marks ? marks.get(path) || "" : "";
-    lines.push({ ind, parts, m, comma });
-  };
-  const prim = (x) => {
-    if (typeof x === "string") return [["ts", JSON.stringify(x)]];
-    if (x === null) return [["tn", "null"]];
-    return [["tn", String(x)]];
-  };
+  const push = (ind, parts, path, comma) => lines.push({ ind, parts, m: marks ? marks.get(path) || "" : "", comma });
+  const prim = (x) => typeof x === "string" ? [["ts", JSON.stringify(x)]] : [["tn", x === null ? "null" : String(x)]];
   (function walk(x, ind, path, key, comma) {
     const head = key === null ? [] : [["tk", JSON.stringify(String(key))], ["tp", ": "]];
     if (x && typeof x === "object") {
@@ -232,160 +288,114 @@ function jsonLines(v, marks) {
   })(v, 0, "", null, false);
   return lines;
 }
-function jsonBlock(value, marks) {
-  const pre = el("pre", { class: "json", tabindex: "0", "aria-label": "JSON" });
-  for (const l of jsonLines(value, marks)) {
-    const line = el("span", { class: "ln" + (l.m ? " " + l.m : "") });
-    line.append(el("span", { class: "m", "aria-hidden": "true" }, l.m === "add" ? "+" : l.m === "chg" ? "~" : " "));
-    if (l.m) line.append(el("span", { class: "vh" }, l.m === "add" ? "added: " : "changed: "));
+/* The block's text is exactly the JSON; margin marks come from data-mark. */
+function fillJson(pre, value, marks) {
+  pre.replaceChildren();
+  const lines = jsonLines(value, marks);
+  lines.forEach((l, i) => {
+    const line = el("span", { class: "ln" + (l.m ? " " + l.m : ""), "data-mark": l.m === "add" ? "+" : l.m === "chg" ? "~" : " " });
     line.append(document.createTextNode("  ".repeat(l.ind)));
     for (const [cls, t] of l.parts) line.append(el("span", { class: cls }, t));
     if (l.comma) line.append(el("span", { class: "tp" }, ","));
     pre.append(line);
-  }
-  return pre;
+    if (i < lines.length - 1) pre.append(document.createTextNode("\n"));
+  });
 }
-const rich = (t) => String(t).split("`").map((seg, i) => i % 2 ? el("code", { text: seg }) : seg);
-const parse = (s) => { try { return JSON.parse(s); } catch (e) { return s; } };
-const pretty = (v) => typeof v === "string" ? v : JSON.stringify(v, null, 2);
+function fillText(pre, text) { pre.classList.remove("json"); pre.replaceChildren(document.createTextNode(text)); }
+function show(pre, value, marks, fallback) {
+  if (value === undefined || value === null) { fillText(pre, fallback); return; }
+  pre.classList.add("json");
+  fillJson(pre, value, marks);
+}
 
-/* ---------- page: explanation ---------- */
-$("#title").textContent = D.title;
-$("#lede").replaceChildren(...rich(D.lede));
-(function what() {
-  const box = $("#what");
-  if (D.points && D.points.length) {
-    box.append(el("h2", { text: "What it does" }));
-    box.append(el("ul", { class: "plain" }, D.points.map((p) => el("li", {}, rich(p)))));
-  }
-  const c0 = D.cases[0];
-  if (c0.questions && c0.questions.length) {
-    box.append(el("h3", { text: "What Jev is asked" }));
-    const dl = el("dl", { class: "qs" });
-    for (const q of c0.questions) {
-      dl.append(el("dt", { text: q.id + " (" + q.type + ")" }), el("dd", { text: q.instructions }));
-    }
-    box.append(dl);
-  }
-})();
+/* ---------- the explorer ---------- */
+const byId = Object.fromEntries(D.examples.map((e) => [e.id, e]));
+const st = { ex: D.default.example, c: 0, r: D.default.record, s: D.default.stage };
+const cur = () => byId[st.ex];
+const curCase = () => cur().cases[st.c];
 
-/* ---------- page: the step explorer ---------- */
-const st = { c: 0, r: 0, s: 0 };
 function applyHash() {
   const m = Object.fromEntries(location.hash.slice(1).split("&").filter(Boolean).map((kv) => kv.split("=")));
-  const c = D.cases.findIndex((x) => x.id === m.case);
-  if (c >= 0) st.c = c;
-  const cs = D.cases[st.c];
-  if (m.record && +m.record >= 0 && +m.record < cs.records.length) st.r = +m.record;
-  if (m.stage && +m.stage >= 0 && +m.stage < cs.stages.length) st.s = +m.stage;
+  if (m.example && byId[m.example]) st.ex = m.example;
+  const e = cur();
+  st.c = 0;
+  if (m.scenario) { const i = e.cases.findIndex((c) => c.id === m.scenario); if (i >= 0) st.c = i; }
+  const c = curCase();
+  st.r = m.record !== undefined && +m.record >= 0 && +m.record < c.records.length ? +m.record : Math.min(st.r, c.records.length - 1);
+  st.s = m.stage !== undefined && +m.stage >= 0 && +m.stage < c.stages.length ? +m.stage : Math.min(st.s, c.stages.length - 1);
 }
-applyHash();
-$("#explore-intro").replaceChildren(...rich(D.explore_intro));
-const explore = $("#explore");
-const scenarioBox = el("div", { class: "group" });
-const recordBox = el("div", { class: "group" });
-const barBox = el("div", { class: "group" });
-const pagerBox = el("div", { class: "pager" });
-const panel = el("div", { class: "panel", "aria-live": "polite" });
-explore.append(scenarioBox, recordBox, barBox, pagerBox, panel);
-
-function cur() { return D.cases[st.c]; }
 function save() {
-  history.replaceState(null, "", "#case=" + cur().id + "&record=" + st.r + "&stage=" + st.s);
+  history.replaceState(null, "", "#example=" + st.ex + "&scenario=" + curCase().id + "&record=" + st.r + "&stage=" + st.s);
+}
+function renderExample() {
+  for (const art of $$("[data-example]")) art.hidden = art.dataset.example !== st.ex;
+  for (const b of $$("#examples button")) b.setAttribute("aria-pressed", String(b.dataset.pick === st.ex));
 }
 function renderScenarios() {
-  scenarioBox.replaceChildren();
-  if (D.cases.length < 2) return;
-  scenarioBox.append(el("p", { class: "label", text: "Scenario" }));
-  const row = el("div", { class: "chips", role: "group", "aria-label": "Scenario" });
-  D.cases.forEach((c, i) => row.append(el("button", { type: "button", "aria-pressed": String(i === st.c), onclick: () => {
-    st.c = i; st.r = Math.min(st.r, cur().records.length - 1); st.s = Math.min(st.s, cur().stages.length - 1); render();
-  } }, c.scenario)));
-  scenarioBox.append(row);
-  if (cur().note) scenarioBox.append(el("p", { class: "muted", text: cur().note }));
+  const box = $("#scenarios"), group = $("#scenario-group");
+  box.replaceChildren();
+  group.hidden = cur().cases.length < 2;
+  cur().cases.forEach((c, i) => box.append(el("li", {}, el("button", { type: "button", "aria-pressed": String(i === st.c), onclick: () => {
+    st.c = i; st.r = Math.min(st.r, curCase().records.length - 1); st.s = Math.min(st.s, curCase().stages.length - 1); render();
+  } }, c.scenario))));
+  $("#scenario-note").textContent = curCase().note || "";
 }
 function renderRecords() {
-  recordBox.replaceChildren(el("p", { class: "label", text: "Record (pick one of the " + cur().records.length + " in the sample input)" }));
-  const row = el("div", { class: "chips", role: "group", "aria-label": "Record" });
-  cur().records.forEach((r, i) => row.append(el("button", { type: "button", "aria-pressed": String(i === st.r), onclick: () => { st.r = i; render(); } },
-    (i + 1) + ". " + r.label, el("span", { class: "dest", text: r.dest_label }))));
-  recordBox.append(row);
+  const box = $("#records");
+  box.replaceChildren();
+  curCase().records.forEach((r, i) => box.append(el("li", {}, el("button", { type: "button", "aria-pressed": String(i === st.r), onclick: () => { st.r = i; render(); } },
+    (i + 1) + ". " + r.label, el("span", { class: "dest", text: r.dest_label })))));
 }
-function renderBar() {
-  barBox.replaceChildren(el("p", { class: "label", text: "Stage" }));
-  const ol = el("ol", { class: "stagebar" });
-  cur().stages.forEach((p, i) => ol.append(el("li", {}, el("button", { type: "button", title: p.title, "aria-label": "Stage " + (i + 1) + ": " + p.title,
-    "aria-current": i === st.s ? "step" : false, onclick: () => { st.s = i; render(); } }, String(i + 1)))));
-  barBox.append(ol);
-}
-function renderPager() {
-  const c = cur();
-  pagerBox.replaceChildren(
-    el("button", { type: "button", disabled: st.s === 0, onclick: () => step(-1) }, "Previous stage"),
-    el("span", { class: "where", text: "Stage " + (st.s + 1) + " of " + c.stages.length + ": " + c.stages[st.s].title }),
-    el("button", { type: "button", disabled: st.s === c.stages.length - 1, onclick: () => step(1) }, "Next stage"),
-    el("span", { class: "muted", text: "Left and Right arrow keys also page." }));
-}
-function ioBlock(title, value, marks) {
-  const h = el("h4", {}, el("span", { text: title }));
-  const [cb, cs] = copyButton("Copy", () => pretty(value), title.toLowerCase());
-  h.append(el("span", { class: "row" }, cb, cs));
-  return el("div", {}, h, typeof value === "string" ? el("pre", { text: value }) : jsonBlock(value, marks));
+function renderBars() {
+  const pid = curCase().pipeline_id;
+  for (const bar of $$("[data-pipeline]")) bar.hidden = bar.dataset.pipeline !== pid;
+  for (const b of $$("[data-stage-id]")) b.removeAttribute("aria-current");
+  const bar = $('[data-pipeline="' + pid + '"]');
+  const btn = bar.querySelectorAll("[data-stage-id]")[st.s];
+  if (btn) btn.setAttribute("aria-current", "step");
+  const n = curCase().stages.length;
+  $("#prev-stage").disabled = st.s === 0;
+  $("#next-stage").disabled = st.s === n - 1;
 }
 function renderPanel() {
-  const c = cur(), rec = c.records[st.r], p = c.stages[st.s], N = c.stages.length;
-  const states = rec.states; // index = number of processors already applied
-  const last = N - 2;        // index of the last processor state
-  panel.replaceChildren(el("h3", { text: "Stage " + (st.s + 1) + ": " + p.title }), el("p", {}, rich(p.text)));
-  let input, output, io = el("div", { class: "io" });
-  if (st.s === 0) {
-    input = null; output = states[0];
-    io.append(ioBlock("The record as it arrives", output, null));
-  } else if (st.s === N - 1) {
-    input = states[last]; output = null;
-    io.append(ioBlock("The record that reaches the output", input, null));
-    io.append(el("p", { class: "note", text: rec.destination
-      ? "Written to the " + (c.queues[rec.destination] || rec.destination) + " queue (" + rec.destination + ")."
-      : "Not written to any queue: an earlier stage removed this record." }));
-  } else {
-    input = states[st.s - 1]; output = states[st.s];
-    io.classList.add("two");
-    io.append(ioBlock("Goes in", input, null));
-    if (output === undefined) io.append(el("p", { class: "note", text: "Nothing comes out: this stage removed the record." }));
-    else io.append(ioBlock("Comes out", output, input && typeof input === "object" ? mark(output, input) : null));
-    if (output !== undefined && JSON.stringify(output) === JSON.stringify(input)) {
-      io.append(el("p", { class: "muted", text: "The message is unchanged by this stage." }));
+  const c = curCase(), rec = c.records[st.r], p = c.stages[st.s], N = c.stages.length, last = N - 2;
+  const S = rec.states;
+  $("#stage-title").textContent = "Stage " + (st.s + 1) + " of " + N + ": " + p.title;
+  $("#stage-text").replaceChildren(...rich(p.text));
+  let input, output, marks = null;
+  if (st.s === 0) { input = rec.input; output = S[0]; }
+  else if (st.s === N - 1) {
+    input = S[last]; output = rec.destination ? S[last] : undefined;
+  } else { input = S[st.s - 1]; output = S[st.s]; if (input && output && typeof input === "object") marks = mark(output, input); }
+  $("#input-title").textContent = st.s === 0 ? "The body as received" : "Goes in";
+  $("#output-title").textContent = st.s === 0 ? "The record after parsing" : st.s === N - 1 ? (rec.destination ? "Written to " + (c.queues[rec.destination] || rec.destination) : "Not written") : "Comes out";
+  show($("#stage-input"), input, null, "Nothing went in at this stage.");
+  show($("#stage-output"), output, marks, st.s === N - 1 ? "Not written to any queue: an earlier stage removed this record." : "Nothing comes out: this stage removed the record.");
+  $("#legend").hidden = !(marks && output);
+  const jev = $("#jev-call");
+  jev.hidden = !p.jev;
+  if (p.jev) {
+    if (rec.jev.length) {
+      const call = rec.jev[rec.jev.length - 1];
+      show($("#jev-request"), call.request, null, "No request was made.");
+      if (call.response && call.response.status) {
+        fillText($("#jev-response"), "Jev did not answer (HTTP " + call.response.status + ")." + (rec.jev.length > 1 ? " " + rec.jev.length + " attempts were made." : "") + " The pipeline continued with an empty answer set.");
+      } else show($("#jev-response"), call.response, null, "");
+    } else {
+      fillText($("#jev-request"), "No request: an earlier stage sent this record straight to its destination with no model call.");
+      fillText($("#jev-response"), "No answer was asked for.");
     }
   }
-  panel.append(io);
-  if (output !== null && st.s > 0 && st.s < N - 1 && output !== undefined) {
-    panel.append(el("p", { class: "legend", text: "In the right-hand block, + marks a field this stage added and ~ marks one it changed." }));
-  }
-  if (p.jev && rec.jev.length) {
-    const call = rec.jev[rec.jev.length - 1];
-    panel.append(el("h3", { text: "The call to Jev" }));
-    const two = el("div", { class: "io two" });
-    two.append(ioBlock("State sent to Jev", call.request, null));
-    two.append(call.response && call.response.status
-      ? el("div", {}, el("h4", {}, el("span", { text: "Jev's answer" })), el("p", { class: "note", text: "Jev did not answer (HTTP " + call.response.status + "). " + (rec.jev.length > 1 ? rec.jev.length + " attempts were made. " : "") + "The pipeline continued with an empty answer set." }))
-      : ioBlock("Jev's answer", call.response, null));
-    panel.append(two);
-  } else if (p.jev) {
-    panel.append(el("p", { class: "note", text: "Jev was not asked about this record: an earlier stage sent it straight to its destination with no model call." }));
-  }
-  if (p.source) {
-    panel.append(el("h3", { text: "How this stage is written" }));
-    const [cb, cs] = copyButton("Copy", () => p.source, "the stage source");
-    panel.append(el("pre", { text: p.source }), el("div", { class: "row", style: "margin-top:8px" }, cb, cs));
-  }
+  $("#stage-source").textContent = p.source || "";
+  $("#stage-source-box").hidden = !p.source;
 }
-function render() { renderScenarios(); renderRecords(); renderBar(); renderPager(); renderPanel(); save(); }
+function render() { renderExample(); renderScenarios(); renderRecords(); renderBars(); renderPanel(); save(); }
 function step(d) {
-  const c = cur(), n = st.s + d;
-  if (n < 0 || n >= c.stages.length) return;
+  const n = st.s + d;
+  if (n < 0 || n >= curCase().stages.length) return;
   const y = window.scrollY, x = window.scrollX;
   st.s = n;
-  renderBar(); renderPager(); renderPanel(); save();
+  renderBars(); renderPanel(); save();
   window.scrollTo(x, y); // paging replaces content in place; the page must not jump
 }
 document.addEventListener("keydown", (e) => {
@@ -396,34 +406,22 @@ document.addEventListener("keydown", (e) => {
   e.preventDefault();
   step(e.key === "ArrowRight" ? 1 : -1);
 });
+$("#prev-stage").addEventListener("click", () => step(-1));
+$("#next-stage").addEventListener("click", () => step(1));
+for (const b of $$("#examples button")) b.addEventListener("click", () => { st.ex = b.dataset.pick; st.c = 0; st.r = 0; st.s = Math.min(1, curCase().stages.length - 1); render(); });
+for (const bar of $$("[data-pipeline]")) {
+  $$("[data-stage-id]", bar).forEach((b, i) => b.addEventListener("click", () => { st.s = i; renderBars(); renderPanel(); save(); }));
+}
+wireCopy($("#copy-stage-input"), $("#copy-stage-input-status"), () => $("#stage-input").textContent, "the stage input");
+for (const b of $$("[data-copy]")) {
+  wireCopy(b, b.nextElementSibling, () => b.closest(".cmd").querySelector("pre").textContent, "the command");
+}
+wireDownload($("#download-pipeline"), $("#download-pipeline-status"), () => curCase().pipeline_url);
+wireDownload($("#download-input"), $("#download-input-status"), () => curCase().input_url);
+$("#provenance").textContent = D.provenance;
 window.addEventListener("hashchange", () => { applyHash(); render(); });
+applyHash();
 render();
-
-/* ---------- page: run and deploy ---------- */
-function section(host, items) {
-  for (const it of items) {
-    host.append(el("h3", { text: it.title }));
-    if (it.intro) host.append(el("p", {}, rich(it.intro)));
-    for (const cmd of it.commands || []) {
-      const wrap = el("div", { class: "cmd" });
-      wrap.append(el("pre", { text: cmd }));
-      const [cb, cs] = copyButton("Copy command", () => cmd, "the command");
-      wrap.append(el("div", { class: "bar" }, cb, cs));
-      host.append(wrap);
-    }
-    if (it.after) host.append(el("p", {}, rich(it.after)));
-  }
-}
-section($("#run"), D.run);
-section($("#deploy"), D.deploy);
-for (const f of D.files) {
-  const row = el("div", { class: "file" }, el("span", { class: "name", text: f.name }));
-  const [db, ds] = downloadButton(f);
-  const [cb, cs] = copyButton("Copy", () => f.text, f.name);
-  row.append(el("span", { class: "row" }, db, ds, cb, cs));
-  $("#files").append(row);
-}
-$("#foot").append(el("p", { text: D.provenance + " " }, D.report ? [el("a", { href: D.report, text: "Dated run report" }), "."] : ""));
 </script>
 </body>
 </html>

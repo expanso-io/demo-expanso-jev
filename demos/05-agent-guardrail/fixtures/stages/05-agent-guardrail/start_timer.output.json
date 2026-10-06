@@ -1,0 +1,9 @@
+{
+  "agent_id": "agent-01",
+  "args": {
+    "path": "/data/q3-sales-report.pdf"
+  },
+  "received_at": "2026-10-05T20:33:01.473595-07:00",
+  "tool": "read_file",
+  "user_intent": "Summarize the Q3 sales report for me"
+}

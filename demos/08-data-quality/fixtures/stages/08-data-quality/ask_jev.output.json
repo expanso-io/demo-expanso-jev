@@ -1,0 +1,24 @@
+{
+  "amount": 129.99,
+  "currency": "USD",
+  "customer_id": "cus-88121",
+  "jev": {
+    "answers": {
+      "conformant": {
+        "noul": 0.92,
+        "type": "noul"
+      },
+      "quality": {
+        "confidence": 0.7,
+        "probabilities": {},
+        "score": 4,
+        "type": "score"
+      }
+    },
+    "model": "jev-mock",
+    "ms": 1
+  },
+  "order_id": "ord-9001",
+  "received_at": "2026-10-05T20:34:07.129013-07:00",
+  "ts": "2026-09-18T14:00:00Z"
+}

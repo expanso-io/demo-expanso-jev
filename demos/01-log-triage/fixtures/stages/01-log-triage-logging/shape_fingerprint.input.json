@@ -1,0 +1,7 @@
+{
+  "id": "evt-000001",
+  "ts": "2026-10-05T09:00:01Z",
+  "level": "INFO",
+  "service": "api",
+  "msg": "GET /health 200 2ms"
+}

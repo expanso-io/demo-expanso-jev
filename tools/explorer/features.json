@@ -1,0 +1,126 @@
+{
+  "features": [
+    {
+      "id": "theme-default-light",
+      "description": "The published page opens in light mode"
+    },
+    {
+      "id": "theme-dark-toggle",
+      "description": "An explicit toggle switches the published page to dark mode"
+    },
+    {
+      "id": "arrow-key-paging",
+      "description": "Left and Right arrow keys page the stages and keep the scroll position"
+    },
+    {
+      "id": "copy-stage-json",
+      "description": "Copy the real JSON going into a stage, with success or failure shown beside the button"
+    },
+    {
+      "id": "download-example-files",
+      "description": "Download an example's pipeline and input, with success or failure shown beside the button"
+    },
+    {
+      "id": "fixture-run-every-pipeline",
+      "description": "Every shipped pipeline runs on its shipped input and its output is asserted"
+    },
+    {
+      "id": "jev-unreachable-fail-safe",
+      "description": "Examples 02 to 10 run with Jev unreachable and send records to the safe destination"
+    },
+    {
+      "id": "log-triage-hold-and-release",
+      "description": "A record Jev did not answer is held, resubmitted and handed to review after 15 attempts"
+    },
+    {
+      "id": "log-triage-bypass-allowlist",
+      "description": "Known routine INFO lines skip the model by exact match on level, service and message"
+    },
+    {
+      "id": "pod-labels-least-privilege-rbac",
+      "description": "The adapter runs as a ServiceAccount whose grants match its kubectl calls"
+    },
+    {
+      "id": "pod-labels-real-cluster-run",
+      "description": "The pod-labels pipeline is exercised on a real k3d cluster"
+    },
+    {
+      "id": "pod-labels-label-lease-expiry",
+      "description": "Real labels the agent added expire after about ten seconds"
+    },
+    {
+      "id": "pod-labels-investigation-lane",
+      "description": "Investigations judge whether evidence is enough without proposing a label change"
+    },
+    {
+      "id": "log-triage-board-three-acts",
+      "description": "The live board follows nothing deployed, Expanso alone, then Expanso with Jev"
+    },
+    {
+      "id": "log-triage-jev-switch",
+      "description": "The Jev switch deploys the recurrence pipeline over the running job and back"
+    },
+    {
+      "id": "log-triage-break-the-link",
+      "description": "Break the link to Jev makes calls fail so the hold and the release can be watched"
+    },
+    {
+      "id": "log-triage-bucket-json",
+      "description": "Clicking a bucket shows the latest record's full JSON grouped by who added each field"
+    },
+    {
+      "id": "log-triage-inject-at-source",
+      "description": "Inject a named log line at the source and follow it through the pipeline"
+    },
+    {
+      "id": "log-triage-pipeline-yaml-tab",
+      "description": "A tab shows the checked-in YAML of either pipeline"
+    },
+    {
+      "id": "log-triage-evidence-strip",
+      "description": "The evidence strip shows the severity-only baseline, what Jev reported and where the record landed"
+    },
+    {
+      "id": "pod-labels-board-two-lanes",
+      "description": "The pod board offers a label lane and an investigate lane on three ordinary pods"
+    },
+    {
+      "id": "pod-labels-pause-events",
+      "description": "Events fire on their own and can be paused or sent on demand from the legend"
+    }
+  ],
+  "routes": [
+    {
+      "id": "log-triage-board",
+      "path": "demos/01-log-triage/index.html",
+      "description": "The live log-triage board"
+    },
+    {
+      "id": "pod-labels-board",
+      "path": "demos/11-pod-labels/web/index.html",
+      "description": "The live pod-labels board"
+    }
+  ],
+  "browser_assertions": [
+    {
+      "id": "no-horizontal-scroll",
+      "description": "No horizontal page scroll at 320, 400, 768 and 1440 pixels in light and dark"
+    },
+    {
+      "id": "contrast-aa",
+      "description": "All visible text meets WCAG AA contrast in light and dark"
+    },
+    {
+      "id": "copy-feedback",
+      "description": "A successful and a failed copy each say so beside the button"
+    },
+    {
+      "id": "download-feedback",
+      "description": "A successful and a failed download each say so beside the button"
+    },
+    {
+      "id": "stage-keys-keep-scroll",
+      "description": "Right then Left returns to the starting stage with the scroll position unchanged"
+    }
+  ]
+}

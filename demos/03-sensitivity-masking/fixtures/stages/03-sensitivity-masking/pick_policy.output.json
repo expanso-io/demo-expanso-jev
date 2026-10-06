@@ -1,0 +1,34 @@
+{
+  "email": "jane.doe@example.com",
+  "jev": {
+    "answers": {
+      "contains_credentials": {
+        "noul": 0.12,
+        "type": "noul"
+      },
+      "contains_pii": {
+        "noul": 0.92,
+        "type": "noul"
+      },
+      "sensitivity": {
+        "choice": "restricted",
+        "confidence": 0.92,
+        "probabilities": {
+          "confidential": 0.027,
+          "internal": 0.027,
+          "public": 0.027,
+          "restricted": 0.92
+        },
+        "type": "choice"
+      }
+    },
+    "model": "jev-mock",
+    "ms": 1
+  },
+  "jev_decision": "quarantine",
+  "name": "Jane Doe",
+  "plan": "team-annual",
+  "received_at": "2026-10-05T20:32:21.978172-07:00",
+  "record_id": "rec-001",
+  "ssn": "123-45-6789"
+}

@@ -1,0 +1,19 @@
+{
+  "baseline": "archive",
+  "bypass": true,
+  "fingerprint": "api::get /health # #ms",
+  "held_attempts": 0,
+  "id": "evt-000001",
+  "level": "INFO",
+  "msg": "GET /health 200 2ms",
+  "node_id": "edge-1",
+  "received_at": "2026-10-05T20:42:57.95718-07:00",
+  "recurrence": {
+    "first_seen_ago_s": 0,
+    "occurrence": 1,
+    "previous_decisions": [],
+    "window_s": 600
+  },
+  "service": "api",
+  "ts": "2026-10-05T09:00:01Z"
+}

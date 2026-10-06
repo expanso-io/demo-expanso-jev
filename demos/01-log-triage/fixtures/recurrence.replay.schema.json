@@ -28,22 +28,22 @@
             "const": true
           },
           "fingerprint": {
-            "const": "api::get /metrics # #ms"
+            "const": "api::get /health # #ms"
           },
           "held_attempts": {
             "const": 0
           },
           "id": {
-            "const": "evt-000002"
+            "const": "evt-000001"
           },
           "level": {
             "const": "INFO"
           },
           "msg": {
-            "const": "GET /metrics 200 5ms"
+            "const": "GET /health 200 2ms"
           },
           "node_id": {
-            "const": "fixture-node"
+            "const": "edge-1"
           },
           "routed_by": {
             "const": "expanso-bypass"
@@ -52,7 +52,7 @@
             "const": "api"
           },
           "ts": {
-            "const": "2026-10-05T09:00:02Z"
+            "const": "2026-10-05T09:00:01Z"
           }
         }
       },
@@ -98,7 +98,7 @@
             "const": "cron heartbeat ok job=nightly-rollup"
           },
           "node_id": {
-            "const": "fixture-node"
+            "const": "edge-1"
           },
           "routed_by": {
             "const": "expanso-bypass"
@@ -132,37 +132,37 @@
         ],
         "properties": {
           "baseline": {
-            "const": "archive"
+            "const": "notify"
           },
           "bypass": {
-            "const": true
+            "const": false
           },
           "fingerprint": {
-            "const": "api::get /health # #ms"
+            "const": "auth::auth failed for user admin from #.#.#.#"
           },
           "held_attempts": {
             "const": 0
           },
           "id": {
-            "const": "evt-000001"
+            "const": "evt-000006"
           },
           "level": {
-            "const": "INFO"
+            "const": "WARN"
           },
           "msg": {
-            "const": "GET /health 200 2ms"
+            "const": "auth failed for user admin from 10.0.9.12"
           },
           "node_id": {
-            "const": "fixture-node"
+            "const": "edge-1"
           },
           "routed_by": {
-            "const": "expanso-bypass"
+            "const": "jev"
           },
           "service": {
-            "const": "api"
+            "const": "auth"
           },
           "ts": {
-            "const": "2026-10-05T09:00:01Z"
+            "const": "2026-10-05T09:00:06Z"
           }
         }
       },
@@ -208,7 +208,7 @@
             "const": "GET /health 500 9000ms"
           },
           "node_id": {
-            "const": "fixture-node"
+            "const": "edge-1"
           },
           "routed_by": {
             "const": "jev"
@@ -263,7 +263,7 @@
             "const": "config reload requested by unknown actor"
           },
           "node_id": {
-            "const": "fixture-node"
+            "const": "edge-1"
           },
           "routed_by": {
             "const": "jev"
@@ -297,37 +297,37 @@
         ],
         "properties": {
           "baseline": {
-            "const": "notify"
+            "const": "page"
           },
           "bypass": {
             "const": false
           },
           "fingerprint": {
-            "const": "auth::auth failed for user admin from #.#.#.#"
+            "const": "api::oomkilled container api-# exit#"
           },
           "held_attempts": {
             "const": 0
           },
           "id": {
-            "const": "evt-000007"
+            "const": "evt-000011"
           },
           "level": {
-            "const": "WARN"
+            "const": "ERROR"
           },
           "msg": {
-            "const": "auth failed for user admin from 10.0.9.12"
+            "const": "OOMKilled container api-7 exit=137"
           },
           "node_id": {
-            "const": "fixture-node"
+            "const": "edge-1"
           },
           "routed_by": {
             "const": "jev"
           },
           "service": {
-            "const": "auth"
+            "const": "api"
           },
           "ts": {
-            "const": "2026-10-05T09:00:07Z"
+            "const": "2026-10-05T09:00:11Z"
           }
         }
       },
@@ -373,7 +373,7 @@
             "const": "rollout step 3/8 complete service=checkout"
           },
           "node_id": {
-            "const": "fixture-node"
+            "const": "edge-1"
           },
           "routed_by": {
             "const": "expanso-bypass"
@@ -428,7 +428,7 @@
             "const": "cache hit rate 0.94 window=5m"
           },
           "node_id": {
-            "const": "fixture-node"
+            "const": "edge-1"
           },
           "routed_by": {
             "const": "expanso-bypass"
@@ -438,391 +438,6 @@
           },
           "ts": {
             "const": "2026-10-05T09:00:13Z"
-          }
-        }
-      },
-      "minContains": 1,
-      "maxContains": 1
-    },
-    {
-      "contains": {
-        "type": "object",
-        "required": [
-          "baseline",
-          "bypass",
-          "fingerprint",
-          "held_attempts",
-          "id",
-          "level",
-          "msg",
-          "node_id",
-          "routed_by",
-          "service",
-          "ts"
-        ],
-        "properties": {
-          "baseline": {
-            "const": "archive"
-          },
-          "bypass": {
-            "const": false
-          },
-          "fingerprint": {
-            "const": "cache::cache hit rate #.# window#m"
-          },
-          "held_attempts": {
-            "const": 0
-          },
-          "id": {
-            "const": "evt-000016"
-          },
-          "level": {
-            "const": "INFO"
-          },
-          "msg": {
-            "const": "cache hit rate 0.01 window=5m"
-          },
-          "node_id": {
-            "const": "fixture-node"
-          },
-          "routed_by": {
-            "const": "jev"
-          },
-          "service": {
-            "const": "cache"
-          },
-          "ts": {
-            "const": "2026-10-05T09:00:16Z"
-          }
-        }
-      },
-      "minContains": 1,
-      "maxContains": 1
-    },
-    {
-      "contains": {
-        "type": "object",
-        "required": [
-          "baseline",
-          "bypass",
-          "fingerprint",
-          "held_attempts",
-          "id",
-          "level",
-          "msg",
-          "node_id",
-          "routed_by",
-          "service",
-          "ts"
-        ],
-        "properties": {
-          "baseline": {
-            "const": "notify"
-          },
-          "bypass": {
-            "const": false
-          },
-          "fingerprint": {
-            "const": "edge::tls certificate expiring in # hours renewal failed twice"
-          },
-          "held_attempts": {
-            "const": 0
-          },
-          "id": {
-            "const": "evt-000014"
-          },
-          "level": {
-            "const": "WARN"
-          },
-          "msg": {
-            "const": "TLS certificate expiring in 72 hours, renewal failed twice"
-          },
-          "node_id": {
-            "const": "fixture-node"
-          },
-          "routed_by": {
-            "const": "jev"
-          },
-          "service": {
-            "const": "edge"
-          },
-          "ts": {
-            "const": "2026-10-05T09:00:14Z"
-          }
-        }
-      },
-      "minContains": 1,
-      "maxContains": 1
-    },
-    {
-      "contains": {
-        "type": "object",
-        "required": [
-          "baseline",
-          "bypass",
-          "fingerprint",
-          "held_attempts",
-          "id",
-          "level",
-          "msg",
-          "node_id",
-          "routed_by",
-          "service",
-          "ts"
-        ],
-        "properties": {
-          "baseline": {
-            "const": "page"
-          },
-          "bypass": {
-            "const": false
-          },
-          "fingerprint": {
-            "const": "api::oomkilled container api-# exit#"
-          },
-          "held_attempts": {
-            "const": 0
-          },
-          "id": {
-            "const": "evt-000011"
-          },
-          "level": {
-            "const": "ERROR"
-          },
-          "msg": {
-            "const": "OOMKilled container api-7 exit=137"
-          },
-          "node_id": {
-            "const": "fixture-node"
-          },
-          "routed_by": {
-            "const": "jev"
-          },
-          "service": {
-            "const": "api"
-          },
-          "ts": {
-            "const": "2026-10-05T09:00:11Z"
-          }
-        }
-      },
-      "minContains": 1,
-      "maxContains": 1
-    },
-    {
-      "contains": {
-        "type": "object",
-        "required": [
-          "baseline",
-          "bypass",
-          "fingerprint",
-          "held_attempts",
-          "id",
-          "level",
-          "msg",
-          "node_id",
-          "routed_by",
-          "service",
-          "ts"
-        ],
-        "properties": {
-          "baseline": {
-            "const": "notify"
-          },
-          "bypass": {
-            "const": false
-          },
-          "fingerprint": {
-            "const": "auth::auth failed for user admin from #.#.#.#"
-          },
-          "held_attempts": {
-            "const": 0
-          },
-          "id": {
-            "const": "evt-000009"
-          },
-          "level": {
-            "const": "WARN"
-          },
-          "msg": {
-            "const": "auth failed for user admin from 10.0.9.12"
-          },
-          "node_id": {
-            "const": "fixture-node"
-          },
-          "routed_by": {
-            "const": "jev"
-          },
-          "service": {
-            "const": "auth"
-          },
-          "ts": {
-            "const": "2026-10-05T09:00:09Z"
-          }
-        }
-      },
-      "minContains": 1,
-      "maxContains": 1
-    },
-    {
-      "contains": {
-        "type": "object",
-        "required": [
-          "baseline",
-          "bypass",
-          "fingerprint",
-          "held_attempts",
-          "id",
-          "level",
-          "msg",
-          "node_id",
-          "routed_by",
-          "service",
-          "ts"
-        ],
-        "properties": {
-          "baseline": {
-            "const": "notify"
-          },
-          "bypass": {
-            "const": false
-          },
-          "fingerprint": {
-            "const": "db::slow query #.#s on orders table rows#k"
-          },
-          "held_attempts": {
-            "const": 0
-          },
-          "id": {
-            "const": "evt-000010"
-          },
-          "level": {
-            "const": "WARN"
-          },
-          "msg": {
-            "const": "slow query 4.2s on orders table rows=120k"
-          },
-          "node_id": {
-            "const": "fixture-node"
-          },
-          "routed_by": {
-            "const": "jev"
-          },
-          "service": {
-            "const": "db"
-          },
-          "ts": {
-            "const": "2026-10-05T09:00:10Z"
-          }
-        }
-      },
-      "minContains": 1,
-      "maxContains": 1
-    },
-    {
-      "contains": {
-        "type": "object",
-        "required": [
-          "baseline",
-          "bypass",
-          "fingerprint",
-          "held_attempts",
-          "id",
-          "level",
-          "msg",
-          "node_id",
-          "routed_by",
-          "service",
-          "ts"
-        ],
-        "properties": {
-          "baseline": {
-            "const": "notify"
-          },
-          "bypass": {
-            "const": false
-          },
-          "fingerprint": {
-            "const": "auth::auth failed for user admin from #.#.#.#"
-          },
-          "held_attempts": {
-            "const": 0
-          },
-          "id": {
-            "const": "evt-000008"
-          },
-          "level": {
-            "const": "WARN"
-          },
-          "msg": {
-            "const": "auth failed for user admin from 10.0.9.12"
-          },
-          "node_id": {
-            "const": "fixture-node"
-          },
-          "routed_by": {
-            "const": "jev"
-          },
-          "service": {
-            "const": "auth"
-          },
-          "ts": {
-            "const": "2026-10-05T09:00:08Z"
-          }
-        }
-      },
-      "minContains": 1,
-      "maxContains": 1
-    },
-    {
-      "contains": {
-        "type": "object",
-        "required": [
-          "baseline",
-          "bypass",
-          "fingerprint",
-          "held_attempts",
-          "id",
-          "level",
-          "msg",
-          "node_id",
-          "routed_by",
-          "service",
-          "ts"
-        ],
-        "properties": {
-          "baseline": {
-            "const": "notify"
-          },
-          "bypass": {
-            "const": false
-          },
-          "fingerprint": {
-            "const": "auth::auth failed for user admin from #.#.#.#"
-          },
-          "held_attempts": {
-            "const": 0
-          },
-          "id": {
-            "const": "evt-000006"
-          },
-          "level": {
-            "const": "WARN"
-          },
-          "msg": {
-            "const": "auth failed for user admin from 10.0.9.12"
-          },
-          "node_id": {
-            "const": "fixture-node"
-          },
-          "routed_by": {
-            "const": "jev"
-          },
-          "service": {
-            "const": "auth"
-          },
-          "ts": {
-            "const": "2026-10-05T09:00:06Z"
           }
         }
       },
@@ -868,7 +483,7 @@
             "const": "database primary unreachable, failover initiated"
           },
           "node_id": {
-            "const": "fixture-node"
+            "const": "edge-1"
           },
           "routed_by": {
             "const": "jev"
@@ -878,6 +493,391 @@
           },
           "ts": {
             "const": "2026-10-05T09:00:12Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "baseline",
+          "bypass",
+          "fingerprint",
+          "held_attempts",
+          "id",
+          "level",
+          "msg",
+          "node_id",
+          "routed_by",
+          "service",
+          "ts"
+        ],
+        "properties": {
+          "baseline": {
+            "const": "notify"
+          },
+          "bypass": {
+            "const": false
+          },
+          "fingerprint": {
+            "const": "edge::tls certificate expiring in # hours renewal failed twice"
+          },
+          "held_attempts": {
+            "const": 0
+          },
+          "id": {
+            "const": "evt-000014"
+          },
+          "level": {
+            "const": "WARN"
+          },
+          "msg": {
+            "const": "TLS certificate expiring in 72 hours, renewal failed twice"
+          },
+          "node_id": {
+            "const": "edge-1"
+          },
+          "routed_by": {
+            "const": "jev"
+          },
+          "service": {
+            "const": "edge"
+          },
+          "ts": {
+            "const": "2026-10-05T09:00:14Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "baseline",
+          "bypass",
+          "fingerprint",
+          "held_attempts",
+          "id",
+          "level",
+          "msg",
+          "node_id",
+          "routed_by",
+          "service",
+          "ts"
+        ],
+        "properties": {
+          "baseline": {
+            "const": "archive"
+          },
+          "bypass": {
+            "const": false
+          },
+          "fingerprint": {
+            "const": "cache::cache hit rate #.# window#m"
+          },
+          "held_attempts": {
+            "const": 0
+          },
+          "id": {
+            "const": "evt-000016"
+          },
+          "level": {
+            "const": "INFO"
+          },
+          "msg": {
+            "const": "cache hit rate 0.01 window=5m"
+          },
+          "node_id": {
+            "const": "edge-1"
+          },
+          "routed_by": {
+            "const": "jev"
+          },
+          "service": {
+            "const": "cache"
+          },
+          "ts": {
+            "const": "2026-10-05T09:00:16Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "baseline",
+          "bypass",
+          "fingerprint",
+          "held_attempts",
+          "id",
+          "level",
+          "msg",
+          "node_id",
+          "routed_by",
+          "service",
+          "ts"
+        ],
+        "properties": {
+          "baseline": {
+            "const": "archive"
+          },
+          "bypass": {
+            "const": true
+          },
+          "fingerprint": {
+            "const": "api::get /metrics # #ms"
+          },
+          "held_attempts": {
+            "const": 0
+          },
+          "id": {
+            "const": "evt-000002"
+          },
+          "level": {
+            "const": "INFO"
+          },
+          "msg": {
+            "const": "GET /metrics 200 5ms"
+          },
+          "node_id": {
+            "const": "edge-1"
+          },
+          "routed_by": {
+            "const": "expanso-bypass"
+          },
+          "service": {
+            "const": "api"
+          },
+          "ts": {
+            "const": "2026-10-05T09:00:02Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "baseline",
+          "bypass",
+          "fingerprint",
+          "held_attempts",
+          "id",
+          "level",
+          "msg",
+          "node_id",
+          "routed_by",
+          "service",
+          "ts"
+        ],
+        "properties": {
+          "baseline": {
+            "const": "notify"
+          },
+          "bypass": {
+            "const": false
+          },
+          "fingerprint": {
+            "const": "db::slow query #.#s on orders table rows#k"
+          },
+          "held_attempts": {
+            "const": 0
+          },
+          "id": {
+            "const": "evt-000010"
+          },
+          "level": {
+            "const": "WARN"
+          },
+          "msg": {
+            "const": "slow query 4.2s on orders table rows=120k"
+          },
+          "node_id": {
+            "const": "edge-1"
+          },
+          "routed_by": {
+            "const": "jev"
+          },
+          "service": {
+            "const": "db"
+          },
+          "ts": {
+            "const": "2026-10-05T09:00:10Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "baseline",
+          "bypass",
+          "fingerprint",
+          "held_attempts",
+          "id",
+          "level",
+          "msg",
+          "node_id",
+          "routed_by",
+          "service",
+          "ts"
+        ],
+        "properties": {
+          "baseline": {
+            "const": "notify"
+          },
+          "bypass": {
+            "const": false
+          },
+          "fingerprint": {
+            "const": "auth::auth failed for user admin from #.#.#.#"
+          },
+          "held_attempts": {
+            "const": 0
+          },
+          "id": {
+            "const": "evt-000007"
+          },
+          "level": {
+            "const": "WARN"
+          },
+          "msg": {
+            "const": "auth failed for user admin from 10.0.9.12"
+          },
+          "node_id": {
+            "const": "edge-1"
+          },
+          "routed_by": {
+            "const": "jev"
+          },
+          "service": {
+            "const": "auth"
+          },
+          "ts": {
+            "const": "2026-10-05T09:00:07Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "baseline",
+          "bypass",
+          "fingerprint",
+          "held_attempts",
+          "id",
+          "level",
+          "msg",
+          "node_id",
+          "routed_by",
+          "service",
+          "ts"
+        ],
+        "properties": {
+          "baseline": {
+            "const": "notify"
+          },
+          "bypass": {
+            "const": false
+          },
+          "fingerprint": {
+            "const": "auth::auth failed for user admin from #.#.#.#"
+          },
+          "held_attempts": {
+            "const": 0
+          },
+          "id": {
+            "const": "evt-000009"
+          },
+          "level": {
+            "const": "WARN"
+          },
+          "msg": {
+            "const": "auth failed for user admin from 10.0.9.12"
+          },
+          "node_id": {
+            "const": "edge-1"
+          },
+          "routed_by": {
+            "const": "jev"
+          },
+          "service": {
+            "const": "auth"
+          },
+          "ts": {
+            "const": "2026-10-05T09:00:09Z"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "baseline",
+          "bypass",
+          "fingerprint",
+          "held_attempts",
+          "id",
+          "level",
+          "msg",
+          "node_id",
+          "routed_by",
+          "service",
+          "ts"
+        ],
+        "properties": {
+          "baseline": {
+            "const": "notify"
+          },
+          "bypass": {
+            "const": false
+          },
+          "fingerprint": {
+            "const": "auth::auth failed for user admin from #.#.#.#"
+          },
+          "held_attempts": {
+            "const": 0
+          },
+          "id": {
+            "const": "evt-000008"
+          },
+          "level": {
+            "const": "WARN"
+          },
+          "msg": {
+            "const": "auth failed for user admin from 10.0.9.12"
+          },
+          "node_id": {
+            "const": "edge-1"
+          },
+          "routed_by": {
+            "const": "jev"
+          },
+          "service": {
+            "const": "auth"
+          },
+          "ts": {
+            "const": "2026-10-05T09:00:08Z"
           }
         }
       },

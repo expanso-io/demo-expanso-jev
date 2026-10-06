@@ -1,0 +1,20 @@
+{
+  "jev": {
+    "answers": {
+      "interesting": {
+        "confidence": 0.7,
+        "probabilities": {},
+        "score": 3.4,
+        "type": "score"
+      }
+    },
+    "model": "jev-mock",
+    "ms": 1
+  },
+  "jev_decision": "keep",
+  "jev_score": 3.4,
+  "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
+  "received_at": "2026-10-05T20:33:21.32156-07:00",
+  "service": "worker-3",
+  "ts": "2026-09-18T14:00:05Z"
+}

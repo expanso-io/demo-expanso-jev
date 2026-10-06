@@ -1,0 +1,32 @@
+{
+  "geo": "Seattle, US",
+  "ip": "10.4.2.18",
+  "jev": {
+    "answers": {
+      "escalate": {
+        "noul": 0.12,
+        "type": "noul"
+      },
+      "threat": {
+        "choice": "benign",
+        "confidence": 0.92,
+        "probabilities": {
+          "benign": 0.92,
+          "brute_force": 0.016,
+          "credential_stuffing": 0.016,
+          "impossible_travel": 0.016,
+          "other": 0.016,
+          "token_abuse": 0.016
+        },
+        "type": "choice"
+      }
+    },
+    "model": "jev-mock",
+    "ms": 1
+  },
+  "mfa": true,
+  "received_at": "2026-10-05T20:33:47.008459-07:00",
+  "result": "success",
+  "ts": "2026-09-18T14:00:00Z",
+  "user": "alice@corp.com"
+}

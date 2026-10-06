@@ -1,0 +1,18 @@
+{
+  "baseline": "archive",
+  "fingerprint": "api::get /health # #ms",
+  "id": "evt-000001",
+  "level": "INFO",
+  "msg": "GET /health 200 2ms",
+  "node_id": "edge-1",
+  "received_at": "2026-10-05T20:42:49.001411-07:00",
+  "recurrence": {
+    "first_seen_ago_s": 0,
+    "occurrence": 1,
+    "previous_decisions": [],
+    "window_s": 600
+  },
+  "routed_by": "expanso",
+  "service": "api",
+  "ts": "2026-10-05T09:00:01Z"
+}

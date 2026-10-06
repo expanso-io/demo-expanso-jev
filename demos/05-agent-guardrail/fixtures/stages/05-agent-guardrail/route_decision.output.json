@@ -1,0 +1,32 @@
+{
+  "agent_id": "agent-01",
+  "args": {
+    "path": "/data/q3-sales-report.pdf"
+  },
+  "jev": {
+    "answers": {
+      "intent_match": {
+        "noul": 0.92,
+        "type": "noul"
+      },
+      "risk": {
+        "choice": "safe",
+        "confidence": 0.92,
+        "probabilities": {
+          "data_exfiltration": 0.02,
+          "irreversible": 0.02,
+          "other": 0.02,
+          "privilege_escalation": 0.02,
+          "safe": 0.92
+        },
+        "type": "choice"
+      }
+    },
+    "model": "jev-mock",
+    "ms": 1
+  },
+  "jev_decision": "allow",
+  "received_at": "2026-10-05T20:33:01.473595-07:00",
+  "tool": "read_file",
+  "user_intent": "Summarize the Q3 sales report for me"
+}

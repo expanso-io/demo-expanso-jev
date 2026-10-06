@@ -1,0 +1,29 @@
+{
+  "author": "user_4821",
+  "content_id": "c-001",
+  "jev": {
+    "answers": {
+      "category": {
+        "choice": "safe",
+        "confidence": 0.92,
+        "probabilities": {
+          "hate": 0.016,
+          "other": 0.016,
+          "safe": 0.92,
+          "self_harm": 0.016,
+          "sexual": 0.016,
+          "spam": 0.016
+        },
+        "type": "choice"
+      },
+      "needs_human": {
+        "noul": 0.12,
+        "type": "noul"
+      }
+    },
+    "model": "jev-mock",
+    "ms": 1
+  },
+  "received_at": "2026-10-05T20:34:26.984433-07:00",
+  "text": "Just finished the new onboarding flow, super smooth! Great work team."
+}

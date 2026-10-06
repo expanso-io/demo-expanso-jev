@@ -376,7 +376,6 @@ class Run:
             TYPESAFE_API_KEY=FIXTURE_KEY,
             INGEST_ADDRESS=f"127.0.0.1:{self.ingest_port}",
             INGEST_PORT=str(self.ingest_port),
-            NODE_ID="fixture-node",
             **self.extra_env,
         )
 

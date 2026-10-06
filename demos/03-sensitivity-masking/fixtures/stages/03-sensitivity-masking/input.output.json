@@ -1,0 +1,7 @@
+{
+  "record_id": "rec-001",
+  "name": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "ssn": "123-45-6789",
+  "plan": "team-annual"
+}

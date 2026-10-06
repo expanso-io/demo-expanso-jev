@@ -1,0 +1,6 @@
+{
+  "feedback_id": "f-001",
+  "customer": "acme-corp",
+  "rating": 2,
+  "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
+}

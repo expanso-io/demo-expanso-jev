@@ -207,5 +207,38 @@
       },
       "note": "Jev answers 503. The two routine lines still reach the archive with no model call. The WARN record is held: one receipt is written, then it is posted back to the input every 2 to 4 seconds and handed to review after 15 attempts, about 45 seconds. Nothing is guessed and nothing is dropped."
     }
-  }
+  },
+  "run": [
+    {
+      "title": "Run it with no account",
+      "intro": "The fixture runner deploys each pipeline exactly as shipped to a local Edge agent, starts the recurrence counter the pipelines call, posts every line of `input.jsonl`, and compares what the pipeline wrote with the expected output. A third case makes Jev unreachable and watches a record being held and then handed to review. It needs expanso-edge, expanso-cli and uv.",
+      "commands": [
+        "uv run -s tools/fixture-runner.py run --only 01"
+      ],
+      "after": "Each case prints pass or FAIL with the buckets it wrote."
+    },
+    {
+      "title": "Run the live board",
+      "intro": "The board watches a real pipeline in three acts: nothing deployed, Expanso alone, Expanso and Jev. It needs Expanso Cloud credentials and either a TypeSafe key or the bundled responder.",
+      "commands": [
+        "just init\njust jev-key\njust doctor",
+        "just up triage\njust open triage",
+        "just act2\njust act3",
+        "just down triage"
+      ],
+      "after": "`demos/01-log-triage/README.md` explains the board and what to do when it breaks."
+    }
+  ],
+  "deploy": [
+    {
+      "title": "Deploy through Expanso Cloud",
+      "intro": "Both files deploy as the same job, `log-triage`, so act three is a version bump of act two. Credentials come from the environment, never from flags.",
+      "commands": [
+        "export EXPANSO_CLI_ENDPOINT=https://your-network.example.net\nexport EXPANSO_CLI_AUTH_API_KEY=your-api-key",
+        "expanso-cli job deploy --force \\\n  demos/01-log-triage/pipeline-logging.yaml",
+        "expanso-cli job deploy --force \\\n  demos/01-log-triage/pipeline-recurrence.yaml"
+      ],
+      "after": "The recurrence pipeline asks `JEV_API_URL`, which defaults to the local responder on 127.0.0.1:8099. Point it at the dashboard server's gate (the live demo does) or at Jev with `TYPESAFE_API_KEY` set in the Edge agent's environment. The counter at 127.0.0.1:8898 is `demos/01-log-triage/counter.py`; replace it with a store you trust before real traffic."
+    }
+  ]
 }
