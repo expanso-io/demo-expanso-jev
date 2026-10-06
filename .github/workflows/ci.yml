@@ -62,6 +62,11 @@ jobs:
           uv run -s tools/build-explorers.py --check
           uv run -s tools/fixture-runner.py check
 
+      - name: Install just
+        run: |
+          uv tool install rust-just==1.40.0
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
       - name: Unit tests
         run: |
           uv run demos/11-pod-labels/test_adapter.py
