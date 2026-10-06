@@ -1,3 +1,13 @@
 {
-  "removals": []
+  "removals": [],
+  "superseded": [
+    {
+      "id": "display-fancy-jev-flow",
+      "path": "display/fancy/jev-flow.html",
+      "superseded_by": "index.html",
+      "decided_by": "firstmate",
+      "decided_on": "2026-10-05",
+      "reason": "The animated walkthrough was never a retained feature id; the all-example explorer in index.html replaces it."
+    }
+  ]
 }

@@ -334,7 +334,7 @@ node demos/11-pod-labels/test_web.cjs
 ```
 
 Run these from the repository root. The browser suite requires Node,
-Playwright and Chrome; it uses an isolated browser and mock API responses.
+Playwright with its bundled headless Chromium; it uses an isolated browser and mock API responses.
 It checks immediate particles, confirmed label changes, all three targets,
 keyboard controls, reduced motion and four viewport sizes.
 

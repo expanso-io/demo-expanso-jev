@@ -174,19 +174,11 @@ _triage-status:
 logs name="server":
     tail -f "{{ live }}/logs/{{ name }}.log"
 
-# Open the demo in the configured display layer (DISPLAY_MODE=business|fancy).
+# Open the live demo in the browser.
 _triage-open:
     #!/usr/bin/env bash
     set -euo pipefail
-    if [ "${DISPLAY_MODE:-business}" = "fancy" ]; then
-      open "{{ root }}/display/fancy/jev-flow.html"
-    else
-      open "http://127.0.0.1:$JEV_LIVE_PORT"
-    fi
-
-# The fancy display layer directly — no stack needed.
-flow:
-    open "{{ root }}/display/fancy/jev-flow.html"
+    open "http://127.0.0.1:$JEV_LIVE_PORT"
 
 # Push one chaos scenario through the live pipeline.
 # scenario: brute | ghost | disk | cert | crash

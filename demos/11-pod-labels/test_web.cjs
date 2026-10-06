@@ -1,47 +1,78 @@
 // Browser regression tests with synthetic HTTP fixtures; never call Cloud/Jev.
-// Requires Playwright and Chrome installed. Run: node test_web.cjs
+// Requires Playwright's bundled headless Chromium (npx playwright install chromium); never an installed Chrome. Run: node test_web.cjs
 const assert=require('node:assert/strict');
+
 const http=require('node:http');
+
 const fs=require('node:fs');
+
 const path=require('node:path');
+
 const {chromium}=require('playwright');
+
 const root=__dirname;
+
 const fonts=path.join(root,'../01-log-triage/fonts');
+
 const base={app:'x',team:'payments',version:'v1.0.0','istio.io/rev':'default'};
+
 const pod=(name,labels={})=>({name,namespace:'jev-label-demo',status:'Running',event_enabled:true,logs:[],labels:{...base,app:name.split('-')[0],...labels}});
+
 const scenarios=[['crashloop','Crash loop',[['undo','routing-tier','stable'],['add','health','degraded']]],['restart','One restart',[['add','health','degraded']]],['healthy','Back to healthy',[['undo','health','degraded'],['add','routing-tier','stable']]]]
   .map(([id,title,prefer])=>({id,title,prefer,why:`why ${id}`,message:`log line for ${id}`}));
+
 const baseState={mode:'live',apply_enabled:true,threshold:0.8,auto:true,cluster_context:'test',namespace:'jev-label-demo',scenarios,
   available_labels:[{key:'routing-tier',value:'stable',meaning:'m'},{key:'health',value:'degraded',meaning:'m'}],
   pods:[pod('analytics-worker'),pod('checkout-api',{'routing-tier':'stable'}),pod('orders-api')],cloud:{state:'running'}};
+
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.woff2':'font/woff2'};
+
 const server=http.createServer((req,res)=>{
   const file=req.url==='/'?path.join(root,'web/index.html'):req.url.startsWith('/web/')?path.join(root,req.url):req.url.startsWith('/fonts/')?path.join(fonts,path.basename(req.url)):null;
-  if(!file||!fs.existsSync(file)){res.writeHead(404);res.end();return;}
+
+  if(!file||!fs.existsSync(file)){res.writeHead(404);res.end();
+
+return;}
+
   res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream'});res.end(fs.readFileSync(file));});
-(async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,channel:'chrome'});let page,errors=[],posted=[],events=[];try{
+
+(async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true});let page,errors=[],posted=[],events=[];
+
+try{
  page=await browser.newPage({viewport:{width:1600,height:900}});page.on('pageerror',e=>errors.push(e.message));
  let expiryEnabled=true,acks=[];
  let state=structuredClone(baseState),seq=0,autoCalls=[],investigationCalls=[],outcome='applied',decisionDelay=0;
+
  const run=(podName,scenario,op,key,value,noul)=>{const request_id='r'+(posted.length+seq);const common={request_id,pod:podName,namespace:'jev-label-demo'};
    const stages=[['queued',{scenario}],['event',{scenario}],['collected',{key,value,operation:op}],['judging',{key,value,operation:op}],['judged',{key,value,operation:op,noul}],[['held','review'].includes(outcome)?'held':op==='undo'?'undone':'applied',{key,value,operation:op,noul}]];
-   stages.forEach(([stage,extra],i)=>setTimeout(()=>{if(stage==='applied'){const p=state.pods.find(p=>p.name===podName);p.labels[key]=value;p.label_leases||={};p.label_leases[key]={request_id,value,scenario,state:'applied'};}if(stage==='undone')delete state.pods.find(p=>p.name===podName).labels[key];
-     events.push({...common,...extra,stage,seq:++seq,at:Date.now()/1000,message:stage});},i*60+(i>=4?decisionDelay:0)));return request_id;};
+   stages.forEach(([stage,extra],i)=>setTimeout(()=>{if(stage==='applied'){const p=state.pods.find(p=>p.name===podName);p.labels[key]=value;p.label_leases||={};p.label_leases[key]={request_id,value,scenario,state:'applied'};}
+
+if(stage==='undone')delete state.pods.find(p=>p.name===podName).labels[key];
+     events.push({...common,...extra,stage,seq:++seq,at:Date.now()/1000,message:stage});},i*60+(i>=4?decisionDelay:0)));
+
+return request_id;};
+
  await page.route('**/api/**',async route=>{const url=new URL(route.request().url());let body;
+
   if(url.pathname==='/api/session')body={csrf_token:'t'};
   else if(url.pathname==='/api/state')body={...state,events};
   else if(url.pathname==='/api/events')body={events:events.filter(e=>e.seq>Number(url.searchParams.get('after'))),cursor:seq};
   else if(url.pathname==='/api/label-visible'){
     const b=route.request().postDataJSON();acks.push(b);const p=state.pods.find(p=>p.name===b.pod),lease=p.label_leases?.[b.key];
+
     if(lease?.request_id===b.request_id&&!lease.displayed_at){lease.displayed_at=Date.now()/1000;
+
       if(expiryEnabled)setTimeout(()=>{if(p.label_leases?.[b.key]?.request_id!==b.request_id)return;delete p.labels[b.key];delete p.label_leases[b.key];events.push({...b,value:lease.value,stage:'expired',seq:++seq,at:Date.now()/1000});},10500);
-    }body={stage:'queued'};
+    }
+
+body={stage:'queued'};
   }
   else if(url.pathname==='/api/auto'){const b=route.request().postDataJSON();autoCalls.push(b);state.auto=b.on;body={auto:b.on};}
   else if(url.pathname==='/api/investigate'){
     const b=route.request().postDataJSON();investigationCalls.push(b);
     const request_id='investigation-'+investigationCalls.length;
     let incident=(state.investigations||[]).find(i=>i.pod===b.pod);
+
     if(!incident||b.phase==='restart')incident={id:'incident-'+b.pod,namespace:b.namespace,pod:b.pod,evidence:[]};
     incident.phase=b.phase;incident.status='queued';incident.evidence.push({id:'E'+investigationCalls.length,kind:b.phase,text:b.phase==='evidence'?'OOMKilled: OrderCache.load:212 after release cache limit change':'Pod restart context',source:'pod stdout',synthetic:true});
     state.investigations=[incident];
@@ -55,7 +86,10 @@ const server=http.createServer((req,res)=>{
   }
   else if(url.pathname==='/api/event'){const b=route.request().postDataJSON();posted.push(b);const s=scenarios.find(x=>x.id===b.scenario);const target=state.pods.find(p=>p.name===b.pod);
     const [op,key,value]=s.prefer.find(([o,k,v])=>o==='undo'?target.labels[k]===v:!(k in target.labels))||s.prefer[0];const request_id=run(b.pod,b.scenario,outcome==='review'?'review':op,key,value,['held','review'].includes(outcome)?0.08:0.93);body={request_id,stage:'queued'};}
-  else{await route.fulfill({status:404,body:'{}'});return;}
+  else{await route.fulfill({status:404,body:'{}'});
+
+return;}
+
   await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body)});});
  await page.goto(`http://127.0.0.1:${server.address().port}`);await page.locator('[data-pod]').first().waitFor();
 
@@ -78,7 +112,9 @@ const server=http.createServer((req,res)=>{
  assert.ok(await page.locator('.wire.general').count());
  console.log('PASS routine lines animate and are counted without any Jev question');
 
- await page.evaluate(()=>{window.signalDurations=[];const original=travel;travel=(path,color,duration,routine)=>{if(!routine)window.signalDurations.push(duration);return original(path,color,duration,routine);};});
+ await page.evaluate(()=>{window.signalDurations=[];const original=travel;travel=(path,color,duration,routine)=>{if(!routine)window.signalDurations.push(duration);
+
+return original(path,color,duration,routine);};});
  await checkout.click();await page.locator('[data-scenario="crashloop"]').click();
  await page.waitForTimeout(500);
  assert.equal(state.pods.find(p=>p.name==='checkout-api').labels['routing-tier'],undefined,'backend completed while visual replay continues');
@@ -124,15 +160,19 @@ const server=http.createServer((req,res)=>{
  outcome='held';
  decisionDelay=2000;
  const noise=setInterval(()=>{for(const pod of state.pods)events.push({seq:++seq,stage:'routine',destination:'general_logs',pod:pod.name,namespace:pod.namespace,count:3,at:Date.now()/1000});},200);
+
  try{
    await page.waitForFunction(()=>document.querySelectorAll('.routine-packet').length>0);
    const beforeLogs=Number((await page.locator('#logged-count').textContent()).replaceAll(',',''));
    await page.locator('[data-scenario="restart"]').click();
    await page.waitForFunction(()=>document.getElementById('jev-status').textContent==='…');
+
    for(let i=0;i<12;i++){await page.waitForTimeout(100);assert.ok(await page.locator('.routine-packet').count(),'gray stream continues during Jev');}
+
    assert.ok(Number((await page.locator('#logged-count').textContent()).replaceAll(',',''))>beforeLogs);
    await page.waitForFunction(()=>!document.querySelector('.pod.busy'));
  }finally{clearInterval(noise);decisionDelay=0;}
+
  console.log('PASS gray traffic continues throughout a delayed Jev decision');
  expiryEnabled=false;outcome='applied';
  const ackStart=acks.length;
@@ -182,12 +222,19 @@ assert.equal(await page.locator('#evidence-cards').isVisible(),false);
  assert.match(await page.locator('#jev-question').textContent(),/Investigate/);
  assert.equal(await page.locator('#api-line').textContent().then(t=>t.includes('investigate')),false);
  console.log('PASS investigation holds on sparse evidence, accumulates context, shows a decision without another provider, never animates a Kubernetes patch');
+
  if(process.env.POD_UI_SCREENSHOT){await page.locator('#mode').evaluate(n=>n.textContent='BROWSER TEST');await page.locator('.provenance').evaluate(n=>n.textContent='BROWSER TEST · MOCK RESPONSES');await page.locator('#connection').evaluate(n=>n.textContent='No Cloud connection');await page.screenshot({path:process.env.POD_UI_SCREENSHOT,fullPage:true});}
+
  for(const width of [1600,1280,1024,768,390]){await page.setViewportSize({width,height:1000});await page.waitForTimeout(80);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`investigation overflow at ${width}`);}
+
  await page.locator('[data-lane="labels"]').click();
+
  for(const width of [1600,1280,1024,768,390]){await page.setViewportSize({width,height:900});await page.waitForTimeout(80);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`no horizontal scroll at ${width}`);}
- await page.evaluate(()=>{feed.length=0;for(let i=0;i<7;i++)pushFeed({stage:'applied',at:Date.now()/1000,key:'health',value:'degraded'}, {pod:'event-'+i,scenario:'crashloop',key:'health',value:'degraded',noul:.93});});
+
+ await page.evaluate(()=>{feed.length=0;
+
+for(let i=0;i<7;i++)pushFeed({stage:'applied',at:Date.now()/1000,key:'health',value:'degraded'}, {pod:'event-'+i,scenario:'crashloop',key:'health',value:'degraded',noul:.93});});
  assert.equal(await page.locator('#feed li').count(),6);
  assert.deepEqual(await page.locator('#feed .who').allTextContents(),['event-6','event-5','event-4','event-3','event-2','event-1']);
  await page.setViewportSize({width:1600,height:900});
@@ -199,10 +246,20 @@ assert.equal(await page.locator('#evidence-cards').isVisible(),false);
  await page.setViewportSize({width:1280,height:720});await page.waitForTimeout(80);
  assert.equal(await page.locator('#feed li:visible').count(),5,'short recording layout keeps five decisions');
  assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight),'fits one 1280x720 screen: '+JSON.stringify(await page.evaluate(()=>({height:document.documentElement.scrollHeight,pod:document.querySelector('.pod').getBoundingClientRect().height,feed:document.querySelector('.feed').getBoundingClientRect().height}))));
- const positions=await page.evaluate(()=>['cloud-node','jev-node','logs-node','kube-node'].map(id=>{const r=document.getElementById(id).getBoundingClientRect();return{top:r.top,bottom:r.bottom,height:r.height};}));
+
+ const positions=await page.evaluate(()=>['cloud-node','jev-node','logs-node','kube-node'].map(id=>{const r=document.getElementById(id).getBoundingClientRect();
+
+return{top:r.top,bottom:r.bottom,height:r.height};}));
+
  assert.equal(positions[0].height,positions[1].height);assert.equal(positions[0].height,positions[2].height);
  assert.ok(positions.slice(0,3).every(p=>p.bottom<positions[3].bottom));
- const header=await checkout.evaluate(n=>{const p=n.getBoundingClientRect();return [...n.querySelectorAll('.pod-icon,.pod-name,.pod-phase')].every(x=>{const r=x.getBoundingClientRect();return Math.abs(r.left+r.width/2-p.left-p.width/2)<2;});});
+
+ const header=await checkout.evaluate(n=>{const p=n.getBoundingClientRect();
+
+return [...n.querySelectorAll('.pod-icon,.pod-name,.pod-phase')].every(x=>{const r=x.getBoundingClientRect();
+
+return Math.abs(r.left+r.width/2-p.left-p.width/2)<2;});});
+
  assert.ok(header,'pod header is centered');
 
  assert.deepEqual(errors,[]);

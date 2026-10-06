@@ -152,7 +152,6 @@ Details, environment variables and troubleshooting:
 | `tools/fixture-runner.py` | Runs every pipeline on its shipped input and asserts the output; writes the dated report. |
 | `public-bar.toml`, `public-features.json`, `.demo-kit/` | The shared public-example check and the retained-feature baseline. See [`docs/RUNBOOK.md`](docs/RUNBOOK.md). |
 | `docs/verification/` | Dated run reports and the earlier Cloud and real-Jev verification reports. |
-| `display/fancy/jev-flow.html` | A standalone animated walkthrough of the idea. `just flow`. |
 | `tools/expanso-agent-help.py`, `AGENTS.md` | How the Expanso CLIs take credentials from the environment, for people and coding agents. `just agent-help`. |
 
 ## What this does and does not show
