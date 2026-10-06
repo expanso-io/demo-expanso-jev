@@ -57,6 +57,7 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 DEMOS = ROOT / "demos"
 REPORT_DIR = ROOT / "docs" / "verification"
 FIXTURE_KEY = "fixture-run-no-key"  # a literal, not a credential
@@ -541,6 +542,8 @@ def normalize_lines(lines, volatile):
 
 
 def run_case(case: Case, record: bool) -> dict:
+    if case.spec.get("harness") == "pod-labels":
+        return run_pod_labels(case, record)
     started = time.time()
     lines = read_inputs(case)
     volatile = case.spec.get("volatile", [])
@@ -652,6 +655,31 @@ def expected_total(case: Case, record: bool):
         len([l for l in p.read_text().splitlines() if l.strip()])
         for p in case.expected_dir.glob("*.jsonl")
     ) or None
+
+
+def run_pod_labels(case: Case, record: bool) -> dict:
+    """The pod-labels example reads and writes a cluster; see tools/pod_labels_case.py."""
+    import pod_labels_case
+
+    started = time.time()
+    result = {
+        "id": case.id,
+        "pipeline": case.pipeline.relative_to(ROOT).as_posix(),
+        "pipeline_sha256": sha256_file(case.pipeline),
+        "inputs": len(pod_labels_case.SCRIPT),
+        "queues": {},
+        "ok": False,
+        "problems": [],
+    }
+    pod_labels_case.run(case, record, sys.modules[__name__], result)
+    if case.input.exists():
+        result["input"] = case.input.relative_to(ROOT).as_posix()
+        result["input_sha256"] = sha256_file(case.input)
+    else:
+        result["input"], result["input_sha256"] = "(none)", ""
+    result["ok"] = not result["problems"]
+    result["seconds"] = round(time.time() - started, 1)
+    return result
 
 
 def compare(case: Case, shipped_norm: dict) -> list[str]:

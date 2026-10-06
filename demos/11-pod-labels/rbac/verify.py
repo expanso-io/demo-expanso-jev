@@ -59,8 +59,11 @@ def main() -> int:
     who = f"system:serviceaccount:{ns}:{ACCOUNT}"
 
     def can(verb: str, resource: str, *scope: str) -> bool:
-        r = kubectl(args.kubeconfig, args.context, "auth", "can-i", verb, resource,
-                    "--as", who, *scope)
+        # "pods/exec" as one word would mean a pod NAMED exec; ask for the subresource.
+        base, _, sub = resource.partition("/")
+        extra = ["--subresource", sub] if sub else []
+        r = kubectl(args.kubeconfig, args.context, "auth", "can-i", verb, base,
+                    *extra, "--as", who, *scope)
         return r.stdout.strip() == "yes"
 
     allow = [
@@ -68,6 +71,7 @@ def main() -> int:
         ("get", "pods", ("-n", ns)),
         ("patch", "pods", ("-n", ns)),
         ("get", "pods/log", ("-n", ns)),
+        ("list", "events", ("-n", ns)),
         ("create", "pods/exec", ("-n", ns)),
         ("get", "pods/exec", ("-n", ns)),
     ]
@@ -82,6 +86,8 @@ def main() -> int:
         ("create", "pods/exec", ("-n", "kube-system")),
         ("get", "pods/log", ("-n", "kube-system")),
         ("get", "pods", ("-n", "kube-system")),
+        ("list", "events", ("-n", "kube-system")),
+        ("delete", "events", ("-n", ns)),
     ]
     for verb, resource, scope in allow:
         check(f"allowed: {verb} {resource} {' '.join(scope)}", can(verb, resource, *scope))
@@ -97,6 +103,8 @@ def main() -> int:
         check(f"token: get pod {args.pod}", got.returncode == 0)
         logs = kubectl(agent, "agent", "logs", args.pod, "-n", ns, "--tail=1")
         check("token: read logs", "forbidden" not in logs.stderr.lower(), logs.stderr.strip()[:80])
+        events = kubectl(agent, "agent", "get", "events", "-n", ns, "-o", "name")
+        check("token: list events", events.returncode == 0, events.stderr.strip()[:80])
         patch = [{"op": "add", "path": "/metadata/annotations/jev.expanso.io~1rbac-probe", "value": "1"}]
         r = subprocess.run(
             ["kubectl", "--kubeconfig", str(agent), "--context", "agent", "-n", ns, "patch", "pod",

@@ -1,0 +1,142 @@
+{
+  "note": "Recorded Jev answers for the pod-labels run. Investigation answers are the real Jev values in docs/investigation-live-proof.json; label answers come from the offline responder in shared/jev-mock-server.py. No model was called.",
+  "answers": [
+    {
+      "key": "0270c201a2d03cff74e9fbdd6ae4d651c0414f722335423b09e3b1fc07dfdc9c",
+      "source": "offline responder, shared/jev-mock-server.py",
+      "state": {
+        "label": {
+          "key": "workload",
+          "value": "batch",
+          "meaning": "The latest completed work is a batch job rather than HTTP serving",
+          "origin": "demo configuration"
+        },
+        "latest_event": {
+          "event": "batch_completed",
+          "message": "Nightly batch finished: 2,140,000 rows in 11m, queue empty, no HTTP listeners active; this pod does batch work, not HTTP serving",
+          "at": 1791256530.9372969,
+          "synthetic_stimulus": true
+        },
+        "recent_logs": [
+          "{\"event\": \"batch_completed\", \"message\": \"Nightly batch finished: 2,140,000 rows in 11m, queue empty, no HTTP listeners active; this pod does batch work, not HTTP serving\", \"at\": 1791256530.9372969, \"synthetic_stimulus\": true}"
+        ],
+        "source": "Synthetic workload observations emitted by the demo pod"
+      },
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "act": {
+            "type": "noul",
+            "noul": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "053f1671ff95896c526f84a351b01e02bbfd7e7fbdc6ab294c05c07b67ae28f3",
+      "source": "offline responder, shared/jev-mock-server.py",
+      "state": {
+        "label": {
+          "key": "pressure",
+          "value": "memory",
+          "meaning": "Was killed or is failing because of its own memory use",
+          "origin": "demo configuration"
+        },
+        "latest_event": {
+          "event": "container_oom_killed",
+          "reason": "OOMKilled",
+          "message": "OOMKilled. java.lang.OutOfMemoryError: Java heap space at OrderCache.load(OrderCache.java:212); working set 498Mi of 512Mi limit; killed for its own memory use while traffic was flat",
+          "at": 1791256531.5992942,
+          "synthetic_stimulus": true
+        },
+        "recent_logs": [
+          "{\"event\": \"investigation_restart\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 1, \"message\": \"Synthetic incident: container restarted once; termination details and stack trace are unavailable. Cause unknown.\", \"at\": 1791256527.3965356}",
+          "{\"event\": \"investigation_context\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"restarts\": 5, \"window\": \"4m\", \"release_sha\": \"7c9e2a1\", \"timeline\": [\"12:00 UTC: release 7c9e2a1 deployed (synthetic)\", \"12:02-12:06 UTC: five container restarts (synthetic)\"], \"message\": \"Synthetic incident: five restarts in four minutes after recent release 7c9e2a1. Timeline: release at 12:00 UTC, restarts from 12:02 to 12:06 UTC. Correlation only; cause unknown, termination details and stack trace unavailable.\", \"at\": 1791256528.3914106}",
+          "{\"event\": \"investigation_evidence\", \"lane\": \"investigation\", \"synthetic_stimulus\": true, \"reason\": \"OOMKilled\", \"exit_code\": 137, \"memory_limit\": \"512Mi\", \"stack\": \"java.lang.OutOfMemoryError: Java heap space at OrderCache.load:212\", \"release_sha\": \"7c9e2a1\", \"recent_change\": \"Release 7c9e2a1 increased the cache limit from 10000 to 100000 entries (synthetic)\", \"message\": \"Synthetic incident: OOMKilled, exit 137, memory limit 512Mi. java.lang.OutOfMemoryError: Java heap space at OrderCache.load:212. Recent release 7c9e2a1 increased the cache limit from 10000 to 100000 entries. Evidence supports investigating cache memory growth; the change is not a proven root cause.\", \"at\": 1791256530.0781038}",
+          "{\"event\": \"container_oom_killed\", \"reason\": \"OOMKilled\", \"message\": \"OOMKilled. java.lang.OutOfMemoryError: Java heap space at OrderCache.load(OrderCache.java:212); working set 498Mi of 512Mi limit; killed for its own memory use while traffic was flat\", \"at\": 1791256531.5992942, \"synthetic_stimulus\": true}"
+        ],
+        "source": "Synthetic workload observations emitted by the demo pod"
+      },
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "act": {
+            "type": "noul",
+            "noul": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "9e40f03b001f2402408c062f66817d5a21736384509c6998dfdd46d32f8a1aff",
+      "source": "offline responder, shared/jev-mock-server.py",
+      "state": {
+        "label": {
+          "key": "traffic",
+          "value": "drain",
+          "meaning": "Cannot serve requests right now because something it depends on is failing",
+          "origin": "demo configuration"
+        },
+        "latest_event": {
+          "event": "readiness_probe_failed",
+          "consecutive_failures": 6,
+          "message": "Readiness probe failed 6 consecutive times: GET /ready 503, upstream db timeout after 2000ms; the pod cannot serve HTTP requests right now",
+          "at": 1791256532.884511,
+          "synthetic_stimulus": true
+        },
+        "recent_logs": [
+          "{\"event\": \"readiness_probe_failed\", \"consecutive_failures\": 6, \"message\": \"Readiness probe failed 6 consecutive times: GET /ready 503, upstream db timeout after 2000ms; the pod cannot serve HTTP requests right now\", \"at\": 1791256532.884511, \"synthetic_stimulus\": true}"
+        ],
+        "source": "Synthetic workload observations emitted by the demo pod"
+      },
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "act": {
+            "type": "noul",
+            "noul": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "investigate:investigate_context",
+      "source": "docs/investigation-live-proof.json, real Jev, verified 2026-09-20T18:02:09.928Z",
+      "response": {
+        "model": "jev-latest",
+        "answers": {
+          "act": {
+            "type": "noul",
+            "noul": 0.33
+          }
+        }
+      }
+    },
+    {
+      "key": "investigate:investigate_evidence",
+      "source": "docs/investigation-live-proof.json, real Jev, verified 2026-09-20T18:02:09.928Z",
+      "response": {
+        "model": "jev-latest",
+        "answers": {
+          "act": {
+            "type": "noul",
+            "noul": 0.84
+          }
+        }
+      }
+    },
+    {
+      "key": "investigate:investigate_restart",
+      "source": "docs/investigation-live-proof.json, real Jev, verified 2026-09-20T18:02:09.928Z",
+      "response": {
+        "model": "jev-latest",
+        "answers": {
+          "act": {
+            "type": "noul",
+            "noul": 0.12
+          }
+        }
+      }
+    }
+  ]
+}

@@ -32,27 +32,40 @@ def grants(kind):
 
 
 def adapter_calls():
-    """The first positional arguments of every Kubernetes.run(...) in adapter.py."""
-    tree = ast.parse((HERE / "adapter.py").read_text())
+    """Every kubectl call the adapter and the investigation lane can make."""
     calls = set()
-    for node in ast.walk(tree):
-        if (
-            isinstance(node, ast.Call)
-            and isinstance(node.func, ast.Attribute)
-            and node.func.attr == "run"
-            and isinstance(node.func.value, ast.Name)
-            and node.func.value.id == "self"
-            and node.args
-            and isinstance(node.args[0], ast.Constant)
-        ):
-            name = node.args[0].value
-            second = (
-                node.args[1].value
-                if len(node.args) > 1 and isinstance(node.args[1], ast.Constant)
-                else None
-            )
-            calls.add((name, second) if name == "get" else (name,))
+    for name in ("adapter.py", "investigation.py"):
+        tree = ast.parse((HERE / name).read_text())
+        for node in ast.walk(tree):
+            # self.run("get", "pods", ...) and self.kube.run(...)
+            if (
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr == "run"
+                and node.args
+                and isinstance(node.args[0], ast.Constant)
+            ):
+                calls.add(call_key(node.args))
+            # the (verb, resource, ...) tuples investigation.py loops over
+            if (
+                isinstance(node, ast.Tuple)
+                and node.elts
+                and isinstance(node.elts[0], ast.Constant)
+                and node.elts[0].value in {"get", "logs", "patch", "exec"}
+                and len(node.elts) > 2
+            ):
+                calls.add(call_key(node.elts))
     return calls
+
+
+def call_key(args):
+    name = args[0].value
+    second = (
+        args[1].value
+        if len(args) > 1 and isinstance(args[1], ast.Constant) and isinstance(args[1].value, str)
+        else None
+    )
+    return (name, second) if name == "get" else (name,)
 
 
 class RbacTests(unittest.TestCase):
@@ -79,6 +92,7 @@ class RbacTests(unittest.TestCase):
                 ("pod-label-agent", "", "pods", "get"),
                 ("pod-label-agent", "", "pods", "patch"),
                 ("pod-label-agent", "", "pods/log", "get"),
+                ("pod-label-agent", "", "events", "list"),
                 ("pod-label-agent-stimulus", "", "pods/exec", "get"),
                 ("pod-label-agent-stimulus", "", "pods/exec", "create"),
             },
@@ -87,7 +101,14 @@ class RbacTests(unittest.TestCase):
     def test_adapter_makes_only_calls_these_grants_cover(self):
         self.assertEqual(
             adapter_calls(),
-            {("logs",), ("exec",), ("get", "pods"), ("get", "pod"), ("patch",)},
+            {
+                ("logs",),
+                ("exec",),
+                ("get", "pods"),
+                ("get", "pod"),
+                ("get", "events"),
+                ("patch",),
+            },
             "the adapter's kubectl calls changed: update rbac/rbac.yaml and this test",
         )
 

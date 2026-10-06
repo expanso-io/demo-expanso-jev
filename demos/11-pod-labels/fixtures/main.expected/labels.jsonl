@@ -1,0 +1,7 @@
+{"labels_when_finished": {"app": "checkout", "istio.io/rev": "default", "team": "payments", "version": "v3.1.0"}, "pod": "checkout-api", "scenario": "restart", "step": 1}
+{"labels_when_finished": {"app": "checkout", "istio.io/rev": "default", "team": "payments", "version": "v3.1.0"}, "pod": "checkout-api", "scenario": "context", "step": 2}
+{"labels_when_finished": {"app": "checkout", "istio.io/rev": "default", "team": "payments", "version": "v3.1.0"}, "pod": "checkout-api", "scenario": "evidence", "step": 3}
+{"labels_when_finished": {"app": "orders", "istio.io/rev": "default", "team": "payments", "version": "v2.4.1"}, "pod": "orders-api", "scenario": "batch", "step": 4}
+{"labels_when_finished": {"app": "checkout", "istio.io/rev": "default", "pressure": "memory", "team": "payments", "version": "v3.1.0"}, "pod": "checkout-api", "scenario": "oom", "step": 5}
+{"labels_when_finished": {"app": "analytics", "routing-tier": "batch", "team": "data", "traffic": "drain", "version": "v1.9.2"}, "pod": "analytics-worker", "scenario": "probe", "step": 6}
+{"labels": {"analytics-worker": {"app": "analytics", "routing-tier": "batch", "team": "data", "version": "v1.9.2"}, "checkout-api": {"app": "checkout", "istio.io/rev": "default", "team": "payments", "version": "v3.1.0"}, "orders-api": {"app": "orders", "istio.io/rev": "default", "team": "payments", "version": "v2.4.1"}}, "step": "after expiry"}

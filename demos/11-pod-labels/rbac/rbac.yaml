@@ -52,6 +52,10 @@ rules:
   - apiGroups: [""]
     resources: ["pods/log"]
     verbs: ["get"]
+  # Investigations attach the pod's own Kubernetes events as evidence.
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

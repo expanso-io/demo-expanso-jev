@@ -106,6 +106,7 @@ calls one for one:
 | `pods`: list | cluster-wide | inventory of the labels in use |
 | `pods`: get, patch | target namespace | read one pod, add or remove a label |
 | `pods/log`: get | target namespace | the log lines Jev reads as evidence |
+| `events`: list | target namespace | a pod's Kubernetes events, attached to investigations |
 | `pods/exec`: get, create | target namespace | the browser's fixed stimulus only |
 
 Pod specs can contain environment values, so the cluster-wide list is read

@@ -9,8 +9,9 @@ config:
   input:
     broker:
       inputs:
-        - http_client:
-            url: http://127.0.0.1:8901/next-event
+        - label: next_event
+          http_client:
+            url: http://127.0.0.1:${POD_LABEL_PORT:8901}/next-event
             verb: POST
             headers:
               Content-Type: application/json
@@ -19,13 +20,14 @@ config:
             retries: 0
             stream:
               enabled: false
-        - generate:
+        - label: expire_tick
+          generate:
             interval: 250ms
             mapping: 'root = {}'
           processors:
             - try:
                 - http:
-                    url: http://127.0.0.1:8901/expire-labels
+                    url: http://127.0.0.1:${POD_LABEL_PORT:8901}/expire-labels
                     verb: POST
                     headers:
                       Content-Type: application/json
@@ -33,13 +35,14 @@ config:
                     timeout: 10s
                     retries: 0
             - mapping: 'root = deleted()'
-        - generate:
+        - label: routine_tick
+          generate:
             interval: 400ms
             mapping: 'root = {}'
           processors:
             - try:
                 - http:
-                    url: http://127.0.0.1:8901/routine
+                    url: http://127.0.0.1:${POD_LABEL_PORT:8901}/routine
                     verb: POST
                     headers:
                       Content-Type: application/json
@@ -51,38 +54,46 @@ config:
   pipeline:
     threads: 1
     processors:
-      - try:
-          - http:
-              url: http://127.0.0.1:8901/candidates
+      - label: decide_and_apply
+        try:
+          - label: candidates
+            http:
+              url: http://127.0.0.1:${POD_LABEL_PORT:8901}/candidates
               verb: POST
               headers:
                 Content-Type: application/json
                 Authorization: 'Bearer ${POD_LABEL_TOKEN}'
               timeout: 30s
               retries: 0
-          - unarchive:
+          - label: split_candidates
+            unarchive:
               format: json_array
-          - mapping: |
+          - label: pick_id
+            mapping: |
               root = {"id": this.id}
-          - http:
-              url: http://127.0.0.1:8901/judge
+          - label: judge
+            http:
+              url: http://127.0.0.1:${POD_LABEL_PORT:8901}/judge
               verb: POST
               headers:
                 Content-Type: application/json
                 Authorization: 'Bearer ${POD_LABEL_TOKEN}'
               timeout: 35s
               retries: 0
-          - http:
-              url: http://127.0.0.1:8901/apply
+          - label: apply
+            http:
+              url: http://127.0.0.1:${POD_LABEL_PORT:8901}/apply
               verb: POST
               headers:
                 Content-Type: application/json
                 Authorization: 'Bearer ${POD_LABEL_TOKEN}'
               timeout: 110s
               retries: 0
-      - catch:
+      - label: hold_on_error
+        catch:
           - mapping: |
               root = {"result": "held", "reason": "adapter_or_jev_error"}
   output:
+    label: receipt
     stdout:
       codec: lines

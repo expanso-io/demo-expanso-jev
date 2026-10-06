@@ -1,0 +1,43 @@
+{
+  "title": "Pod labels",
+  "lede": "Kubernetes pod labels go stale the moment a pod behaves differently. Expanso reads pod logs, asks Jev one question when the evidence could change a label, and patches the label or takes it off again.",
+  "cases": {
+    "main": {
+      "harness": "pod-labels",
+      "pipeline": "pipeline.yaml",
+      "input": "fixtures/events.jsonl",
+      "scenario": "Label and investigate"
+    }
+  },
+  "stages": [
+    {
+      "title": "x",
+      "text": "x"
+    },
+    {
+      "title": "x",
+      "text": "x"
+    },
+    {
+      "title": "x",
+      "text": "x"
+    },
+    {
+      "title": "x",
+      "text": "x"
+    },
+    {
+      "title": "x",
+      "text": "x"
+    },
+    {
+      "title": "x",
+      "text": "x"
+    }
+  ],
+  "queues": {
+    "events": "Event feed",
+    "labels": "Pod labels",
+    "receipts": "Receipts"
+  }
+}

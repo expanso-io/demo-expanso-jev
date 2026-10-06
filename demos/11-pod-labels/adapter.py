@@ -1579,7 +1579,10 @@ def main():
         float(os.environ.get("POD_LABEL_THRESHOLD", "0.9")),
         os.environ.get("POD_LABEL_APPLY") == "true",
     )
-    log_path = Path(__file__).resolve().parents[2] / ".expanso/pod-labels/general.jsonl"
+    log_path = Path(
+        os.environ.get("POD_LABEL_GENERAL_LOG")
+        or Path(__file__).resolve().parents[2] / ".expanso/pod-labels/general.jsonl"
+    )
     log_path.parent.mkdir(parents=True, exist_ok=True)
     reconciler.general_log = RotatingFileHandler(
         log_path, maxBytes=2_000_000, backupCount=2

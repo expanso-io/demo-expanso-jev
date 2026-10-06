@@ -1,0 +1,6 @@
+{"key": null, "message": "investigation_waiting", "namespace": "jev-label-demo", "noul": 0.12, "operation": "investigate", "origin": null, "pod": "checkout-api", "scenario": "investigate_restart", "source_pods": [], "stage": "investigation_waiting", "value": null}
+{"key": null, "message": "investigation_waiting", "namespace": "jev-label-demo", "noul": 0.33, "operation": "investigate", "origin": null, "pod": "checkout-api", "scenario": "investigate_context", "source_pods": [], "stage": "investigation_waiting", "value": null}
+{"key": null, "message": "investigation_ready", "namespace": "jev-label-demo", "noul": 0.84, "operation": "investigate", "origin": null, "pod": "checkout-api", "scenario": "investigate_evidence", "source_pods": [], "stage": "investigation_ready", "value": null}
+{"key": "workload", "namespace": "jev-label-demo", "noul": 0.92, "operation": "add", "pod": "orders-api", "result": "applied", "value": "batch"}
+{"key": "pressure", "namespace": "jev-label-demo", "noul": 0.92, "operation": "add", "pod": "checkout-api", "result": "applied", "value": "memory"}
+{"key": "traffic", "namespace": "jev-label-demo", "noul": 0.92, "operation": "add", "pod": "analytics-worker", "result": "applied", "value": "drain"}
