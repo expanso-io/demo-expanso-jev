@@ -1,0 +1,823 @@
+{
+  "volatile": [
+    "received_at",
+    "jev.ms"
+  ],
+  "stage_count": 7,
+  "records": [
+    {
+      "index": 0,
+      "input": "{\"record_id\":\"rec-001\",\"name\":\"Jane Doe\",\"email\":\"jane.doe@example.com\",\"ssn\":\"123-45-6789\",\"plan\":\"team-annual\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "record_id": "rec-001",
+            "name": "Jane Doe",
+            "email": "jane.doe@example.com",
+            "ssn": "123-45-6789",
+            "plan": "team-annual"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "email": "jane.doe@example.com",
+            "name": "Jane Doe",
+            "plan": "team-annual",
+            "record_id": "rec-001",
+            "ssn": "123-45-6789"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "email": "jane.doe@example.com",
+            "name": "Jane Doe",
+            "plan": "team-annual",
+            "received_at": "2026-10-05T19:40:01.744447-07:00",
+            "record_id": "rec-001",
+            "ssn": "123-45-6789"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "email": "jane.doe@example.com",
+            "name": "Jane Doe",
+            "plan": "team-annual",
+            "received_at": "2026-10-05T19:40:01.744447-07:00",
+            "record_id": "rec-001",
+            "ssn": "123-45-6789"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "email": "jane.doe@example.com",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1006
+            },
+            "name": "Jane Doe",
+            "plan": "team-annual",
+            "received_at": "2026-10-05T19:40:01.744447-07:00",
+            "record_id": "rec-001",
+            "ssn": "123-45-6789"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "email": "jane.doe@example.com",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1006
+            },
+            "jev_decision": "quarantine",
+            "name": "Jane Doe",
+            "plan": "team-annual",
+            "received_at": "2026-10-05T19:40:01.744447-07:00",
+            "record_id": "rec-001",
+            "ssn": "123-45-6789"
+          }
+        },
+        {
+          "n": 6,
+          "state": {
+            "api_key": "QUARANTINED",
+            "email": "jane.doe@example.com",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1006
+            },
+            "jev_decision": "quarantine",
+            "name": "Jane Doe",
+            "plan": "team-annual",
+            "policy_applied": "quarantine",
+            "received_at": "2026-10-05T19:40:01.744447-07:00",
+            "record_id": "rec-001",
+            "ssn": "MASKED"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "email": "jane.doe@example.com",
+            "name": "Jane Doe",
+            "plan": "team-annual",
+            "record_id": "rec-001",
+            "ssn": "123-45-6789"
+          },
+          "questions": {
+            "contains_credentials": {
+              "instructions": "Does this record contain passwords, API keys, tokens, or other secrets?",
+              "type": "noul"
+            },
+            "contains_pii": {
+              "instructions": "Does this record contain personally identifiable information (names, emails, SSNs, addresses, phone numbers)?",
+              "type": "noul"
+            },
+            "sensitivity": {
+              "criteria": {
+                "confidential": "Sensitive business or personal data, restricted distribution",
+                "internal": "Company-internal, not for external sharing",
+                "public": "Safe to share broadly, no personal or secret data",
+                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+              },
+              "instructions": "What is the sensitivity class of this record?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "email": "jane.doe@example.com",
+            "name": "Jane Doe",
+            "plan": "team-annual",
+            "record_id": "rec-001",
+            "ssn": "123-45-6789"
+          },
+          "questions": {
+            "contains_credentials": {
+              "instructions": "Does this record contain passwords, API keys, tokens, or other secrets?",
+              "type": "noul"
+            },
+            "contains_pii": {
+              "instructions": "Does this record contain personally identifiable information (names, emails, SSNs, addresses, phone numbers)?",
+              "type": "noul"
+            },
+            "sensitivity": {
+              "criteria": {
+                "confidential": "Sensitive business or personal data, restricted distribution",
+                "internal": "Company-internal, not for external sharing",
+                "public": "Safe to share broadly, no personal or secret data",
+                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+              },
+              "instructions": "What is the sensitivity class of this record?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "quarantine"
+    },
+    {
+      "index": 1,
+      "input": "{\"record_id\": \"rec-002\", \"name\": \"System Bot\", \"event\": \"nightly backup completed in 42s\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "record_id": "rec-002",
+            "name": "System Bot",
+            "event": "nightly backup completed in 42s"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "event": "nightly backup completed in 42s",
+            "name": "System Bot",
+            "record_id": "rec-002"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "event": "nightly backup completed in 42s",
+            "name": "System Bot",
+            "received_at": "2026-10-05T19:40:02.757755-07:00",
+            "record_id": "rec-002"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "event": "nightly backup completed in 42s",
+            "name": "System Bot",
+            "received_at": "2026-10-05T19:40:02.757755-07:00",
+            "record_id": "rec-002"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "event": "nightly backup completed in 42s",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "name": "System Bot",
+            "received_at": "2026-10-05T19:40:02.757755-07:00",
+            "record_id": "rec-002"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "event": "nightly backup completed in 42s",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "jev_decision": "quarantine",
+            "name": "System Bot",
+            "received_at": "2026-10-05T19:40:02.757755-07:00",
+            "record_id": "rec-002"
+          }
+        },
+        {
+          "n": 6,
+          "state": {
+            "api_key": "QUARANTINED",
+            "email": null,
+            "event": "nightly backup completed in 42s",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "jev_decision": "quarantine",
+            "name": "System Bot",
+            "policy_applied": "quarantine",
+            "received_at": "2026-10-05T19:40:02.757755-07:00",
+            "record_id": "rec-002",
+            "ssn": "MASKED"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "event": "nightly backup completed in 42s",
+            "name": "System Bot",
+            "record_id": "rec-002"
+          },
+          "questions": {
+            "contains_credentials": {
+              "instructions": "Does this record contain passwords, API keys, tokens, or other secrets?",
+              "type": "noul"
+            },
+            "contains_pii": {
+              "instructions": "Does this record contain personally identifiable information (names, emails, SSNs, addresses, phone numbers)?",
+              "type": "noul"
+            },
+            "sensitivity": {
+              "criteria": {
+                "confidential": "Sensitive business or personal data, restricted distribution",
+                "internal": "Company-internal, not for external sharing",
+                "public": "Safe to share broadly, no personal or secret data",
+                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+              },
+              "instructions": "What is the sensitivity class of this record?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "event": "nightly backup completed in 42s",
+            "name": "System Bot",
+            "record_id": "rec-002"
+          },
+          "questions": {
+            "contains_credentials": {
+              "instructions": "Does this record contain passwords, API keys, tokens, or other secrets?",
+              "type": "noul"
+            },
+            "contains_pii": {
+              "instructions": "Does this record contain personally identifiable information (names, emails, SSNs, addresses, phone numbers)?",
+              "type": "noul"
+            },
+            "sensitivity": {
+              "criteria": {
+                "confidential": "Sensitive business or personal data, restricted distribution",
+                "internal": "Company-internal, not for external sharing",
+                "public": "Safe to share broadly, no personal or secret data",
+                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+              },
+              "instructions": "What is the sensitivity class of this record?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "quarantine"
+    },
+    {
+      "index": 2,
+      "input": "{\"record_id\":\"rec-003\",\"name\":\"Deploy Key\",\"email\":\"ops@example.com\",\"api_key\":\"sk-live-9f2c41aa77e04bd1\",\"note\":\"production deploy token, do not share\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "record_id": "rec-003",
+            "name": "Deploy Key",
+            "email": "ops@example.com",
+            "api_key": "sk-live-9f2c41aa77e04bd1",
+            "note": "production deploy token, do not share"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "api_key": "sk-live-9f2c41aa77e04bd1",
+            "email": "ops@example.com",
+            "name": "Deploy Key",
+            "note": "production deploy token, do not share",
+            "record_id": "rec-003"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "api_key": "sk-live-9f2c41aa77e04bd1",
+            "email": "ops@example.com",
+            "name": "Deploy Key",
+            "note": "production deploy token, do not share",
+            "received_at": "2026-10-05T19:40:03.769433-07:00",
+            "record_id": "rec-003"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "api_key": "sk-live-9f2c41aa77e04bd1",
+            "email": "ops@example.com",
+            "name": "Deploy Key",
+            "note": "production deploy token, do not share",
+            "received_at": "2026-10-05T19:40:03.769433-07:00",
+            "record_id": "rec-003"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "api_key": "sk-live-9f2c41aa77e04bd1",
+            "email": "ops@example.com",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "name": "Deploy Key",
+            "note": "production deploy token, do not share",
+            "received_at": "2026-10-05T19:40:03.769433-07:00",
+            "record_id": "rec-003"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "api_key": "sk-live-9f2c41aa77e04bd1",
+            "email": "ops@example.com",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "jev_decision": "quarantine",
+            "name": "Deploy Key",
+            "note": "production deploy token, do not share",
+            "received_at": "2026-10-05T19:40:03.769433-07:00",
+            "record_id": "rec-003"
+          }
+        },
+        {
+          "n": 6,
+          "state": {
+            "api_key": "QUARANTINED",
+            "email": "ops@example.com",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "jev_decision": "quarantine",
+            "name": "Deploy Key",
+            "note": "production deploy token, do not share",
+            "policy_applied": "quarantine",
+            "received_at": "2026-10-05T19:40:03.769433-07:00",
+            "record_id": "rec-003",
+            "ssn": "MASKED"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "api_key": "sk-live-9f2c41aa77e04bd1",
+            "email": "ops@example.com",
+            "name": "Deploy Key",
+            "note": "production deploy token, do not share",
+            "record_id": "rec-003"
+          },
+          "questions": {
+            "contains_credentials": {
+              "instructions": "Does this record contain passwords, API keys, tokens, or other secrets?",
+              "type": "noul"
+            },
+            "contains_pii": {
+              "instructions": "Does this record contain personally identifiable information (names, emails, SSNs, addresses, phone numbers)?",
+              "type": "noul"
+            },
+            "sensitivity": {
+              "criteria": {
+                "confidential": "Sensitive business or personal data, restricted distribution",
+                "internal": "Company-internal, not for external sharing",
+                "public": "Safe to share broadly, no personal or secret data",
+                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+              },
+              "instructions": "What is the sensitivity class of this record?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "api_key": "sk-live-9f2c41aa77e04bd1",
+            "email": "ops@example.com",
+            "name": "Deploy Key",
+            "note": "production deploy token, do not share",
+            "record_id": "rec-003"
+          },
+          "questions": {
+            "contains_credentials": {
+              "instructions": "Does this record contain passwords, API keys, tokens, or other secrets?",
+              "type": "noul"
+            },
+            "contains_pii": {
+              "instructions": "Does this record contain personally identifiable information (names, emails, SSNs, addresses, phone numbers)?",
+              "type": "noul"
+            },
+            "sensitivity": {
+              "criteria": {
+                "confidential": "Sensitive business or personal data, restricted distribution",
+                "internal": "Company-internal, not for external sharing",
+                "public": "Safe to share broadly, no personal or secret data",
+                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+              },
+              "instructions": "What is the sensitivity class of this record?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "quarantine"
+    },
+    {
+      "index": 3,
+      "input": "{\"record_id\":\"rec-004\",\"name\":\"John Smith\",\"email\":\"john.smith@example.com\",\"diagnosis\":\"Q3 performance review: exceeds expectations\",\"salary_band\":\"L5\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "record_id": "rec-004",
+            "name": "John Smith",
+            "email": "john.smith@example.com",
+            "diagnosis": "Q3 performance review: exceeds expectations",
+            "salary_band": "L5"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "diagnosis": "Q3 performance review: exceeds expectations",
+            "email": "john.smith@example.com",
+            "name": "John Smith",
+            "record_id": "rec-004",
+            "salary_band": "L5"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "diagnosis": "Q3 performance review: exceeds expectations",
+            "email": "john.smith@example.com",
+            "name": "John Smith",
+            "received_at": "2026-10-05T19:40:04.781078-07:00",
+            "record_id": "rec-004",
+            "salary_band": "L5"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "diagnosis": "Q3 performance review: exceeds expectations",
+            "email": "john.smith@example.com",
+            "name": "John Smith",
+            "received_at": "2026-10-05T19:40:04.781078-07:00",
+            "record_id": "rec-004",
+            "salary_band": "L5"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "diagnosis": "Q3 performance review: exceeds expectations",
+            "email": "john.smith@example.com",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1006
+            },
+            "name": "John Smith",
+            "received_at": "2026-10-05T19:40:04.781078-07:00",
+            "record_id": "rec-004",
+            "salary_band": "L5"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "diagnosis": "Q3 performance review: exceeds expectations",
+            "email": "john.smith@example.com",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1006
+            },
+            "jev_decision": "quarantine",
+            "name": "John Smith",
+            "received_at": "2026-10-05T19:40:04.781078-07:00",
+            "record_id": "rec-004",
+            "salary_band": "L5"
+          }
+        },
+        {
+          "n": 6,
+          "state": {
+            "api_key": "QUARANTINED",
+            "diagnosis": "Q3 performance review: exceeds expectations",
+            "email": "john.smith@example.com",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1006
+            },
+            "jev_decision": "quarantine",
+            "name": "John Smith",
+            "policy_applied": "quarantine",
+            "received_at": "2026-10-05T19:40:04.781078-07:00",
+            "record_id": "rec-004",
+            "salary_band": "L5",
+            "ssn": "MASKED"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "diagnosis": "Q3 performance review: exceeds expectations",
+            "email": "john.smith@example.com",
+            "name": "John Smith",
+            "record_id": "rec-004",
+            "salary_band": "L5"
+          },
+          "questions": {
+            "contains_credentials": {
+              "instructions": "Does this record contain passwords, API keys, tokens, or other secrets?",
+              "type": "noul"
+            },
+            "contains_pii": {
+              "instructions": "Does this record contain personally identifiable information (names, emails, SSNs, addresses, phone numbers)?",
+              "type": "noul"
+            },
+            "sensitivity": {
+              "criteria": {
+                "confidential": "Sensitive business or personal data, restricted distribution",
+                "internal": "Company-internal, not for external sharing",
+                "public": "Safe to share broadly, no personal or secret data",
+                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+              },
+              "instructions": "What is the sensitivity class of this record?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "diagnosis": "Q3 performance review: exceeds expectations",
+            "email": "john.smith@example.com",
+            "name": "John Smith",
+            "record_id": "rec-004",
+            "salary_band": "L5"
+          },
+          "questions": {
+            "contains_credentials": {
+              "instructions": "Does this record contain passwords, API keys, tokens, or other secrets?",
+              "type": "noul"
+            },
+            "contains_pii": {
+              "instructions": "Does this record contain personally identifiable information (names, emails, SSNs, addresses, phone numbers)?",
+              "type": "noul"
+            },
+            "sensitivity": {
+              "criteria": {
+                "confidential": "Sensitive business or personal data, restricted distribution",
+                "internal": "Company-internal, not for external sharing",
+                "public": "Safe to share broadly, no personal or secret data",
+                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+              },
+              "instructions": "What is the sensitivity class of this record?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "quarantine"
+    },
+    {
+      "index": 4,
+      "input": "{\"record_id\": \"rec-005\", \"name\": \"Status Page\", \"event\": \"all systems operational\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "record_id": "rec-005",
+            "name": "Status Page",
+            "event": "all systems operational"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "event": "all systems operational",
+            "name": "Status Page",
+            "record_id": "rec-005"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "event": "all systems operational",
+            "name": "Status Page",
+            "received_at": "2026-10-05T19:40:05.794558-07:00",
+            "record_id": "rec-005"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "event": "all systems operational",
+            "name": "Status Page",
+            "received_at": "2026-10-05T19:40:05.794558-07:00",
+            "record_id": "rec-005"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "event": "all systems operational",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "name": "Status Page",
+            "received_at": "2026-10-05T19:40:05.794558-07:00",
+            "record_id": "rec-005"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "event": "all systems operational",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "jev_decision": "quarantine",
+            "name": "Status Page",
+            "received_at": "2026-10-05T19:40:05.794558-07:00",
+            "record_id": "rec-005"
+          }
+        },
+        {
+          "n": 6,
+          "state": {
+            "api_key": "QUARANTINED",
+            "email": null,
+            "event": "all systems operational",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "jev_decision": "quarantine",
+            "name": "Status Page",
+            "policy_applied": "quarantine",
+            "received_at": "2026-10-05T19:40:05.794558-07:00",
+            "record_id": "rec-005",
+            "ssn": "MASKED"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "event": "all systems operational",
+            "name": "Status Page",
+            "record_id": "rec-005"
+          },
+          "questions": {
+            "contains_credentials": {
+              "instructions": "Does this record contain passwords, API keys, tokens, or other secrets?",
+              "type": "noul"
+            },
+            "contains_pii": {
+              "instructions": "Does this record contain personally identifiable information (names, emails, SSNs, addresses, phone numbers)?",
+              "type": "noul"
+            },
+            "sensitivity": {
+              "criteria": {
+                "confidential": "Sensitive business or personal data, restricted distribution",
+                "internal": "Company-internal, not for external sharing",
+                "public": "Safe to share broadly, no personal or secret data",
+                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+              },
+              "instructions": "What is the sensitivity class of this record?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "event": "all systems operational",
+            "name": "Status Page",
+            "record_id": "rec-005"
+          },
+          "questions": {
+            "contains_credentials": {
+              "instructions": "Does this record contain passwords, API keys, tokens, or other secrets?",
+              "type": "noul"
+            },
+            "contains_pii": {
+              "instructions": "Does this record contain personally identifiable information (names, emails, SSNs, addresses, phone numbers)?",
+              "type": "noul"
+            },
+            "sensitivity": {
+              "criteria": {
+                "confidential": "Sensitive business or personal data, restricted distribution",
+                "internal": "Company-internal, not for external sharing",
+                "public": "Safe to share broadly, no personal or secret data",
+                "restricted": "Highly sensitive: regulated data, secrets, legal hold"
+              },
+              "instructions": "What is the sensitivity class of this record?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "quarantine"
+    }
+  ]
+}

@@ -1,0 +1,809 @@
+{
+  "volatile": [
+    "received_at",
+    "jev.ms"
+  ],
+  "stage_count": 6,
+  "records": [
+    {
+      "index": 0,
+      "input": "{\"feedback_id\":\"f-001\",\"customer\":\"acme-corp\",\"rating\":2,\"text\":\"The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting.\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "feedback_id": "f-001",
+            "customer": "acme-corp",
+            "rating": 2,
+            "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "customer": "acme-corp",
+            "feedback_id": "f-001",
+            "rating": 2,
+            "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "customer": "acme-corp",
+            "feedback_id": "f-001",
+            "rating": 2,
+            "received_at": "2026-10-05T19:42:15.471887-07:00",
+            "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "customer": "acme-corp",
+            "feedback_id": "f-001",
+            "rating": 2,
+            "received_at": "2026-10-05T19:42:15.471887-07:00",
+            "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "customer": "acme-corp",
+            "feedback_id": "f-001",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1006
+            },
+            "rating": 2,
+            "received_at": "2026-10-05T19:42:15.471887-07:00",
+            "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "customer": "acme-corp",
+            "feedback_id": "f-001",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1006
+            },
+            "jev_decision": "analytics",
+            "rating": 2,
+            "received_at": "2026-10-05T19:42:15.471887-07:00",
+            "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "customer": "acme-corp",
+            "feedback_id": "f-001",
+            "rating": 2,
+            "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
+          },
+          "questions": {
+            "churn_risk": {
+              "instructions": "Does this feedback indicate the customer may churn or cancel?",
+              "type": "noul"
+            },
+            "sentiment": {
+              "criteria": [
+                "Very negative",
+                "Negative",
+                "Neutral",
+                "Positive",
+                "Very positive"
+              ],
+              "instructions": "What is the sentiment of this feedback?",
+              "type": "score"
+            },
+            "topic": {
+              "criteria": {
+                "bug": "Something is broken or not working",
+                "feature_request": "Asking for new functionality",
+                "other": "None of the above",
+                "praise": "Compliments, positive experience",
+                "pricing": "Cost, plans, billing concerns",
+                "support_experience": "About the support interaction itself"
+              },
+              "instructions": "What is this feedback about?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "customer": "acme-corp",
+            "feedback_id": "f-001",
+            "rating": 2,
+            "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
+          },
+          "questions": {
+            "churn_risk": {
+              "instructions": "Does this feedback indicate the customer may churn or cancel?",
+              "type": "noul"
+            },
+            "sentiment": {
+              "criteria": [
+                "Very negative",
+                "Negative",
+                "Neutral",
+                "Positive",
+                "Very positive"
+              ],
+              "instructions": "What is the sentiment of this feedback?",
+              "type": "score"
+            },
+            "topic": {
+              "criteria": {
+                "bug": "Something is broken or not working",
+                "feature_request": "Asking for new functionality",
+                "other": "None of the above",
+                "praise": "Compliments, positive experience",
+                "pricing": "Cost, plans, billing concerns",
+                "support_experience": "About the support interaction itself"
+              },
+              "instructions": "What is this feedback about?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "analytics"
+    },
+    {
+      "index": 1,
+      "input": "{\"feedback_id\":\"f-002\",\"customer\":\"globex\",\"rating\":5,\"text\":\"Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor.\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "feedback_id": "f-002",
+            "customer": "globex",
+            "rating": 5,
+            "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "customer": "globex",
+            "feedback_id": "f-002",
+            "rating": 5,
+            "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "customer": "globex",
+            "feedback_id": "f-002",
+            "rating": 5,
+            "received_at": "2026-10-05T19:42:16.483303-07:00",
+            "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "customer": "globex",
+            "feedback_id": "f-002",
+            "rating": 5,
+            "received_at": "2026-10-05T19:42:16.483303-07:00",
+            "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "customer": "globex",
+            "feedback_id": "f-002",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1006
+            },
+            "rating": 5,
+            "received_at": "2026-10-05T19:42:16.483303-07:00",
+            "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "customer": "globex",
+            "feedback_id": "f-002",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1006
+            },
+            "jev_decision": "analytics",
+            "rating": 5,
+            "received_at": "2026-10-05T19:42:16.483303-07:00",
+            "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "customer": "globex",
+            "feedback_id": "f-002",
+            "rating": 5,
+            "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
+          },
+          "questions": {
+            "churn_risk": {
+              "instructions": "Does this feedback indicate the customer may churn or cancel?",
+              "type": "noul"
+            },
+            "sentiment": {
+              "criteria": [
+                "Very negative",
+                "Negative",
+                "Neutral",
+                "Positive",
+                "Very positive"
+              ],
+              "instructions": "What is the sentiment of this feedback?",
+              "type": "score"
+            },
+            "topic": {
+              "criteria": {
+                "bug": "Something is broken or not working",
+                "feature_request": "Asking for new functionality",
+                "other": "None of the above",
+                "praise": "Compliments, positive experience",
+                "pricing": "Cost, plans, billing concerns",
+                "support_experience": "About the support interaction itself"
+              },
+              "instructions": "What is this feedback about?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "customer": "globex",
+            "feedback_id": "f-002",
+            "rating": 5,
+            "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
+          },
+          "questions": {
+            "churn_risk": {
+              "instructions": "Does this feedback indicate the customer may churn or cancel?",
+              "type": "noul"
+            },
+            "sentiment": {
+              "criteria": [
+                "Very negative",
+                "Negative",
+                "Neutral",
+                "Positive",
+                "Very positive"
+              ],
+              "instructions": "What is the sentiment of this feedback?",
+              "type": "score"
+            },
+            "topic": {
+              "criteria": {
+                "bug": "Something is broken or not working",
+                "feature_request": "Asking for new functionality",
+                "other": "None of the above",
+                "praise": "Compliments, positive experience",
+                "pricing": "Cost, plans, billing concerns",
+                "support_experience": "About the support interaction itself"
+              },
+              "instructions": "What is this feedback about?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "analytics"
+    },
+    {
+      "index": 2,
+      "input": "{\"feedback_id\":\"f-003\",\"customer\":\"initech\",\"rating\":1,\"text\":\"We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors.\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "feedback_id": "f-003",
+            "customer": "initech",
+            "rating": 1,
+            "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "customer": "initech",
+            "feedback_id": "f-003",
+            "rating": 1,
+            "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "customer": "initech",
+            "feedback_id": "f-003",
+            "rating": 1,
+            "received_at": "2026-10-05T19:42:17.500625-07:00",
+            "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "customer": "initech",
+            "feedback_id": "f-003",
+            "rating": 1,
+            "received_at": "2026-10-05T19:42:17.500625-07:00",
+            "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "customer": "initech",
+            "feedback_id": "f-003",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1022
+            },
+            "rating": 1,
+            "received_at": "2026-10-05T19:42:17.500625-07:00",
+            "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "customer": "initech",
+            "feedback_id": "f-003",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1022
+            },
+            "jev_decision": "analytics",
+            "rating": 1,
+            "received_at": "2026-10-05T19:42:17.500625-07:00",
+            "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "customer": "initech",
+            "feedback_id": "f-003",
+            "rating": 1,
+            "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
+          },
+          "questions": {
+            "churn_risk": {
+              "instructions": "Does this feedback indicate the customer may churn or cancel?",
+              "type": "noul"
+            },
+            "sentiment": {
+              "criteria": [
+                "Very negative",
+                "Negative",
+                "Neutral",
+                "Positive",
+                "Very positive"
+              ],
+              "instructions": "What is the sentiment of this feedback?",
+              "type": "score"
+            },
+            "topic": {
+              "criteria": {
+                "bug": "Something is broken or not working",
+                "feature_request": "Asking for new functionality",
+                "other": "None of the above",
+                "praise": "Compliments, positive experience",
+                "pricing": "Cost, plans, billing concerns",
+                "support_experience": "About the support interaction itself"
+              },
+              "instructions": "What is this feedback about?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "customer": "initech",
+            "feedback_id": "f-003",
+            "rating": 1,
+            "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
+          },
+          "questions": {
+            "churn_risk": {
+              "instructions": "Does this feedback indicate the customer may churn or cancel?",
+              "type": "noul"
+            },
+            "sentiment": {
+              "criteria": [
+                "Very negative",
+                "Negative",
+                "Neutral",
+                "Positive",
+                "Very positive"
+              ],
+              "instructions": "What is the sentiment of this feedback?",
+              "type": "score"
+            },
+            "topic": {
+              "criteria": {
+                "bug": "Something is broken or not working",
+                "feature_request": "Asking for new functionality",
+                "other": "None of the above",
+                "praise": "Compliments, positive experience",
+                "pricing": "Cost, plans, billing concerns",
+                "support_experience": "About the support interaction itself"
+              },
+              "instructions": "What is this feedback about?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "analytics"
+    },
+    {
+      "index": 3,
+      "input": "{\"feedback_id\":\"f-004\",\"customer\":\"umbrella\",\"rating\":4,\"text\":\"Overall happy with the platform. Would love to see per-project billing breakdowns though.\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "feedback_id": "f-004",
+            "customer": "umbrella",
+            "rating": 4,
+            "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "customer": "umbrella",
+            "feedback_id": "f-004",
+            "rating": 4,
+            "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "customer": "umbrella",
+            "feedback_id": "f-004",
+            "rating": 4,
+            "received_at": "2026-10-05T19:42:18.530747-07:00",
+            "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "customer": "umbrella",
+            "feedback_id": "f-004",
+            "rating": 4,
+            "received_at": "2026-10-05T19:42:18.530747-07:00",
+            "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "customer": "umbrella",
+            "feedback_id": "f-004",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1005
+            },
+            "rating": 4,
+            "received_at": "2026-10-05T19:42:18.530747-07:00",
+            "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "customer": "umbrella",
+            "feedback_id": "f-004",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1005
+            },
+            "jev_decision": "analytics",
+            "rating": 4,
+            "received_at": "2026-10-05T19:42:18.530747-07:00",
+            "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "customer": "umbrella",
+            "feedback_id": "f-004",
+            "rating": 4,
+            "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
+          },
+          "questions": {
+            "churn_risk": {
+              "instructions": "Does this feedback indicate the customer may churn or cancel?",
+              "type": "noul"
+            },
+            "sentiment": {
+              "criteria": [
+                "Very negative",
+                "Negative",
+                "Neutral",
+                "Positive",
+                "Very positive"
+              ],
+              "instructions": "What is the sentiment of this feedback?",
+              "type": "score"
+            },
+            "topic": {
+              "criteria": {
+                "bug": "Something is broken or not working",
+                "feature_request": "Asking for new functionality",
+                "other": "None of the above",
+                "praise": "Compliments, positive experience",
+                "pricing": "Cost, plans, billing concerns",
+                "support_experience": "About the support interaction itself"
+              },
+              "instructions": "What is this feedback about?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "customer": "umbrella",
+            "feedback_id": "f-004",
+            "rating": 4,
+            "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
+          },
+          "questions": {
+            "churn_risk": {
+              "instructions": "Does this feedback indicate the customer may churn or cancel?",
+              "type": "noul"
+            },
+            "sentiment": {
+              "criteria": [
+                "Very negative",
+                "Negative",
+                "Neutral",
+                "Positive",
+                "Very positive"
+              ],
+              "instructions": "What is the sentiment of this feedback?",
+              "type": "score"
+            },
+            "topic": {
+              "criteria": {
+                "bug": "Something is broken or not working",
+                "feature_request": "Asking for new functionality",
+                "other": "None of the above",
+                "praise": "Compliments, positive experience",
+                "pricing": "Cost, plans, billing concerns",
+                "support_experience": "About the support interaction itself"
+              },
+              "instructions": "What is this feedback about?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "analytics"
+    },
+    {
+      "index": 4,
+      "input": "{\"feedback_id\":\"f-005\",\"customer\":\"hooli\",\"rating\":3,\"text\":\"It's fine. Does what we need.\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "feedback_id": "f-005",
+            "customer": "hooli",
+            "rating": 3,
+            "text": "It's fine. Does what we need."
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "customer": "hooli",
+            "feedback_id": "f-005",
+            "rating": 3,
+            "text": "It's fine. Does what we need."
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "customer": "hooli",
+            "feedback_id": "f-005",
+            "rating": 3,
+            "received_at": "2026-10-05T19:42:19.543358-07:00",
+            "text": "It's fine. Does what we need."
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "customer": "hooli",
+            "feedback_id": "f-005",
+            "rating": 3,
+            "received_at": "2026-10-05T19:42:19.543358-07:00",
+            "text": "It's fine. Does what we need."
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "customer": "hooli",
+            "feedback_id": "f-005",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1005
+            },
+            "rating": 3,
+            "received_at": "2026-10-05T19:42:19.543358-07:00",
+            "text": "It's fine. Does what we need."
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "customer": "hooli",
+            "feedback_id": "f-005",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1005
+            },
+            "jev_decision": "analytics",
+            "rating": 3,
+            "received_at": "2026-10-05T19:42:19.543358-07:00",
+            "text": "It's fine. Does what we need."
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "customer": "hooli",
+            "feedback_id": "f-005",
+            "rating": 3,
+            "text": "It's fine. Does what we need."
+          },
+          "questions": {
+            "churn_risk": {
+              "instructions": "Does this feedback indicate the customer may churn or cancel?",
+              "type": "noul"
+            },
+            "sentiment": {
+              "criteria": [
+                "Very negative",
+                "Negative",
+                "Neutral",
+                "Positive",
+                "Very positive"
+              ],
+              "instructions": "What is the sentiment of this feedback?",
+              "type": "score"
+            },
+            "topic": {
+              "criteria": {
+                "bug": "Something is broken or not working",
+                "feature_request": "Asking for new functionality",
+                "other": "None of the above",
+                "praise": "Compliments, positive experience",
+                "pricing": "Cost, plans, billing concerns",
+                "support_experience": "About the support interaction itself"
+              },
+              "instructions": "What is this feedback about?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "customer": "hooli",
+            "feedback_id": "f-005",
+            "rating": 3,
+            "text": "It's fine. Does what we need."
+          },
+          "questions": {
+            "churn_risk": {
+              "instructions": "Does this feedback indicate the customer may churn or cancel?",
+              "type": "noul"
+            },
+            "sentiment": {
+              "criteria": [
+                "Very negative",
+                "Negative",
+                "Neutral",
+                "Positive",
+                "Very positive"
+              ],
+              "instructions": "What is the sentiment of this feedback?",
+              "type": "score"
+            },
+            "topic": {
+              "criteria": {
+                "bug": "Something is broken or not working",
+                "feature_request": "Asking for new functionality",
+                "other": "None of the above",
+                "praise": "Compliments, positive experience",
+                "pricing": "Cost, plans, billing concerns",
+                "support_experience": "About the support interaction itself"
+              },
+              "instructions": "What is this feedback about?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "analytics"
+    }
+  ]
+}

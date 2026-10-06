@@ -1,0 +1,150 @@
+{
+  "note": "Recorded answers, replayed by tools/fixture-runner.py. Produced by the offline responder in shared/jev-mock-server.py; no model was called.",
+  "answers": [
+    {
+      "key": "2e765d085f2f653686c2c1dacdc9234e7013ce306cfc65f6b5abefc35164cbd9",
+      "state": {
+        "amount": 129.99,
+        "currency": "USD",
+        "customer_id": "cus-88121",
+        "order_id": "ord-9001",
+        "ts": "2026-09-18T14:00:00Z"
+      },
+      "questions": [
+        "conformant",
+        "quality"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "conformant": {
+            "type": "noul",
+            "noul": 0.92
+          },
+          "quality": {
+            "type": "score",
+            "score": 4,
+            "probabilities": {},
+            "confidence": 0.7
+          }
+        }
+      }
+    },
+    {
+      "key": "92e099037da82e1b5fcbc2eee16a4deb50afa6d15f275375323f5ed44ca79db0",
+      "state": {
+        "amount": -45.0,
+        "currency": "USD",
+        "customer_id": "cus-10422",
+        "order_id": "ord-9002",
+        "ts": "2026-09-18T14:01:00Z"
+      },
+      "questions": [
+        "conformant",
+        "quality"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "conformant": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "quality": {
+            "type": "score",
+            "score": 3,
+            "probabilities": {},
+            "confidence": 0.7
+          }
+        }
+      }
+    },
+    {
+      "key": "c6996a83b9d04b57141eeab301be7e6e36cfc06bf1f25b9ecb203b8647ca4d38",
+      "state": {
+        "amount": 99999999.99,
+        "currency": "US",
+        "customer_id": null,
+        "order_id": "ord-9005",
+        "ts": "2026-09-18T14:04:00Z"
+      },
+      "questions": [
+        "conformant",
+        "quality"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "conformant": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "quality": {
+            "type": "score",
+            "score": 1,
+            "probabilities": {},
+            "confidence": 0.7
+          }
+        }
+      }
+    },
+    {
+      "key": "de7953eaf623cac5d784177bead881ab695f52fbc5f675360b8918a3b22001cb",
+      "state": {
+        "amount": 9.99,
+        "currency": "USD",
+        "customer_id": "cus-77190",
+        "order_id": "ord-9004",
+        "ts": "2026-09-18T14:03:00Z"
+      },
+      "questions": [
+        "conformant",
+        "quality"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "conformant": {
+            "type": "noul",
+            "noul": 0.92
+          },
+          "quality": {
+            "type": "score",
+            "score": 4,
+            "probabilities": {},
+            "confidence": 0.7
+          }
+        }
+      }
+    },
+    {
+      "key": "de7c8e20b738cb96f5ac717ae82006440fba981c633ab01e958c628c943d2f2d",
+      "state": {
+        "amount": "a lot",
+        "currency": "USDD",
+        "customer_id": null,
+        "order_id": "ord-9003",
+        "ts": "yesterday-ish"
+      },
+      "questions": [
+        "conformant",
+        "quality"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "conformant": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "quality": {
+            "type": "score",
+            "score": 0,
+            "probabilities": {},
+            "confidence": 0.7
+          }
+        }
+      }
+    }
+  ]
+}

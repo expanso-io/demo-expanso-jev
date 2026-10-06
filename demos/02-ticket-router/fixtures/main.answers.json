@@ -1,0 +1,329 @@
+{
+  "note": "Recorded answers, replayed by tools/fixture-runner.py. Produced by the offline responder in shared/jev-mock-server.py; no model was called.",
+  "answers": [
+    {
+      "key": "3b49af4b42b58b6ed9293ff0dfb3827a73fbfb3245d529d5461181d872cde5a3",
+      "state": {
+        "body": "Would be great if team plans supported SSO/SAML. No rush, just wanted to put it on your radar. Thanks!",
+        "customer": "hooli",
+        "id": "tkt-1005",
+        "subject": "Feature request: SSO for teams"
+      },
+      "questions": [
+        "department",
+        "frustration",
+        "intent",
+        "urgent"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "department": {
+            "type": "choice",
+            "choice": "technical",
+            "probabilities": {
+              "billing": 0.027,
+              "other": 0.027,
+              "sales": 0.027,
+              "technical": 0.92
+            },
+            "confidence": 0.92
+          },
+          "frustration": {
+            "type": "score",
+            "score": 0.6,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "intent": {
+            "type": "choice",
+            "choice": "feature_request",
+            "probabilities": {
+              "account_deletion": 0.016,
+              "billing_dispute": 0.016,
+              "bug": 0.016,
+              "feature_request": 0.92,
+              "how_to": 0.016,
+              "other": 0.016
+            },
+            "confidence": 0.92
+          },
+          "urgent": {
+            "type": "noul",
+            "noul": 0.12
+          }
+        }
+      }
+    },
+    {
+      "key": "3c42aa75752a89725d03e46d2181493b66ab3ce6c10fd6ac8a7ca908b9b5fbf6",
+      "state": {
+        "body": "Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \u2014 please refund it when you get a chance.",
+        "customer": "acme-corp",
+        "id": "tkt-1001",
+        "subject": "Invoice #INV-2041 charged twice"
+      },
+      "questions": [
+        "department",
+        "frustration",
+        "intent",
+        "urgent"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "department": {
+            "type": "choice",
+            "choice": "billing",
+            "probabilities": {
+              "billing": 0.92,
+              "other": 0.027,
+              "sales": 0.027,
+              "technical": 0.027
+            },
+            "confidence": 0.92
+          },
+          "frustration": {
+            "type": "score",
+            "score": 1.4,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "intent": {
+            "type": "choice",
+            "choice": "billing_dispute",
+            "probabilities": {
+              "account_deletion": 0.016,
+              "billing_dispute": 0.92,
+              "bug": 0.016,
+              "feature_request": 0.016,
+              "how_to": 0.016,
+              "other": 0.016
+            },
+            "confidence": 0.92
+          },
+          "urgent": {
+            "type": "noul",
+            "noul": 0.12
+          }
+        }
+      }
+    },
+    {
+      "key": "68162e678ab10f9a580b6032b1e6759b527d819c358d7d3e3727161aedddc18d",
+      "state": {
+        "body": "We're evaluating your platform for a 200-seat rollout. Do you offer annual plans with a discount? Would love a quick call next week.",
+        "customer": "umbrella",
+        "id": "tkt-1004",
+        "subject": "Do you offer annual pricing?"
+      },
+      "questions": [
+        "department",
+        "frustration",
+        "intent",
+        "urgent"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "department": {
+            "type": "choice",
+            "choice": "sales",
+            "probabilities": {
+              "billing": 0.027,
+              "other": 0.027,
+              "sales": 0.92,
+              "technical": 0.027
+            },
+            "confidence": 0.92
+          },
+          "frustration": {
+            "type": "score",
+            "score": 0.6,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "intent": {
+            "type": "choice",
+            "choice": "other",
+            "probabilities": {
+              "account_deletion": 0.016,
+              "billing_dispute": 0.016,
+              "bug": 0.016,
+              "feature_request": 0.016,
+              "how_to": 0.016,
+              "other": 0.92
+            },
+            "confidence": 0.35
+          },
+          "urgent": {
+            "type": "noul",
+            "noul": 0.12
+          }
+        }
+      }
+    },
+    {
+      "key": "9999f4a51abf87a2c23c68085d9961a0c12e88c2a3aba67362bb81f34f981d87",
+      "state": {
+        "body": "I have asked THREE TIMES to delete our account and all data under GDPR and nobody has done it. If this isn't resolved today I am escalating to our legal team.",
+        "customer": "initech",
+        "id": "tkt-1003",
+        "subject": "This is the THIRD time I'm asking"
+      },
+      "questions": [
+        "department",
+        "frustration",
+        "intent",
+        "urgent"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "department": {
+            "type": "choice",
+            "choice": "other",
+            "probabilities": {
+              "billing": 0.027,
+              "other": 0.92,
+              "sales": 0.027,
+              "technical": 0.027
+            },
+            "confidence": 0.35
+          },
+          "frustration": {
+            "type": "score",
+            "score": 3.4,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "intent": {
+            "type": "choice",
+            "choice": "account_deletion",
+            "probabilities": {
+              "account_deletion": 0.92,
+              "billing_dispute": 0.016,
+              "bug": 0.016,
+              "feature_request": 0.016,
+              "how_to": 0.016,
+              "other": 0.016
+            },
+            "confidence": 0.92
+          },
+          "urgent": {
+            "type": "noul",
+            "noul": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "ac4546eb0b26b1e0a2a17d899e881802e0f4c300a1dd302cdc54f21b346c033c",
+      "state": {
+        "body": "This is absolutely infuriating. THIRD ticket about the same duplicate charge on INV-2041 and I keep getting canned responses from people who clearly didn't read a word I wrote. I'm at my wit's end here. Please escalate this to someone senior who will actually fix it. I need it resolved this week \u2014 no huge rush, just a real answer.",
+        "customer": "initech",
+        "id": "tkt-1006",
+        "subject": "Billing error still not fixed after 3 tickets"
+      },
+      "questions": [
+        "department",
+        "frustration",
+        "intent",
+        "urgent"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "department": {
+            "type": "choice",
+            "choice": "billing",
+            "probabilities": {
+              "billing": 0.92,
+              "other": 0.027,
+              "sales": 0.027,
+              "technical": 0.027
+            },
+            "confidence": 0.92
+          },
+          "frustration": {
+            "type": "score",
+            "score": 3.4,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "intent": {
+            "type": "choice",
+            "choice": "billing_dispute",
+            "probabilities": {
+              "account_deletion": 0.016,
+              "billing_dispute": 0.92,
+              "bug": 0.016,
+              "feature_request": 0.016,
+              "how_to": 0.016,
+              "other": 0.016
+            },
+            "confidence": 0.92
+          },
+          "urgent": {
+            "type": "noul",
+            "noul": 0.12
+          }
+        }
+      }
+    },
+    {
+      "key": "e77fae3200c5865fe434520ac96f2d28ffc2372614863c03611b8bf5560073a9",
+      "state": {
+        "body": "Our webhook endpoint started receiving 500s from your API about an hour ago. Nothing changed on our side. Can someone take a look?",
+        "customer": "globex",
+        "id": "tkt-1002",
+        "subject": "API returns 500 on webhook delivery"
+      },
+      "questions": [
+        "department",
+        "frustration",
+        "intent",
+        "urgent"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "department": {
+            "type": "choice",
+            "choice": "technical",
+            "probabilities": {
+              "billing": 0.027,
+              "other": 0.027,
+              "sales": 0.027,
+              "technical": 0.92
+            },
+            "confidence": 0.92
+          },
+          "frustration": {
+            "type": "score",
+            "score": 1.4,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "intent": {
+            "type": "choice",
+            "choice": "other",
+            "probabilities": {
+              "account_deletion": 0.016,
+              "billing_dispute": 0.016,
+              "bug": 0.016,
+              "feature_request": 0.016,
+              "how_to": 0.016,
+              "other": 0.92
+            },
+            "confidence": 0.35
+          },
+          "urgent": {
+            "type": "noul",
+            "noul": 0.12
+          }
+        }
+      }
+    }
+  ]
+}

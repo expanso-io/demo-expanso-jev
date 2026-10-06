@@ -1,0 +1,1095 @@
+{
+  "volatile": [
+    "received_at",
+    "jev.ms"
+  ],
+  "stage_count": 6,
+  "records": [
+    {
+      "index": 0,
+      "input": "{\"id\": \"tkt-1001\", \"customer\": \"acme-corp\", \"subject\": \"Invoice #INV-2041 charged twice\", \"body\": \"Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \\u2014 please refund it when you get a chance.\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "tkt-1001",
+            "customer": "acme-corp",
+            "subject": "Invoice #INV-2041 charged twice",
+            "body": "Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \u2014 please refund it when you get a chance."
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "body": "Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \u2014 please refund it when you get a chance.",
+            "customer": "acme-corp",
+            "id": "tkt-1001",
+            "subject": "Invoice #INV-2041 charged twice"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "body": "Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \u2014 please refund it when you get a chance.",
+            "customer": "acme-corp",
+            "id": "tkt-1001",
+            "received_at": "2026-10-05T19:39:42.21957-07:00",
+            "subject": "Invoice #INV-2041 charged twice"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "body": "Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \u2014 please refund it when you get a chance.",
+            "customer": "acme-corp",
+            "id": "tkt-1001",
+            "received_at": "2026-10-05T19:39:42.21957-07:00",
+            "subject": "Invoice #INV-2041 charged twice"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "body": "Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \u2014 please refund it when you get a chance.",
+            "customer": "acme-corp",
+            "id": "tkt-1001",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1003
+            },
+            "received_at": "2026-10-05T19:39:42.21957-07:00",
+            "subject": "Invoice #INV-2041 charged twice"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "assigned_department": "other",
+            "body": "Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \u2014 please refund it when you get a chance.",
+            "customer": "acme-corp",
+            "id": "tkt-1001",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1003
+            },
+            "jev_decision": "triage",
+            "received_at": "2026-10-05T19:39:42.21957-07:00",
+            "subject": "Invoice #INV-2041 charged twice"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "body": "Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \u2014 please refund it when you get a chance.",
+            "customer": "acme-corp",
+            "id": "tkt-1001",
+            "subject": "Invoice #INV-2041 charged twice"
+          },
+          "questions": {
+            "department": {
+              "criteria": {
+                "billing": "Charges, invoices, refunds, subscription changes",
+                "other": "Does not fit any department above",
+                "sales": "Pricing questions, upgrades, new business",
+                "technical": "Bugs, errors, how-to questions, integrations"
+              },
+              "instructions": "Which department should handle this ticket?",
+              "type": "choice"
+            },
+            "frustration": {
+              "criteria": [
+                "Calm, just stating facts",
+                "Mildly annoyed",
+                "Frustrated but civil",
+                "Very angry, strong language",
+                "Furious, threatening to leave"
+              ],
+              "instructions": "How frustrated does the customer sound?",
+              "type": "score"
+            },
+            "intent": {
+              "criteria": {
+                "account_deletion": "Wants their account or data deleted",
+                "billing_dispute": "Disputing a charge or invoice",
+                "bug": "Reporting something broken",
+                "feature_request": "Asking for new functionality",
+                "how_to": "Asking how to accomplish something",
+                "other": "None of the above"
+              },
+              "instructions": "What is the customer trying to do?",
+              "type": "choice"
+            },
+            "urgent": {
+              "instructions": "Does this message convey urgency or time-sensitivity?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "body": "Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \u2014 please refund it when you get a chance.",
+            "customer": "acme-corp",
+            "id": "tkt-1001",
+            "subject": "Invoice #INV-2041 charged twice"
+          },
+          "questions": {
+            "department": {
+              "criteria": {
+                "billing": "Charges, invoices, refunds, subscription changes",
+                "other": "Does not fit any department above",
+                "sales": "Pricing questions, upgrades, new business",
+                "technical": "Bugs, errors, how-to questions, integrations"
+              },
+              "instructions": "Which department should handle this ticket?",
+              "type": "choice"
+            },
+            "frustration": {
+              "criteria": [
+                "Calm, just stating facts",
+                "Mildly annoyed",
+                "Frustrated but civil",
+                "Very angry, strong language",
+                "Furious, threatening to leave"
+              ],
+              "instructions": "How frustrated does the customer sound?",
+              "type": "score"
+            },
+            "intent": {
+              "criteria": {
+                "account_deletion": "Wants their account or data deleted",
+                "billing_dispute": "Disputing a charge or invoice",
+                "bug": "Reporting something broken",
+                "feature_request": "Asking for new functionality",
+                "how_to": "Asking how to accomplish something",
+                "other": "None of the above"
+              },
+              "instructions": "What is the customer trying to do?",
+              "type": "choice"
+            },
+            "urgent": {
+              "instructions": "Does this message convey urgency or time-sensitivity?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "triage"
+    },
+    {
+      "index": 1,
+      "input": "{\"id\":\"tkt-1002\",\"customer\":\"globex\",\"subject\":\"API returns 500 on webhook delivery\",\"body\":\"Our webhook endpoint started receiving 500s from your API about an hour ago. Nothing changed on our side. Can someone take a look?\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "tkt-1002",
+            "customer": "globex",
+            "subject": "API returns 500 on webhook delivery",
+            "body": "Our webhook endpoint started receiving 500s from your API about an hour ago. Nothing changed on our side. Can someone take a look?"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "body": "Our webhook endpoint started receiving 500s from your API about an hour ago. Nothing changed on our side. Can someone take a look?",
+            "customer": "globex",
+            "id": "tkt-1002",
+            "subject": "API returns 500 on webhook delivery"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "body": "Our webhook endpoint started receiving 500s from your API about an hour ago. Nothing changed on our side. Can someone take a look?",
+            "customer": "globex",
+            "id": "tkt-1002",
+            "received_at": "2026-10-05T19:39:43.230975-07:00",
+            "subject": "API returns 500 on webhook delivery"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "body": "Our webhook endpoint started receiving 500s from your API about an hour ago. Nothing changed on our side. Can someone take a look?",
+            "customer": "globex",
+            "id": "tkt-1002",
+            "received_at": "2026-10-05T19:39:43.230975-07:00",
+            "subject": "API returns 500 on webhook delivery"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "body": "Our webhook endpoint started receiving 500s from your API about an hour ago. Nothing changed on our side. Can someone take a look?",
+            "customer": "globex",
+            "id": "tkt-1002",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "received_at": "2026-10-05T19:39:43.230975-07:00",
+            "subject": "API returns 500 on webhook delivery"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "assigned_department": "other",
+            "body": "Our webhook endpoint started receiving 500s from your API about an hour ago. Nothing changed on our side. Can someone take a look?",
+            "customer": "globex",
+            "id": "tkt-1002",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "jev_decision": "triage",
+            "received_at": "2026-10-05T19:39:43.230975-07:00",
+            "subject": "API returns 500 on webhook delivery"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "body": "Our webhook endpoint started receiving 500s from your API about an hour ago. Nothing changed on our side. Can someone take a look?",
+            "customer": "globex",
+            "id": "tkt-1002",
+            "subject": "API returns 500 on webhook delivery"
+          },
+          "questions": {
+            "department": {
+              "criteria": {
+                "billing": "Charges, invoices, refunds, subscription changes",
+                "other": "Does not fit any department above",
+                "sales": "Pricing questions, upgrades, new business",
+                "technical": "Bugs, errors, how-to questions, integrations"
+              },
+              "instructions": "Which department should handle this ticket?",
+              "type": "choice"
+            },
+            "frustration": {
+              "criteria": [
+                "Calm, just stating facts",
+                "Mildly annoyed",
+                "Frustrated but civil",
+                "Very angry, strong language",
+                "Furious, threatening to leave"
+              ],
+              "instructions": "How frustrated does the customer sound?",
+              "type": "score"
+            },
+            "intent": {
+              "criteria": {
+                "account_deletion": "Wants their account or data deleted",
+                "billing_dispute": "Disputing a charge or invoice",
+                "bug": "Reporting something broken",
+                "feature_request": "Asking for new functionality",
+                "how_to": "Asking how to accomplish something",
+                "other": "None of the above"
+              },
+              "instructions": "What is the customer trying to do?",
+              "type": "choice"
+            },
+            "urgent": {
+              "instructions": "Does this message convey urgency or time-sensitivity?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "body": "Our webhook endpoint started receiving 500s from your API about an hour ago. Nothing changed on our side. Can someone take a look?",
+            "customer": "globex",
+            "id": "tkt-1002",
+            "subject": "API returns 500 on webhook delivery"
+          },
+          "questions": {
+            "department": {
+              "criteria": {
+                "billing": "Charges, invoices, refunds, subscription changes",
+                "other": "Does not fit any department above",
+                "sales": "Pricing questions, upgrades, new business",
+                "technical": "Bugs, errors, how-to questions, integrations"
+              },
+              "instructions": "Which department should handle this ticket?",
+              "type": "choice"
+            },
+            "frustration": {
+              "criteria": [
+                "Calm, just stating facts",
+                "Mildly annoyed",
+                "Frustrated but civil",
+                "Very angry, strong language",
+                "Furious, threatening to leave"
+              ],
+              "instructions": "How frustrated does the customer sound?",
+              "type": "score"
+            },
+            "intent": {
+              "criteria": {
+                "account_deletion": "Wants their account or data deleted",
+                "billing_dispute": "Disputing a charge or invoice",
+                "bug": "Reporting something broken",
+                "feature_request": "Asking for new functionality",
+                "how_to": "Asking how to accomplish something",
+                "other": "None of the above"
+              },
+              "instructions": "What is the customer trying to do?",
+              "type": "choice"
+            },
+            "urgent": {
+              "instructions": "Does this message convey urgency or time-sensitivity?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "triage"
+    },
+    {
+      "index": 2,
+      "input": "{\"id\":\"tkt-1003\",\"customer\":\"initech\",\"subject\":\"This is the THIRD time I'm asking\",\"body\":\"I have asked THREE TIMES to delete our account and all data under GDPR and nobody has done it. If this isn't resolved today I am escalating to our legal team.\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "tkt-1003",
+            "customer": "initech",
+            "subject": "This is the THIRD time I'm asking",
+            "body": "I have asked THREE TIMES to delete our account and all data under GDPR and nobody has done it. If this isn't resolved today I am escalating to our legal team."
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "body": "I have asked THREE TIMES to delete our account and all data under GDPR and nobody has done it. If this isn't resolved today I am escalating to our legal team.",
+            "customer": "initech",
+            "id": "tkt-1003",
+            "subject": "This is the THIRD time I'm asking"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "body": "I have asked THREE TIMES to delete our account and all data under GDPR and nobody has done it. If this isn't resolved today I am escalating to our legal team.",
+            "customer": "initech",
+            "id": "tkt-1003",
+            "received_at": "2026-10-05T19:39:44.241565-07:00",
+            "subject": "This is the THIRD time I'm asking"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "body": "I have asked THREE TIMES to delete our account and all data under GDPR and nobody has done it. If this isn't resolved today I am escalating to our legal team.",
+            "customer": "initech",
+            "id": "tkt-1003",
+            "received_at": "2026-10-05T19:39:44.241565-07:00",
+            "subject": "This is the THIRD time I'm asking"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "body": "I have asked THREE TIMES to delete our account and all data under GDPR and nobody has done it. If this isn't resolved today I am escalating to our legal team.",
+            "customer": "initech",
+            "id": "tkt-1003",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "received_at": "2026-10-05T19:39:44.241565-07:00",
+            "subject": "This is the THIRD time I'm asking"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "assigned_department": "other",
+            "body": "I have asked THREE TIMES to delete our account and all data under GDPR and nobody has done it. If this isn't resolved today I am escalating to our legal team.",
+            "customer": "initech",
+            "id": "tkt-1003",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "jev_decision": "triage",
+            "received_at": "2026-10-05T19:39:44.241565-07:00",
+            "subject": "This is the THIRD time I'm asking"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "body": "I have asked THREE TIMES to delete our account and all data under GDPR and nobody has done it. If this isn't resolved today I am escalating to our legal team.",
+            "customer": "initech",
+            "id": "tkt-1003",
+            "subject": "This is the THIRD time I'm asking"
+          },
+          "questions": {
+            "department": {
+              "criteria": {
+                "billing": "Charges, invoices, refunds, subscription changes",
+                "other": "Does not fit any department above",
+                "sales": "Pricing questions, upgrades, new business",
+                "technical": "Bugs, errors, how-to questions, integrations"
+              },
+              "instructions": "Which department should handle this ticket?",
+              "type": "choice"
+            },
+            "frustration": {
+              "criteria": [
+                "Calm, just stating facts",
+                "Mildly annoyed",
+                "Frustrated but civil",
+                "Very angry, strong language",
+                "Furious, threatening to leave"
+              ],
+              "instructions": "How frustrated does the customer sound?",
+              "type": "score"
+            },
+            "intent": {
+              "criteria": {
+                "account_deletion": "Wants their account or data deleted",
+                "billing_dispute": "Disputing a charge or invoice",
+                "bug": "Reporting something broken",
+                "feature_request": "Asking for new functionality",
+                "how_to": "Asking how to accomplish something",
+                "other": "None of the above"
+              },
+              "instructions": "What is the customer trying to do?",
+              "type": "choice"
+            },
+            "urgent": {
+              "instructions": "Does this message convey urgency or time-sensitivity?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "body": "I have asked THREE TIMES to delete our account and all data under GDPR and nobody has done it. If this isn't resolved today I am escalating to our legal team.",
+            "customer": "initech",
+            "id": "tkt-1003",
+            "subject": "This is the THIRD time I'm asking"
+          },
+          "questions": {
+            "department": {
+              "criteria": {
+                "billing": "Charges, invoices, refunds, subscription changes",
+                "other": "Does not fit any department above",
+                "sales": "Pricing questions, upgrades, new business",
+                "technical": "Bugs, errors, how-to questions, integrations"
+              },
+              "instructions": "Which department should handle this ticket?",
+              "type": "choice"
+            },
+            "frustration": {
+              "criteria": [
+                "Calm, just stating facts",
+                "Mildly annoyed",
+                "Frustrated but civil",
+                "Very angry, strong language",
+                "Furious, threatening to leave"
+              ],
+              "instructions": "How frustrated does the customer sound?",
+              "type": "score"
+            },
+            "intent": {
+              "criteria": {
+                "account_deletion": "Wants their account or data deleted",
+                "billing_dispute": "Disputing a charge or invoice",
+                "bug": "Reporting something broken",
+                "feature_request": "Asking for new functionality",
+                "how_to": "Asking how to accomplish something",
+                "other": "None of the above"
+              },
+              "instructions": "What is the customer trying to do?",
+              "type": "choice"
+            },
+            "urgent": {
+              "instructions": "Does this message convey urgency or time-sensitivity?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "triage"
+    },
+    {
+      "index": 3,
+      "input": "{\"id\":\"tkt-1004\",\"customer\":\"umbrella\",\"subject\":\"Do you offer annual pricing?\",\"body\":\"We're evaluating your platform for a 200-seat rollout. Do you offer annual plans with a discount? Would love a quick call next week.\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "tkt-1004",
+            "customer": "umbrella",
+            "subject": "Do you offer annual pricing?",
+            "body": "We're evaluating your platform for a 200-seat rollout. Do you offer annual plans with a discount? Would love a quick call next week."
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "body": "We're evaluating your platform for a 200-seat rollout. Do you offer annual plans with a discount? Would love a quick call next week.",
+            "customer": "umbrella",
+            "id": "tkt-1004",
+            "subject": "Do you offer annual pricing?"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "body": "We're evaluating your platform for a 200-seat rollout. Do you offer annual plans with a discount? Would love a quick call next week.",
+            "customer": "umbrella",
+            "id": "tkt-1004",
+            "received_at": "2026-10-05T19:39:45.250627-07:00",
+            "subject": "Do you offer annual pricing?"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "body": "We're evaluating your platform for a 200-seat rollout. Do you offer annual plans with a discount? Would love a quick call next week.",
+            "customer": "umbrella",
+            "id": "tkt-1004",
+            "received_at": "2026-10-05T19:39:45.250627-07:00",
+            "subject": "Do you offer annual pricing?"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "body": "We're evaluating your platform for a 200-seat rollout. Do you offer annual plans with a discount? Would love a quick call next week.",
+            "customer": "umbrella",
+            "id": "tkt-1004",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1005
+            },
+            "received_at": "2026-10-05T19:39:45.250627-07:00",
+            "subject": "Do you offer annual pricing?"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "assigned_department": "other",
+            "body": "We're evaluating your platform for a 200-seat rollout. Do you offer annual plans with a discount? Would love a quick call next week.",
+            "customer": "umbrella",
+            "id": "tkt-1004",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1005
+            },
+            "jev_decision": "triage",
+            "received_at": "2026-10-05T19:39:45.250627-07:00",
+            "subject": "Do you offer annual pricing?"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "body": "We're evaluating your platform for a 200-seat rollout. Do you offer annual plans with a discount? Would love a quick call next week.",
+            "customer": "umbrella",
+            "id": "tkt-1004",
+            "subject": "Do you offer annual pricing?"
+          },
+          "questions": {
+            "department": {
+              "criteria": {
+                "billing": "Charges, invoices, refunds, subscription changes",
+                "other": "Does not fit any department above",
+                "sales": "Pricing questions, upgrades, new business",
+                "technical": "Bugs, errors, how-to questions, integrations"
+              },
+              "instructions": "Which department should handle this ticket?",
+              "type": "choice"
+            },
+            "frustration": {
+              "criteria": [
+                "Calm, just stating facts",
+                "Mildly annoyed",
+                "Frustrated but civil",
+                "Very angry, strong language",
+                "Furious, threatening to leave"
+              ],
+              "instructions": "How frustrated does the customer sound?",
+              "type": "score"
+            },
+            "intent": {
+              "criteria": {
+                "account_deletion": "Wants their account or data deleted",
+                "billing_dispute": "Disputing a charge or invoice",
+                "bug": "Reporting something broken",
+                "feature_request": "Asking for new functionality",
+                "how_to": "Asking how to accomplish something",
+                "other": "None of the above"
+              },
+              "instructions": "What is the customer trying to do?",
+              "type": "choice"
+            },
+            "urgent": {
+              "instructions": "Does this message convey urgency or time-sensitivity?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "body": "We're evaluating your platform for a 200-seat rollout. Do you offer annual plans with a discount? Would love a quick call next week.",
+            "customer": "umbrella",
+            "id": "tkt-1004",
+            "subject": "Do you offer annual pricing?"
+          },
+          "questions": {
+            "department": {
+              "criteria": {
+                "billing": "Charges, invoices, refunds, subscription changes",
+                "other": "Does not fit any department above",
+                "sales": "Pricing questions, upgrades, new business",
+                "technical": "Bugs, errors, how-to questions, integrations"
+              },
+              "instructions": "Which department should handle this ticket?",
+              "type": "choice"
+            },
+            "frustration": {
+              "criteria": [
+                "Calm, just stating facts",
+                "Mildly annoyed",
+                "Frustrated but civil",
+                "Very angry, strong language",
+                "Furious, threatening to leave"
+              ],
+              "instructions": "How frustrated does the customer sound?",
+              "type": "score"
+            },
+            "intent": {
+              "criteria": {
+                "account_deletion": "Wants their account or data deleted",
+                "billing_dispute": "Disputing a charge or invoice",
+                "bug": "Reporting something broken",
+                "feature_request": "Asking for new functionality",
+                "how_to": "Asking how to accomplish something",
+                "other": "None of the above"
+              },
+              "instructions": "What is the customer trying to do?",
+              "type": "choice"
+            },
+            "urgent": {
+              "instructions": "Does this message convey urgency or time-sensitivity?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "triage"
+    },
+    {
+      "index": 4,
+      "input": "{\"id\":\"tkt-1005\",\"customer\":\"hooli\",\"subject\":\"Feature request: SSO for teams\",\"body\":\"Would be great if team plans supported SSO/SAML. No rush, just wanted to put it on your radar. Thanks!\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "tkt-1005",
+            "customer": "hooli",
+            "subject": "Feature request: SSO for teams",
+            "body": "Would be great if team plans supported SSO/SAML. No rush, just wanted to put it on your radar. Thanks!"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "body": "Would be great if team plans supported SSO/SAML. No rush, just wanted to put it on your radar. Thanks!",
+            "customer": "hooli",
+            "id": "tkt-1005",
+            "subject": "Feature request: SSO for teams"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "body": "Would be great if team plans supported SSO/SAML. No rush, just wanted to put it on your radar. Thanks!",
+            "customer": "hooli",
+            "id": "tkt-1005",
+            "received_at": "2026-10-05T19:39:46.264112-07:00",
+            "subject": "Feature request: SSO for teams"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "body": "Would be great if team plans supported SSO/SAML. No rush, just wanted to put it on your radar. Thanks!",
+            "customer": "hooli",
+            "id": "tkt-1005",
+            "received_at": "2026-10-05T19:39:46.264112-07:00",
+            "subject": "Feature request: SSO for teams"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "body": "Would be great if team plans supported SSO/SAML. No rush, just wanted to put it on your radar. Thanks!",
+            "customer": "hooli",
+            "id": "tkt-1005",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1009
+            },
+            "received_at": "2026-10-05T19:39:46.264112-07:00",
+            "subject": "Feature request: SSO for teams"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "assigned_department": "other",
+            "body": "Would be great if team plans supported SSO/SAML. No rush, just wanted to put it on your radar. Thanks!",
+            "customer": "hooli",
+            "id": "tkt-1005",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1009
+            },
+            "jev_decision": "triage",
+            "received_at": "2026-10-05T19:39:46.264112-07:00",
+            "subject": "Feature request: SSO for teams"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "body": "Would be great if team plans supported SSO/SAML. No rush, just wanted to put it on your radar. Thanks!",
+            "customer": "hooli",
+            "id": "tkt-1005",
+            "subject": "Feature request: SSO for teams"
+          },
+          "questions": {
+            "department": {
+              "criteria": {
+                "billing": "Charges, invoices, refunds, subscription changes",
+                "other": "Does not fit any department above",
+                "sales": "Pricing questions, upgrades, new business",
+                "technical": "Bugs, errors, how-to questions, integrations"
+              },
+              "instructions": "Which department should handle this ticket?",
+              "type": "choice"
+            },
+            "frustration": {
+              "criteria": [
+                "Calm, just stating facts",
+                "Mildly annoyed",
+                "Frustrated but civil",
+                "Very angry, strong language",
+                "Furious, threatening to leave"
+              ],
+              "instructions": "How frustrated does the customer sound?",
+              "type": "score"
+            },
+            "intent": {
+              "criteria": {
+                "account_deletion": "Wants their account or data deleted",
+                "billing_dispute": "Disputing a charge or invoice",
+                "bug": "Reporting something broken",
+                "feature_request": "Asking for new functionality",
+                "how_to": "Asking how to accomplish something",
+                "other": "None of the above"
+              },
+              "instructions": "What is the customer trying to do?",
+              "type": "choice"
+            },
+            "urgent": {
+              "instructions": "Does this message convey urgency or time-sensitivity?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "body": "Would be great if team plans supported SSO/SAML. No rush, just wanted to put it on your radar. Thanks!",
+            "customer": "hooli",
+            "id": "tkt-1005",
+            "subject": "Feature request: SSO for teams"
+          },
+          "questions": {
+            "department": {
+              "criteria": {
+                "billing": "Charges, invoices, refunds, subscription changes",
+                "other": "Does not fit any department above",
+                "sales": "Pricing questions, upgrades, new business",
+                "technical": "Bugs, errors, how-to questions, integrations"
+              },
+              "instructions": "Which department should handle this ticket?",
+              "type": "choice"
+            },
+            "frustration": {
+              "criteria": [
+                "Calm, just stating facts",
+                "Mildly annoyed",
+                "Frustrated but civil",
+                "Very angry, strong language",
+                "Furious, threatening to leave"
+              ],
+              "instructions": "How frustrated does the customer sound?",
+              "type": "score"
+            },
+            "intent": {
+              "criteria": {
+                "account_deletion": "Wants their account or data deleted",
+                "billing_dispute": "Disputing a charge or invoice",
+                "bug": "Reporting something broken",
+                "feature_request": "Asking for new functionality",
+                "how_to": "Asking how to accomplish something",
+                "other": "None of the above"
+              },
+              "instructions": "What is the customer trying to do?",
+              "type": "choice"
+            },
+            "urgent": {
+              "instructions": "Does this message convey urgency or time-sensitivity?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "triage"
+    },
+    {
+      "index": 5,
+      "input": "{\"id\": \"tkt-1006\", \"customer\": \"initech\", \"subject\": \"Billing error still not fixed after 3 tickets\", \"body\": \"This is absolutely infuriating. THIRD ticket about the same duplicate charge on INV-2041 and I keep getting canned responses from people who clearly didn't read a word I wrote. I'm at my wit's end here. Please escalate this to someone senior who will actually fix it. I need it resolved this week \\u2014 no huge rush, just a real answer.\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "tkt-1006",
+            "customer": "initech",
+            "subject": "Billing error still not fixed after 3 tickets",
+            "body": "This is absolutely infuriating. THIRD ticket about the same duplicate charge on INV-2041 and I keep getting canned responses from people who clearly didn't read a word I wrote. I'm at my wit's end here. Please escalate this to someone senior who will actually fix it. I need it resolved this week \u2014 no huge rush, just a real answer."
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "body": "This is absolutely infuriating. THIRD ticket about the same duplicate charge on INV-2041 and I keep getting canned responses from people who clearly didn't read a word I wrote. I'm at my wit's end here. Please escalate this to someone senior who will actually fix it. I need it resolved this week \u2014 no huge rush, just a real answer.",
+            "customer": "initech",
+            "id": "tkt-1006",
+            "subject": "Billing error still not fixed after 3 tickets"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "body": "This is absolutely infuriating. THIRD ticket about the same duplicate charge on INV-2041 and I keep getting canned responses from people who clearly didn't read a word I wrote. I'm at my wit's end here. Please escalate this to someone senior who will actually fix it. I need it resolved this week \u2014 no huge rush, just a real answer.",
+            "customer": "initech",
+            "id": "tkt-1006",
+            "received_at": "2026-10-05T19:39:47.285717-07:00",
+            "subject": "Billing error still not fixed after 3 tickets"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "body": "This is absolutely infuriating. THIRD ticket about the same duplicate charge on INV-2041 and I keep getting canned responses from people who clearly didn't read a word I wrote. I'm at my wit's end here. Please escalate this to someone senior who will actually fix it. I need it resolved this week \u2014 no huge rush, just a real answer.",
+            "customer": "initech",
+            "id": "tkt-1006",
+            "received_at": "2026-10-05T19:39:47.285717-07:00",
+            "subject": "Billing error still not fixed after 3 tickets"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "body": "This is absolutely infuriating. THIRD ticket about the same duplicate charge on INV-2041 and I keep getting canned responses from people who clearly didn't read a word I wrote. I'm at my wit's end here. Please escalate this to someone senior who will actually fix it. I need it resolved this week \u2014 no huge rush, just a real answer.",
+            "customer": "initech",
+            "id": "tkt-1006",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "received_at": "2026-10-05T19:39:47.285717-07:00",
+            "subject": "Billing error still not fixed after 3 tickets"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "assigned_department": "other",
+            "body": "This is absolutely infuriating. THIRD ticket about the same duplicate charge on INV-2041 and I keep getting canned responses from people who clearly didn't read a word I wrote. I'm at my wit's end here. Please escalate this to someone senior who will actually fix it. I need it resolved this week \u2014 no huge rush, just a real answer.",
+            "customer": "initech",
+            "id": "tkt-1006",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "jev_decision": "triage",
+            "received_at": "2026-10-05T19:39:47.285717-07:00",
+            "subject": "Billing error still not fixed after 3 tickets"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "body": "This is absolutely infuriating. THIRD ticket about the same duplicate charge on INV-2041 and I keep getting canned responses from people who clearly didn't read a word I wrote. I'm at my wit's end here. Please escalate this to someone senior who will actually fix it. I need it resolved this week \u2014 no huge rush, just a real answer.",
+            "customer": "initech",
+            "id": "tkt-1006",
+            "subject": "Billing error still not fixed after 3 tickets"
+          },
+          "questions": {
+            "department": {
+              "criteria": {
+                "billing": "Charges, invoices, refunds, subscription changes",
+                "other": "Does not fit any department above",
+                "sales": "Pricing questions, upgrades, new business",
+                "technical": "Bugs, errors, how-to questions, integrations"
+              },
+              "instructions": "Which department should handle this ticket?",
+              "type": "choice"
+            },
+            "frustration": {
+              "criteria": [
+                "Calm, just stating facts",
+                "Mildly annoyed",
+                "Frustrated but civil",
+                "Very angry, strong language",
+                "Furious, threatening to leave"
+              ],
+              "instructions": "How frustrated does the customer sound?",
+              "type": "score"
+            },
+            "intent": {
+              "criteria": {
+                "account_deletion": "Wants their account or data deleted",
+                "billing_dispute": "Disputing a charge or invoice",
+                "bug": "Reporting something broken",
+                "feature_request": "Asking for new functionality",
+                "how_to": "Asking how to accomplish something",
+                "other": "None of the above"
+              },
+              "instructions": "What is the customer trying to do?",
+              "type": "choice"
+            },
+            "urgent": {
+              "instructions": "Does this message convey urgency or time-sensitivity?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "body": "This is absolutely infuriating. THIRD ticket about the same duplicate charge on INV-2041 and I keep getting canned responses from people who clearly didn't read a word I wrote. I'm at my wit's end here. Please escalate this to someone senior who will actually fix it. I need it resolved this week \u2014 no huge rush, just a real answer.",
+            "customer": "initech",
+            "id": "tkt-1006",
+            "subject": "Billing error still not fixed after 3 tickets"
+          },
+          "questions": {
+            "department": {
+              "criteria": {
+                "billing": "Charges, invoices, refunds, subscription changes",
+                "other": "Does not fit any department above",
+                "sales": "Pricing questions, upgrades, new business",
+                "technical": "Bugs, errors, how-to questions, integrations"
+              },
+              "instructions": "Which department should handle this ticket?",
+              "type": "choice"
+            },
+            "frustration": {
+              "criteria": [
+                "Calm, just stating facts",
+                "Mildly annoyed",
+                "Frustrated but civil",
+                "Very angry, strong language",
+                "Furious, threatening to leave"
+              ],
+              "instructions": "How frustrated does the customer sound?",
+              "type": "score"
+            },
+            "intent": {
+              "criteria": {
+                "account_deletion": "Wants their account or data deleted",
+                "billing_dispute": "Disputing a charge or invoice",
+                "bug": "Reporting something broken",
+                "feature_request": "Asking for new functionality",
+                "how_to": "Asking how to accomplish something",
+                "other": "None of the above"
+              },
+              "instructions": "What is the customer trying to do?",
+              "type": "choice"
+            },
+            "urgent": {
+              "instructions": "Does this message convey urgency or time-sensitivity?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "triage"
+    }
+  ]
+}

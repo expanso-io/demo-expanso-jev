@@ -1,0 +1,789 @@
+{
+  "volatile": [
+    "received_at",
+    "jev.ms"
+  ],
+  "stage_count": 6,
+  "records": [
+    {
+      "index": 0,
+      "input": "{\"content_id\":\"c-001\",\"author\":\"user_4821\",\"text\":\"Just finished the new onboarding flow, super smooth! Great work team.\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "content_id": "c-001",
+            "author": "user_4821",
+            "text": "Just finished the new onboarding flow, super smooth! Great work team."
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "author": "user_4821",
+            "content_id": "c-001",
+            "text": "Just finished the new onboarding flow, super smooth! Great work team."
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "author": "user_4821",
+            "content_id": "c-001",
+            "received_at": "2026-10-05T19:41:47.4879-07:00",
+            "text": "Just finished the new onboarding flow, super smooth! Great work team."
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "author": "user_4821",
+            "content_id": "c-001",
+            "received_at": "2026-10-05T19:41:47.4879-07:00",
+            "text": "Just finished the new onboarding flow, super smooth! Great work team."
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "author": "user_4821",
+            "content_id": "c-001",
+            "jev": {
+              "answers": {
+                "category": {
+                  "choice": "safe",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "hate": 0.016,
+                    "other": 0.016,
+                    "safe": 0.92,
+                    "self_harm": 0.016,
+                    "sexual": 0.016,
+                    "spam": 0.016
+                  },
+                  "type": "choice"
+                },
+                "needs_human": {
+                  "noul": 0.12,
+                  "type": "noul"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "received_at": "2026-10-05T19:41:47.4879-07:00",
+            "text": "Just finished the new onboarding flow, super smooth! Great work team."
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "author": "user_4821",
+            "content_id": "c-001",
+            "jev": {
+              "answers": {
+                "category": {
+                  "choice": "safe",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "hate": 0.016,
+                    "other": 0.016,
+                    "safe": 0.92,
+                    "self_harm": 0.016,
+                    "sexual": 0.016,
+                    "spam": 0.016
+                  },
+                  "type": "choice"
+                },
+                "needs_human": {
+                  "noul": 0.12,
+                  "type": "noul"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "jev_decision": "allow",
+            "received_at": "2026-10-05T19:41:47.4879-07:00",
+            "review_priority": 0.07999999999999996,
+            "text": "Just finished the new onboarding flow, super smooth! Great work team."
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "author": "user_4821",
+            "content_id": "c-001",
+            "text": "Just finished the new onboarding flow, super smooth! Great work team."
+          },
+          "questions": {
+            "category": {
+              "criteria": {
+                "hate": "Attacks or demeans a protected group",
+                "other": "Concerning but does not fit the above",
+                "safe": "Benign content, fine to publish",
+                "self_harm": "Encourages or describes self-harm",
+                "sexual": "Sexually explicit content",
+                "spam": "Unsolicited promotion, scams, repetitive junk"
+              },
+              "instructions": "Classify this user-generated content.",
+              "type": "choice"
+            },
+            "needs_human": {
+              "instructions": "Does this content need a human moderator to review it before publishing?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "category": {
+                "type": "choice",
+                "choice": "safe",
+                "probabilities": {
+                  "hate": 0.016,
+                  "other": 0.016,
+                  "safe": 0.92,
+                  "self_harm": 0.016,
+                  "sexual": 0.016,
+                  "spam": 0.016
+                },
+                "confidence": 0.92
+              },
+              "needs_human": {
+                "type": "noul",
+                "noul": 0.12
+              }
+            }
+          }
+        }
+      ],
+      "destination": "allowed"
+    },
+    {
+      "index": 1,
+      "input": "{\"content_id\":\"c-002\",\"author\":\"user_9917\",\"text\":\"CHECK OUT my crypto doubling service at shady-link.example, 100% guaranteed returns!!!\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "content_id": "c-002",
+            "author": "user_9917",
+            "text": "CHECK OUT my crypto doubling service at shady-link.example, 100% guaranteed returns!!!"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "author": "user_9917",
+            "content_id": "c-002",
+            "text": "CHECK OUT my crypto doubling service at shady-link.example, 100% guaranteed returns!!!"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "author": "user_9917",
+            "content_id": "c-002",
+            "received_at": "2026-10-05T19:41:47.495924-07:00",
+            "text": "CHECK OUT my crypto doubling service at shady-link.example, 100% guaranteed returns!!!"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "author": "user_9917",
+            "content_id": "c-002",
+            "received_at": "2026-10-05T19:41:47.495924-07:00",
+            "text": "CHECK OUT my crypto doubling service at shady-link.example, 100% guaranteed returns!!!"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "author": "user_9917",
+            "content_id": "c-002",
+            "jev": {
+              "answers": {
+                "category": {
+                  "choice": "spam",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "hate": 0.016,
+                    "other": 0.016,
+                    "safe": 0.016,
+                    "self_harm": 0.016,
+                    "sexual": 0.016,
+                    "spam": 0.92
+                  },
+                  "type": "choice"
+                },
+                "needs_human": {
+                  "noul": 0.92,
+                  "type": "noul"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 2
+            },
+            "received_at": "2026-10-05T19:41:47.495924-07:00",
+            "text": "CHECK OUT my crypto doubling service at shady-link.example, 100% guaranteed returns!!!"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "author": "user_9917",
+            "content_id": "c-002",
+            "jev": {
+              "answers": {
+                "category": {
+                  "choice": "spam",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "hate": 0.016,
+                    "other": 0.016,
+                    "safe": 0.016,
+                    "self_harm": 0.016,
+                    "sexual": 0.016,
+                    "spam": 0.92
+                  },
+                  "type": "choice"
+                },
+                "needs_human": {
+                  "noul": 0.92,
+                  "type": "noul"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 2
+            },
+            "jev_decision": "review",
+            "received_at": "2026-10-05T19:41:47.495924-07:00",
+            "review_priority": 0.07999999999999996,
+            "text": "CHECK OUT my crypto doubling service at shady-link.example, 100% guaranteed returns!!!"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "author": "user_9917",
+            "content_id": "c-002",
+            "text": "CHECK OUT my crypto doubling service at shady-link.example, 100% guaranteed returns!!!"
+          },
+          "questions": {
+            "category": {
+              "criteria": {
+                "hate": "Attacks or demeans a protected group",
+                "other": "Concerning but does not fit the above",
+                "safe": "Benign content, fine to publish",
+                "self_harm": "Encourages or describes self-harm",
+                "sexual": "Sexually explicit content",
+                "spam": "Unsolicited promotion, scams, repetitive junk"
+              },
+              "instructions": "Classify this user-generated content.",
+              "type": "choice"
+            },
+            "needs_human": {
+              "instructions": "Does this content need a human moderator to review it before publishing?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "category": {
+                "type": "choice",
+                "choice": "spam",
+                "probabilities": {
+                  "hate": 0.016,
+                  "other": 0.016,
+                  "safe": 0.016,
+                  "self_harm": 0.016,
+                  "sexual": 0.016,
+                  "spam": 0.92
+                },
+                "confidence": 0.92
+              },
+              "needs_human": {
+                "type": "noul",
+                "noul": 0.92
+              }
+            }
+          }
+        }
+      ],
+      "destination": "review"
+    },
+    {
+      "index": 2,
+      "input": "{\"content_id\":\"c-003\",\"author\":\"user_3355\",\"text\":\"People from [group] shouldn't be allowed to post here, they're ruining everything.\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "content_id": "c-003",
+            "author": "user_3355",
+            "text": "People from [group] shouldn't be allowed to post here, they're ruining everything."
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "author": "user_3355",
+            "content_id": "c-003",
+            "text": "People from [group] shouldn't be allowed to post here, they're ruining everything."
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "author": "user_3355",
+            "content_id": "c-003",
+            "received_at": "2026-10-05T19:41:47.503846-07:00",
+            "text": "People from [group] shouldn't be allowed to post here, they're ruining everything."
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "author": "user_3355",
+            "content_id": "c-003",
+            "received_at": "2026-10-05T19:41:47.503846-07:00",
+            "text": "People from [group] shouldn't be allowed to post here, they're ruining everything."
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "author": "user_3355",
+            "content_id": "c-003",
+            "jev": {
+              "answers": {
+                "category": {
+                  "choice": "hate",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "hate": 0.92,
+                    "other": 0.016,
+                    "safe": 0.016,
+                    "self_harm": 0.016,
+                    "sexual": 0.016,
+                    "spam": 0.016
+                  },
+                  "type": "choice"
+                },
+                "needs_human": {
+                  "noul": 0.92,
+                  "type": "noul"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "received_at": "2026-10-05T19:41:47.503846-07:00",
+            "text": "People from [group] shouldn't be allowed to post here, they're ruining everything."
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "author": "user_3355",
+            "content_id": "c-003",
+            "jev": {
+              "answers": {
+                "category": {
+                  "choice": "hate",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "hate": 0.92,
+                    "other": 0.016,
+                    "safe": 0.016,
+                    "self_harm": 0.016,
+                    "sexual": 0.016,
+                    "spam": 0.016
+                  },
+                  "type": "choice"
+                },
+                "needs_human": {
+                  "noul": 0.92,
+                  "type": "noul"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "jev_decision": "review",
+            "received_at": "2026-10-05T19:41:47.503846-07:00",
+            "review_priority": 0.07999999999999996,
+            "text": "People from [group] shouldn't be allowed to post here, they're ruining everything."
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "author": "user_3355",
+            "content_id": "c-003",
+            "text": "People from [group] shouldn't be allowed to post here, they're ruining everything."
+          },
+          "questions": {
+            "category": {
+              "criteria": {
+                "hate": "Attacks or demeans a protected group",
+                "other": "Concerning but does not fit the above",
+                "safe": "Benign content, fine to publish",
+                "self_harm": "Encourages or describes self-harm",
+                "sexual": "Sexually explicit content",
+                "spam": "Unsolicited promotion, scams, repetitive junk"
+              },
+              "instructions": "Classify this user-generated content.",
+              "type": "choice"
+            },
+            "needs_human": {
+              "instructions": "Does this content need a human moderator to review it before publishing?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "category": {
+                "type": "choice",
+                "choice": "hate",
+                "probabilities": {
+                  "hate": 0.92,
+                  "other": 0.016,
+                  "safe": 0.016,
+                  "self_harm": 0.016,
+                  "sexual": 0.016,
+                  "spam": 0.016
+                },
+                "confidence": 0.92
+              },
+              "needs_human": {
+                "type": "noul",
+                "noul": 0.92
+              }
+            }
+          }
+        }
+      ],
+      "destination": "review"
+    },
+    {
+      "index": 3,
+      "input": "{\"content_id\":\"c-004\",\"author\":\"user_7712\",\"text\":\"Has anyone tried the new API? The rate limits seem a bit low for our use case.\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "content_id": "c-004",
+            "author": "user_7712",
+            "text": "Has anyone tried the new API? The rate limits seem a bit low for our use case."
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "author": "user_7712",
+            "content_id": "c-004",
+            "text": "Has anyone tried the new API? The rate limits seem a bit low for our use case."
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "author": "user_7712",
+            "content_id": "c-004",
+            "received_at": "2026-10-05T19:41:47.510486-07:00",
+            "text": "Has anyone tried the new API? The rate limits seem a bit low for our use case."
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "author": "user_7712",
+            "content_id": "c-004",
+            "received_at": "2026-10-05T19:41:47.510486-07:00",
+            "text": "Has anyone tried the new API? The rate limits seem a bit low for our use case."
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "author": "user_7712",
+            "content_id": "c-004",
+            "jev": {
+              "answers": {
+                "category": {
+                  "choice": "safe",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "hate": 0.016,
+                    "other": 0.016,
+                    "safe": 0.92,
+                    "self_harm": 0.016,
+                    "sexual": 0.016,
+                    "spam": 0.016
+                  },
+                  "type": "choice"
+                },
+                "needs_human": {
+                  "noul": 0.12,
+                  "type": "noul"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "received_at": "2026-10-05T19:41:47.510486-07:00",
+            "text": "Has anyone tried the new API? The rate limits seem a bit low for our use case."
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "author": "user_7712",
+            "content_id": "c-004",
+            "jev": {
+              "answers": {
+                "category": {
+                  "choice": "safe",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "hate": 0.016,
+                    "other": 0.016,
+                    "safe": 0.92,
+                    "self_harm": 0.016,
+                    "sexual": 0.016,
+                    "spam": 0.016
+                  },
+                  "type": "choice"
+                },
+                "needs_human": {
+                  "noul": 0.12,
+                  "type": "noul"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "jev_decision": "allow",
+            "received_at": "2026-10-05T19:41:47.510486-07:00",
+            "review_priority": 0.07999999999999996,
+            "text": "Has anyone tried the new API? The rate limits seem a bit low for our use case."
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "author": "user_7712",
+            "content_id": "c-004",
+            "text": "Has anyone tried the new API? The rate limits seem a bit low for our use case."
+          },
+          "questions": {
+            "category": {
+              "criteria": {
+                "hate": "Attacks or demeans a protected group",
+                "other": "Concerning but does not fit the above",
+                "safe": "Benign content, fine to publish",
+                "self_harm": "Encourages or describes self-harm",
+                "sexual": "Sexually explicit content",
+                "spam": "Unsolicited promotion, scams, repetitive junk"
+              },
+              "instructions": "Classify this user-generated content.",
+              "type": "choice"
+            },
+            "needs_human": {
+              "instructions": "Does this content need a human moderator to review it before publishing?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "category": {
+                "type": "choice",
+                "choice": "safe",
+                "probabilities": {
+                  "hate": 0.016,
+                  "other": 0.016,
+                  "safe": 0.92,
+                  "self_harm": 0.016,
+                  "sexual": 0.016,
+                  "spam": 0.016
+                },
+                "confidence": 0.92
+              },
+              "needs_human": {
+                "type": "noul",
+                "noul": 0.12
+              }
+            }
+          }
+        }
+      ],
+      "destination": "allowed"
+    },
+    {
+      "index": 4,
+      "input": "{\"content_id\":\"c-005\",\"author\":\"user_6108\",\"text\":\"I don't see the point anymore. Nothing matters. Maybe everyone would be better off if I just disappeared.\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "content_id": "c-005",
+            "author": "user_6108",
+            "text": "I don't see the point anymore. Nothing matters. Maybe everyone would be better off if I just disappeared."
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "author": "user_6108",
+            "content_id": "c-005",
+            "text": "I don't see the point anymore. Nothing matters. Maybe everyone would be better off if I just disappeared."
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "author": "user_6108",
+            "content_id": "c-005",
+            "received_at": "2026-10-05T19:41:47.516859-07:00",
+            "text": "I don't see the point anymore. Nothing matters. Maybe everyone would be better off if I just disappeared."
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "author": "user_6108",
+            "content_id": "c-005",
+            "received_at": "2026-10-05T19:41:47.516859-07:00",
+            "text": "I don't see the point anymore. Nothing matters. Maybe everyone would be better off if I just disappeared."
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "author": "user_6108",
+            "content_id": "c-005",
+            "jev": {
+              "answers": {
+                "category": {
+                  "choice": "self_harm",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "hate": 0.016,
+                    "other": 0.016,
+                    "safe": 0.016,
+                    "self_harm": 0.92,
+                    "sexual": 0.016,
+                    "spam": 0.016
+                  },
+                  "type": "choice"
+                },
+                "needs_human": {
+                  "noul": 0.92,
+                  "type": "noul"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "received_at": "2026-10-05T19:41:47.516859-07:00",
+            "text": "I don't see the point anymore. Nothing matters. Maybe everyone would be better off if I just disappeared."
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "author": "user_6108",
+            "content_id": "c-005",
+            "jev": {
+              "answers": {
+                "category": {
+                  "choice": "self_harm",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "hate": 0.016,
+                    "other": 0.016,
+                    "safe": 0.016,
+                    "self_harm": 0.92,
+                    "sexual": 0.016,
+                    "spam": 0.016
+                  },
+                  "type": "choice"
+                },
+                "needs_human": {
+                  "noul": 0.92,
+                  "type": "noul"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "jev_decision": "review",
+            "received_at": "2026-10-05T19:41:47.516859-07:00",
+            "review_priority": 0.07999999999999996,
+            "text": "I don't see the point anymore. Nothing matters. Maybe everyone would be better off if I just disappeared."
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "author": "user_6108",
+            "content_id": "c-005",
+            "text": "I don't see the point anymore. Nothing matters. Maybe everyone would be better off if I just disappeared."
+          },
+          "questions": {
+            "category": {
+              "criteria": {
+                "hate": "Attacks or demeans a protected group",
+                "other": "Concerning but does not fit the above",
+                "safe": "Benign content, fine to publish",
+                "self_harm": "Encourages or describes self-harm",
+                "sexual": "Sexually explicit content",
+                "spam": "Unsolicited promotion, scams, repetitive junk"
+              },
+              "instructions": "Classify this user-generated content.",
+              "type": "choice"
+            },
+            "needs_human": {
+              "instructions": "Does this content need a human moderator to review it before publishing?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "category": {
+                "type": "choice",
+                "choice": "self_harm",
+                "probabilities": {
+                  "hate": 0.016,
+                  "other": 0.016,
+                  "safe": 0.016,
+                  "self_harm": 0.92,
+                  "sexual": 0.016,
+                  "spam": 0.016
+                },
+                "confidence": 0.92
+              },
+              "needs_human": {
+                "type": "noul",
+                "noul": 0.92
+              }
+            }
+          }
+        }
+      ],
+      "destination": "review"
+    }
+  ]
+}

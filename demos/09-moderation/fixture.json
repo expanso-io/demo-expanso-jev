@@ -1,0 +1,60 @@
+{
+  "title": "Moderation pre-filter",
+  "lede": "User content gets a category judgment before anyone sees it. Safe content is allowed automatically; everything else queues for a person, most uncertain first.",
+  "cases": {
+    "main": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ]
+    },
+    "jev_down": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ],
+      "jev": "down"
+    }
+  },
+  "if_down": "Every item goes to human review. Nothing is allowed automatically without a judgment.",
+  "stages": [
+    {
+      "title": "Parse the body",
+      "text": "The input already parses JSON bodies. This stage only parses a body that arrives as a string, so both shapes become the same object before anything else touches it."
+    },
+    {
+      "title": "Stamp the arrival time",
+      "text": "Adds received_at, the time this node first saw the record. Everything downstream, including the latency figure, is measured from here."
+    },
+    {
+      "title": "Start the latency timer",
+      "text": "Stores the current time in message metadata. The message itself does not change, so the output below equals the input; the timer is read after Jev answers."
+    },
+    {
+      "title": "Ask Jev",
+      "text": "One request carries the record and the questions below. The answer is merged under `jev` with the model name and the round trip in milliseconds. If Jev cannot be reached, the catch block substitutes an empty answer set and every rule below falls to its default branch, so nothing is guessed."
+    },
+    {
+      "title": "Decide where it goes",
+      "text": "Content is allowed only when the category is safe at 0.9 confidence or more and the needs-a-human likelihood is under 0.5. Otherwise it goes to review, with review_priority set to one minus the confidence so the least certain case is worked first."
+    },
+    {
+      "title": "Write to a queue",
+      "text": "Allowed and review are separate JSONL files under data/jev-moderation/."
+    }
+  ],
+  "queues": {
+    "allowed": "Allowed",
+    "review": "Human review"
+  }
+}

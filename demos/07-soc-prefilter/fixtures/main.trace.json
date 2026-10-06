@@ -1,0 +1,896 @@
+{
+  "volatile": [
+    "received_at",
+    "jev.ms"
+  ],
+  "stage_count": 6,
+  "records": [
+    {
+      "index": 0,
+      "input": "{\"ts\":\"2026-09-18T14:00:00Z\",\"user\":\"alice@corp.com\",\"ip\":\"10.4.2.18\",\"geo\":\"Seattle, US\",\"result\":\"success\",\"mfa\":true}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "ts": "2026-09-18T14:00:00Z",
+            "user": "alice@corp.com",
+            "ip": "10.4.2.18",
+            "geo": "Seattle, US",
+            "result": "success",
+            "mfa": true
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "10.4.2.18",
+            "mfa": true,
+            "result": "success",
+            "ts": "2026-09-18T14:00:00Z",
+            "user": "alice@corp.com"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "10.4.2.18",
+            "mfa": true,
+            "received_at": "2026-10-05T19:41:11.07701-07:00",
+            "result": "success",
+            "ts": "2026-09-18T14:00:00Z",
+            "user": "alice@corp.com"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "10.4.2.18",
+            "mfa": true,
+            "received_at": "2026-10-05T19:41:11.07701-07:00",
+            "result": "success",
+            "ts": "2026-09-18T14:00:00Z",
+            "user": "alice@corp.com"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "10.4.2.18",
+            "jev": {
+              "answers": {
+                "escalate": {
+                  "noul": 0.12,
+                  "type": "noul"
+                },
+                "threat": {
+                  "choice": "benign",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "benign": 0.92,
+                    "brute_force": 0.016,
+                    "credential_stuffing": 0.016,
+                    "impossible_travel": 0.016,
+                    "other": 0.016,
+                    "token_abuse": 0.016
+                  },
+                  "type": "choice"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "mfa": true,
+            "received_at": "2026-10-05T19:41:11.07701-07:00",
+            "result": "success",
+            "ts": "2026-09-18T14:00:00Z",
+            "user": "alice@corp.com"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "10.4.2.18",
+            "jev": {
+              "answers": {
+                "escalate": {
+                  "noul": 0.12,
+                  "type": "noul"
+                },
+                "threat": {
+                  "choice": "benign",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "benign": 0.92,
+                    "brute_force": 0.016,
+                    "credential_stuffing": 0.016,
+                    "impossible_travel": 0.016,
+                    "other": 0.016,
+                    "token_abuse": 0.016
+                  },
+                  "type": "choice"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "jev_decision": "cold",
+            "mfa": true,
+            "received_at": "2026-10-05T19:41:11.07701-07:00",
+            "result": "success",
+            "ts": "2026-09-18T14:00:00Z",
+            "user": "alice@corp.com"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "geo": "Seattle, US",
+            "ip": "10.4.2.18",
+            "mfa": true,
+            "result": "success",
+            "ts": "2026-09-18T14:00:00Z",
+            "user": "alice@corp.com"
+          },
+          "questions": {
+            "escalate": {
+              "instructions": "Should a security analyst review this event immediately?",
+              "type": "noul"
+            },
+            "threat": {
+              "criteria": {
+                "benign": "Normal user behavior, no threat indicators",
+                "brute_force": "Repeated failed logins against one account",
+                "credential_stuffing": "Many accounts tried from one source, low success rate",
+                "impossible_travel": "Logins from geographically distant locations too fast to be one person",
+                "other": "Suspicious but does not match a known pattern",
+                "token_abuse": "Stolen or replayed session tokens, anomalous API use"
+              },
+              "instructions": "What threat pattern does this authentication event match?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "escalate": {
+                "type": "noul",
+                "noul": 0.12
+              },
+              "threat": {
+                "type": "choice",
+                "choice": "benign",
+                "probabilities": {
+                  "benign": 0.92,
+                  "brute_force": 0.016,
+                  "credential_stuffing": 0.016,
+                  "impossible_travel": 0.016,
+                  "other": 0.016,
+                  "token_abuse": 0.016
+                },
+                "confidence": 0.92
+              }
+            }
+          }
+        }
+      ],
+      "destination": "cold"
+    },
+    {
+      "index": 1,
+      "input": "{\"ts\":\"2026-09-18T14:01:12Z\",\"user\":\"bob@corp.com\",\"ip\":\"203.0.113.99\",\"geo\":\"Lagos, NG\",\"result\":\"failed\",\"failures_10m\":47}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "ts": "2026-09-18T14:01:12Z",
+            "user": "bob@corp.com",
+            "ip": "203.0.113.99",
+            "geo": "Lagos, NG",
+            "result": "failed",
+            "failures_10m": 47
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "failures_10m": 47,
+            "geo": "Lagos, NG",
+            "ip": "203.0.113.99",
+            "result": "failed",
+            "ts": "2026-09-18T14:01:12Z",
+            "user": "bob@corp.com"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "failures_10m": 47,
+            "geo": "Lagos, NG",
+            "ip": "203.0.113.99",
+            "received_at": "2026-10-05T19:41:11.079342-07:00",
+            "result": "failed",
+            "ts": "2026-09-18T14:01:12Z",
+            "user": "bob@corp.com"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "failures_10m": 47,
+            "geo": "Lagos, NG",
+            "ip": "203.0.113.99",
+            "received_at": "2026-10-05T19:41:11.079342-07:00",
+            "result": "failed",
+            "ts": "2026-09-18T14:01:12Z",
+            "user": "bob@corp.com"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "failures_10m": 47,
+            "geo": "Lagos, NG",
+            "ip": "203.0.113.99",
+            "jev": {
+              "answers": {
+                "escalate": {
+                  "noul": 0.92,
+                  "type": "noul"
+                },
+                "threat": {
+                  "choice": "brute_force",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "benign": 0.016,
+                    "brute_force": 0.92,
+                    "credential_stuffing": 0.016,
+                    "impossible_travel": 0.016,
+                    "other": 0.016,
+                    "token_abuse": 0.016
+                  },
+                  "type": "choice"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "received_at": "2026-10-05T19:41:11.079342-07:00",
+            "result": "failed",
+            "ts": "2026-09-18T14:01:12Z",
+            "user": "bob@corp.com"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "failures_10m": 47,
+            "geo": "Lagos, NG",
+            "ip": "203.0.113.99",
+            "jev": {
+              "answers": {
+                "escalate": {
+                  "noul": 0.92,
+                  "type": "noul"
+                },
+                "threat": {
+                  "choice": "brute_force",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "benign": 0.016,
+                    "brute_force": 0.92,
+                    "credential_stuffing": 0.016,
+                    "impossible_travel": 0.016,
+                    "other": 0.016,
+                    "token_abuse": 0.016
+                  },
+                  "type": "choice"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "jev_decision": "siem",
+            "received_at": "2026-10-05T19:41:11.079342-07:00",
+            "result": "failed",
+            "ts": "2026-09-18T14:01:12Z",
+            "user": "bob@corp.com"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "failures_10m": 47,
+            "geo": "Lagos, NG",
+            "ip": "203.0.113.99",
+            "result": "failed",
+            "ts": "2026-09-18T14:01:12Z",
+            "user": "bob@corp.com"
+          },
+          "questions": {
+            "escalate": {
+              "instructions": "Should a security analyst review this event immediately?",
+              "type": "noul"
+            },
+            "threat": {
+              "criteria": {
+                "benign": "Normal user behavior, no threat indicators",
+                "brute_force": "Repeated failed logins against one account",
+                "credential_stuffing": "Many accounts tried from one source, low success rate",
+                "impossible_travel": "Logins from geographically distant locations too fast to be one person",
+                "other": "Suspicious but does not match a known pattern",
+                "token_abuse": "Stolen or replayed session tokens, anomalous API use"
+              },
+              "instructions": "What threat pattern does this authentication event match?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "escalate": {
+                "type": "noul",
+                "noul": 0.92
+              },
+              "threat": {
+                "type": "choice",
+                "choice": "brute_force",
+                "probabilities": {
+                  "benign": 0.016,
+                  "brute_force": 0.92,
+                  "credential_stuffing": 0.016,
+                  "impossible_travel": 0.016,
+                  "other": 0.016,
+                  "token_abuse": 0.016
+                },
+                "confidence": 0.92
+              }
+            }
+          }
+        }
+      ],
+      "destination": "siem"
+    },
+    {
+      "index": 2,
+      "input": "{\"ts\":\"2026-09-18T14:01:40Z\",\"user\":\"carol@corp.com\",\"ip\":\"10.4.2.22\",\"geo\":\"Seattle, US\",\"result\":\"success\",\"mfa\":true}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "ts": "2026-09-18T14:01:40Z",
+            "user": "carol@corp.com",
+            "ip": "10.4.2.22",
+            "geo": "Seattle, US",
+            "result": "success",
+            "mfa": true
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "10.4.2.22",
+            "mfa": true,
+            "result": "success",
+            "ts": "2026-09-18T14:01:40Z",
+            "user": "carol@corp.com"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "10.4.2.22",
+            "mfa": true,
+            "received_at": "2026-10-05T19:41:11.082696-07:00",
+            "result": "success",
+            "ts": "2026-09-18T14:01:40Z",
+            "user": "carol@corp.com"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "10.4.2.22",
+            "mfa": true,
+            "received_at": "2026-10-05T19:41:11.082696-07:00",
+            "result": "success",
+            "ts": "2026-09-18T14:01:40Z",
+            "user": "carol@corp.com"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "10.4.2.22",
+            "jev": {
+              "answers": {
+                "escalate": {
+                  "noul": 0.12,
+                  "type": "noul"
+                },
+                "threat": {
+                  "choice": "benign",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "benign": 0.92,
+                    "brute_force": 0.016,
+                    "credential_stuffing": 0.016,
+                    "impossible_travel": 0.016,
+                    "other": 0.016,
+                    "token_abuse": 0.016
+                  },
+                  "type": "choice"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "mfa": true,
+            "received_at": "2026-10-05T19:41:11.082696-07:00",
+            "result": "success",
+            "ts": "2026-09-18T14:01:40Z",
+            "user": "carol@corp.com"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "10.4.2.22",
+            "jev": {
+              "answers": {
+                "escalate": {
+                  "noul": 0.12,
+                  "type": "noul"
+                },
+                "threat": {
+                  "choice": "benign",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "benign": 0.92,
+                    "brute_force": 0.016,
+                    "credential_stuffing": 0.016,
+                    "impossible_travel": 0.016,
+                    "other": 0.016,
+                    "token_abuse": 0.016
+                  },
+                  "type": "choice"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "jev_decision": "cold",
+            "mfa": true,
+            "received_at": "2026-10-05T19:41:11.082696-07:00",
+            "result": "success",
+            "ts": "2026-09-18T14:01:40Z",
+            "user": "carol@corp.com"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "geo": "Seattle, US",
+            "ip": "10.4.2.22",
+            "mfa": true,
+            "result": "success",
+            "ts": "2026-09-18T14:01:40Z",
+            "user": "carol@corp.com"
+          },
+          "questions": {
+            "escalate": {
+              "instructions": "Should a security analyst review this event immediately?",
+              "type": "noul"
+            },
+            "threat": {
+              "criteria": {
+                "benign": "Normal user behavior, no threat indicators",
+                "brute_force": "Repeated failed logins against one account",
+                "credential_stuffing": "Many accounts tried from one source, low success rate",
+                "impossible_travel": "Logins from geographically distant locations too fast to be one person",
+                "other": "Suspicious but does not match a known pattern",
+                "token_abuse": "Stolen or replayed session tokens, anomalous API use"
+              },
+              "instructions": "What threat pattern does this authentication event match?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "escalate": {
+                "type": "noul",
+                "noul": 0.12
+              },
+              "threat": {
+                "type": "choice",
+                "choice": "benign",
+                "probabilities": {
+                  "benign": 0.92,
+                  "brute_force": 0.016,
+                  "credential_stuffing": 0.016,
+                  "impossible_travel": 0.016,
+                  "other": 0.016,
+                  "token_abuse": 0.016
+                },
+                "confidence": 0.92
+              }
+            }
+          }
+        }
+      ],
+      "destination": "cold"
+    },
+    {
+      "index": 3,
+      "input": "{\"ts\":\"2026-09-18T14:02:03Z\",\"user\":\"dave@corp.com\",\"ip\":\"198.51.100.7\",\"geo\":\"Seattle, US\",\"result\":\"success\",\"prev_login_geo\":\"Tokyo, JP\",\"prev_login_ago_min\":22}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "ts": "2026-09-18T14:02:03Z",
+            "user": "dave@corp.com",
+            "ip": "198.51.100.7",
+            "geo": "Seattle, US",
+            "result": "success",
+            "prev_login_geo": "Tokyo, JP",
+            "prev_login_ago_min": 22
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "198.51.100.7",
+            "prev_login_ago_min": 22,
+            "prev_login_geo": "Tokyo, JP",
+            "result": "success",
+            "ts": "2026-09-18T14:02:03Z",
+            "user": "dave@corp.com"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "198.51.100.7",
+            "prev_login_ago_min": 22,
+            "prev_login_geo": "Tokyo, JP",
+            "received_at": "2026-10-05T19:41:11.085409-07:00",
+            "result": "success",
+            "ts": "2026-09-18T14:02:03Z",
+            "user": "dave@corp.com"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "198.51.100.7",
+            "prev_login_ago_min": 22,
+            "prev_login_geo": "Tokyo, JP",
+            "received_at": "2026-10-05T19:41:11.085409-07:00",
+            "result": "success",
+            "ts": "2026-09-18T14:02:03Z",
+            "user": "dave@corp.com"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "198.51.100.7",
+            "jev": {
+              "answers": {
+                "escalate": {
+                  "noul": 0.12,
+                  "type": "noul"
+                },
+                "threat": {
+                  "choice": "impossible_travel",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "benign": 0.016,
+                    "brute_force": 0.016,
+                    "credential_stuffing": 0.016,
+                    "impossible_travel": 0.92,
+                    "other": 0.016,
+                    "token_abuse": 0.016
+                  },
+                  "type": "choice"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "prev_login_ago_min": 22,
+            "prev_login_geo": "Tokyo, JP",
+            "received_at": "2026-10-05T19:41:11.085409-07:00",
+            "result": "success",
+            "ts": "2026-09-18T14:02:03Z",
+            "user": "dave@corp.com"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "geo": "Seattle, US",
+            "ip": "198.51.100.7",
+            "jev": {
+              "answers": {
+                "escalate": {
+                  "noul": 0.12,
+                  "type": "noul"
+                },
+                "threat": {
+                  "choice": "impossible_travel",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "benign": 0.016,
+                    "brute_force": 0.016,
+                    "credential_stuffing": 0.016,
+                    "impossible_travel": 0.92,
+                    "other": 0.016,
+                    "token_abuse": 0.016
+                  },
+                  "type": "choice"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "jev_decision": "warm",
+            "prev_login_ago_min": 22,
+            "prev_login_geo": "Tokyo, JP",
+            "received_at": "2026-10-05T19:41:11.085409-07:00",
+            "result": "success",
+            "ts": "2026-09-18T14:02:03Z",
+            "user": "dave@corp.com"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "geo": "Seattle, US",
+            "ip": "198.51.100.7",
+            "prev_login_ago_min": 22,
+            "prev_login_geo": "Tokyo, JP",
+            "result": "success",
+            "ts": "2026-09-18T14:02:03Z",
+            "user": "dave@corp.com"
+          },
+          "questions": {
+            "escalate": {
+              "instructions": "Should a security analyst review this event immediately?",
+              "type": "noul"
+            },
+            "threat": {
+              "criteria": {
+                "benign": "Normal user behavior, no threat indicators",
+                "brute_force": "Repeated failed logins against one account",
+                "credential_stuffing": "Many accounts tried from one source, low success rate",
+                "impossible_travel": "Logins from geographically distant locations too fast to be one person",
+                "other": "Suspicious but does not match a known pattern",
+                "token_abuse": "Stolen or replayed session tokens, anomalous API use"
+              },
+              "instructions": "What threat pattern does this authentication event match?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "escalate": {
+                "type": "noul",
+                "noul": 0.12
+              },
+              "threat": {
+                "type": "choice",
+                "choice": "impossible_travel",
+                "probabilities": {
+                  "benign": 0.016,
+                  "brute_force": 0.016,
+                  "credential_stuffing": 0.016,
+                  "impossible_travel": 0.92,
+                  "other": 0.016,
+                  "token_abuse": 0.016
+                },
+                "confidence": 0.92
+              }
+            }
+          }
+        }
+      ],
+      "destination": "warm"
+    },
+    {
+      "index": 4,
+      "input": "{\"ts\": \"2026-09-18T14:03:11Z\", \"ip\": \"192.0.2.55\", \"result\": \"mixed\", \"distinct_users_10m\": 18, \"success_rate\": 0.22, \"note\": \"shared NAT gateway for branch office\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "ts": "2026-09-18T14:03:11Z",
+            "ip": "192.0.2.55",
+            "result": "mixed",
+            "distinct_users_10m": 18,
+            "success_rate": 0.22,
+            "note": "shared NAT gateway for branch office"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "distinct_users_10m": 18,
+            "ip": "192.0.2.55",
+            "note": "shared NAT gateway for branch office",
+            "result": "mixed",
+            "success_rate": 0.22,
+            "ts": "2026-09-18T14:03:11Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "distinct_users_10m": 18,
+            "ip": "192.0.2.55",
+            "note": "shared NAT gateway for branch office",
+            "received_at": "2026-10-05T19:41:11.087461-07:00",
+            "result": "mixed",
+            "success_rate": 0.22,
+            "ts": "2026-09-18T14:03:11Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "distinct_users_10m": 18,
+            "ip": "192.0.2.55",
+            "note": "shared NAT gateway for branch office",
+            "received_at": "2026-10-05T19:41:11.087461-07:00",
+            "result": "mixed",
+            "success_rate": 0.22,
+            "ts": "2026-09-18T14:03:11Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "distinct_users_10m": 18,
+            "ip": "192.0.2.55",
+            "jev": {
+              "answers": {
+                "escalate": {
+                  "noul": 0.12,
+                  "type": "noul"
+                },
+                "threat": {
+                  "choice": "credential_stuffing",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "benign": 0.016,
+                    "brute_force": 0.016,
+                    "credential_stuffing": 0.92,
+                    "impossible_travel": 0.016,
+                    "other": 0.016,
+                    "token_abuse": 0.016
+                  },
+                  "type": "choice"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "note": "shared NAT gateway for branch office",
+            "received_at": "2026-10-05T19:41:11.087461-07:00",
+            "result": "mixed",
+            "success_rate": 0.22,
+            "ts": "2026-09-18T14:03:11Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "distinct_users_10m": 18,
+            "ip": "192.0.2.55",
+            "jev": {
+              "answers": {
+                "escalate": {
+                  "noul": 0.12,
+                  "type": "noul"
+                },
+                "threat": {
+                  "choice": "credential_stuffing",
+                  "confidence": 0.92,
+                  "probabilities": {
+                    "benign": 0.016,
+                    "brute_force": 0.016,
+                    "credential_stuffing": 0.92,
+                    "impossible_travel": 0.016,
+                    "other": 0.016,
+                    "token_abuse": 0.016
+                  },
+                  "type": "choice"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "jev_decision": "warm",
+            "note": "shared NAT gateway for branch office",
+            "received_at": "2026-10-05T19:41:11.087461-07:00",
+            "result": "mixed",
+            "success_rate": 0.22,
+            "ts": "2026-09-18T14:03:11Z"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "distinct_users_10m": 18,
+            "ip": "192.0.2.55",
+            "note": "shared NAT gateway for branch office",
+            "result": "mixed",
+            "success_rate": 0.22,
+            "ts": "2026-09-18T14:03:11Z"
+          },
+          "questions": {
+            "escalate": {
+              "instructions": "Should a security analyst review this event immediately?",
+              "type": "noul"
+            },
+            "threat": {
+              "criteria": {
+                "benign": "Normal user behavior, no threat indicators",
+                "brute_force": "Repeated failed logins against one account",
+                "credential_stuffing": "Many accounts tried from one source, low success rate",
+                "impossible_travel": "Logins from geographically distant locations too fast to be one person",
+                "other": "Suspicious but does not match a known pattern",
+                "token_abuse": "Stolen or replayed session tokens, anomalous API use"
+              },
+              "instructions": "What threat pattern does this authentication event match?",
+              "type": "choice"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "escalate": {
+                "type": "noul",
+                "noul": 0.12
+              },
+              "threat": {
+                "type": "choice",
+                "choice": "credential_stuffing",
+                "probabilities": {
+                  "benign": 0.016,
+                  "brute_force": 0.016,
+                  "credential_stuffing": 0.92,
+                  "impossible_travel": 0.016,
+                  "other": 0.016,
+                  "token_abuse": 0.016
+                },
+                "confidence": 0.92
+              }
+            }
+          }
+        }
+      ],
+      "destination": "warm"
+    }
+  ]
+}

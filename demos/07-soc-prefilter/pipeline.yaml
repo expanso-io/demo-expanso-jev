@@ -10,25 +10,29 @@ labels:
 config:
   input:
     http_server:
-      address: "0.0.0.0:8080"
+      address: "${INGEST_ADDRESS:127.0.0.1:8080}"
       path: /auth-events
       allowed_verbs: ["POST"]
 
   pipeline:
     processors:
-      - mapping: |
+      - label: parse_body
+        mapping: |
           # http_server already parses JSON bodies; only parse raw strings
           root = if this.type() == "string" { this.parse_json() } else { this }
 
-      - mapping: |
+      - label: stamp_received
+        mapping: |
           root = this
           root.received_at = now()
 
       # ── Ask Jev ──
-      - mutation: |
+      - label: start_timer
+        mutation: |
           meta jev_start = timestamp_unix_milli()
 
-      - branch:
+      - label: ask_jev
+        branch:
           request_map: |
             root = {
               "state": this.string(),
@@ -72,14 +76,17 @@ config:
             }
 
       # ── Confidence-gated cascade ──
-      - mapping: |
+      - label: route_decision
+        mapping: |
           root = this
           let threat = this.jev.answers.threat.choice.or("benign")
           let escalate = this.jev.answers.escalate.noul.or(0)
+          # When Jev did not answer, keep the event in warm storage, not cold.
+          let jev_up = this.jev.model.or("") != "jev-unavailable"
 
           root.jev_decision = if $escalate >= 0.85 {
             "siem"
-          } else if $threat != "benign" {
+          } else if !$jev_up || $threat != "benign" {
             "warm"
           } else {
             "cold"
@@ -89,23 +96,27 @@ config:
     broker:
       pattern: fan_out
       outputs:
-        - stdout:
+        - label: echo_stdout
+          stdout:
             codec: lines
-        - switch:
+        - label: by_decision
+          switch:
             cases:
-              # Production: swap for http_client -> SIEM ingestion API
               - check: this.jev_decision == "siem"
                 output:
+                  label: siem
                   file:
                     path: ./data/jev-soc-prefilter/siem-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: this.jev_decision == "warm"
                 output:
+                  label: warm
                   file:
                     path: ./data/jev-soc-prefilter/warm-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
+                  label: cold
                   file:
                     path: ./data/jev-soc-prefilter/cold-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

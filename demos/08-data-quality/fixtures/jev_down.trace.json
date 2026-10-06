@@ -1,0 +1,729 @@
+{
+  "volatile": [
+    "received_at",
+    "jev.ms"
+  ],
+  "stage_count": 6,
+  "records": [
+    {
+      "index": 0,
+      "input": "{\"order_id\":\"ord-9001\",\"customer_id\":\"cus-88121\",\"amount\":129.99,\"currency\":\"USD\",\"ts\":\"2026-09-18T14:00:00Z\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "order_id": "ord-9001",
+            "customer_id": "cus-88121",
+            "amount": 129.99,
+            "currency": "USD",
+            "ts": "2026-09-18T14:00:00Z"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "amount": 129.99,
+            "currency": "USD",
+            "customer_id": "cus-88121",
+            "order_id": "ord-9001",
+            "ts": "2026-09-18T14:00:00Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "amount": 129.99,
+            "currency": "USD",
+            "customer_id": "cus-88121",
+            "order_id": "ord-9001",
+            "received_at": "2026-10-05T19:41:38.40086-07:00",
+            "ts": "2026-09-18T14:00:00Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "amount": 129.99,
+            "currency": "USD",
+            "customer_id": "cus-88121",
+            "order_id": "ord-9001",
+            "received_at": "2026-10-05T19:41:38.40086-07:00",
+            "ts": "2026-09-18T14:00:00Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "amount": 129.99,
+            "currency": "USD",
+            "customer_id": "cus-88121",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "order_id": "ord-9001",
+            "received_at": "2026-10-05T19:41:38.40086-07:00",
+            "ts": "2026-09-18T14:00:00Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "amount": 129.99,
+            "currency": "USD",
+            "customer_id": "cus-88121",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "jev_decision": "quarantine",
+            "order_id": "ord-9001",
+            "received_at": "2026-10-05T19:41:38.40086-07:00",
+            "ts": "2026-09-18T14:00:00Z"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "amount": 129.99,
+            "currency": "USD",
+            "customer_id": "cus-88121",
+            "order_id": "ord-9001",
+            "ts": "2026-09-18T14:00:00Z"
+          },
+          "questions": {
+            "conformant": {
+              "instructions": "Does this row conform to the expected schema and plausible value ranges? Expected: order_id (string), customer_id (string), amount (positive number), currency (3-letter code), ts (ISO timestamp).",
+              "type": "noul"
+            },
+            "quality": {
+              "criteria": [
+                "Corrupt or unusable",
+                "Poor, major issues",
+                "Acceptable with caveats",
+                "Good, minor issues only",
+                "Pristine"
+              ],
+              "instructions": "Rate the data quality of this row for analytics use.",
+              "type": "score"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "amount": 129.99,
+            "currency": "USD",
+            "customer_id": "cus-88121",
+            "order_id": "ord-9001",
+            "ts": "2026-09-18T14:00:00Z"
+          },
+          "questions": {
+            "conformant": {
+              "instructions": "Does this row conform to the expected schema and plausible value ranges? Expected: order_id (string), customer_id (string), amount (positive number), currency (3-letter code), ts (ISO timestamp).",
+              "type": "noul"
+            },
+            "quality": {
+              "criteria": [
+                "Corrupt or unusable",
+                "Poor, major issues",
+                "Acceptable with caveats",
+                "Good, minor issues only",
+                "Pristine"
+              ],
+              "instructions": "Rate the data quality of this row for analytics use.",
+              "type": "score"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "quarantine"
+    },
+    {
+      "index": 1,
+      "input": "{\"order_id\":\"ord-9002\",\"customer_id\":\"cus-10422\",\"amount\":-45.00,\"currency\":\"USD\",\"ts\":\"2026-09-18T14:01:00Z\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "order_id": "ord-9002",
+            "customer_id": "cus-10422",
+            "amount": -45.0,
+            "currency": "USD",
+            "ts": "2026-09-18T14:01:00Z"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "amount": -45.0,
+            "currency": "USD",
+            "customer_id": "cus-10422",
+            "order_id": "ord-9002",
+            "ts": "2026-09-18T14:01:00Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "amount": -45.0,
+            "currency": "USD",
+            "customer_id": "cus-10422",
+            "order_id": "ord-9002",
+            "received_at": "2026-10-05T19:41:39.41293-07:00",
+            "ts": "2026-09-18T14:01:00Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "amount": -45.0,
+            "currency": "USD",
+            "customer_id": "cus-10422",
+            "order_id": "ord-9002",
+            "received_at": "2026-10-05T19:41:39.41293-07:00",
+            "ts": "2026-09-18T14:01:00Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "amount": -45.0,
+            "currency": "USD",
+            "customer_id": "cus-10422",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1003
+            },
+            "order_id": "ord-9002",
+            "received_at": "2026-10-05T19:41:39.41293-07:00",
+            "ts": "2026-09-18T14:01:00Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "amount": -45.0,
+            "currency": "USD",
+            "customer_id": "cus-10422",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1003
+            },
+            "jev_decision": "quarantine",
+            "order_id": "ord-9002",
+            "received_at": "2026-10-05T19:41:39.41293-07:00",
+            "ts": "2026-09-18T14:01:00Z"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "amount": -45.0,
+            "currency": "USD",
+            "customer_id": "cus-10422",
+            "order_id": "ord-9002",
+            "ts": "2026-09-18T14:01:00Z"
+          },
+          "questions": {
+            "conformant": {
+              "instructions": "Does this row conform to the expected schema and plausible value ranges? Expected: order_id (string), customer_id (string), amount (positive number), currency (3-letter code), ts (ISO timestamp).",
+              "type": "noul"
+            },
+            "quality": {
+              "criteria": [
+                "Corrupt or unusable",
+                "Poor, major issues",
+                "Acceptable with caveats",
+                "Good, minor issues only",
+                "Pristine"
+              ],
+              "instructions": "Rate the data quality of this row for analytics use.",
+              "type": "score"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "amount": -45.0,
+            "currency": "USD",
+            "customer_id": "cus-10422",
+            "order_id": "ord-9002",
+            "ts": "2026-09-18T14:01:00Z"
+          },
+          "questions": {
+            "conformant": {
+              "instructions": "Does this row conform to the expected schema and plausible value ranges? Expected: order_id (string), customer_id (string), amount (positive number), currency (3-letter code), ts (ISO timestamp).",
+              "type": "noul"
+            },
+            "quality": {
+              "criteria": [
+                "Corrupt or unusable",
+                "Poor, major issues",
+                "Acceptable with caveats",
+                "Good, minor issues only",
+                "Pristine"
+              ],
+              "instructions": "Rate the data quality of this row for analytics use.",
+              "type": "score"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "quarantine"
+    },
+    {
+      "index": 2,
+      "input": "{\"order_id\":\"ord-9003\",\"customer_id\":null,\"amount\":\"a lot\",\"currency\":\"USDD\",\"ts\":\"yesterday-ish\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "order_id": "ord-9003",
+            "customer_id": null,
+            "amount": "a lot",
+            "currency": "USDD",
+            "ts": "yesterday-ish"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "amount": "a lot",
+            "currency": "USDD",
+            "customer_id": null,
+            "order_id": "ord-9003",
+            "ts": "yesterday-ish"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "amount": "a lot",
+            "currency": "USDD",
+            "customer_id": null,
+            "order_id": "ord-9003",
+            "received_at": "2026-10-05T19:41:40.42638-07:00",
+            "ts": "yesterday-ish"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "amount": "a lot",
+            "currency": "USDD",
+            "customer_id": null,
+            "order_id": "ord-9003",
+            "received_at": "2026-10-05T19:41:40.42638-07:00",
+            "ts": "yesterday-ish"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "amount": "a lot",
+            "currency": "USDD",
+            "customer_id": null,
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1005
+            },
+            "order_id": "ord-9003",
+            "received_at": "2026-10-05T19:41:40.42638-07:00",
+            "ts": "yesterday-ish"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "amount": "a lot",
+            "currency": "USDD",
+            "customer_id": null,
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1005
+            },
+            "jev_decision": "quarantine",
+            "order_id": "ord-9003",
+            "received_at": "2026-10-05T19:41:40.42638-07:00",
+            "ts": "yesterday-ish"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "amount": "a lot",
+            "currency": "USDD",
+            "customer_id": null,
+            "order_id": "ord-9003",
+            "ts": "yesterday-ish"
+          },
+          "questions": {
+            "conformant": {
+              "instructions": "Does this row conform to the expected schema and plausible value ranges? Expected: order_id (string), customer_id (string), amount (positive number), currency (3-letter code), ts (ISO timestamp).",
+              "type": "noul"
+            },
+            "quality": {
+              "criteria": [
+                "Corrupt or unusable",
+                "Poor, major issues",
+                "Acceptable with caveats",
+                "Good, minor issues only",
+                "Pristine"
+              ],
+              "instructions": "Rate the data quality of this row for analytics use.",
+              "type": "score"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "amount": "a lot",
+            "currency": "USDD",
+            "customer_id": null,
+            "order_id": "ord-9003",
+            "ts": "yesterday-ish"
+          },
+          "questions": {
+            "conformant": {
+              "instructions": "Does this row conform to the expected schema and plausible value ranges? Expected: order_id (string), customer_id (string), amount (positive number), currency (3-letter code), ts (ISO timestamp).",
+              "type": "noul"
+            },
+            "quality": {
+              "criteria": [
+                "Corrupt or unusable",
+                "Poor, major issues",
+                "Acceptable with caveats",
+                "Good, minor issues only",
+                "Pristine"
+              ],
+              "instructions": "Rate the data quality of this row for analytics use.",
+              "type": "score"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "quarantine"
+    },
+    {
+      "index": 3,
+      "input": "{\"order_id\":\"ord-9004\",\"customer_id\":\"cus-77190\",\"amount\":9.99,\"currency\":\"USD\",\"ts\":\"2026-09-18T14:03:00Z\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "order_id": "ord-9004",
+            "customer_id": "cus-77190",
+            "amount": 9.99,
+            "currency": "USD",
+            "ts": "2026-09-18T14:03:00Z"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "amount": 9.99,
+            "currency": "USD",
+            "customer_id": "cus-77190",
+            "order_id": "ord-9004",
+            "ts": "2026-09-18T14:03:00Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "amount": 9.99,
+            "currency": "USD",
+            "customer_id": "cus-77190",
+            "order_id": "ord-9004",
+            "received_at": "2026-10-05T19:41:41.440736-07:00",
+            "ts": "2026-09-18T14:03:00Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "amount": 9.99,
+            "currency": "USD",
+            "customer_id": "cus-77190",
+            "order_id": "ord-9004",
+            "received_at": "2026-10-05T19:41:41.440736-07:00",
+            "ts": "2026-09-18T14:03:00Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "amount": 9.99,
+            "currency": "USD",
+            "customer_id": "cus-77190",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1006
+            },
+            "order_id": "ord-9004",
+            "received_at": "2026-10-05T19:41:41.440736-07:00",
+            "ts": "2026-09-18T14:03:00Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "amount": 9.99,
+            "currency": "USD",
+            "customer_id": "cus-77190",
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1006
+            },
+            "jev_decision": "quarantine",
+            "order_id": "ord-9004",
+            "received_at": "2026-10-05T19:41:41.440736-07:00",
+            "ts": "2026-09-18T14:03:00Z"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "amount": 9.99,
+            "currency": "USD",
+            "customer_id": "cus-77190",
+            "order_id": "ord-9004",
+            "ts": "2026-09-18T14:03:00Z"
+          },
+          "questions": {
+            "conformant": {
+              "instructions": "Does this row conform to the expected schema and plausible value ranges? Expected: order_id (string), customer_id (string), amount (positive number), currency (3-letter code), ts (ISO timestamp).",
+              "type": "noul"
+            },
+            "quality": {
+              "criteria": [
+                "Corrupt or unusable",
+                "Poor, major issues",
+                "Acceptable with caveats",
+                "Good, minor issues only",
+                "Pristine"
+              ],
+              "instructions": "Rate the data quality of this row for analytics use.",
+              "type": "score"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "amount": 9.99,
+            "currency": "USD",
+            "customer_id": "cus-77190",
+            "order_id": "ord-9004",
+            "ts": "2026-09-18T14:03:00Z"
+          },
+          "questions": {
+            "conformant": {
+              "instructions": "Does this row conform to the expected schema and plausible value ranges? Expected: order_id (string), customer_id (string), amount (positive number), currency (3-letter code), ts (ISO timestamp).",
+              "type": "noul"
+            },
+            "quality": {
+              "criteria": [
+                "Corrupt or unusable",
+                "Poor, major issues",
+                "Acceptable with caveats",
+                "Good, minor issues only",
+                "Pristine"
+              ],
+              "instructions": "Rate the data quality of this row for analytics use.",
+              "type": "score"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "quarantine"
+    },
+    {
+      "index": 4,
+      "input": "{\"order_id\": \"ord-9005\", \"customer_id\": null, \"amount\": 99999999.99, \"currency\": \"US\", \"ts\": \"2026-09-18T14:04:00Z\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "order_id": "ord-9005",
+            "customer_id": null,
+            "amount": 99999999.99,
+            "currency": "US",
+            "ts": "2026-09-18T14:04:00Z"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "amount": 99999999.99,
+            "currency": "US",
+            "customer_id": null,
+            "order_id": "ord-9005",
+            "ts": "2026-09-18T14:04:00Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "amount": 99999999.99,
+            "currency": "US",
+            "customer_id": null,
+            "order_id": "ord-9005",
+            "received_at": "2026-10-05T19:41:42.458491-07:00",
+            "ts": "2026-09-18T14:04:00Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "amount": 99999999.99,
+            "currency": "US",
+            "customer_id": null,
+            "order_id": "ord-9005",
+            "received_at": "2026-10-05T19:41:42.458491-07:00",
+            "ts": "2026-09-18T14:04:00Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "amount": 99999999.99,
+            "currency": "US",
+            "customer_id": null,
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1009
+            },
+            "order_id": "ord-9005",
+            "received_at": "2026-10-05T19:41:42.458491-07:00",
+            "ts": "2026-09-18T14:04:00Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "amount": 99999999.99,
+            "currency": "US",
+            "customer_id": null,
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1009
+            },
+            "jev_decision": "quarantine",
+            "order_id": "ord-9005",
+            "received_at": "2026-10-05T19:41:42.458491-07:00",
+            "ts": "2026-09-18T14:04:00Z"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "amount": 99999999.99,
+            "currency": "US",
+            "customer_id": null,
+            "order_id": "ord-9005",
+            "ts": "2026-09-18T14:04:00Z"
+          },
+          "questions": {
+            "conformant": {
+              "instructions": "Does this row conform to the expected schema and plausible value ranges? Expected: order_id (string), customer_id (string), amount (positive number), currency (3-letter code), ts (ISO timestamp).",
+              "type": "noul"
+            },
+            "quality": {
+              "criteria": [
+                "Corrupt or unusable",
+                "Poor, major issues",
+                "Acceptable with caveats",
+                "Good, minor issues only",
+                "Pristine"
+              ],
+              "instructions": "Rate the data quality of this row for analytics use.",
+              "type": "score"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "amount": 99999999.99,
+            "currency": "US",
+            "customer_id": null,
+            "order_id": "ord-9005",
+            "ts": "2026-09-18T14:04:00Z"
+          },
+          "questions": {
+            "conformant": {
+              "instructions": "Does this row conform to the expected schema and plausible value ranges? Expected: order_id (string), customer_id (string), amount (positive number), currency (3-letter code), ts (ISO timestamp).",
+              "type": "noul"
+            },
+            "quality": {
+              "criteria": [
+                "Corrupt or unusable",
+                "Poor, major issues",
+                "Acceptable with caveats",
+                "Good, minor issues only",
+                "Pristine"
+              ],
+              "instructions": "Rate the data quality of this row for analytics use.",
+              "type": "score"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "quarantine"
+    }
+  ]
+}

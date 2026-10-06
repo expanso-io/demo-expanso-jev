@@ -1,0 +1,8 @@
+{"jev": {"answers": {}, "model": "jev-unavailable"}, "jev_decision": "keep", "jev_score": 0, "msg": "GET /health 200 3ms", "service": "api-gw", "ts": "2026-09-18T14:00:01Z"}
+{"jev": {"answers": {}, "model": "jev-unavailable"}, "jev_decision": "keep", "jev_score": 0, "msg": "GET /health 200 2ms", "service": "api-gw", "ts": "2026-09-18T14:00:02Z"}
+{"jev": {"answers": {}, "model": "jev-unavailable"}, "jev_decision": "keep", "jev_score": 0, "msg": "POST /checkout 200 184ms user=48211 amount=129.99", "service": "api-gw", "ts": "2026-09-18T14:00:03Z"}
+{"jev": {"answers": {}, "model": "jev-unavailable"}, "jev_decision": "keep", "jev_score": 0, "msg": "GET /health 200 3ms", "service": "api-gw", "ts": "2026-09-18T14:00:04Z"}
+{"jev": {"answers": {}, "model": "jev-unavailable"}, "jev_decision": "keep", "jev_score": 0, "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412", "service": "worker-3", "ts": "2026-09-18T14:00:05Z"}
+{"jev": {"answers": {}, "model": "jev-unavailable"}, "jev_decision": "keep", "jev_score": 0, "msg": "GET /health 200 2ms", "service": "api-gw", "ts": "2026-09-18T14:00:06Z"}
+{"jev": {"answers": {}, "model": "jev-unavailable"}, "jev_decision": "keep", "jev_score": 0, "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections", "service": "db-proxy", "ts": "2026-09-18T14:00:07Z"}
+{"jev": {"answers": {}, "model": "jev-unavailable"}, "jev_decision": "keep", "jev_score": 0, "msg": "GET /health 200 3ms", "service": "api-gw", "ts": "2026-09-18T14:00:08Z"}

@@ -1,0 +1,215 @@
+{
+  "note": "Recorded answers, replayed by tools/fixture-runner.py. Produced by the offline responder in shared/jev-mock-server.py; no model was called.",
+  "answers": [
+    {
+      "key": "1b4c46ae93340504f07d604d90f5cfbcdbf5031264a20d5894a4ea4606199117",
+      "state": {
+        "customer": "acme-corp",
+        "feedback_id": "f-001",
+        "rating": 2,
+        "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
+      },
+      "questions": [
+        "churn_risk",
+        "sentiment",
+        "topic"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "churn_risk": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "sentiment": {
+            "type": "score",
+            "score": 0.6,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "topic": {
+            "type": "choice",
+            "choice": "bug",
+            "probabilities": {
+              "bug": 0.92,
+              "feature_request": 0.016,
+              "other": 0.016,
+              "praise": 0.016,
+              "pricing": 0.016,
+              "support_experience": 0.016
+            },
+            "confidence": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "31c2c54ea414f83dfc72ce07b49b30986694f7bc057c5565e579735c9dbfcb04",
+      "state": {
+        "customer": "hooli",
+        "feedback_id": "f-005",
+        "rating": 3,
+        "text": "It's fine. Does what we need."
+      },
+      "questions": [
+        "churn_risk",
+        "sentiment",
+        "topic"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "churn_risk": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "sentiment": {
+            "type": "score",
+            "score": 1.4,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "topic": {
+            "type": "choice",
+            "choice": "other",
+            "probabilities": {
+              "bug": 0.016,
+              "feature_request": 0.016,
+              "other": 0.92,
+              "praise": 0.016,
+              "pricing": 0.016,
+              "support_experience": 0.016
+            },
+            "confidence": 0.35
+          }
+        }
+      }
+    },
+    {
+      "key": "b7bfb05edfa4310daeb28b7a9dea11bf612921e0a80223d9d89f001cadd92387",
+      "state": {
+        "customer": "umbrella",
+        "feedback_id": "f-004",
+        "rating": 4,
+        "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
+      },
+      "questions": [
+        "churn_risk",
+        "sentiment",
+        "topic"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "churn_risk": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "sentiment": {
+            "type": "score",
+            "score": 3.4,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "topic": {
+            "type": "choice",
+            "choice": "pricing",
+            "probabilities": {
+              "bug": 0.016,
+              "feature_request": 0.016,
+              "other": 0.016,
+              "praise": 0.016,
+              "pricing": 0.92,
+              "support_experience": 0.016
+            },
+            "confidence": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "d115a1a9cd9d99130386330f4d51bc8c9976e10817f9160e886230f5678b710c",
+      "state": {
+        "customer": "initech",
+        "feedback_id": "f-003",
+        "rating": 1,
+        "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
+      },
+      "questions": [
+        "churn_risk",
+        "sentiment",
+        "topic"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "churn_risk": {
+            "type": "noul",
+            "noul": 0.92
+          },
+          "sentiment": {
+            "type": "score",
+            "score": 0.6,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "topic": {
+            "type": "choice",
+            "choice": "feature_request",
+            "probabilities": {
+              "bug": 0.016,
+              "feature_request": 0.92,
+              "other": 0.016,
+              "praise": 0.016,
+              "pricing": 0.016,
+              "support_experience": 0.016
+            },
+            "confidence": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "f31fad075b9c59e020ffee98f4b997fa4120663c6e853a1d7af980ce29b21e30",
+      "state": {
+        "customer": "globex",
+        "feedback_id": "f-002",
+        "rating": 5,
+        "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
+      },
+      "questions": [
+        "churn_risk",
+        "sentiment",
+        "topic"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "churn_risk": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "sentiment": {
+            "type": "score",
+            "score": 3.4,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "topic": {
+            "type": "choice",
+            "choice": "support_experience",
+            "probabilities": {
+              "bug": 0.016,
+              "feature_request": 0.016,
+              "other": 0.016,
+              "praise": 0.016,
+              "pricing": 0.016,
+              "support_experience": 0.92
+            },
+            "confidence": 0.92
+          }
+        }
+      }
+    }
+  ]
+}

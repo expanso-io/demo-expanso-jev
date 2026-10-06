@@ -10,25 +10,29 @@ labels:
 config:
   input:
     http_server:
-      address: "0.0.0.0:8080"
+      address: "${INGEST_ADDRESS:127.0.0.1:8080}"
       path: /rows
       allowed_verbs: ["POST"]
 
   pipeline:
     processors:
-      - mapping: |
+      - label: parse_body
+        mapping: |
           # http_server already parses JSON bodies; only parse raw strings
           root = if this.type() == "string" { this.parse_json() } else { this }
 
-      - mapping: |
+      - label: stamp_received
+        mapping: |
           root = this
           root.received_at = now()
 
       # ── Ask Jev ──
-      - mutation: |
+      - label: start_timer
+        mutation: |
           meta jev_start = timestamp_unix_milli()
 
-      - branch:
+      - label: ask_jev
+        branch:
           request_map: |
             root = {
               "state": this.string(),
@@ -71,7 +75,8 @@ config:
             }
 
       # ── Confidence-gated cascade ──
-      - mapping: |
+      - label: route_decision
+        mapping: |
           root = this
           let quality = this.jev.answers.quality.score.or(0)
           let conformant = this.jev.answers.conformant.noul.or(0)
@@ -86,17 +91,21 @@ config:
     broker:
       pattern: fan_out
       outputs:
-        - stdout:
+        - label: echo_stdout
+          stdout:
             codec: lines
-        - switch:
+        - label: by_decision
+          switch:
             cases:
               - check: this.jev_decision == "quarantine"
                 output:
+                  label: quarantine
                   file:
                     path: ./data/jev-data-quality/quarantine-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
+                  label: warehouse
                   file:
                     path: ./data/jev-data-quality/warehouse-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

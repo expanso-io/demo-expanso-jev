@@ -1,0 +1,177 @@
+{
+  "note": "Recorded answers, replayed by tools/fixture-runner.py. Produced by the offline responder in shared/jev-mock-server.py; no model was called.",
+  "answers": [
+    {
+      "key": "6053b554fc5584bb77f65ae9370660bd9f1b1c658bb9b853093a7fd544addbf6",
+      "state": {
+        "baseline": {
+          "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+          "temp_c_max": 85,
+          "vibration_mm_s_max": 4.5
+        },
+        "rpm": 1750,
+        "sensor_id": "pump-12",
+        "temp_c": 68.0,
+        "ts": "2026-09-18T14:02:30Z",
+        "vibration_mm_s": 1.8
+      },
+      "questions": [
+        "anomaly",
+        "dispatch"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "anomaly": {
+            "type": "score",
+            "score": 1.4,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "dispatch": {
+            "type": "noul",
+            "noul": 0.12
+          }
+        }
+      }
+    },
+    {
+      "key": "637685d1ec3a17848855707afc0de35fb752b1c7ce3ccb515f7a8af7b3788520",
+      "state": {
+        "baseline": {
+          "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+          "temp_c_max": 85,
+          "vibration_mm_s_max": 4.5
+        },
+        "rpm": 1750,
+        "sensor_id": "pump-07",
+        "temp_c": 72.4,
+        "ts": "2026-09-18T14:00:00Z",
+        "vibration_mm_s": 2.1
+      },
+      "questions": [
+        "anomaly",
+        "dispatch"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "anomaly": {
+            "type": "score",
+            "score": 1.4,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "dispatch": {
+            "type": "noul",
+            "noul": 0.12
+          }
+        }
+      }
+    },
+    {
+      "key": "a420c2c0d5c0ee4ae8d3bf464a6747775ae443655a347da0ab384fd1e82b93c9",
+      "state": {
+        "baseline": {
+          "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+          "temp_c_max": 85,
+          "vibration_mm_s_max": 4.5
+        },
+        "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday",
+        "rpm": 1749,
+        "sensor_id": "pump-07",
+        "temp_c": 96.8,
+        "ts": "2026-09-18T14:03:00Z",
+        "vibration_mm_s": 9.4
+      },
+      "questions": [
+        "anomaly",
+        "dispatch"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "anomaly": {
+            "type": "score",
+            "score": 3.4,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "dispatch": {
+            "type": "noul",
+            "noul": 0.12
+          }
+        }
+      }
+    },
+    {
+      "key": "c6264c79311065e17f28edfe535a40e09299985bd5fdb1ba769b14d1c78b7d06",
+      "state": {
+        "baseline": {
+          "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+          "temp_c_max": 85,
+          "vibration_mm_s_max": 4.5
+        },
+        "rpm": 1750,
+        "sensor_id": "pump-07",
+        "temp_c": 73.1,
+        "ts": "2026-09-18T14:01:00Z",
+        "vibration_mm_s": 2.3
+      },
+      "questions": [
+        "anomaly",
+        "dispatch"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "anomaly": {
+            "type": "score",
+            "score": 1.4,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "dispatch": {
+            "type": "noul",
+            "noul": 0.12
+          }
+        }
+      }
+    },
+    {
+      "key": "cda23807871d5a126b08ae67a690aa2a0ed7b76698abe1b4d081384c2a85708f",
+      "state": {
+        "baseline": {
+          "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+          "temp_c_max": 85,
+          "vibration_mm_s_max": 4.5
+        },
+        "note": "audible grinding from bearing housing",
+        "rpm": 1748,
+        "sensor_id": "pump-07",
+        "temp_c": 94.6,
+        "ts": "2026-09-18T14:02:00Z",
+        "vibration_mm_s": 8.9
+      },
+      "questions": [
+        "anomaly",
+        "dispatch"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "anomaly": {
+            "type": "score",
+            "score": 3.4,
+            "probabilities": {},
+            "confidence": 0.7
+          },
+          "dispatch": {
+            "type": "noul",
+            "noul": 0.92
+          }
+        }
+      }
+    }
+  ]
+}

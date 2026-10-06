@@ -1,0 +1,64 @@
+{
+  "title": "Sensitivity masking",
+  "lede": "Each record is classified for sensitivity and checked for personal data and credentials before it leaves the source. The matching policy is applied on the spot: pass, mask, tokenize or quarantine.",
+  "cases": {
+    "main": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ]
+    },
+    "jev_down": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ],
+      "jev": "down"
+    }
+  },
+  "if_down": "Every record is quarantined. Nothing leaves the source unmasked when Jev has not judged it.",
+  "stages": [
+    {
+      "title": "Parse the body",
+      "text": "The input already parses JSON bodies. This stage only parses a body that arrives as a string, so both shapes become the same object before anything else touches it."
+    },
+    {
+      "title": "Stamp the arrival time",
+      "text": "Adds received_at, the time this node first saw the record. Everything downstream, including the latency figure, is measured from here."
+    },
+    {
+      "title": "Start the latency timer",
+      "text": "Stores the current time in message metadata. The message itself does not change, so the output below equals the input; the timer is read after Jev answers."
+    },
+    {
+      "title": "Ask Jev",
+      "text": "One request carries the record and the questions below. The answer is merged under `jev` with the model name and the round trip in milliseconds. If Jev cannot be reached, the catch block substitutes an empty answer set and every rule below falls to its default branch, so nothing is guessed."
+    },
+    {
+      "title": "Pick the policy",
+      "text": "If Jev did not answer, the record is quarantined: nothing leaves unmasked unjudged. Otherwise credentials at 0.7 or more, or a restricted class, quarantines the record. A confidential class tokenizes it. Personal data at 0.5 or more masks it. Anything else passes unchanged."
+    },
+    {
+      "title": "Apply the policy",
+      "text": "Rewrites the sensitive fields to match the policy: tokenize replaces email and SSN with a SHA-256 digest, mask writes MASKED, quarantine masks the SSN and replaces the API key. The original values do not leave this stage."
+    },
+    {
+      "title": "Write to a queue",
+      "text": "Quarantined records go to the quarantine file. Everything else goes to the forwarded file, already masked or tokenized where the policy required it."
+    }
+  ],
+  "queues": {
+    "quarantine": "Quarantine",
+    "forwarded": "Forwarded"
+  }
+}

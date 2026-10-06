@@ -1,0 +1,895 @@
+{
+  "volatile": [
+    "received_at",
+    "jev.ms"
+  ],
+  "stage_count": 6,
+  "records": [
+    {
+      "index": 0,
+      "input": "{\"sensor_id\":\"pump-07\",\"ts\":\"2026-09-18T14:00:00Z\",\"temp_c\":72.4,\"vibration_mm_s\":2.1,\"rpm\":1750}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "sensor_id": "pump-07",
+            "ts": "2026-09-18T14:00:00Z",
+            "temp_c": 72.4,
+            "vibration_mm_s": 2.1,
+            "rpm": 1750
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 72.4,
+            "ts": "2026-09-18T14:00:00Z",
+            "vibration_mm_s": 2.1
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "received_at": "2026-10-05T19:40:20.249308-07:00",
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 72.4,
+            "ts": "2026-09-18T14:00:00Z",
+            "vibration_mm_s": 2.1
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "received_at": "2026-10-05T19:40:20.249308-07:00",
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 72.4,
+            "ts": "2026-09-18T14:00:00Z",
+            "vibration_mm_s": 2.1
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1005
+            },
+            "received_at": "2026-10-05T19:40:20.249308-07:00",
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 72.4,
+            "ts": "2026-09-18T14:00:00Z",
+            "vibration_mm_s": 2.1
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1005
+            },
+            "jev_decision": "flag",
+            "received_at": "2026-10-05T19:40:20.249308-07:00",
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 72.4,
+            "ts": "2026-09-18T14:00:00Z",
+            "vibration_mm_s": 2.1
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 72.4,
+            "ts": "2026-09-18T14:00:00Z",
+            "vibration_mm_s": 2.1
+          },
+          "questions": {
+            "anomaly": {
+              "criteria": [
+                "Normal operation",
+                "Slightly unusual, watch",
+                "Concerning deviation",
+                "Severe anomaly",
+                "Critical failure signature"
+              ],
+              "instructions": "How anomalous is this sensor reading relative to its baseline?",
+              "type": "score"
+            },
+            "dispatch": {
+              "instructions": "Should a maintenance technician be dispatched based on this reading?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 72.4,
+            "ts": "2026-09-18T14:00:00Z",
+            "vibration_mm_s": 2.1
+          },
+          "questions": {
+            "anomaly": {
+              "criteria": [
+                "Normal operation",
+                "Slightly unusual, watch",
+                "Concerning deviation",
+                "Severe anomaly",
+                "Critical failure signature"
+              ],
+              "instructions": "How anomalous is this sensor reading relative to its baseline?",
+              "type": "score"
+            },
+            "dispatch": {
+              "instructions": "Should a maintenance technician be dispatched based on this reading?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "flagged"
+    },
+    {
+      "index": 1,
+      "input": "{\"sensor_id\":\"pump-07\",\"ts\":\"2026-09-18T14:01:00Z\",\"temp_c\":73.1,\"vibration_mm_s\":2.3,\"rpm\":1750}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "sensor_id": "pump-07",
+            "ts": "2026-09-18T14:01:00Z",
+            "temp_c": 73.1,
+            "vibration_mm_s": 2.3,
+            "rpm": 1750
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 73.1,
+            "ts": "2026-09-18T14:01:00Z",
+            "vibration_mm_s": 2.3
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "received_at": "2026-10-05T19:40:21.259435-07:00",
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 73.1,
+            "ts": "2026-09-18T14:01:00Z",
+            "vibration_mm_s": 2.3
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "received_at": "2026-10-05T19:40:21.259435-07:00",
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 73.1,
+            "ts": "2026-09-18T14:01:00Z",
+            "vibration_mm_s": 2.3
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1005
+            },
+            "received_at": "2026-10-05T19:40:21.259435-07:00",
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 73.1,
+            "ts": "2026-09-18T14:01:00Z",
+            "vibration_mm_s": 2.3
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1005
+            },
+            "jev_decision": "flag",
+            "received_at": "2026-10-05T19:40:21.259435-07:00",
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 73.1,
+            "ts": "2026-09-18T14:01:00Z",
+            "vibration_mm_s": 2.3
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 73.1,
+            "ts": "2026-09-18T14:01:00Z",
+            "vibration_mm_s": 2.3
+          },
+          "questions": {
+            "anomaly": {
+              "criteria": [
+                "Normal operation",
+                "Slightly unusual, watch",
+                "Concerning deviation",
+                "Severe anomaly",
+                "Critical failure signature"
+              ],
+              "instructions": "How anomalous is this sensor reading relative to its baseline?",
+              "type": "score"
+            },
+            "dispatch": {
+              "instructions": "Should a maintenance technician be dispatched based on this reading?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "rpm": 1750,
+            "sensor_id": "pump-07",
+            "temp_c": 73.1,
+            "ts": "2026-09-18T14:01:00Z",
+            "vibration_mm_s": 2.3
+          },
+          "questions": {
+            "anomaly": {
+              "criteria": [
+                "Normal operation",
+                "Slightly unusual, watch",
+                "Concerning deviation",
+                "Severe anomaly",
+                "Critical failure signature"
+              ],
+              "instructions": "How anomalous is this sensor reading relative to its baseline?",
+              "type": "score"
+            },
+            "dispatch": {
+              "instructions": "Should a maintenance technician be dispatched based on this reading?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "flagged"
+    },
+    {
+      "index": 2,
+      "input": "{\"sensor_id\":\"pump-07\",\"ts\":\"2026-09-18T14:02:00Z\",\"temp_c\":94.6,\"vibration_mm_s\":8.9,\"rpm\":1748,\"note\":\"audible grinding from bearing housing\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "sensor_id": "pump-07",
+            "ts": "2026-09-18T14:02:00Z",
+            "temp_c": 94.6,
+            "vibration_mm_s": 8.9,
+            "rpm": 1748,
+            "note": "audible grinding from bearing housing"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "note": "audible grinding from bearing housing",
+            "rpm": 1748,
+            "sensor_id": "pump-07",
+            "temp_c": 94.6,
+            "ts": "2026-09-18T14:02:00Z",
+            "vibration_mm_s": 8.9
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "note": "audible grinding from bearing housing",
+            "received_at": "2026-10-05T19:40:22.268618-07:00",
+            "rpm": 1748,
+            "sensor_id": "pump-07",
+            "temp_c": 94.6,
+            "ts": "2026-09-18T14:02:00Z",
+            "vibration_mm_s": 8.9
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "note": "audible grinding from bearing housing",
+            "received_at": "2026-10-05T19:40:22.268618-07:00",
+            "rpm": 1748,
+            "sensor_id": "pump-07",
+            "temp_c": 94.6,
+            "ts": "2026-09-18T14:02:00Z",
+            "vibration_mm_s": 8.9
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1003
+            },
+            "note": "audible grinding from bearing housing",
+            "received_at": "2026-10-05T19:40:22.268618-07:00",
+            "rpm": 1748,
+            "sensor_id": "pump-07",
+            "temp_c": 94.6,
+            "ts": "2026-09-18T14:02:00Z",
+            "vibration_mm_s": 8.9
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1003
+            },
+            "jev_decision": "flag",
+            "note": "audible grinding from bearing housing",
+            "received_at": "2026-10-05T19:40:22.268618-07:00",
+            "rpm": 1748,
+            "sensor_id": "pump-07",
+            "temp_c": 94.6,
+            "ts": "2026-09-18T14:02:00Z",
+            "vibration_mm_s": 8.9
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "note": "audible grinding from bearing housing",
+            "rpm": 1748,
+            "sensor_id": "pump-07",
+            "temp_c": 94.6,
+            "ts": "2026-09-18T14:02:00Z",
+            "vibration_mm_s": 8.9
+          },
+          "questions": {
+            "anomaly": {
+              "criteria": [
+                "Normal operation",
+                "Slightly unusual, watch",
+                "Concerning deviation",
+                "Severe anomaly",
+                "Critical failure signature"
+              ],
+              "instructions": "How anomalous is this sensor reading relative to its baseline?",
+              "type": "score"
+            },
+            "dispatch": {
+              "instructions": "Should a maintenance technician be dispatched based on this reading?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "note": "audible grinding from bearing housing",
+            "rpm": 1748,
+            "sensor_id": "pump-07",
+            "temp_c": 94.6,
+            "ts": "2026-09-18T14:02:00Z",
+            "vibration_mm_s": 8.9
+          },
+          "questions": {
+            "anomaly": {
+              "criteria": [
+                "Normal operation",
+                "Slightly unusual, watch",
+                "Concerning deviation",
+                "Severe anomaly",
+                "Critical failure signature"
+              ],
+              "instructions": "How anomalous is this sensor reading relative to its baseline?",
+              "type": "score"
+            },
+            "dispatch": {
+              "instructions": "Should a maintenance technician be dispatched based on this reading?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "flagged"
+    },
+    {
+      "index": 3,
+      "input": "{\"sensor_id\":\"pump-12\",\"ts\":\"2026-09-18T14:02:30Z\",\"temp_c\":68.0,\"vibration_mm_s\":1.8,\"rpm\":1750}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "sensor_id": "pump-12",
+            "ts": "2026-09-18T14:02:30Z",
+            "temp_c": 68.0,
+            "vibration_mm_s": 1.8,
+            "rpm": 1750
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "rpm": 1750,
+            "sensor_id": "pump-12",
+            "temp_c": 68.0,
+            "ts": "2026-09-18T14:02:30Z",
+            "vibration_mm_s": 1.8
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "received_at": "2026-10-05T19:40:23.279005-07:00",
+            "rpm": 1750,
+            "sensor_id": "pump-12",
+            "temp_c": 68.0,
+            "ts": "2026-09-18T14:02:30Z",
+            "vibration_mm_s": 1.8
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "received_at": "2026-10-05T19:40:23.279005-07:00",
+            "rpm": 1750,
+            "sensor_id": "pump-12",
+            "temp_c": 68.0,
+            "ts": "2026-09-18T14:02:30Z",
+            "vibration_mm_s": 1.8
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "received_at": "2026-10-05T19:40:23.279005-07:00",
+            "rpm": 1750,
+            "sensor_id": "pump-12",
+            "temp_c": 68.0,
+            "ts": "2026-09-18T14:02:30Z",
+            "vibration_mm_s": 1.8
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1004
+            },
+            "jev_decision": "flag",
+            "received_at": "2026-10-05T19:40:23.279005-07:00",
+            "rpm": 1750,
+            "sensor_id": "pump-12",
+            "temp_c": 68.0,
+            "ts": "2026-09-18T14:02:30Z",
+            "vibration_mm_s": 1.8
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "rpm": 1750,
+            "sensor_id": "pump-12",
+            "temp_c": 68.0,
+            "ts": "2026-09-18T14:02:30Z",
+            "vibration_mm_s": 1.8
+          },
+          "questions": {
+            "anomaly": {
+              "criteria": [
+                "Normal operation",
+                "Slightly unusual, watch",
+                "Concerning deviation",
+                "Severe anomaly",
+                "Critical failure signature"
+              ],
+              "instructions": "How anomalous is this sensor reading relative to its baseline?",
+              "type": "score"
+            },
+            "dispatch": {
+              "instructions": "Should a maintenance technician be dispatched based on this reading?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "rpm": 1750,
+            "sensor_id": "pump-12",
+            "temp_c": 68.0,
+            "ts": "2026-09-18T14:02:30Z",
+            "vibration_mm_s": 1.8
+          },
+          "questions": {
+            "anomaly": {
+              "criteria": [
+                "Normal operation",
+                "Slightly unusual, watch",
+                "Concerning deviation",
+                "Severe anomaly",
+                "Critical failure signature"
+              ],
+              "instructions": "How anomalous is this sensor reading relative to its baseline?",
+              "type": "score"
+            },
+            "dispatch": {
+              "instructions": "Should a maintenance technician be dispatched based on this reading?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "flagged"
+    },
+    {
+      "index": 4,
+      "input": "{\"sensor_id\": \"pump-07\", \"ts\": \"2026-09-18T14:03:00Z\", \"temp_c\": 96.8, \"vibration_mm_s\": 9.4, \"rpm\": 1749, \"note\": \"vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "sensor_id": "pump-07",
+            "ts": "2026-09-18T14:03:00Z",
+            "temp_c": 96.8,
+            "vibration_mm_s": 9.4,
+            "rpm": 1749,
+            "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday",
+            "rpm": 1749,
+            "sensor_id": "pump-07",
+            "temp_c": 96.8,
+            "ts": "2026-09-18T14:03:00Z",
+            "vibration_mm_s": 9.4
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday",
+            "received_at": "2026-10-05T19:40:24.288617-07:00",
+            "rpm": 1749,
+            "sensor_id": "pump-07",
+            "temp_c": 96.8,
+            "ts": "2026-09-18T14:03:00Z",
+            "vibration_mm_s": 9.4
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday",
+            "received_at": "2026-10-05T19:40:24.288617-07:00",
+            "rpm": 1749,
+            "sensor_id": "pump-07",
+            "temp_c": 96.8,
+            "ts": "2026-09-18T14:03:00Z",
+            "vibration_mm_s": 9.4
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1003
+            },
+            "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday",
+            "received_at": "2026-10-05T19:40:24.288617-07:00",
+            "rpm": 1749,
+            "sensor_id": "pump-07",
+            "temp_c": 96.8,
+            "ts": "2026-09-18T14:03:00Z",
+            "vibration_mm_s": 9.4
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "jev": {
+              "answers": {},
+              "model": "jev-unavailable",
+              "ms": 1003
+            },
+            "jev_decision": "flag",
+            "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday",
+            "received_at": "2026-10-05T19:40:24.288617-07:00",
+            "rpm": 1749,
+            "sensor_id": "pump-07",
+            "temp_c": 96.8,
+            "ts": "2026-09-18T14:03:00Z",
+            "vibration_mm_s": 9.4
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday",
+            "rpm": 1749,
+            "sensor_id": "pump-07",
+            "temp_c": 96.8,
+            "ts": "2026-09-18T14:03:00Z",
+            "vibration_mm_s": 9.4
+          },
+          "questions": {
+            "anomaly": {
+              "criteria": [
+                "Normal operation",
+                "Slightly unusual, watch",
+                "Concerning deviation",
+                "Severe anomaly",
+                "Critical failure signature"
+              ],
+              "instructions": "How anomalous is this sensor reading relative to its baseline?",
+              "type": "score"
+            },
+            "dispatch": {
+              "instructions": "Should a maintenance technician be dispatched based on this reading?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        },
+        {
+          "request": {
+            "baseline": {
+              "note": "Values above these sustained for 5+ minutes are abnormal for this asset class",
+              "temp_c_max": 85,
+              "vibration_mm_s_max": 4.5
+            },
+            "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday",
+            "rpm": 1749,
+            "sensor_id": "pump-07",
+            "temp_c": 96.8,
+            "ts": "2026-09-18T14:03:00Z",
+            "vibration_mm_s": 9.4
+          },
+          "questions": {
+            "anomaly": {
+              "criteria": [
+                "Normal operation",
+                "Slightly unusual, watch",
+                "Concerning deviation",
+                "Severe anomaly",
+                "Critical failure signature"
+              ],
+              "instructions": "How anomalous is this sensor reading relative to its baseline?",
+              "type": "score"
+            },
+            "dispatch": {
+              "instructions": "Should a maintenance technician be dispatched based on this reading?",
+              "type": "noul"
+            }
+          },
+          "response": {
+            "status": 503,
+            "error": "Jev is unreachable"
+          }
+        }
+      ],
+      "destination": "flagged"
+    }
+  ]
+}

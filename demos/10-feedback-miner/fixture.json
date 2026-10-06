@@ -1,0 +1,61 @@
+{
+  "title": "Feedback miner",
+  "lede": "Every review and survey comment gets a topic, a sentiment score and a churn-risk judgment as it arrives. Churn risks alert the account team, confident bug reports go to engineering, and everything feeds analytics.",
+  "cases": {
+    "main": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ]
+    },
+    "jev_down": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ],
+      "jev": "down"
+    }
+  },
+  "if_down": "Everything goes to analytics. No account alert or engineering ticket is raised without Jev's judgment.",
+  "stages": [
+    {
+      "title": "Parse the body",
+      "text": "The input already parses JSON bodies. This stage only parses a body that arrives as a string, so both shapes become the same object before anything else touches it."
+    },
+    {
+      "title": "Stamp the arrival time",
+      "text": "Adds received_at, the time this node first saw the record. Everything downstream, including the latency figure, is measured from here."
+    },
+    {
+      "title": "Start the latency timer",
+      "text": "Stores the current time in message metadata. The message itself does not change, so the output below equals the input; the timer is read after Jev answers."
+    },
+    {
+      "title": "Ask Jev",
+      "text": "One request carries the record and the questions below. The answer is merged under `jev` with the model name and the round trip in milliseconds. If Jev cannot be reached, the catch block substitutes an empty answer set and every rule below falls to its default branch, so nothing is guessed."
+    },
+    {
+      "title": "Decide where it goes",
+      "text": "Churn risk of 0.75 or more alerts the account team. Otherwise a bug topic at 0.7 confidence or more goes to engineering. Everything else goes to analytics."
+    },
+    {
+      "title": "Write to a queue",
+      "text": "Alert, engineering and analytics are separate JSONL files under data/jev-feedback-miner/."
+    }
+  ],
+  "queues": {
+    "alert": "Account alert",
+    "eng": "Engineering",
+    "analytics": "Analytics"
+  }
+}

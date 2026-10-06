@@ -1,0 +1,61 @@
+{
+  "title": "Agent guardrail",
+  "lede": "A safety check on every tool call an AI agent makes. Calls that match what the user asked for pass; risky or off-intent calls are blocked or held for approval. Uncertainty fails closed.",
+  "cases": {
+    "main": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ]
+    },
+    "jev_down": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ],
+      "jev": "down"
+    }
+  },
+  "if_down": "Every tool call is blocked. With no answer the intent match reads as 0, and the guardrail fails closed.",
+  "stages": [
+    {
+      "title": "Parse the body",
+      "text": "The input already parses JSON bodies. This stage only parses a body that arrives as a string, so both shapes become the same object before anything else touches it."
+    },
+    {
+      "title": "Stamp the arrival time",
+      "text": "Adds received_at, the time this node first saw the record. Everything downstream, including the latency figure, is measured from here."
+    },
+    {
+      "title": "Start the latency timer",
+      "text": "Stores the current time in message metadata. The message itself does not change, so the output below equals the input; the timer is read after Jev answers."
+    },
+    {
+      "title": "Ask Jev",
+      "text": "One request carries the user's intent and the proposed tool call, with two questions: does the call match the intent, and how risky is it. The answer is merged under `jev`. If Jev cannot be reached, the catch block substitutes an empty answer set, intent match reads as 0, and the call is blocked."
+    },
+    {
+      "title": "Decide where it goes",
+      "text": "Intent match under 0.3, or a non-safe risk class at 0.7 confidence or more, blocks the call. Any other non-safe risk, or intent match under 0.7, holds it for approval. Only the rest is allowed."
+    },
+    {
+      "title": "Write to a queue",
+      "text": "Blocked, held and allowed calls are separate JSONL files under data/jev-agent-guardrail/."
+    }
+  ],
+  "queues": {
+    "blocked": "Blocked",
+    "held": "Held for approval",
+    "allowed": "Allowed"
+  }
+}

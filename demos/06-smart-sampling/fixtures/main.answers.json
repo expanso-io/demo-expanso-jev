@@ -1,0 +1,181 @@
+{
+  "note": "Recorded answers, replayed by tools/fixture-runner.py. Produced by the offline responder in shared/jev-mock-server.py; no model was called.",
+  "answers": [
+    {
+      "key": "25d04e02a05c1220be4ff8761a7bd9fce8e6017d9f3e7607f73242cfcb4dfbe2",
+      "state": {
+        "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
+        "service": "db-proxy",
+        "ts": "2026-09-18T14:00:07Z"
+      },
+      "questions": [
+        "interesting"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "interesting": {
+            "type": "score",
+            "score": 3.4,
+            "probabilities": {},
+            "confidence": 0.7
+          }
+        }
+      }
+    },
+    {
+      "key": "5da5541522e32335d0603a1389195bf1bed76e843664a43fcf981cde0407841d",
+      "state": {
+        "msg": "GET /health 200 3ms",
+        "service": "api-gw",
+        "ts": "2026-09-18T14:00:08Z"
+      },
+      "questions": [
+        "interesting"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "interesting": {
+            "type": "score",
+            "score": 1.4,
+            "probabilities": {},
+            "confidence": 0.7
+          }
+        }
+      }
+    },
+    {
+      "key": "67e4180234f4e1c3f247014126b1a0e1428a28be7213985f3fcb9077c070aebc",
+      "state": {
+        "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
+        "service": "api-gw",
+        "ts": "2026-09-18T14:00:03Z"
+      },
+      "questions": [
+        "interesting"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "interesting": {
+            "type": "score",
+            "score": 1.4,
+            "probabilities": {},
+            "confidence": 0.7
+          }
+        }
+      }
+    },
+    {
+      "key": "739619694b74e0940dad3c4cf739bdacb03d890f7cf9ec4ed854916eb2d5f6e8",
+      "state": {
+        "msg": "GET /health 200 2ms",
+        "service": "api-gw",
+        "ts": "2026-09-18T14:00:02Z"
+      },
+      "questions": [
+        "interesting"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "interesting": {
+            "type": "score",
+            "score": 1.4,
+            "probabilities": {},
+            "confidence": 0.7
+          }
+        }
+      }
+    },
+    {
+      "key": "da229f0192edc3fed72aa2893db6bf91fd63020de08ee9dff83f149b9f94eb51",
+      "state": {
+        "msg": "GET /health 200 2ms",
+        "service": "api-gw",
+        "ts": "2026-09-18T14:00:06Z"
+      },
+      "questions": [
+        "interesting"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "interesting": {
+            "type": "score",
+            "score": 1.4,
+            "probabilities": {},
+            "confidence": 0.7
+          }
+        }
+      }
+    },
+    {
+      "key": "e9b60a59df8c0831e9b5254560e885f64e1d9b40527fe5af287793c37c744333",
+      "state": {
+        "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
+        "service": "worker-3",
+        "ts": "2026-09-18T14:00:05Z"
+      },
+      "questions": [
+        "interesting"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "interesting": {
+            "type": "score",
+            "score": 3.4,
+            "probabilities": {},
+            "confidence": 0.7
+          }
+        }
+      }
+    },
+    {
+      "key": "f6beb5d92e91fe24a3062b6fb2758f982f37ec2299e6a8c8c8347727b0563d0e",
+      "state": {
+        "msg": "GET /health 200 3ms",
+        "service": "api-gw",
+        "ts": "2026-09-18T14:00:04Z"
+      },
+      "questions": [
+        "interesting"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "interesting": {
+            "type": "score",
+            "score": 1.4,
+            "probabilities": {},
+            "confidence": 0.7
+          }
+        }
+      }
+    },
+    {
+      "key": "f90c56936386ebb65fb064b6f8821b0441e1ba33dcde7e64db8f1bcb43c84ba8",
+      "state": {
+        "msg": "GET /health 200 3ms",
+        "service": "api-gw",
+        "ts": "2026-09-18T14:00:01Z"
+      },
+      "questions": [
+        "interesting"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "interesting": {
+            "type": "score",
+            "score": 1.4,
+            "probabilities": {},
+            "confidence": 0.7
+          }
+        }
+      }
+    }
+  ]
+}

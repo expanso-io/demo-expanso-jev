@@ -1,0 +1,64 @@
+{
+  "title": "Smart sampling",
+  "lede": "Every event is scored for how interesting it is. Interesting events are all kept; routine noise is sampled at one in a hundred. How much volume this saves depends on how noisy your source is.",
+  "cases": {
+    "main": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ]
+    },
+    "jev_down": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ],
+      "jev": "down"
+    }
+  },
+  "if_down": "Every event is kept. Losing data costs more than the extra volume, so sampling pauses until Jev answers.",
+  "stages": [
+    {
+      "title": "Parse the body",
+      "text": "The input already parses JSON bodies. This stage only parses a body that arrives as a string, so both shapes become the same object before anything else touches it."
+    },
+    {
+      "title": "Stamp the arrival time",
+      "text": "Adds received_at, the time this node first saw the record. Everything downstream, including the latency figure, is measured from here."
+    },
+    {
+      "title": "Start the latency timer",
+      "text": "Stores the current time in message metadata. The message itself does not change, so the output below equals the input; the timer is read after Jev answers."
+    },
+    {
+      "title": "Ask Jev",
+      "text": "One request carries the record and the questions below. The answer is merged under `jev` with the model name and the round trip in milliseconds. If Jev cannot be reached, the catch block substitutes an empty answer set and every rule below falls to its default branch, so nothing is guessed."
+    },
+    {
+      "title": "Score the event",
+      "text": "Copies Jev's interest score onto the record. A score of 3 or more is kept, and so is every event when Jev did not answer; anything lower is marked sampled. The annotation happens first so a record that is later dropped was still scored."
+    },
+    {
+      "title": "Sample the noise",
+      "text": "Kept records always pass. For the rest, a counter lets one in every 100 through and drops the others, which is why a short input shows noise being dropped and not written anywhere."
+    },
+    {
+      "title": "Write to a queue",
+      "text": "Kept events go to the kept file; the sampled one-in-a-hundred goes to the sampled file. Dropped events are in neither."
+    }
+  ],
+  "queues": {
+    "kept": "Kept",
+    "sampled": "Sampled noise"
+  }
+}

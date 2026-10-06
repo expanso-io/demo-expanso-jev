@@ -1,0 +1,196 @@
+{
+  "note": "Recorded answers, replayed by tools/fixture-runner.py. Produced by the offline responder in shared/jev-mock-server.py; no model was called.",
+  "answers": [
+    {
+      "key": "bf659d675cdb70ab7bf6b67d28cf9456adaad8248d4f9a682942123477f846f8",
+      "state": {
+        "email": "jane.doe@example.com",
+        "name": "Jane Doe",
+        "plan": "team-annual",
+        "record_id": "rec-001",
+        "ssn": "123-45-6789"
+      },
+      "questions": [
+        "contains_credentials",
+        "contains_pii",
+        "sensitivity"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "contains_credentials": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "contains_pii": {
+            "type": "noul",
+            "noul": 0.92
+          },
+          "sensitivity": {
+            "type": "choice",
+            "choice": "restricted",
+            "probabilities": {
+              "confidential": 0.027,
+              "internal": 0.027,
+              "public": 0.027,
+              "restricted": 0.92
+            },
+            "confidence": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "dc2049c0c4c21546d235957420e225cc387789a6c9a0018b8c660ea9c6acbbd6",
+      "state": {
+        "event": "all systems operational",
+        "name": "Status Page",
+        "record_id": "rec-005"
+      },
+      "questions": [
+        "contains_credentials",
+        "contains_pii",
+        "sensitivity"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "contains_credentials": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "contains_pii": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "sensitivity": {
+            "type": "choice",
+            "choice": "confidential",
+            "probabilities": {
+              "confidential": 0.92,
+              "internal": 0.027,
+              "public": 0.027,
+              "restricted": 0.027
+            },
+            "confidence": 0.35
+          }
+        }
+      }
+    },
+    {
+      "key": "eacef4d1cb3f73f9f929c6dc8bfbbf95779f0bbc2ce44add3ae0e2ec96cc3f42",
+      "state": {
+        "event": "nightly backup completed in 42s",
+        "name": "System Bot",
+        "record_id": "rec-002"
+      },
+      "questions": [
+        "contains_credentials",
+        "contains_pii",
+        "sensitivity"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "contains_credentials": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "contains_pii": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "sensitivity": {
+            "type": "choice",
+            "choice": "confidential",
+            "probabilities": {
+              "confidential": 0.92,
+              "internal": 0.027,
+              "public": 0.027,
+              "restricted": 0.027
+            },
+            "confidence": 0.35
+          }
+        }
+      }
+    },
+    {
+      "key": "f838be6dba421cad21a986f68bfb1509c22f876a4148810295e90ea2cb8475b4",
+      "state": {
+        "api_key": "sk-live-9f2c41aa77e04bd1",
+        "email": "ops@example.com",
+        "name": "Deploy Key",
+        "note": "production deploy token, do not share",
+        "record_id": "rec-003"
+      },
+      "questions": [
+        "contains_credentials",
+        "contains_pii",
+        "sensitivity"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "contains_credentials": {
+            "type": "noul",
+            "noul": 0.92
+          },
+          "contains_pii": {
+            "type": "noul",
+            "noul": 0.92
+          },
+          "sensitivity": {
+            "type": "choice",
+            "choice": "restricted",
+            "probabilities": {
+              "confidential": 0.027,
+              "internal": 0.027,
+              "public": 0.027,
+              "restricted": 0.92
+            },
+            "confidence": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "fbff51f75a568d76e40945ba6004496e4a4ecd63da69319ca51a24bfe231a75b",
+      "state": {
+        "diagnosis": "Q3 performance review: exceeds expectations",
+        "email": "john.smith@example.com",
+        "name": "John Smith",
+        "record_id": "rec-004",
+        "salary_band": "L5"
+      },
+      "questions": [
+        "contains_credentials",
+        "contains_pii",
+        "sensitivity"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "contains_credentials": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "contains_pii": {
+            "type": "noul",
+            "noul": 0.92
+          },
+          "sensitivity": {
+            "type": "choice",
+            "choice": "confidential",
+            "probabilities": {
+              "confidential": 0.92,
+              "internal": 0.027,
+              "public": 0.027,
+              "restricted": 0.027
+            },
+            "confidence": 0.92
+          }
+        }
+      }
+    }
+  ]
+}

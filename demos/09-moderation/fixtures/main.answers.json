@@ -1,0 +1,175 @@
+{
+  "note": "Recorded answers, replayed by tools/fixture-runner.py. Produced by the offline responder in shared/jev-mock-server.py; no model was called.",
+  "answers": [
+    {
+      "key": "1a6c69c09098c01137b6052794943aa0746bf87d41be6ffc16b168fe4f074482",
+      "state": {
+        "author": "user_9917",
+        "content_id": "c-002",
+        "text": "CHECK OUT my crypto doubling service at shady-link.example, 100% guaranteed returns!!!"
+      },
+      "questions": [
+        "category",
+        "needs_human"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "category": {
+            "type": "choice",
+            "choice": "spam",
+            "probabilities": {
+              "hate": 0.016,
+              "other": 0.016,
+              "safe": 0.016,
+              "self_harm": 0.016,
+              "sexual": 0.016,
+              "spam": 0.92
+            },
+            "confidence": 0.92
+          },
+          "needs_human": {
+            "type": "noul",
+            "noul": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "353ce523638c04c8c6cfcef7e9066297b0d557a59042b7c6827378b49fad4748",
+      "state": {
+        "author": "user_6108",
+        "content_id": "c-005",
+        "text": "I don't see the point anymore. Nothing matters. Maybe everyone would be better off if I just disappeared."
+      },
+      "questions": [
+        "category",
+        "needs_human"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "category": {
+            "type": "choice",
+            "choice": "self_harm",
+            "probabilities": {
+              "hate": 0.016,
+              "other": 0.016,
+              "safe": 0.016,
+              "self_harm": 0.92,
+              "sexual": 0.016,
+              "spam": 0.016
+            },
+            "confidence": 0.92
+          },
+          "needs_human": {
+            "type": "noul",
+            "noul": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "7ab6217c8bb639a1ee90801ab8471eefc3ebcc6ae49763b9e23482275643496e",
+      "state": {
+        "author": "user_4821",
+        "content_id": "c-001",
+        "text": "Just finished the new onboarding flow, super smooth! Great work team."
+      },
+      "questions": [
+        "category",
+        "needs_human"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "category": {
+            "type": "choice",
+            "choice": "safe",
+            "probabilities": {
+              "hate": 0.016,
+              "other": 0.016,
+              "safe": 0.92,
+              "self_harm": 0.016,
+              "sexual": 0.016,
+              "spam": 0.016
+            },
+            "confidence": 0.92
+          },
+          "needs_human": {
+            "type": "noul",
+            "noul": 0.12
+          }
+        }
+      }
+    },
+    {
+      "key": "b30f6dc5435262e97faa8778491013ef838d5171a533e2de16e925399be82d87",
+      "state": {
+        "author": "user_7712",
+        "content_id": "c-004",
+        "text": "Has anyone tried the new API? The rate limits seem a bit low for our use case."
+      },
+      "questions": [
+        "category",
+        "needs_human"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "category": {
+            "type": "choice",
+            "choice": "safe",
+            "probabilities": {
+              "hate": 0.016,
+              "other": 0.016,
+              "safe": 0.92,
+              "self_harm": 0.016,
+              "sexual": 0.016,
+              "spam": 0.016
+            },
+            "confidence": 0.92
+          },
+          "needs_human": {
+            "type": "noul",
+            "noul": 0.12
+          }
+        }
+      }
+    },
+    {
+      "key": "c6743dd770b9345fc09292cb7fc8a14a981ad7d72510fc7ee6ec81813c511623",
+      "state": {
+        "author": "user_3355",
+        "content_id": "c-003",
+        "text": "People from [group] shouldn't be allowed to post here, they're ruining everything."
+      },
+      "questions": [
+        "category",
+        "needs_human"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "category": {
+            "type": "choice",
+            "choice": "hate",
+            "probabilities": {
+              "hate": 0.92,
+              "other": 0.016,
+              "safe": 0.016,
+              "self_harm": 0.016,
+              "sexual": 0.016,
+              "spam": 0.016
+            },
+            "confidence": 0.92
+          },
+          "needs_human": {
+            "type": "noul",
+            "noul": 0.92
+          }
+        }
+      }
+    }
+  ]
+}

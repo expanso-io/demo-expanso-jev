@@ -1,0 +1,65 @@
+{
+  "title": "Support ticket router",
+  "lede": "Every ticket gets a department, an intent, a frustration score and an urgency judgment before a person reads it. Confident urgency pages on-call, strong frustration jumps the line, a weak department match waits for a human, and everything else goes to its department queue.",
+  "cases": {
+    "main": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ]
+    },
+    "jev_down": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ],
+      "jev": "down"
+    }
+  },
+  "if_down": "Department confidence reads as 0, so rule three matches and every ticket waits in human triage.",
+  "stages": [
+    {
+      "title": "Parse the body",
+      "text": "The input already parses JSON bodies. This stage only parses a body that arrives as a string, so both shapes become the same object before anything else touches it."
+    },
+    {
+      "title": "Stamp the arrival time",
+      "text": "Adds received_at, the time this node first saw the record. Everything downstream, including the latency figure, is measured from here."
+    },
+    {
+      "title": "Start the latency timer",
+      "text": "Stores the current time in message metadata. The message itself does not change, so the output below equals the input; the timer is read after Jev answers."
+    },
+    {
+      "title": "Ask Jev",
+      "text": "One request carries the record and the questions below. The answer is merged under `jev` with the model name and the round trip in milliseconds. If Jev cannot be reached, the catch block substitutes an empty answer set and every rule below falls to its default branch, so nothing is guessed."
+    },
+    {
+      "title": "Decide where it goes",
+      "text": "Four rules, in order: urgency of 0.9 or more pages on-call; frustration of 2.5 or more goes to the priority queue; department confidence under 0.5 goes to human triage; anything else is routed to the department Jev chose."
+    },
+    {
+      "title": "Write to a queue",
+      "text": "A switch sends the record to one queue file by its decision. Each queue is a JSONL file under data/jev-ticket-router/ so you can read exactly what landed."
+    }
+  ],
+  "queues": {
+    "page": "Page on-call",
+    "priority": "Priority queue",
+    "triage": "Human triage",
+    "routed-billing": "Billing queue",
+    "routed-technical": "Technical queue",
+    "routed-sales": "Sales queue",
+    "routed-other": "General queue"
+  }
+}

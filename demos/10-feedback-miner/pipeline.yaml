@@ -10,25 +10,29 @@ labels:
 config:
   input:
     http_server:
-      address: "0.0.0.0:8080"
+      address: "${INGEST_ADDRESS:127.0.0.1:8080}"
       path: /feedback
       allowed_verbs: ["POST"]
 
   pipeline:
     processors:
-      - mapping: |
+      - label: parse_body
+        mapping: |
           # http_server already parses JSON bodies; only parse raw strings
           root = if this.type() == "string" { this.parse_json() } else { this }
 
-      - mapping: |
+      - label: stamp_received
+        mapping: |
           root = this
           root.received_at = now()
 
       # ── Ask Jev ──
-      - mutation: |
+      - label: start_timer
+        mutation: |
           meta jev_start = timestamp_unix_milli()
 
-      - branch:
+      - label: ask_jev
+        branch:
           request_map: |
             root = {
               "state": this.string(),
@@ -83,7 +87,8 @@ config:
             }
 
       # ── Confidence-gated cascade ──
-      - mapping: |
+      - label: route_decision
+        mapping: |
           root = this
           let topic = this.jev.answers.topic.choice.or("other")
           let topic_conf = this.jev.answers.topic.confidence.or(0)
@@ -101,23 +106,27 @@ config:
     broker:
       pattern: fan_out
       outputs:
-        - stdout:
+        - label: echo_stdout
+          stdout:
             codec: lines
-        - switch:
+        - label: by_decision
+          switch:
             cases:
-              # Production: swap for http_client -> account-team alerting webhook
               - check: this.jev_decision == "alert"
                 output:
+                  label: alert
                   file:
                     path: ./data/jev-feedback-miner/alert-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: this.jev_decision == "eng"
                 output:
+                  label: eng
                   file:
                     path: ./data/jev-feedback-miner/eng-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
+                  label: analytics
                   file:
                     path: ./data/jev-feedback-miner/analytics-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

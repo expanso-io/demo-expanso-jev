@@ -1,0 +1,61 @@
+{
+  "title": "SOC pre-filter",
+  "lede": "Authentication and access events get a threat class and an escalation judgment at the edge. Only real escalations reach the SIEM; everything else lands in cheaper storage with its scores attached.",
+  "cases": {
+    "main": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ]
+    },
+    "jev_down": {
+      "pipeline": "pipeline.yaml",
+      "input": "input.jsonl",
+      "volatile": [
+        "received_at",
+        "jev.ms"
+      ],
+      "volatile_request": [
+        "received_at"
+      ],
+      "jev": "down"
+    }
+  },
+  "if_down": "Every event goes to warm storage. None is sent to the SIEM or written off to cold storage unjudged.",
+  "stages": [
+    {
+      "title": "Parse the body",
+      "text": "The input already parses JSON bodies. This stage only parses a body that arrives as a string, so both shapes become the same object before anything else touches it."
+    },
+    {
+      "title": "Stamp the arrival time",
+      "text": "Adds received_at, the time this node first saw the record. Everything downstream, including the latency figure, is measured from here."
+    },
+    {
+      "title": "Start the latency timer",
+      "text": "Stores the current time in message metadata. The message itself does not change, so the output below equals the input; the timer is read after Jev answers."
+    },
+    {
+      "title": "Ask Jev",
+      "text": "One request carries the record and the questions below. The answer is merged under `jev` with the model name and the round trip in milliseconds. If Jev cannot be reached, the catch block substitutes an empty answer set and every rule below falls to its default branch, so nothing is guessed."
+    },
+    {
+      "title": "Decide where it goes",
+      "text": "Escalation likelihood of 0.85 or more goes to the SIEM. Otherwise any threat class other than benign, or no answer from Jev, goes to warm storage. Benign events go to cold storage."
+    },
+    {
+      "title": "Write to a queue",
+      "text": "SIEM, warm and cold are separate JSONL files under data/jev-soc-prefilter/."
+    }
+  ],
+  "queues": {
+    "siem": "SIEM",
+    "warm": "Warm storage",
+    "cold": "Cold storage"
+  }
+}

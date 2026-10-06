@@ -1,0 +1,999 @@
+{
+  "volatile": [
+    "received_at",
+    "jev.ms"
+  ],
+  "stage_count": 7,
+  "records": [
+    {
+      "index": 0,
+      "input": "{\"ts\":\"2026-09-18T14:00:01Z\",\"service\":\"api-gw\",\"msg\":\"GET /health 200 3ms\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "ts": "2026-09-18T14:00:01Z",
+            "service": "api-gw",
+            "msg": "GET /health 200 3ms"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "msg": "GET /health 200 3ms",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:01Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "msg": "GET /health 200 3ms",
+            "received_at": "2026-10-05T19:40:47.213499-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:01Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "msg": "GET /health 200 3ms",
+            "received_at": "2026-10-05T19:40:47.213499-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:01Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 1.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "msg": "GET /health 200 3ms",
+            "received_at": "2026-10-05T19:40:47.213499-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:01Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 1.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "jev_decision": "sampled",
+            "jev_score": 1.4,
+            "msg": "GET /health 200 3ms",
+            "received_at": "2026-10-05T19:40:47.213499-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:01Z"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "msg": "GET /health 200 3ms",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:01Z"
+          },
+          "questions": {
+            "interesting": {
+              "criteria": [
+                "Routine noise, safe to drop",
+                "Mildly interesting context",
+                "Notable, worth keeping",
+                "Highly unusual, keep for investigation",
+                "Critical signal, never drop"
+              ],
+              "instructions": "How interesting or unusual is this event for an engineer investigating an incident?",
+              "type": "score"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "interesting": {
+                "type": "score",
+                "score": 1.4,
+                "probabilities": {},
+                "confidence": 0.7
+              }
+            }
+          }
+        }
+      ],
+      "destination": null
+    },
+    {
+      "index": 1,
+      "input": "{\"ts\":\"2026-09-18T14:00:02Z\",\"service\":\"api-gw\",\"msg\":\"GET /health 200 2ms\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "ts": "2026-09-18T14:00:02Z",
+            "service": "api-gw",
+            "msg": "GET /health 200 2ms"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "msg": "GET /health 200 2ms",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:02Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "msg": "GET /health 200 2ms",
+            "received_at": "2026-10-05T19:40:47.21679-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:02Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "msg": "GET /health 200 2ms",
+            "received_at": "2026-10-05T19:40:47.21679-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:02Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 1.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "msg": "GET /health 200 2ms",
+            "received_at": "2026-10-05T19:40:47.21679-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:02Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 1.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "jev_decision": "sampled",
+            "jev_score": 1.4,
+            "msg": "GET /health 200 2ms",
+            "received_at": "2026-10-05T19:40:47.21679-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:02Z"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "msg": "GET /health 200 2ms",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:02Z"
+          },
+          "questions": {
+            "interesting": {
+              "criteria": [
+                "Routine noise, safe to drop",
+                "Mildly interesting context",
+                "Notable, worth keeping",
+                "Highly unusual, keep for investigation",
+                "Critical signal, never drop"
+              ],
+              "instructions": "How interesting or unusual is this event for an engineer investigating an incident?",
+              "type": "score"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "interesting": {
+                "type": "score",
+                "score": 1.4,
+                "probabilities": {},
+                "confidence": 0.7
+              }
+            }
+          }
+        }
+      ],
+      "destination": null
+    },
+    {
+      "index": 2,
+      "input": "{\"ts\":\"2026-09-18T14:00:03Z\",\"service\":\"api-gw\",\"msg\":\"POST /checkout 200 184ms user=48211 amount=129.99\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "ts": "2026-09-18T14:00:03Z",
+            "service": "api-gw",
+            "msg": "POST /checkout 200 184ms user=48211 amount=129.99"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:03Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
+            "received_at": "2026-10-05T19:40:47.22115-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:03Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
+            "received_at": "2026-10-05T19:40:47.22115-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:03Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 1.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
+            "received_at": "2026-10-05T19:40:47.22115-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:03Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 1.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "jev_decision": "sampled",
+            "jev_score": 1.4,
+            "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
+            "received_at": "2026-10-05T19:40:47.22115-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:03Z"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:03Z"
+          },
+          "questions": {
+            "interesting": {
+              "criteria": [
+                "Routine noise, safe to drop",
+                "Mildly interesting context",
+                "Notable, worth keeping",
+                "Highly unusual, keep for investigation",
+                "Critical signal, never drop"
+              ],
+              "instructions": "How interesting or unusual is this event for an engineer investigating an incident?",
+              "type": "score"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "interesting": {
+                "type": "score",
+                "score": 1.4,
+                "probabilities": {},
+                "confidence": 0.7
+              }
+            }
+          }
+        }
+      ],
+      "destination": null
+    },
+    {
+      "index": 3,
+      "input": "{\"ts\":\"2026-09-18T14:00:04Z\",\"service\":\"api-gw\",\"msg\":\"GET /health 200 3ms\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "ts": "2026-09-18T14:00:04Z",
+            "service": "api-gw",
+            "msg": "GET /health 200 3ms"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "msg": "GET /health 200 3ms",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:04Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "msg": "GET /health 200 3ms",
+            "received_at": "2026-10-05T19:40:47.225907-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:04Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "msg": "GET /health 200 3ms",
+            "received_at": "2026-10-05T19:40:47.225907-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:04Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 1.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "msg": "GET /health 200 3ms",
+            "received_at": "2026-10-05T19:40:47.225907-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:04Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 1.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "jev_decision": "sampled",
+            "jev_score": 1.4,
+            "msg": "GET /health 200 3ms",
+            "received_at": "2026-10-05T19:40:47.225907-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:04Z"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "msg": "GET /health 200 3ms",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:04Z"
+          },
+          "questions": {
+            "interesting": {
+              "criteria": [
+                "Routine noise, safe to drop",
+                "Mildly interesting context",
+                "Notable, worth keeping",
+                "Highly unusual, keep for investigation",
+                "Critical signal, never drop"
+              ],
+              "instructions": "How interesting or unusual is this event for an engineer investigating an incident?",
+              "type": "score"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "interesting": {
+                "type": "score",
+                "score": 1.4,
+                "probabilities": {},
+                "confidence": 0.7
+              }
+            }
+          }
+        }
+      ],
+      "destination": null
+    },
+    {
+      "index": 4,
+      "input": "{\"ts\":\"2026-09-18T14:00:05Z\",\"service\":\"worker-3\",\"msg\":\"panic: nil pointer dereference in invoice renderer, goroutine 4412\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "ts": "2026-09-18T14:00:05Z",
+            "service": "worker-3",
+            "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
+            "service": "worker-3",
+            "ts": "2026-09-18T14:00:05Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
+            "received_at": "2026-10-05T19:40:47.228806-07:00",
+            "service": "worker-3",
+            "ts": "2026-09-18T14:00:05Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
+            "received_at": "2026-10-05T19:40:47.228806-07:00",
+            "service": "worker-3",
+            "ts": "2026-09-18T14:00:05Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 3.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
+            "received_at": "2026-10-05T19:40:47.228806-07:00",
+            "service": "worker-3",
+            "ts": "2026-09-18T14:00:05Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 3.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "jev_decision": "keep",
+            "jev_score": 3.4,
+            "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
+            "received_at": "2026-10-05T19:40:47.228806-07:00",
+            "service": "worker-3",
+            "ts": "2026-09-18T14:00:05Z"
+          }
+        },
+        {
+          "n": 6,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 3.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "jev_decision": "keep",
+            "jev_score": 3.4,
+            "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
+            "received_at": "2026-10-05T19:40:47.228806-07:00",
+            "service": "worker-3",
+            "ts": "2026-09-18T14:00:05Z"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
+            "service": "worker-3",
+            "ts": "2026-09-18T14:00:05Z"
+          },
+          "questions": {
+            "interesting": {
+              "criteria": [
+                "Routine noise, safe to drop",
+                "Mildly interesting context",
+                "Notable, worth keeping",
+                "Highly unusual, keep for investigation",
+                "Critical signal, never drop"
+              ],
+              "instructions": "How interesting or unusual is this event for an engineer investigating an incident?",
+              "type": "score"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "interesting": {
+                "type": "score",
+                "score": 3.4,
+                "probabilities": {},
+                "confidence": 0.7
+              }
+            }
+          }
+        }
+      ],
+      "destination": "kept"
+    },
+    {
+      "index": 5,
+      "input": "{\"ts\":\"2026-09-18T14:00:06Z\",\"service\":\"api-gw\",\"msg\":\"GET /health 200 2ms\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "ts": "2026-09-18T14:00:06Z",
+            "service": "api-gw",
+            "msg": "GET /health 200 2ms"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "msg": "GET /health 200 2ms",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:06Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "msg": "GET /health 200 2ms",
+            "received_at": "2026-10-05T19:40:47.231724-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:06Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "msg": "GET /health 200 2ms",
+            "received_at": "2026-10-05T19:40:47.231724-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:06Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 1.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "msg": "GET /health 200 2ms",
+            "received_at": "2026-10-05T19:40:47.231724-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:06Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 1.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 0
+            },
+            "jev_decision": "sampled",
+            "jev_score": 1.4,
+            "msg": "GET /health 200 2ms",
+            "received_at": "2026-10-05T19:40:47.231724-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:06Z"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "msg": "GET /health 200 2ms",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:06Z"
+          },
+          "questions": {
+            "interesting": {
+              "criteria": [
+                "Routine noise, safe to drop",
+                "Mildly interesting context",
+                "Notable, worth keeping",
+                "Highly unusual, keep for investigation",
+                "Critical signal, never drop"
+              ],
+              "instructions": "How interesting or unusual is this event for an engineer investigating an incident?",
+              "type": "score"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "interesting": {
+                "type": "score",
+                "score": 1.4,
+                "probabilities": {},
+                "confidence": 0.7
+              }
+            }
+          }
+        }
+      ],
+      "destination": null
+    },
+    {
+      "index": 6,
+      "input": "{\"ts\": \"2026-09-18T14:00:07Z\", \"service\": \"db-proxy\", \"msg\": \"FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "ts": "2026-09-18T14:00:07Z",
+            "service": "db-proxy",
+            "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
+            "service": "db-proxy",
+            "ts": "2026-09-18T14:00:07Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
+            "received_at": "2026-10-05T19:40:47.241324-07:00",
+            "service": "db-proxy",
+            "ts": "2026-09-18T14:00:07Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
+            "received_at": "2026-10-05T19:40:47.241324-07:00",
+            "service": "db-proxy",
+            "ts": "2026-09-18T14:00:07Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 3.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
+            "received_at": "2026-10-05T19:40:47.241324-07:00",
+            "service": "db-proxy",
+            "ts": "2026-09-18T14:00:07Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 3.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "jev_decision": "keep",
+            "jev_score": 3.4,
+            "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
+            "received_at": "2026-10-05T19:40:47.241324-07:00",
+            "service": "db-proxy",
+            "ts": "2026-09-18T14:00:07Z"
+          }
+        },
+        {
+          "n": 6,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 3.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "jev_decision": "keep",
+            "jev_score": 3.4,
+            "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
+            "received_at": "2026-10-05T19:40:47.241324-07:00",
+            "service": "db-proxy",
+            "ts": "2026-09-18T14:00:07Z"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
+            "service": "db-proxy",
+            "ts": "2026-09-18T14:00:07Z"
+          },
+          "questions": {
+            "interesting": {
+              "criteria": [
+                "Routine noise, safe to drop",
+                "Mildly interesting context",
+                "Notable, worth keeping",
+                "Highly unusual, keep for investigation",
+                "Critical signal, never drop"
+              ],
+              "instructions": "How interesting or unusual is this event for an engineer investigating an incident?",
+              "type": "score"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "interesting": {
+                "type": "score",
+                "score": 3.4,
+                "probabilities": {},
+                "confidence": 0.7
+              }
+            }
+          }
+        }
+      ],
+      "destination": "kept"
+    },
+    {
+      "index": 7,
+      "input": "{\"ts\":\"2026-09-18T14:00:08Z\",\"service\":\"api-gw\",\"msg\":\"GET /health 200 3ms\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "ts": "2026-09-18T14:00:08Z",
+            "service": "api-gw",
+            "msg": "GET /health 200 3ms"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "msg": "GET /health 200 3ms",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:08Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "msg": "GET /health 200 3ms",
+            "received_at": "2026-10-05T19:40:47.245054-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:08Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "msg": "GET /health 200 3ms",
+            "received_at": "2026-10-05T19:40:47.245054-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:08Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 1.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "msg": "GET /health 200 3ms",
+            "received_at": "2026-10-05T19:40:47.245054-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:08Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "jev": {
+              "answers": {
+                "interesting": {
+                  "confidence": 0.7,
+                  "probabilities": {},
+                  "score": 1.4,
+                  "type": "score"
+                }
+              },
+              "model": "jev-mock",
+              "ms": 1
+            },
+            "jev_decision": "sampled",
+            "jev_score": 1.4,
+            "msg": "GET /health 200 3ms",
+            "received_at": "2026-10-05T19:40:47.245054-07:00",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:08Z"
+          }
+        }
+      ],
+      "jev": [
+        {
+          "request": {
+            "msg": "GET /health 200 3ms",
+            "service": "api-gw",
+            "ts": "2026-09-18T14:00:08Z"
+          },
+          "questions": {
+            "interesting": {
+              "criteria": [
+                "Routine noise, safe to drop",
+                "Mildly interesting context",
+                "Notable, worth keeping",
+                "Highly unusual, keep for investigation",
+                "Critical signal, never drop"
+              ],
+              "instructions": "How interesting or unusual is this event for an engineer investigating an incident?",
+              "type": "score"
+            }
+          },
+          "response": {
+            "model": "jev-mock",
+            "answers": {
+              "interesting": {
+                "type": "score",
+                "score": 1.4,
+                "probabilities": {},
+                "confidence": 0.7
+              }
+            }
+          }
+        }
+      ],
+      "destination": null
+    }
+  ]
+}

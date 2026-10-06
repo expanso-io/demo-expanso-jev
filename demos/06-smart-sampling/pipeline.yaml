@@ -10,25 +10,29 @@ labels:
 config:
   input:
     http_server:
-      address: "0.0.0.0:8080"
+      address: "${INGEST_ADDRESS:127.0.0.1:8080}"
       path: /events
       allowed_verbs: ["POST"]
 
   pipeline:
     processors:
-      - mapping: |
+      - label: parse_body
+        mapping: |
           # http_server already parses JSON bodies; only parse raw strings
           root = if this.type() == "string" { this.parse_json() } else { this }
 
-      - mapping: |
+      - label: stamp_received
+        mapping: |
           root = this
           root.received_at = now()
 
       # ── Ask Jev: how interesting is this event? ──
-      - mutation: |
+      - label: start_timer
+        mutation: |
           meta jev_start = timestamp_unix_milli()
 
-      - branch:
+      - label: ask_jev
+        branch:
           request_map: |
             root = {
               "state": this.string(),
@@ -70,31 +74,39 @@ config:
       # (annotate first, drop in a separate mapping: assigning fields after
       # root = deleted() aborts the mapping, and `this` is frozen at mapping
       # entry so re-assigning it would wipe the annotations above)
-      - mapping: |
+      - label: score_event
+        mapping: |
           let score = this.jev.answers.interesting.score.or(0)
+          # When Jev did not answer, keep the event: losing data is worse than volume.
+          let jev_up = this.jev.model.or("") != "jev-unavailable"
           root = this
           root.jev_score = $score
-          root.jev_decision = if $score >= 3 { "keep" } else { "sampled" }
+          root.jev_decision = if !$jev_up || $score >= 3 { "keep" } else { "sampled" }
 
       # ── Deterministic 1% sample of low-interest events via counter ──
-      - mapping: |
-          root = if this.jev_score >= 3 || count("sampled") % 100 == 0 { this } else { deleted() }
+      - label: sample_noise
+        mapping: |
+          root = if this.jev_decision == "keep" || count("sampled") % 100 == 0 { this } else { deleted() }
 
   output:
     broker:
       pattern: fan_out
       outputs:
-        - stdout:
+        - label: echo_stdout
+          stdout:
             codec: lines
-        - switch:
+        - label: by_decision
+          switch:
             cases:
               - check: this.jev_decision == "keep"
                 output:
+                  label: kept
                   file:
                     path: ./data/jev-smart-sampling/kept-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
+                  label: sampled
                   file:
                     path: ./data/jev-smart-sampling/sampled-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

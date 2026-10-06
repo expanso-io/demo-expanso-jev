@@ -10,19 +10,21 @@ labels:
 config:
   input:
     http_server:
-      address: "0.0.0.0:8080"
+      address: "${INGEST_ADDRESS:127.0.0.1:8080}"
       path: /readings
       allowed_verbs: ["POST"]
 
   pipeline:
     processors:
-      - mapping: |
+      - label: parse_body
+        mapping: |
           # http_server already parses JSON bodies; only parse raw strings
           root = if this.type() == "string" { this.parse_json() } else { this }
 
       # Attach each sensor's normal operating baseline so Jev judges
-      # deviation in context, not raw values (production: use a cache lookup)
-      - mapping: |
+      # deviation in context, not raw values (the baseline is embedded here; a cache lookup works the same way)
+      - label: stamp_received
+        mapping: |
           root = this
           root.baseline = {
             "temp_c_max": 85,
@@ -32,10 +34,12 @@ config:
           root.received_at = now()
 
       # ── Ask Jev ──
-      - mutation: |
+      - label: start_timer
+        mutation: |
           meta jev_start = timestamp_unix_milli()
 
-      - branch:
+      - label: ask_jev
+        branch:
           request_map: |
             root = {
               "state": this.string(),
@@ -78,14 +82,17 @@ config:
             }
 
       # ── Confidence-gated cascade ──
-      - mapping: |
+      - label: route_decision
+        mapping: |
           root = this
           let anomaly = this.jev.answers.anomaly.score.or(0)
           let dispatch = this.jev.answers.dispatch.noul.or(0)
+          # When Jev did not answer, flag the reading for a person rather than roll it up.
+          let jev_up = this.jev.model.or("") != "jev-unavailable"
 
           root.jev_decision = if $dispatch >= 0.8 {
             "dispatch"
-          } else if $anomaly >= 2 {
+          } else if !$jev_up || $anomaly >= 2 {
             "flag"
           } else {
             "rollup"
@@ -95,23 +102,27 @@ config:
     broker:
       pattern: fan_out
       outputs:
-        - stdout:
+        - label: echo_stdout
+          stdout:
             codec: lines
-        - switch:
+        - label: by_decision
+          switch:
             cases:
-              # Production: swap for http_client -> CMMS work-order API
               - check: this.jev_decision == "dispatch"
                 output:
+                  label: dispatch
                   file:
                     path: ./data/jev-sensor-triage/dispatch-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: this.jev_decision == "flag"
                 output:
+                  label: flagged
                   file:
                     path: ./data/jev-sensor-triage/flagged-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
+                  label: rollup
                   file:
                     path: ./data/jev-sensor-triage/rollup-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

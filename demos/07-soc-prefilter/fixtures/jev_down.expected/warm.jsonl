@@ -1,0 +1,5 @@
+{"geo": "Seattle, US", "ip": "10.4.2.18", "jev": {"answers": {}, "model": "jev-unavailable"}, "jev_decision": "warm", "mfa": true, "result": "success", "ts": "2026-09-18T14:00:00Z", "user": "alice@corp.com"}
+{"failures_10m": 47, "geo": "Lagos, NG", "ip": "203.0.113.99", "jev": {"answers": {}, "model": "jev-unavailable"}, "jev_decision": "warm", "result": "failed", "ts": "2026-09-18T14:01:12Z", "user": "bob@corp.com"}
+{"geo": "Seattle, US", "ip": "10.4.2.22", "jev": {"answers": {}, "model": "jev-unavailable"}, "jev_decision": "warm", "mfa": true, "result": "success", "ts": "2026-09-18T14:01:40Z", "user": "carol@corp.com"}
+{"geo": "Seattle, US", "ip": "198.51.100.7", "jev": {"answers": {}, "model": "jev-unavailable"}, "jev_decision": "warm", "prev_login_ago_min": 22, "prev_login_geo": "Tokyo, JP", "result": "success", "ts": "2026-09-18T14:02:03Z", "user": "dave@corp.com"}
+{"distinct_users_10m": 18, "ip": "192.0.2.55", "jev": {"answers": {}, "model": "jev-unavailable"}, "jev_decision": "warm", "note": "shared NAT gateway for branch office", "result": "mixed", "success_rate": 0.22, "ts": "2026-09-18T14:03:11Z"}
