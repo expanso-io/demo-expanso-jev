@@ -1,0 +1,16 @@
+{"id": "evt-000001", "ts": "2026-10-05T09:00:01Z", "level": "INFO", "service": "api", "msg": "GET /health 200 2ms"}
+{"id": "evt-000002", "ts": "2026-10-05T09:00:02Z", "level": "INFO", "service": "api", "msg": "GET /metrics 200 5ms"}
+{"id": "evt-000003", "ts": "2026-10-05T09:00:03Z", "level": "INFO", "service": "worker", "msg": "cron heartbeat ok job=nightly-rollup"}
+{"id": "evt-000004", "ts": "2026-10-05T09:00:04Z", "level": "INFO", "service": "api", "msg": "GET /health 500 9000ms"}
+{"id": "evt-000005", "ts": "2026-10-05T09:00:05Z", "level": "INFO", "service": "api", "msg": "config reload requested by unknown actor"}
+{"id": "evt-000006", "ts": "2026-10-05T09:00:06Z", "level": "WARN", "service": "auth", "msg": "auth failed for user admin from 10.0.9.12"}
+{"id": "evt-000007", "ts": "2026-10-05T09:00:07Z", "level": "WARN", "service": "auth", "msg": "auth failed for user admin from 10.0.9.12"}
+{"id": "evt-000008", "ts": "2026-10-05T09:00:08Z", "level": "WARN", "service": "auth", "msg": "auth failed for user admin from 10.0.9.12"}
+{"id": "evt-000009", "ts": "2026-10-05T09:00:09Z", "level": "WARN", "service": "auth", "msg": "auth failed for user admin from 10.0.9.12"}
+{"id": "evt-000010", "ts": "2026-10-05T09:00:10Z", "level": "WARN", "service": "db", "msg": "slow query 4.2s on orders table rows=120k"}
+{"id": "evt-000011", "ts": "2026-10-05T09:00:11Z", "level": "ERROR", "service": "api", "msg": "OOMKilled container api-7 exit=137"}
+{"id": "evt-000012", "ts": "2026-10-05T09:00:12Z", "level": "ERROR", "service": "db", "msg": "database primary unreachable, failover initiated"}
+{"id": "evt-000013", "ts": "2026-10-05T09:00:13Z", "level": "INFO", "service": "cache", "msg": "cache hit rate 0.94 window=5m"}
+{"id": "evt-000014", "ts": "2026-10-05T09:00:14Z", "level": "WARN", "service": "edge", "msg": "TLS certificate expiring in 72 hours, renewal failed twice"}
+{"id": "evt-000015", "ts": "2026-10-05T09:00:15Z", "level": "INFO", "service": "deploy", "msg": "rollout step 3/8 complete service=checkout"}
+{"id": "evt-000016", "ts": "2026-10-05T09:00:16Z", "level": "INFO", "service": "cache", "msg": "cache hit rate 0.01 window=5m"}

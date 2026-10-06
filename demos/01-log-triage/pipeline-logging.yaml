@@ -22,7 +22,7 @@ labels:
 config:
   input:
     http_server:
-      address: "0.0.0.0:8080"
+      address: "0.0.0.0:${INGEST_PORT:8080}"
       path: /logs
       allowed_verbs: ["POST"]
       # The response is held until the event is written out, and a Jev
@@ -35,7 +35,8 @@ config:
     processors:
       # 1. shape + deterministic fingerprint (identical to the Jev pipeline, so
       #    a record looks the same in the archive whichever pipeline wrote it)
-      - mapping: |
+      - label: shape_fingerprint
+        mapping: |
           root = this
           root.received_at = now()
           root.node_id = env("NODE_ID").or("edge-1")
@@ -46,7 +47,8 @@ config:
           root.baseline = if this.level == "ERROR" { "page" } else if this.level == "WARN" { "notify" } else { "archive" }
 
       # 2. deterministic temporal context: occurrence count in the window
-      - branch:
+      - label: track_recurrence
+        branch:
           request_map: |
             root = {"fingerprint": this.fingerprint}
           processors:
@@ -58,7 +60,8 @@ config:
           result_map: |
             root.recurrence = this
 
-      - mapping: |
+      - label: mark_routed
+        mapping: |
           root = this
           root.routed_by = "expanso"
 
@@ -67,7 +70,8 @@ config:
       # "selected" and the write is pending (this runs before the output does);
       # only allowlisted values, generated ids, numbers and hashes leave the
       # node; sampling is per fingerprint, not a global rate.
-      - mapping: |
+      - label: build_log_fields
+        mapping: |
           # Only values from closed sets, generated ids, numbers and hashes leave the
           # node. service / level / id come from the log producer and team /
           # severity come back from a model: all are arbitrary strings, so each is
@@ -86,7 +90,8 @@ config:
           meta log_kind = if $occ == 1 || $occ % 250 == 0 { "archive" } else { "" }
           meta log_summary = "triage archive -> ARCHIVE selected, output pending: structured and counted, no model in this pipeline (checkpoint: a fingerprint's first occurrence, then every 250th)" + $tail
           meta log_event = $eid
-      - switch:
+      - label: log_selection
+        switch:
           - check: 'meta("log_kind") == "archive"'
             processors:
               - log:

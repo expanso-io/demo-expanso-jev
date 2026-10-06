@@ -1,0 +1,200 @@
+{
+  "title": "Log triage",
+  "lede": "Most log lines are routine and a rule can say so instantly. A few are not, and no rule you have written yet knows which. Expanso shapes, fingerprints and counts every record, sends known routine lines straight to the archive, and asks Jev only about what is left.",
+  "cases": {
+    "logging": {
+      "scenario": "Expanso alone",
+      "pipeline": "pipeline-logging.yaml",
+      "input": "input.jsonl",
+      "services": [
+        {
+          "cmd": [
+            "python3",
+            "counter.py"
+          ],
+          "port": 8898
+        }
+      ],
+      "completion": "land",
+      "volatile": [
+        "received_at",
+        "recurrence.first_seen_ago_s"
+      ],
+      "stages": [
+        {
+          "title": "Shape and fingerprint",
+          "text": "Adds received_at, node_id and a fingerprint: the service plus the message with every number replaced by #. Also adds the baseline, what severity-only routing would have done with the same record."
+        },
+        {
+          "title": "Count occurrences",
+          "text": "Asks the local counter (POST /track) how many times this fingerprint has been seen in the last 10 minutes and what was decided before. The answer is stored under recurrence."
+        },
+        {
+          "title": "Mark the route",
+          "text": "Records that Expanso, not a model, handled this record."
+        },
+        {
+          "title": "Prepare the log line",
+          "text": "Builds the operational log summary in message metadata. It carries closed-set values and hashes only, never the message text. The record itself does not change."
+        },
+        {
+          "title": "Write the log line",
+          "text": "Emits an Expanso Cloud log line on a fingerprint's first occurrence and on every 250th after it. The record itself does not change."
+        },
+        {
+          "title": "Archive",
+          "text": "Every record is written, now structured and counted, to data/logs.jsonl. No model is in this pipeline."
+        }
+      ],
+      "queues": {
+        "logs": "Archive"
+      }
+    },
+    "recurrence": {
+      "scenario": "Expanso and Jev",
+      "pipeline": "pipeline-recurrence.yaml",
+      "input": "input.jsonl",
+      "services": [
+        {
+          "cmd": [
+            "python3",
+            "counter.py"
+          ],
+          "port": 8898
+        }
+      ],
+      "completion": "land",
+      "volatile": [
+        "received_at",
+        "recurrence.first_seen_ago_s"
+      ],
+      "volatile_request": [
+        "recurrence.first_seen_seconds_ago"
+      ],
+      "stages": [
+        {
+          "title": "Wait if held",
+          "text": "A record coming back from a hold waits 2 to 4 seconds, jittered so a recovery is not a stampede. First arrivals pass through untouched."
+        },
+        {
+          "title": "Shape and fingerprint",
+          "text": "Adds received_at, node_id, the fingerprint, held_attempts (coerced to a whole number at least 0) and the severity-only baseline."
+        },
+        {
+          "title": "Count occurrences",
+          "text": "First arrival only: asks the counter how many times this fingerprint has been seen in 10 minutes and what was decided before. A held record is the same event, so it is not counted again."
+        },
+        {
+          "title": "Skip the model for routine lines",
+          "text": "An exact allowlist of level INFO, service and raw message. A match sets bypass and goes to the archive with no model call. Any changed number, any WARN or ERROR and any novel INFO line is judged."
+        },
+        {
+          "title": "Ask Jev",
+          "text": "For records that were not bypassed: one request with the record, its recurrence history and four questions (actionable, severity, team, recurrence concern). Bypassed records skip this stage. If Jev does not answer, the catch block marks the answer unavailable."
+        },
+        {
+          "title": "Decide",
+          "text": "Bypass archives. No answer and fewer than 15 attempts holds. No answer after 15 attempts goes to review. Critical at confidence 0.85 or more pages. Actionable 0.7 or more at confidence 0.5 or more notifies. Confidence under 0.6, or actionable from 0.4 to under 0.7, goes to review. Everything else archives."
+        },
+        {
+          "title": "Prepare the log line",
+          "text": "Builds the operational log summary in message metadata from closed sets and hashes. The record itself does not change."
+        },
+        {
+          "title": "Write the log line",
+          "text": "Logs every judged or held selection, and a bypass checkpoint on a fingerprint's first occurrence and every 250th. The record itself does not change."
+        },
+        {
+          "title": "Record the decision",
+          "text": "Sends the decision to the counter (POST /record) so the next occurrence sees it in its history. Not done while a record is held."
+        },
+        {
+          "title": "Route to a bucket",
+          "text": "A switch writes the record to page, notify, review or archive. A held record writes a receipt to held first, then is posted back to this pipeline's own input to ask again."
+        }
+      ],
+      "queues": {
+        "page": "Page",
+        "notify": "Notify",
+        "review": "Review",
+        "archive": "Archive",
+        "held": "Held receipt"
+      }
+    },
+    "outage": {
+      "scenario": "Jev unreachable",
+      "pipeline": "pipeline-recurrence.yaml",
+      "input": "input-outage.jsonl",
+      "services": [
+        {
+          "cmd": [
+            "python3",
+            "counter.py"
+          ],
+          "port": 8898
+        }
+      ],
+      "completion": "land",
+      "jev": "down",
+      "settle": 120,
+      "expect_total": 4,
+      "volatile": [
+        "received_at",
+        "recurrence.first_seen_ago_s"
+      ],
+      "volatile_request": [
+        "recurrence.first_seen_seconds_ago"
+      ],
+      "stages": [
+        {
+          "title": "Wait if held",
+          "text": "A record coming back from a hold waits 2 to 4 seconds, jittered so a recovery is not a stampede. First arrivals pass through untouched."
+        },
+        {
+          "title": "Shape and fingerprint",
+          "text": "Adds received_at, node_id, the fingerprint, held_attempts (coerced to a whole number at least 0) and the severity-only baseline."
+        },
+        {
+          "title": "Count occurrences",
+          "text": "First arrival only: asks the counter how many times this fingerprint has been seen in 10 minutes and what was decided before. A held record is the same event, so it is not counted again."
+        },
+        {
+          "title": "Skip the model for routine lines",
+          "text": "An exact allowlist of level INFO, service and raw message. A match sets bypass and goes to the archive with no model call. Any changed number, any WARN or ERROR and any novel INFO line is judged."
+        },
+        {
+          "title": "Ask Jev",
+          "text": "For records that were not bypassed: one request with the record, its recurrence history and four questions (actionable, severity, team, recurrence concern). Bypassed records skip this stage. If Jev does not answer, the catch block marks the answer unavailable."
+        },
+        {
+          "title": "Decide",
+          "text": "Bypass archives. No answer and fewer than 15 attempts holds. No answer after 15 attempts goes to review. Critical at confidence 0.85 or more pages. Actionable 0.7 or more at confidence 0.5 or more notifies. Confidence under 0.6, or actionable from 0.4 to under 0.7, goes to review. Everything else archives."
+        },
+        {
+          "title": "Prepare the log line",
+          "text": "Builds the operational log summary in message metadata from closed sets and hashes. The record itself does not change."
+        },
+        {
+          "title": "Write the log line",
+          "text": "Logs every judged or held selection, and a bypass checkpoint on a fingerprint's first occurrence and every 250th. The record itself does not change."
+        },
+        {
+          "title": "Record the decision",
+          "text": "Sends the decision to the counter (POST /record) so the next occurrence sees it in its history. Not done while a record is held."
+        },
+        {
+          "title": "Route to a bucket",
+          "text": "A switch writes the record to page, notify, review or archive. A held record writes a receipt to held first, then is posted back to this pipeline's own input to ask again."
+        }
+      ],
+      "queues": {
+        "page": "Page",
+        "notify": "Notify",
+        "review": "Review",
+        "archive": "Archive",
+        "held": "Held receipt"
+      },
+      "note": "Jev answers 503. The two routine lines still reach the archive with no model call. The WARN record is held: one receipt is written, then it is posted back to the input every 2 to 4 seconds and handed to review after 15 attempts, about 45 seconds. Nothing is guessed and nothing is dropped."
+    }
+  }
+}

@@ -30,7 +30,7 @@ labels:
 config:
   input:
     http_server:
-      address: "0.0.0.0:8080"
+      address: "0.0.0.0:${INGEST_PORT:8080}"
       path: /logs
       allowed_verbs: ["POST"]
       # The response is held until the event is written out, and a Jev
@@ -58,14 +58,16 @@ config:
       #    spread out instead of as one thundering herd. (The wait lives here and
       #    not on the output because output processors run one at a time: a 3 s
       #    sleep there released one record every 3 s and stalled the pipeline.)
-      - switch:
+      - label: hold_wait
+        switch:
           - check: 'this.held_attempts.number().catch(0) > 0'
             processors:
               - sleep:
                   duration: '${! (2000 + random_int(max: 2000)).string() + "ms" }'
 
       # 1. shape + deterministic fingerprint
-      - mapping: |
+      - label: shape_fingerprint
+        mapping: |
           root = this
           root.received_at = this.received_at.or(now())   # a held record keeps its first arrival time
           # Producer-supplied on first arrival, so never trusted as-is: coerce to a
@@ -82,7 +84,8 @@ config:
       # 2. deterministic temporal assembly: occurrence count + history. First
       #    arrival only: a held record coming back round is the SAME event, and
       #    counting it again would inflate its own recurrence.
-      - switch:
+      - label: track_recurrence
+        switch:
           - check: 'this.held_attempts == 0'
             processors:
             - branch:
@@ -116,7 +119,8 @@ config:
       #     and would need bounded patterns ("200, under 50ms") rather than exact
       #     strings. That is ordinary rule-writing and rules are the right tool
       #     for it. Jev is for what is left.
-      - mapping: |
+      - label: bypass_check
+        mapping: |
           root = this
           let routine = [
             "api|GET /health 200 2ms",
@@ -132,7 +136,8 @@ config:
       # 3. Jev judgment, WITH the recurrence history in state -- only for records
       #    the bypass did not clear. This switch is the whole cost story: a
       #    bypassed record never reaches the http processor below.
-      - switch:
+      - label: ask_jev
+        switch:
           - check: '!this.bypass'
             processors:
             - branch:
@@ -201,7 +206,8 @@ config:
       # 4. confidence cascade: deterministic gates over Jev's graded judgment.
       #    review catches BOTH uncertainty (low confidence) and near-threshold
       #    scores -- the gradient, not a binary line.
-      - mapping: |
+      - label: cascade
+        mapping: |
           root = this
           root.routed_by = if this.bypass { "expanso-bypass" } else { "jev" }
           let actionable = this.jev.answers.actionable.noul.or(0)
@@ -253,7 +259,8 @@ config:
       #         by substring. Search "triage", "fallback", "-> PAGE", or an event hash.
       #       - A fallback is WARN and is never worded as a judgment: no model
       #         answered.
-      - mapping: |
+      - label: build_log_fields
+        mapping: |
           # Only values from closed sets, generated ids, numbers and hashes leave the
           # node. service / level / id come from the log producer and team /
           # severity come back from a model: all are arbitrary strings, so each is
@@ -294,7 +301,8 @@ config:
             "triage judged -> " + this.jev_decision.uppercase() + " selected, output pending: " + (if this.held_attempts > 0 { "released after " + this.held_attempts.string() + " held attempts; " } else { "" }) + "Jev reported actionable=" + $act.string() + " severity=" + $sev + " confidence=" + $conf.string() + " team=" + $team + " (severity-only baseline: " + this.baseline + ")" + $tail
           }
           meta log_event = $eid
-      - switch:
+      - label: log_selection
+        switch:
           - check: 'meta("log_kind") == "fallback" || meta("log_kind") == "held"'
             processors:
               - log:
@@ -325,7 +333,8 @@ config:
       # 5. record the decision (deterministic -- feeds future recurrence history).
       #    Not while held: "held" is not a decision about the event, and it must
       #    not show up in a fingerprint's history as if it were.
-      - switch:
+      - label: record_decision
+        switch:
           - check: 'this.jev_decision != "held"'
             processors:
             - branch:
@@ -356,7 +365,7 @@ config:
         - check: this.jev_decision == "held"
           output:
             http_client:
-              url: http://127.0.0.1:8080/logs
+              url: http://127.0.0.1:${INGEST_PORT:8080}/logs
               verb: POST
               headers:
                 Content-Type: application/json

@@ -192,7 +192,21 @@ def record_issues(record):
     return issues
 
 
+def recurrence_count(state):
+    """Occurrence number when the state carries a recurrence history, else None."""
+    if isinstance(state, dict) and isinstance(state.get("recurrence"), dict):
+        try:
+            return int(state["recurrence"].get("occurrence", 1))
+        except (TypeError, ValueError):
+            return 1
+    return None
+
+
 def answer_noul(qid, q, state_words, state_text, state):
+    occ = recurrence_count(state)
+    if occ is not None and qid == "recurrence_concern":
+        # The pattern alone: isolated, repeating, clearly escalating.
+        return {"type": "noul", "noul": 0.12 if occ < 2 else 0.5 if occ == 2 else 0.92}
     # Structural special cases first.
     if qid == "intent_match" and isinstance(state, dict) and "user_intent" in state:
         intent = content_words(str(state.get("user_intent", "")))
@@ -217,6 +231,11 @@ def answer_noul(qid, q, state_words, state_text, state):
             )
         if not hit and "THIRD" in state_text and ("today" in state_text.lower() or "legal" in state_text.lower()):
             hit = True
+    if occ is not None and qid == "actionable":
+        # Same line, more concern with each repeat: 0.45, 0.6, 0.75, 0.9.
+        if hit:
+            return {"type": "noul", "noul": round(0.45 + 0.15 * (min(occ, 4) - 1), 2)}
+        return {"type": "noul", "noul": 0.75 if occ >= 3 else 0.12}
     return {"type": "noul", "noul": 0.92 if hit else 0.12}
 
 

@@ -433,7 +433,7 @@ class Run:
     def total(self):
         return sum(len(v) for v in self.outputs().values())
 
-    def post_all(self, lines, mode="ack", settle=25.0):
+    def post_all(self, lines, mode="ack", settle=25.0, expect_total=None):
         url = self.endpoint()
         for i, line in enumerate(lines):
             self.replay.current = i
@@ -454,6 +454,9 @@ class Run:
                     wait_for(lambda b=before: self.total() > b, settle, "an output", 0.1)
                 except RunError:
                     pass
+        if expect_total:
+            # A held record lands long after the last post; wait for the count.
+            wait_for(lambda: self.total() >= expect_total, settle, "all outputs", 0.2)
         # Quiesce: output and trace both stable for 1.2 s.
         last = (-1, -1)
         stable_since = time.time()
@@ -566,7 +569,12 @@ def run_case(case: Case, record: bool) -> dict:
         (tmp / "ship").mkdir()
         run = Run(case, case.pipeline, replay, tmp / "ship")
         run.start()
-        run.post_all(lines, case.spec.get("completion", "ack"))
+        run.post_all(
+            lines,
+            case.spec.get("completion", "ack"),
+            settle=case.spec.get("settle", 25.0),
+            expect_total=expected_total(case, record),
+        )
         shipped = run.outputs()
         run.stop()
         run = None
@@ -599,7 +607,12 @@ def run_case(case: Case, record: bool) -> dict:
             inst.write_text(yaml.safe_dump(instrument(case, replay.port), sort_keys=False))
             run = Run(case, inst, replay, tmp / "trace")
             run.start()
-            run.post_all(lines, case.spec.get("completion", "ack"), settle=15.0)
+            run.post_all(
+                lines,
+                case.spec.get("completion", "ack"),
+                settle=case.spec.get("settle", 25.0),
+                expect_total=expected_total(case, True),
+            )
             traced = run.outputs()
             run.stop()
             run = None
@@ -629,6 +642,16 @@ def run_case(case: Case, record: bool) -> dict:
     result["ok"] = not result["problems"]
     result["seconds"] = round(time.time() - started, 1)
     return result
+
+
+def expected_total(case: Case, record: bool):
+    """Records the run must produce before it may settle (None: unknown)."""
+    if record or not case.expected_dir.exists():
+        return case.spec.get("expect_total")
+    return sum(
+        len([l for l in p.read_text().splitlines() if l.strip()])
+        for p in case.expected_dir.glob("*.jsonl")
+    ) or None
 
 
 def compare(case: Case, shipped_norm: dict) -> list[str]:
@@ -769,7 +792,9 @@ def check() -> int:
                 bad.append(f"{rel} is not in {report.name}")
             elif m.group(1) != sha256_file(f):
                 bad.append(f"{rel} changed since {report.name}; re-run the fixtures")
-        if not case.expected_dir.exists() or not case.answers.exists():
+        if not case.expected_dir.exists() or (
+            not case.answers.exists() and case.spec.get("jev") != "down"
+        ):
             bad.append(f"{case.id}: missing recorded answers or expected output")
     if "FAIL" in text.split("## Files exercised")[0]:
         bad.append(f"{report.name} records a failing run")

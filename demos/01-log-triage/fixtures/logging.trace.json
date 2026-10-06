@@ -1,0 +1,1849 @@
+{
+  "volatile": [
+    "received_at",
+    "recurrence.first_seen_ago_s"
+  ],
+  "stage_count": 6,
+  "records": [
+    {
+      "index": 0,
+      "input": "{\"id\": \"evt-000001\", \"ts\": \"2026-10-05T09:00:01Z\", \"level\": \"INFO\", \"service\": \"api\", \"msg\": \"GET /health 200 2ms\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000001",
+            "ts": "2026-10-05T09:00:01Z",
+            "level": "INFO",
+            "service": "api",
+            "msg": "GET /health 200 2ms"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /health # #ms",
+            "id": "evt-000001",
+            "level": "INFO",
+            "msg": "GET /health 200 2ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.058389-07:00",
+            "service": "api",
+            "ts": "2026-10-05T09:00:01Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /health # #ms",
+            "id": "evt-000001",
+            "level": "INFO",
+            "msg": "GET /health 200 2ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.058389-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "api",
+            "ts": "2026-10-05T09:00:01Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /health # #ms",
+            "id": "evt-000001",
+            "level": "INFO",
+            "msg": "GET /health 200 2ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.058389-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:01Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /health # #ms",
+            "id": "evt-000001",
+            "level": "INFO",
+            "msg": "GET /health 200 2ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.058389-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:01Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /health # #ms",
+            "id": "evt-000001",
+            "level": "INFO",
+            "msg": "GET /health 200 2ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.058389-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:01Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 1,
+      "input": "{\"id\": \"evt-000002\", \"ts\": \"2026-10-05T09:00:02Z\", \"level\": \"INFO\", \"service\": \"api\", \"msg\": \"GET /metrics 200 5ms\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000002",
+            "ts": "2026-10-05T09:00:02Z",
+            "level": "INFO",
+            "service": "api",
+            "msg": "GET /metrics 200 5ms"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /metrics # #ms",
+            "id": "evt-000002",
+            "level": "INFO",
+            "msg": "GET /metrics 200 5ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.063765-07:00",
+            "service": "api",
+            "ts": "2026-10-05T09:00:02Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /metrics # #ms",
+            "id": "evt-000002",
+            "level": "INFO",
+            "msg": "GET /metrics 200 5ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.063765-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "api",
+            "ts": "2026-10-05T09:00:02Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /metrics # #ms",
+            "id": "evt-000002",
+            "level": "INFO",
+            "msg": "GET /metrics 200 5ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.063765-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:02Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /metrics # #ms",
+            "id": "evt-000002",
+            "level": "INFO",
+            "msg": "GET /metrics 200 5ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.063765-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:02Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /metrics # #ms",
+            "id": "evt-000002",
+            "level": "INFO",
+            "msg": "GET /metrics 200 5ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.063765-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:02Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 2,
+      "input": "{\"id\": \"evt-000003\", \"ts\": \"2026-10-05T09:00:03Z\", \"level\": \"INFO\", \"service\": \"worker\", \"msg\": \"cron heartbeat ok job=nightly-rollup\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000003",
+            "ts": "2026-10-05T09:00:03Z",
+            "level": "INFO",
+            "service": "worker",
+            "msg": "cron heartbeat ok job=nightly-rollup"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "worker::cron heartbeat ok jobnightly-rollup",
+            "id": "evt-000003",
+            "level": "INFO",
+            "msg": "cron heartbeat ok job=nightly-rollup",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.06896-07:00",
+            "service": "worker",
+            "ts": "2026-10-05T09:00:03Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "worker::cron heartbeat ok jobnightly-rollup",
+            "id": "evt-000003",
+            "level": "INFO",
+            "msg": "cron heartbeat ok job=nightly-rollup",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.06896-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "worker",
+            "ts": "2026-10-05T09:00:03Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "worker::cron heartbeat ok jobnightly-rollup",
+            "id": "evt-000003",
+            "level": "INFO",
+            "msg": "cron heartbeat ok job=nightly-rollup",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.06896-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "worker",
+            "ts": "2026-10-05T09:00:03Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "worker::cron heartbeat ok jobnightly-rollup",
+            "id": "evt-000003",
+            "level": "INFO",
+            "msg": "cron heartbeat ok job=nightly-rollup",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.06896-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "worker",
+            "ts": "2026-10-05T09:00:03Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "worker::cron heartbeat ok jobnightly-rollup",
+            "id": "evt-000003",
+            "level": "INFO",
+            "msg": "cron heartbeat ok job=nightly-rollup",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.06896-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "worker",
+            "ts": "2026-10-05T09:00:03Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 3,
+      "input": "{\"id\": \"evt-000004\", \"ts\": \"2026-10-05T09:00:04Z\", \"level\": \"INFO\", \"service\": \"api\", \"msg\": \"GET /health 500 9000ms\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000004",
+            "ts": "2026-10-05T09:00:04Z",
+            "level": "INFO",
+            "service": "api",
+            "msg": "GET /health 500 9000ms"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /health # #ms",
+            "id": "evt-000004",
+            "level": "INFO",
+            "msg": "GET /health 500 9000ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.072571-07:00",
+            "service": "api",
+            "ts": "2026-10-05T09:00:04Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /health # #ms",
+            "id": "evt-000004",
+            "level": "INFO",
+            "msg": "GET /health 500 9000ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.072571-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 2,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "api",
+            "ts": "2026-10-05T09:00:04Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /health # #ms",
+            "id": "evt-000004",
+            "level": "INFO",
+            "msg": "GET /health 500 9000ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.072571-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 2,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:04Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /health # #ms",
+            "id": "evt-000004",
+            "level": "INFO",
+            "msg": "GET /health 500 9000ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.072571-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 2,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:04Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::get /health # #ms",
+            "id": "evt-000004",
+            "level": "INFO",
+            "msg": "GET /health 500 9000ms",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.072571-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 2,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:04Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 4,
+      "input": "{\"id\": \"evt-000005\", \"ts\": \"2026-10-05T09:00:05Z\", \"level\": \"INFO\", \"service\": \"api\", \"msg\": \"config reload requested by unknown actor\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000005",
+            "ts": "2026-10-05T09:00:05Z",
+            "level": "INFO",
+            "service": "api",
+            "msg": "config reload requested by unknown actor"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::config reload requested by unknown actor",
+            "id": "evt-000005",
+            "level": "INFO",
+            "msg": "config reload requested by unknown actor",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.076398-07:00",
+            "service": "api",
+            "ts": "2026-10-05T09:00:05Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::config reload requested by unknown actor",
+            "id": "evt-000005",
+            "level": "INFO",
+            "msg": "config reload requested by unknown actor",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.076398-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "api",
+            "ts": "2026-10-05T09:00:05Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::config reload requested by unknown actor",
+            "id": "evt-000005",
+            "level": "INFO",
+            "msg": "config reload requested by unknown actor",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.076398-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:05Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::config reload requested by unknown actor",
+            "id": "evt-000005",
+            "level": "INFO",
+            "msg": "config reload requested by unknown actor",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.076398-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:05Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "api::config reload requested by unknown actor",
+            "id": "evt-000005",
+            "level": "INFO",
+            "msg": "config reload requested by unknown actor",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.076398-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:05Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 5,
+      "input": "{\"id\": \"evt-000006\", \"ts\": \"2026-10-05T09:00:06Z\", \"level\": \"WARN\", \"service\": \"auth\", \"msg\": \"auth failed for user admin from 10.0.9.12\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000006",
+            "ts": "2026-10-05T09:00:06Z",
+            "level": "WARN",
+            "service": "auth",
+            "msg": "auth failed for user admin from 10.0.9.12"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000006",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.081902-07:00",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:06Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000006",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.081902-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "auth",
+            "ts": "2026-10-05T09:00:06Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000006",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.081902-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:06Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000006",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.081902-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:06Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000006",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.081902-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:06Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 6,
+      "input": "{\"id\": \"evt-000007\", \"ts\": \"2026-10-05T09:00:07Z\", \"level\": \"WARN\", \"service\": \"auth\", \"msg\": \"auth failed for user admin from 10.0.9.12\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000007",
+            "ts": "2026-10-05T09:00:07Z",
+            "level": "WARN",
+            "service": "auth",
+            "msg": "auth failed for user admin from 10.0.9.12"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000007",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.086819-07:00",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:07Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000007",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.086819-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 2,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "auth",
+            "ts": "2026-10-05T09:00:07Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000007",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.086819-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 2,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:07Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000007",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.086819-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 2,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:07Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000007",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.086819-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 2,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:07Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 7,
+      "input": "{\"id\": \"evt-000008\", \"ts\": \"2026-10-05T09:00:08Z\", \"level\": \"WARN\", \"service\": \"auth\", \"msg\": \"auth failed for user admin from 10.0.9.12\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000008",
+            "ts": "2026-10-05T09:00:08Z",
+            "level": "WARN",
+            "service": "auth",
+            "msg": "auth failed for user admin from 10.0.9.12"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000008",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.090614-07:00",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:08Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000008",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.090614-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 3,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "auth",
+            "ts": "2026-10-05T09:00:08Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000008",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.090614-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 3,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:08Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000008",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.090614-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 3,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:08Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000008",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.090614-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 3,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:08Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 8,
+      "input": "{\"id\": \"evt-000009\", \"ts\": \"2026-10-05T09:00:09Z\", \"level\": \"WARN\", \"service\": \"auth\", \"msg\": \"auth failed for user admin from 10.0.9.12\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000009",
+            "ts": "2026-10-05T09:00:09Z",
+            "level": "WARN",
+            "service": "auth",
+            "msg": "auth failed for user admin from 10.0.9.12"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000009",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.094166-07:00",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:09Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000009",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.094166-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 4,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "auth",
+            "ts": "2026-10-05T09:00:09Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000009",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.094166-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 4,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:09Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000009",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.094166-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 4,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:09Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "auth::auth failed for user admin from #.#.#.#",
+            "id": "evt-000009",
+            "level": "WARN",
+            "msg": "auth failed for user admin from 10.0.9.12",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.094166-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 4,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "auth",
+            "ts": "2026-10-05T09:00:09Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 9,
+      "input": "{\"id\": \"evt-000010\", \"ts\": \"2026-10-05T09:00:10Z\", \"level\": \"WARN\", \"service\": \"db\", \"msg\": \"slow query 4.2s on orders table rows=120k\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000010",
+            "ts": "2026-10-05T09:00:10Z",
+            "level": "WARN",
+            "service": "db",
+            "msg": "slow query 4.2s on orders table rows=120k"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "db::slow query #.#s on orders table rows#k",
+            "id": "evt-000010",
+            "level": "WARN",
+            "msg": "slow query 4.2s on orders table rows=120k",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.097625-07:00",
+            "service": "db",
+            "ts": "2026-10-05T09:00:10Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "db::slow query #.#s on orders table rows#k",
+            "id": "evt-000010",
+            "level": "WARN",
+            "msg": "slow query 4.2s on orders table rows=120k",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.097625-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "db",
+            "ts": "2026-10-05T09:00:10Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "db::slow query #.#s on orders table rows#k",
+            "id": "evt-000010",
+            "level": "WARN",
+            "msg": "slow query 4.2s on orders table rows=120k",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.097625-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "db",
+            "ts": "2026-10-05T09:00:10Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "db::slow query #.#s on orders table rows#k",
+            "id": "evt-000010",
+            "level": "WARN",
+            "msg": "slow query 4.2s on orders table rows=120k",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.097625-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "db",
+            "ts": "2026-10-05T09:00:10Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "db::slow query #.#s on orders table rows#k",
+            "id": "evt-000010",
+            "level": "WARN",
+            "msg": "slow query 4.2s on orders table rows=120k",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.097625-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "db",
+            "ts": "2026-10-05T09:00:10Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 10,
+      "input": "{\"id\": \"evt-000011\", \"ts\": \"2026-10-05T09:00:11Z\", \"level\": \"ERROR\", \"service\": \"api\", \"msg\": \"OOMKilled container api-7 exit=137\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000011",
+            "ts": "2026-10-05T09:00:11Z",
+            "level": "ERROR",
+            "service": "api",
+            "msg": "OOMKilled container api-7 exit=137"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "page",
+            "fingerprint": "api::oomkilled container api-# exit#",
+            "id": "evt-000011",
+            "level": "ERROR",
+            "msg": "OOMKilled container api-7 exit=137",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.101712-07:00",
+            "service": "api",
+            "ts": "2026-10-05T09:00:11Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "page",
+            "fingerprint": "api::oomkilled container api-# exit#",
+            "id": "evt-000011",
+            "level": "ERROR",
+            "msg": "OOMKilled container api-7 exit=137",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.101712-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "api",
+            "ts": "2026-10-05T09:00:11Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "page",
+            "fingerprint": "api::oomkilled container api-# exit#",
+            "id": "evt-000011",
+            "level": "ERROR",
+            "msg": "OOMKilled container api-7 exit=137",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.101712-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:11Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "page",
+            "fingerprint": "api::oomkilled container api-# exit#",
+            "id": "evt-000011",
+            "level": "ERROR",
+            "msg": "OOMKilled container api-7 exit=137",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.101712-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:11Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "page",
+            "fingerprint": "api::oomkilled container api-# exit#",
+            "id": "evt-000011",
+            "level": "ERROR",
+            "msg": "OOMKilled container api-7 exit=137",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.101712-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "api",
+            "ts": "2026-10-05T09:00:11Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 11,
+      "input": "{\"id\": \"evt-000012\", \"ts\": \"2026-10-05T09:00:12Z\", \"level\": \"ERROR\", \"service\": \"db\", \"msg\": \"database primary unreachable, failover initiated\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000012",
+            "ts": "2026-10-05T09:00:12Z",
+            "level": "ERROR",
+            "service": "db",
+            "msg": "database primary unreachable, failover initiated"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "page",
+            "fingerprint": "db::database primary unreachable failover initiated",
+            "id": "evt-000012",
+            "level": "ERROR",
+            "msg": "database primary unreachable, failover initiated",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.10661-07:00",
+            "service": "db",
+            "ts": "2026-10-05T09:00:12Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "page",
+            "fingerprint": "db::database primary unreachable failover initiated",
+            "id": "evt-000012",
+            "level": "ERROR",
+            "msg": "database primary unreachable, failover initiated",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.10661-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "db",
+            "ts": "2026-10-05T09:00:12Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "page",
+            "fingerprint": "db::database primary unreachable failover initiated",
+            "id": "evt-000012",
+            "level": "ERROR",
+            "msg": "database primary unreachable, failover initiated",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.10661-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "db",
+            "ts": "2026-10-05T09:00:12Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "page",
+            "fingerprint": "db::database primary unreachable failover initiated",
+            "id": "evt-000012",
+            "level": "ERROR",
+            "msg": "database primary unreachable, failover initiated",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.10661-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "db",
+            "ts": "2026-10-05T09:00:12Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "page",
+            "fingerprint": "db::database primary unreachable failover initiated",
+            "id": "evt-000012",
+            "level": "ERROR",
+            "msg": "database primary unreachable, failover initiated",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.10661-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "db",
+            "ts": "2026-10-05T09:00:12Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 12,
+      "input": "{\"id\": \"evt-000013\", \"ts\": \"2026-10-05T09:00:13Z\", \"level\": \"INFO\", \"service\": \"cache\", \"msg\": \"cache hit rate 0.94 window=5m\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000013",
+            "ts": "2026-10-05T09:00:13Z",
+            "level": "INFO",
+            "service": "cache",
+            "msg": "cache hit rate 0.94 window=5m"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "cache::cache hit rate #.# window#m",
+            "id": "evt-000013",
+            "level": "INFO",
+            "msg": "cache hit rate 0.94 window=5m",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.110998-07:00",
+            "service": "cache",
+            "ts": "2026-10-05T09:00:13Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "cache::cache hit rate #.# window#m",
+            "id": "evt-000013",
+            "level": "INFO",
+            "msg": "cache hit rate 0.94 window=5m",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.110998-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "cache",
+            "ts": "2026-10-05T09:00:13Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "cache::cache hit rate #.# window#m",
+            "id": "evt-000013",
+            "level": "INFO",
+            "msg": "cache hit rate 0.94 window=5m",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.110998-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "cache",
+            "ts": "2026-10-05T09:00:13Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "cache::cache hit rate #.# window#m",
+            "id": "evt-000013",
+            "level": "INFO",
+            "msg": "cache hit rate 0.94 window=5m",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.110998-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "cache",
+            "ts": "2026-10-05T09:00:13Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "cache::cache hit rate #.# window#m",
+            "id": "evt-000013",
+            "level": "INFO",
+            "msg": "cache hit rate 0.94 window=5m",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.110998-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "cache",
+            "ts": "2026-10-05T09:00:13Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 13,
+      "input": "{\"id\": \"evt-000014\", \"ts\": \"2026-10-05T09:00:14Z\", \"level\": \"WARN\", \"service\": \"edge\", \"msg\": \"TLS certificate expiring in 72 hours, renewal failed twice\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000014",
+            "ts": "2026-10-05T09:00:14Z",
+            "level": "WARN",
+            "service": "edge",
+            "msg": "TLS certificate expiring in 72 hours, renewal failed twice"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "edge::tls certificate expiring in # hours renewal failed twice",
+            "id": "evt-000014",
+            "level": "WARN",
+            "msg": "TLS certificate expiring in 72 hours, renewal failed twice",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.115636-07:00",
+            "service": "edge",
+            "ts": "2026-10-05T09:00:14Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "edge::tls certificate expiring in # hours renewal failed twice",
+            "id": "evt-000014",
+            "level": "WARN",
+            "msg": "TLS certificate expiring in 72 hours, renewal failed twice",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.115636-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "edge",
+            "ts": "2026-10-05T09:00:14Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "edge::tls certificate expiring in # hours renewal failed twice",
+            "id": "evt-000014",
+            "level": "WARN",
+            "msg": "TLS certificate expiring in 72 hours, renewal failed twice",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.115636-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "edge",
+            "ts": "2026-10-05T09:00:14Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "edge::tls certificate expiring in # hours renewal failed twice",
+            "id": "evt-000014",
+            "level": "WARN",
+            "msg": "TLS certificate expiring in 72 hours, renewal failed twice",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.115636-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "edge",
+            "ts": "2026-10-05T09:00:14Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "notify",
+            "fingerprint": "edge::tls certificate expiring in # hours renewal failed twice",
+            "id": "evt-000014",
+            "level": "WARN",
+            "msg": "TLS certificate expiring in 72 hours, renewal failed twice",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.115636-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "edge",
+            "ts": "2026-10-05T09:00:14Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 14,
+      "input": "{\"id\": \"evt-000015\", \"ts\": \"2026-10-05T09:00:15Z\", \"level\": \"INFO\", \"service\": \"deploy\", \"msg\": \"rollout step 3/8 complete service=checkout\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000015",
+            "ts": "2026-10-05T09:00:15Z",
+            "level": "INFO",
+            "service": "deploy",
+            "msg": "rollout step 3/8 complete service=checkout"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "deploy::rollout step #/# complete servicecheckout",
+            "id": "evt-000015",
+            "level": "INFO",
+            "msg": "rollout step 3/8 complete service=checkout",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.119832-07:00",
+            "service": "deploy",
+            "ts": "2026-10-05T09:00:15Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "deploy::rollout step #/# complete servicecheckout",
+            "id": "evt-000015",
+            "level": "INFO",
+            "msg": "rollout step 3/8 complete service=checkout",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.119832-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "deploy",
+            "ts": "2026-10-05T09:00:15Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "deploy::rollout step #/# complete servicecheckout",
+            "id": "evt-000015",
+            "level": "INFO",
+            "msg": "rollout step 3/8 complete service=checkout",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.119832-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "deploy",
+            "ts": "2026-10-05T09:00:15Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "deploy::rollout step #/# complete servicecheckout",
+            "id": "evt-000015",
+            "level": "INFO",
+            "msg": "rollout step 3/8 complete service=checkout",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.119832-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "deploy",
+            "ts": "2026-10-05T09:00:15Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "deploy::rollout step #/# complete servicecheckout",
+            "id": "evt-000015",
+            "level": "INFO",
+            "msg": "rollout step 3/8 complete service=checkout",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.119832-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 1,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "deploy",
+            "ts": "2026-10-05T09:00:15Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    },
+    {
+      "index": 15,
+      "input": "{\"id\": \"evt-000016\", \"ts\": \"2026-10-05T09:00:16Z\", \"level\": \"INFO\", \"service\": \"cache\", \"msg\": \"cache hit rate 0.01 window=5m\"}",
+      "stages": [
+        {
+          "n": 0,
+          "state": {
+            "id": "evt-000016",
+            "ts": "2026-10-05T09:00:16Z",
+            "level": "INFO",
+            "service": "cache",
+            "msg": "cache hit rate 0.01 window=5m"
+          }
+        },
+        {
+          "n": 1,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "cache::cache hit rate #.# window#m",
+            "id": "evt-000016",
+            "level": "INFO",
+            "msg": "cache hit rate 0.01 window=5m",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.124219-07:00",
+            "service": "cache",
+            "ts": "2026-10-05T09:00:16Z"
+          }
+        },
+        {
+          "n": 2,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "cache::cache hit rate #.# window#m",
+            "id": "evt-000016",
+            "level": "INFO",
+            "msg": "cache hit rate 0.01 window=5m",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.124219-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 2,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "service": "cache",
+            "ts": "2026-10-05T09:00:16Z"
+          }
+        },
+        {
+          "n": 3,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "cache::cache hit rate #.# window#m",
+            "id": "evt-000016",
+            "level": "INFO",
+            "msg": "cache hit rate 0.01 window=5m",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.124219-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 2,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "cache",
+            "ts": "2026-10-05T09:00:16Z"
+          }
+        },
+        {
+          "n": 4,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "cache::cache hit rate #.# window#m",
+            "id": "evt-000016",
+            "level": "INFO",
+            "msg": "cache hit rate 0.01 window=5m",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.124219-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 2,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "cache",
+            "ts": "2026-10-05T09:00:16Z"
+          }
+        },
+        {
+          "n": 5,
+          "state": {
+            "baseline": "archive",
+            "fingerprint": "cache::cache hit rate #.# window#m",
+            "id": "evt-000016",
+            "level": "INFO",
+            "msg": "cache hit rate 0.01 window=5m",
+            "node_id": "fixture-node",
+            "received_at": "2026-10-05T19:44:20.124219-07:00",
+            "recurrence": {
+              "first_seen_ago_s": 0,
+              "occurrence": 2,
+              "previous_decisions": [],
+              "window_s": 600
+            },
+            "routed_by": "expanso",
+            "service": "cache",
+            "ts": "2026-10-05T09:00:16Z"
+          }
+        }
+      ],
+      "jev": [],
+      "destination": "logs"
+    }
+  ]
+}

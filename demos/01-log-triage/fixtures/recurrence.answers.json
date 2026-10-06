@@ -1,0 +1,645 @@
+{
+  "note": "Recorded answers, replayed by tools/fixture-runner.py. Produced by the offline responder in shared/jev-mock-server.py; no model was called.",
+  "answers": [
+    {
+      "key": "5459a768fc3a85d635449bb3d0cbf4b7639d909d4d71f33ff3ff81f3c9b62ff1",
+      "state": {
+        "log": {
+          "level": "WARN",
+          "msg": "auth failed for user admin from 10.0.9.12",
+          "service": "auth"
+        },
+        "recurrence": {
+          "occurrence": 3,
+          "previous_routing_decisions": [
+            "review",
+            "review"
+          ],
+          "window": "10 minutes"
+        }
+      },
+      "questions": [
+        "actionable",
+        "recurrence_concern",
+        "severity",
+        "team"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "actionable": {
+            "type": "noul",
+            "noul": 0.75
+          },
+          "recurrence_concern": {
+            "type": "noul",
+            "noul": 0.92
+          },
+          "severity": {
+            "type": "choice",
+            "choice": "warning",
+            "probabilities": {
+              "critical": 0.027,
+              "info": 0.027,
+              "other": 0.027,
+              "warning": 0.92
+            },
+            "confidence": 0.92
+          },
+          "team": {
+            "type": "choice",
+            "choice": "other",
+            "probabilities": {
+              "backend": 0.02,
+              "data": 0.02,
+              "infra": 0.02,
+              "other": 0.92,
+              "security": 0.02
+            },
+            "confidence": 0.35
+          }
+        }
+      }
+    },
+    {
+      "key": "5867235b6b187048d5ccb7b7b0c29dc424cb1f6281ec6d44f4d99061d6f21c6c",
+      "state": {
+        "log": {
+          "level": "ERROR",
+          "msg": "OOMKilled container api-7 exit=137",
+          "service": "api"
+        },
+        "recurrence": {
+          "occurrence": 1,
+          "previous_routing_decisions": [],
+          "window": "10 minutes"
+        }
+      },
+      "questions": [
+        "actionable",
+        "recurrence_concern",
+        "severity",
+        "team"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "actionable": {
+            "type": "noul",
+            "noul": 0.45
+          },
+          "recurrence_concern": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "severity": {
+            "type": "choice",
+            "choice": "warning",
+            "probabilities": {
+              "critical": 0.027,
+              "info": 0.027,
+              "other": 0.027,
+              "warning": 0.92
+            },
+            "confidence": 0.92
+          },
+          "team": {
+            "type": "choice",
+            "choice": "backend",
+            "probabilities": {
+              "backend": 0.92,
+              "data": 0.02,
+              "infra": 0.02,
+              "other": 0.02,
+              "security": 0.02
+            },
+            "confidence": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "707f51fa56b826356d3ea4564bda8f3d5eb34ae9ff1834fc567b820f6e33f3e2",
+      "state": {
+        "log": {
+          "level": "INFO",
+          "msg": "GET /health 500 9000ms",
+          "service": "api"
+        },
+        "recurrence": {
+          "occurrence": 2,
+          "previous_routing_decisions": [
+            "archive"
+          ],
+          "window": "10 minutes"
+        }
+      },
+      "questions": [
+        "actionable",
+        "recurrence_concern",
+        "severity",
+        "team"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "actionable": {
+            "type": "noul",
+            "noul": 0.6
+          },
+          "recurrence_concern": {
+            "type": "noul",
+            "noul": 0.5
+          },
+          "severity": {
+            "type": "choice",
+            "choice": "info",
+            "probabilities": {
+              "critical": 0.027,
+              "info": 0.92,
+              "other": 0.027,
+              "warning": 0.027
+            },
+            "confidence": 0.92
+          },
+          "team": {
+            "type": "choice",
+            "choice": "backend",
+            "probabilities": {
+              "backend": 0.92,
+              "data": 0.02,
+              "infra": 0.02,
+              "other": 0.02,
+              "security": 0.02
+            },
+            "confidence": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "99f4e0c49631a89d17e9e0abe66f49804460ed50ee3fb58ca9b1b416334e6aa5",
+      "state": {
+        "log": {
+          "level": "WARN",
+          "msg": "auth failed for user admin from 10.0.9.12",
+          "service": "auth"
+        },
+        "recurrence": {
+          "occurrence": 1,
+          "previous_routing_decisions": [],
+          "window": "10 minutes"
+        }
+      },
+      "questions": [
+        "actionable",
+        "recurrence_concern",
+        "severity",
+        "team"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "actionable": {
+            "type": "noul",
+            "noul": 0.45
+          },
+          "recurrence_concern": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "severity": {
+            "type": "choice",
+            "choice": "warning",
+            "probabilities": {
+              "critical": 0.027,
+              "info": 0.027,
+              "other": 0.027,
+              "warning": 0.92
+            },
+            "confidence": 0.92
+          },
+          "team": {
+            "type": "choice",
+            "choice": "other",
+            "probabilities": {
+              "backend": 0.02,
+              "data": 0.02,
+              "infra": 0.02,
+              "other": 0.92,
+              "security": 0.02
+            },
+            "confidence": 0.35
+          }
+        }
+      }
+    },
+    {
+      "key": "b1fef6eb90ae675f8ed9888a23b830489d9fc6b472a96185a4ad3c95e88df46a",
+      "state": {
+        "log": {
+          "level": "INFO",
+          "msg": "config reload requested by unknown actor",
+          "service": "api"
+        },
+        "recurrence": {
+          "occurrence": 1,
+          "previous_routing_decisions": [],
+          "window": "10 minutes"
+        }
+      },
+      "questions": [
+        "actionable",
+        "recurrence_concern",
+        "severity",
+        "team"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "actionable": {
+            "type": "noul",
+            "noul": 0.45
+          },
+          "recurrence_concern": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "severity": {
+            "type": "choice",
+            "choice": "info",
+            "probabilities": {
+              "critical": 0.027,
+              "info": 0.92,
+              "other": 0.027,
+              "warning": 0.027
+            },
+            "confidence": 0.92
+          },
+          "team": {
+            "type": "choice",
+            "choice": "backend",
+            "probabilities": {
+              "backend": 0.92,
+              "data": 0.02,
+              "infra": 0.02,
+              "other": 0.02,
+              "security": 0.02
+            },
+            "confidence": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "c771af85ebd8b8357d45c9c13ae71a56e4c1ecc1b0b0cfcae4a29f985aa593bf",
+      "state": {
+        "log": {
+          "level": "ERROR",
+          "msg": "database primary unreachable, failover initiated",
+          "service": "db"
+        },
+        "recurrence": {
+          "occurrence": 1,
+          "previous_routing_decisions": [],
+          "window": "10 minutes"
+        }
+      },
+      "questions": [
+        "actionable",
+        "recurrence_concern",
+        "severity",
+        "team"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "actionable": {
+            "type": "noul",
+            "noul": 0.45
+          },
+          "recurrence_concern": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "severity": {
+            "type": "choice",
+            "choice": "critical",
+            "probabilities": {
+              "critical": 0.92,
+              "info": 0.027,
+              "other": 0.027,
+              "warning": 0.027
+            },
+            "confidence": 0.92
+          },
+          "team": {
+            "type": "choice",
+            "choice": "data",
+            "probabilities": {
+              "backend": 0.02,
+              "data": 0.92,
+              "infra": 0.02,
+              "other": 0.02,
+              "security": 0.02
+            },
+            "confidence": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "cdaa1534e623a4add1e5a43d429c3efe13f8ba34ead12aac43096a96c4798b91",
+      "state": {
+        "log": {
+          "level": "WARN",
+          "msg": "slow query 4.2s on orders table rows=120k",
+          "service": "db"
+        },
+        "recurrence": {
+          "occurrence": 1,
+          "previous_routing_decisions": [],
+          "window": "10 minutes"
+        }
+      },
+      "questions": [
+        "actionable",
+        "recurrence_concern",
+        "severity",
+        "team"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "actionable": {
+            "type": "noul",
+            "noul": 0.45
+          },
+          "recurrence_concern": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "severity": {
+            "type": "choice",
+            "choice": "warning",
+            "probabilities": {
+              "critical": 0.027,
+              "info": 0.027,
+              "other": 0.027,
+              "warning": 0.92
+            },
+            "confidence": 0.92
+          },
+          "team": {
+            "type": "choice",
+            "choice": "other",
+            "probabilities": {
+              "backend": 0.02,
+              "data": 0.02,
+              "infra": 0.02,
+              "other": 0.92,
+              "security": 0.02
+            },
+            "confidence": 0.35
+          }
+        }
+      }
+    },
+    {
+      "key": "e2a16eed1d9d4f76384da3397419df777d7127eeaabe157010537751c98e9af6",
+      "state": {
+        "log": {
+          "level": "WARN",
+          "msg": "auth failed for user admin from 10.0.9.12",
+          "service": "auth"
+        },
+        "recurrence": {
+          "occurrence": 4,
+          "previous_routing_decisions": [
+            "review",
+            "review",
+            "notify"
+          ],
+          "window": "10 minutes"
+        }
+      },
+      "questions": [
+        "actionable",
+        "recurrence_concern",
+        "severity",
+        "team"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "actionable": {
+            "type": "noul",
+            "noul": 0.9
+          },
+          "recurrence_concern": {
+            "type": "noul",
+            "noul": 0.92
+          },
+          "severity": {
+            "type": "choice",
+            "choice": "warning",
+            "probabilities": {
+              "critical": 0.027,
+              "info": 0.027,
+              "other": 0.027,
+              "warning": 0.92
+            },
+            "confidence": 0.92
+          },
+          "team": {
+            "type": "choice",
+            "choice": "other",
+            "probabilities": {
+              "backend": 0.02,
+              "data": 0.02,
+              "infra": 0.02,
+              "other": 0.92,
+              "security": 0.02
+            },
+            "confidence": 0.35
+          }
+        }
+      }
+    },
+    {
+      "key": "e374d728370330cd72beb1f9e59791b1645053273c0e4150a97f412bf69780a7",
+      "state": {
+        "log": {
+          "level": "WARN",
+          "msg": "auth failed for user admin from 10.0.9.12",
+          "service": "auth"
+        },
+        "recurrence": {
+          "occurrence": 2,
+          "previous_routing_decisions": [
+            "review"
+          ],
+          "window": "10 minutes"
+        }
+      },
+      "questions": [
+        "actionable",
+        "recurrence_concern",
+        "severity",
+        "team"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "actionable": {
+            "type": "noul",
+            "noul": 0.6
+          },
+          "recurrence_concern": {
+            "type": "noul",
+            "noul": 0.5
+          },
+          "severity": {
+            "type": "choice",
+            "choice": "warning",
+            "probabilities": {
+              "critical": 0.027,
+              "info": 0.027,
+              "other": 0.027,
+              "warning": 0.92
+            },
+            "confidence": 0.92
+          },
+          "team": {
+            "type": "choice",
+            "choice": "other",
+            "probabilities": {
+              "backend": 0.02,
+              "data": 0.02,
+              "infra": 0.02,
+              "other": 0.92,
+              "security": 0.02
+            },
+            "confidence": 0.35
+          }
+        }
+      }
+    },
+    {
+      "key": "fb342fb024e626921780601dd811b7b3460d4c6a1c8a2d096bff094491595d6b",
+      "state": {
+        "log": {
+          "level": "WARN",
+          "msg": "TLS certificate expiring in 72 hours, renewal failed twice",
+          "service": "edge"
+        },
+        "recurrence": {
+          "occurrence": 1,
+          "previous_routing_decisions": [],
+          "window": "10 minutes"
+        }
+      },
+      "questions": [
+        "actionable",
+        "recurrence_concern",
+        "severity",
+        "team"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "actionable": {
+            "type": "noul",
+            "noul": 0.45
+          },
+          "recurrence_concern": {
+            "type": "noul",
+            "noul": 0.12
+          },
+          "severity": {
+            "type": "choice",
+            "choice": "warning",
+            "probabilities": {
+              "critical": 0.027,
+              "info": 0.027,
+              "other": 0.027,
+              "warning": 0.92
+            },
+            "confidence": 0.92
+          },
+          "team": {
+            "type": "choice",
+            "choice": "infra",
+            "probabilities": {
+              "backend": 0.02,
+              "data": 0.02,
+              "infra": 0.92,
+              "other": 0.02,
+              "security": 0.02
+            },
+            "confidence": 0.92
+          }
+        }
+      }
+    },
+    {
+      "key": "fd1b1bac8d72bc98c2ca50db463843df793ede1937091c8a947af7c554e830ca",
+      "state": {
+        "log": {
+          "level": "INFO",
+          "msg": "cache hit rate 0.01 window=5m",
+          "service": "cache"
+        },
+        "recurrence": {
+          "occurrence": 2,
+          "previous_routing_decisions": [
+            "archive"
+          ],
+          "window": "10 minutes"
+        }
+      },
+      "questions": [
+        "actionable",
+        "recurrence_concern",
+        "severity",
+        "team"
+      ],
+      "response": {
+        "model": "jev-mock",
+        "answers": {
+          "actionable": {
+            "type": "noul",
+            "noul": 0.6
+          },
+          "recurrence_concern": {
+            "type": "noul",
+            "noul": 0.5
+          },
+          "severity": {
+            "type": "choice",
+            "choice": "info",
+            "probabilities": {
+              "critical": 0.027,
+              "info": 0.92,
+              "other": 0.027,
+              "warning": 0.027
+            },
+            "confidence": 0.92
+          },
+          "team": {
+            "type": "choice",
+            "choice": "other",
+            "probabilities": {
+              "backend": 0.02,
+              "data": 0.02,
+              "infra": 0.02,
+              "other": 0.92,
+              "security": 0.02
+            },
+            "confidence": 0.35
+          }
+        }
+      }
+    }
+  ]
+}
