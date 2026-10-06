@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light dark">
   <title>Pod signals · Expanso × Jev</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="/web/style.css">
@@ -17,9 +17,10 @@
     <div class="connection"><span class="dot" id="connection-dot"></span><span id="connection">Connecting</span></div>
     <button id="auto-toggle" class="ghost" aria-pressed="true">Pause events</button>
     <button id="details-toggle" class="ghost" aria-expanded="false" aria-controls="runtime-details">Details</button>
+    <button id="theme-toggle" class="ghost" type="button" aria-pressed="false">Dark mode</button>
   </header>
 
-  <nav class="lane-tabs" aria-label="Workflow">
+  <nav class="lane-tabs" aria-label="Workflow" title="Left and Right arrow keys switch between Label and Investigate">
     <button data-lane="labels" aria-pressed="true">Label</button>
     <button data-lane="investigation" aria-pressed="false">Investigate</button>
     <span id="target-name">Select a pod</span>
