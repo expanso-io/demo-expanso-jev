@@ -79,7 +79,8 @@ def stop(pidfile, root, match):
         descendants.extend(child for child, owner in parents.items() if owner == parent)
     snapshots = {target: identity(target) for target in descendants}
     for target in reversed(descendants):
-        if identity(pid) != saved:
+        owner_now = identity(pid)
+        if owner_now is not None and owner_now != saved:
             raise ValueError("Owner identity changed during shutdown; leaving it alone")
         before = snapshots[target]
         if before is None:
