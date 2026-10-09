@@ -12,18 +12,27 @@ names this file, one of the repository's other helper scripts, or `http.server`.
 from __future__ import annotations
 
 import json
+import importlib.util
 import os
 import signal
 import subprocess
 import sys
 import threading
 from functools import partial
-from http.server import BaseHTTPRequestHandler, SimpleHTTPRequestHandler, ThreadingHTTPServer
+from http.server import (
+    BaseHTTPRequestHandler,
+    SimpleHTTPRequestHandler,
+    ThreadingHTTPServer,
+)
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPLAY = ROOT / "demos" / "11-pod-labels" / "fixtures" / "adapter-replay.json"
-OWNED = ("tools/serve.py", "jev-mock-server.py", "counter.py", "http.server")
+spec = importlib.util.spec_from_file_location(
+    "stop_owned", ROOT / "scripts/stop-owned.py"
+)
+owned = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(owned)
 
 
 class NoStore(SimpleHTTPRequestHandler):
@@ -71,24 +80,32 @@ def pods_handler(data: dict):
 
 def serve(handler, port: int) -> None:
     server = ThreadingHTTPServer(("127.0.0.1", port), handler)
-    signal.signal(signal.SIGTERM, lambda *_: threading.Thread(target=server.shutdown).start())
+    os.chdir(ROOT)
+    pidfile = ROOT / ".runtime" / f"serve-{port}.pid"
+    pidfile.parent.mkdir(exist_ok=True)
+    pidfile.write_text(str(os.getpid()))
+    owned.record(pidfile, ROOT, "serve.py")
+    signal.signal(
+        signal.SIGTERM, lambda *_: threading.Thread(target=server.shutdown).start()
+    )
     try:
         server.serve_forever()
     finally:
         server.server_close()
+        pidfile.unlink(missing_ok=True)
+        owned.sidecar(pidfile).unlink(missing_ok=True)
 
 
 def stop(ports: list[int]) -> int:
     for port in ports:
-        out = subprocess.run(
-            ["lsof", "-ti", f"tcp:{port}", "-sTCP:LISTEN"], capture_output=True, text=True
-        ).stdout.split()
-        for pid in out:
-            cmd = subprocess.run(
-                ["ps", "-p", pid, "-o", "command="], capture_output=True, text=True
-            ).stdout
-            if any(name in cmd for name in OWNED) and int(pid) != os.getpid():
-                os.kill(int(pid), signal.SIGTERM)
+        pidfile = ROOT / ".runtime" / f"serve-{port}.pid"
+        if pidfile.exists():
+            owned.stop(pidfile, ROOT, "serve.py")
+        elif subprocess.run(
+            ["lsof", "-ti", f"tcp:{port}", "-sTCP:LISTEN"], capture_output=True
+        ).stdout:
+            print(f"Unknown listener on port {port}; leaving it alone", file=sys.stderr)
+            return 1
     return 0
 
 
