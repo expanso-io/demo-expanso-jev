@@ -53,7 +53,7 @@ config:
             root = {"fingerprint": this.fingerprint}
           processors:
             - http:
-                url: http://127.0.0.1:8898/track
+                url: http://127.0.0.1:${COUNTER_PORT:8898}/track
                 verb: POST
                 headers:
                   Content-Type: application/json

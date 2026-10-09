@@ -1,7 +1,7 @@
 #!/bin/bash
 # jev-live/start.sh — bring up the whole live demo stack on this machine.
 #
-#   1. recurrence tracker  (counter.py, 127.0.0.1:8898)
+#   1. recurrence tracker  (counter.py, 127.0.0.1:${COUNTER_PORT:-8898})
 #   2. Expanso Edge agent  (joined to Expanso Cloud). NO pipeline is deployed:
 #      the demo opens on act one, every log pouring into a raw bucket. The
 #      presenter deploys from the Expanso Cloud console -- pipeline-logging.yaml,
@@ -85,6 +85,8 @@ launch() { # name, command...
   "$@" >"$LOGS/$name.log" 2>&1 &
   local pid=$!
   echo "$pid" >> "$LOGS/pids"
+  echo "$pid" > "$LOGS/$name.pid"
+  uv run --no-project "$PKG/../../scripts/stop-owned.py" record --pidfile "$LOGS/$name.pid" --root "$PKG" --match "${1##*/}"
   echo "  $name  pid $pid  (log: logs/$name.log)"
 }
 
@@ -92,7 +94,7 @@ echo "== jev-live starting =="
 echo "[1/4] recurrence tracker (:8898)"
 launch counter python3 counter.py
 sleep 1
-if ! curl -sf -o /dev/null -X POST http://127.0.0.1:8898/track -d '{"fingerprint":"ping"}' \
+if ! curl -sf -o /dev/null -X POST http://127.0.0.1:${COUNTER_PORT:-8898}/track -d '{"fingerprint":"ping"}' \
      -H 'Content-Type: application/json'; then
   echo "ERROR: counter.py did not come up. See logs/counter.log" >&2
   exit 1
@@ -144,7 +146,7 @@ export JEV_UPSTREAM_URL="$JEV_API_URL"
 JEV_KEY_PRIVATE="${TYPESAFE_API_KEY:-}"
 unset TYPESAFE_API_KEY
 GATE_URL="http://127.0.0.1:${JEV_GATE_PORT:-8897}/v1/systemone"
-launch edge env JEV_API_URL="$GATE_URL" expanso-edge run --data-dir "$EDGE_DATA"
+launch edge env JEV_API_URL="$GATE_URL" expanso-edge run --api-listen "127.0.0.1:$TRIAGE_EDGE_API_PORT" --data-dir "$EDGE_DATA"
 
 # Two separate questions, asked separately, because they have very different
 # answers and the old single check conflated them:
@@ -193,7 +195,7 @@ echo "  node registered"
 # Open on a true zero state: nothing deployed, nothing routed. A job left
 # running from a previous take would have the board open mid-story with
 # non-zero counters, and a demo has to start from the same place every time.
-port_bound() { lsof -ti tcp:8080 -sTCP:LISTEN >/dev/null 2>&1; }
+port_bound() { lsof -ti tcp:"$INGEST_PORT" -sTCP:LISTEN >/dev/null 2>&1; }
 # Always leave the job's LATEST version in Cloud as the Expanso-only pipeline,
 # then stop it. A bare stop kept whatever was deployed last, which after any
 # take is the Jev version (the switch deploys it), so starting the job from the
@@ -235,6 +237,8 @@ echo "[3/4] dashboard server (:$JEV_LIVE_PORT)"
 ( [ -n "$JEV_KEY_PRIVATE" ] && export TYPESAFE_API_KEY="$JEV_KEY_PRIVATE"; exec python3 server.py ) >"$LOGS/server.log" 2>&1 &
 spid=$!
 echo "$spid" >> "$LOGS/pids"
+echo "$spid" > "$LOGS/server.pid"
+uv run --no-project "$PKG/../../scripts/stop-owned.py" record --pidfile "$LOGS/server.pid" --root "$PKG" --match "server.py"
 echo "  server  pid $spid  (log: logs/server.log)"
 unset JEV_KEY_PRIVATE
 sleep 1

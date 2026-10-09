@@ -23,51 +23,24 @@ if [ ! -f "$LOGS/pids" ]; then
   exit 0
 fi
 
-while read -r pid; do
-  [ -n "$pid" ] || continue
-  if kill -0 "$pid" 2>/dev/null; then
-    echo "stopping pid $pid"
-    kill "$pid" 2>/dev/null || true
-  fi
-done < "$LOGS/pids"
-
-sleep 2
-while read -r pid; do
-  [ -n "$pid" ] || continue
-  if kill -0 "$pid" 2>/dev/null; then
-    echo "force-killing pid $pid"
-    kill -9 "$pid" 2>/dev/null || true
-  fi
-done < "$LOGS/pids"
-
-# Anything from an earlier run that logs/pids has forgotten: a generator that
-# server.py restarted, or a server/counter still holding its port so the next
-# one cannot bind and the dashboard silently serves old code.
-#
-# Scoped to THIS checkout. A process is ours only if its working directory is
-# this package -- start.sh and server.py both launch from here. Matching on a
-# script name or a port alone would reach into other demos on the same machine
-# (several share generator2.py and these ports), so candidates are found that
-# way and then each one is verified before it is touched.
-ours() {  # pid -> 0 if its cwd is this package
-  [ "$(lsof -a -p "$1" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p' | head -1)" = "$PKG" ]
-}
-candidates="$(pgrep -f "$(basename "${JEV_LIVE_GEN:-generator2.py}")" 2>/dev/null || true)"
-# An edge agent whose pid was lost keeps the state db locked, so the next
-# start cannot open it. ours() below still scopes it to this checkout.
-candidates="$candidates $(pgrep -f 'expanso-edge run' 2>/dev/null || true)"
-for port in "${JEV_LIVE_PORT:-8890}" 8898; do
-  candidates="$candidates $(lsof -ti "tcp:$port" -sTCP:LISTEN 2>/dev/null || true)"
+for pidfile in "$LOGS"/*.pid; do
+  [ -f "$pidfile" ] || continue
+  case "${pidfile##*/}" in
+    counter.pid) marker=counter.py ;;
+    server.pid) marker=server.py ;;
+    generator.pid) marker="${JEV_LIVE_GEN##*/}"; marker="${marker:-generator2.py}" ;;
+    *) marker="expanso-edge run" ;;
+  esac
+  uv run --no-project "$PKG/../../scripts/stop-owned.py" stop \
+    --pidfile "$pidfile" --root "$PKG" --match "$marker" || exit 1
 done
-for pid in $candidates; do
-  if ours "$pid"; then
-    echo "stopping stray process from this checkout (pid $pid)"
-    kill "$pid" 2>/dev/null || true
-  else
-    echo "leaving pid $pid alone: not started from $PKG"
-  fi
-done
-
+if [ -s "$LOGS/pids" ] && ! ls "$LOGS"/*.pid.identity.json >/dev/null 2>&1; then
+  while read -r pid; do
+    if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+      echo "ERROR: live legacy PID has no ownership identity; leaving it alone" >&2
+      exit 1
+    fi
+  done < "$LOGS/pids"
+fi
 : > "$LOGS/pids"
 echo "stopped."
-echo "pipelines stopped in Expanso Cloud."

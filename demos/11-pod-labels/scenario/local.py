@@ -22,7 +22,9 @@ ROOT = HERE.parents[1]
 DEPLOY_SCRIPT = ROOT / "scripts/deploy-pod-labels.sh"
 STATE_DIR = ROOT / ".expanso/pod-labels"
 CLUSTER = "jev-label-demo"
-URL = "http://127.0.0.1:8901"
+POD_PORT = int(os.environ.get("POD_LABEL_PORT", "8901"))
+EDGE_PORT = int(os.environ.get("POD_EDGE_API_PORT", "9016"))
+URL = f"http://127.0.0.1:{POD_PORT}"
 
 
 def environment(home):
@@ -38,7 +40,7 @@ def environment(home):
         KUBE_CONTEXT=CLUSTER,
         POD_LABEL_NAMESPACES=CLUSTER,
         POD_LABEL_TOKEN=token_file.read_text().strip(),
-        POD_LABEL_PORT="8901",
+        POD_LABEL_PORT=str(POD_PORT),
         POD_LABEL_APPLY=os.environ.get("POD_LABEL_APPLY", "true"),
         # The disposable local cluster acts at 80%. The adapter's own default,
         # used anywhere else, stays at 90%.
@@ -220,8 +222,8 @@ class Session:
             raise RuntimeError(
                 "Cloud pod job is already active; stop it before starting a new session"
             )
-        require_free_port(8901)
-        require_free_port(9016)
+        require_free_port(POD_PORT)
+        require_free_port(EDGE_PORT)
         print("Starting POD LABELS (11), using k3d + Expanso Cloud", flush=True)
         try:
             self.run("docker", "info", timeout=15)
@@ -341,7 +343,7 @@ class Session:
             "--data-dir",
             str(STATE_DIR),
             "--api-listen",
-            "127.0.0.1:9016",
+            f"127.0.0.1:{EDGE_PORT}",
             "--config",
             str(HERE / "edge.yaml"),
             env=edge_env,
@@ -426,6 +428,7 @@ class Session:
 
 
 def main():
+    os.chdir(ROOT)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     with (STATE_DIR / "local.lock").open("a+") as lock:
         try:
@@ -436,15 +439,7 @@ def main():
                     "Pod demo already running; use just down first"
                 ) from None
             lock.seek(0)
-            pid = int(lock.read())
-            command = subprocess.check_output(
-                ["ps", "-p", str(pid), "-o", "command="], text=True
-            )
-            if str(Path(__file__).resolve()) not in command:
-                raise RuntimeError(
-                    "Launcher identity mismatch; refusing to signal process"
-                )
-            os.kill(pid, signal.SIGTERM)
+            subprocess.run(["uv", "run", "--no-project", str(ROOT / "scripts/stop-owned.py"), "stop", "--pidfile", str(STATE_DIR / "launcher.pid"), "--root", str(ROOT), "--match", "scenario/local.py"], check=True)
             print("Stop requested; the up terminal will report cleanup.")
             return
         if sys.argv[1:] == ["down"]:
@@ -456,6 +451,8 @@ def main():
         lock.truncate()
         lock.write(str(os.getpid()))
         lock.flush()
+        (STATE_DIR / "launcher.pid").write_text(str(os.getpid()))
+        subprocess.run(["uv", "run", "--no-project", str(ROOT / "scripts/stop-owned.py"), "record", "--pidfile", str(STATE_DIR / "launcher.pid"), "--root", str(ROOT), "--match", "scenario/local.py"], check=True)
 
         def stop(signum, frame):
             raise KeyboardInterrupt

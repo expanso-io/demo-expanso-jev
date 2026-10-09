@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "demo": "demo-expanso-jev",
+  "ports": {
+    "POD_LABEL_PORT": 8901,
+    "POD_EDGE_API_PORT": 9016,
+    "JEV_LIVE_PORT": 8890,
+    "JEV_GATE_PORT": 8897,
+    "COUNTER_PORT": 8898,
+    "INGEST_PORT": 8080,
+    "MOCK_PORT": 8099,
+    "TRIAGE_EDGE_API_PORT": 9010,
+    "BROWSER_PORT": 8777
+  }
+}

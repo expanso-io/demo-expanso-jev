@@ -174,3 +174,11 @@ Apache-2.0, see [`LICENSE`](LICENSE). Not covered by it: the vendored fonts unde
 `demos/01-log-triage/fonts/` (IBM Plex and Big Shoulders Display, SIL Open Font
 License 1.1), and the Expanso and TypeSafe marks under
 `demos/01-log-triage/assets/`, which are trademarks of their owners.
+
+## Local ports
+
+`ports.json` declares the local services. `just ports` shows the saved
+assignments. `just down` retains them, so the next `just up` uses the same
+URLs. An occupied assigned port stops startup with an error.
+
+Shutdown verifies saved process identity before signalling the demo or its children. A live PID from a launch predating identity records is left running with an error; stop that earlier launch from its original terminal before restarting. Unknown listeners are never terminated.

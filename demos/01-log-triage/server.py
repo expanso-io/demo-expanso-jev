@@ -44,6 +44,7 @@ Endpoints:
 import collections
 import json
 import os
+from pathlib import Path
 import queue
 import socket
 import subprocess
@@ -379,13 +380,17 @@ _raw_lock = threading.Lock()
 
 
 def _pgrep_gen():
-    """Best-effort: is any generator2.py already running (e.g. from start.sh)?"""
+    """Only recognize the generator recorded by this checkout's launcher."""
+    pidfile = Path(LOG_DIR) / "generator.pid"
+    if not pidfile.exists():
+        return None
     try:
-        out = subprocess.run(["pgrep", "-f", "generator2.py"],
-                             capture_output=True, text=True, timeout=5).stdout
-        pids = [p for p in out.split() if p.strip()]
-        return pids[0] if pids else None
-    except Exception:
+        pid = int(pidfile.read_text().strip())
+        result = subprocess.run(["lsof", "-a", "-p", str(pid), "-d", "cwd", "-Fn"], capture_output=True, text=True)
+        if f"n{Path(__file__).resolve().parent}" not in result.stdout.splitlines():
+            return None
+        return str(pid) if subprocess.run(["kill", "-0", str(pid)], capture_output=True).returncode == 0 else None
+    except (OSError, ValueError):
         return None
 
 
@@ -407,6 +412,9 @@ def generator_start():
         except Exception as e:  # noqa: BLE001 - report, don't crash
             fh.close()
             return {"ok": False, "error": str(e)}
+        pidfile = Path(LOG_DIR) / "generator.pid"
+        pidfile.write_text(str(_gen_proc.pid))
+        subprocess.run(["uv", "run", "--no-project", str(Path(__file__).resolve().parents[2] / "scripts/stop-owned.py"), "record", "--pidfile", str(pidfile), "--root", str(Path(__file__).resolve().parent), "--match", Path(GEN).name], check=True)
         log("generator started pid=%d" % _gen_proc.pid)
         return {"ok": True, "pid": _gen_proc.pid}
 
@@ -427,7 +435,7 @@ def generator_stop():
         pid = _pgrep_gen()
         if pid:
             try:
-                subprocess.run(["kill", pid], timeout=5)
+                subprocess.run(["uv", "run", "--no-project", str(Path(__file__).resolve().parents[2] / "scripts/stop-owned.py"), "stop", "--pidfile", str(Path(LOG_DIR) / "generator.pid"), "--root", str(Path(__file__).resolve().parent), "--match", Path(GEN).name], timeout=10, check=True)
                 stopped.append(int(pid))
             except Exception:  # noqa: BLE001
                 pass
