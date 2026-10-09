@@ -85,6 +85,8 @@ launch() { # name, command...
   "$@" >"$LOGS/$name.log" 2>&1 &
   local pid=$!
   echo "$pid" >> "$LOGS/pids"
+  echo "$pid" > "$LOGS/$name.pid"
+  uv run --no-project "$PKG/../../scripts/stop-owned.py" record --pidfile "$LOGS/$name.pid" --root "$PKG" --match "${1##*/}"
   echo "  $name  pid $pid  (log: logs/$name.log)"
 }
 
@@ -235,6 +237,8 @@ echo "[3/4] dashboard server (:$JEV_LIVE_PORT)"
 ( [ -n "$JEV_KEY_PRIVATE" ] && export TYPESAFE_API_KEY="$JEV_KEY_PRIVATE"; exec python3 server.py ) >"$LOGS/server.log" 2>&1 &
 spid=$!
 echo "$spid" >> "$LOGS/pids"
+echo "$spid" > "$LOGS/server.pid"
+uv run --no-project "$PKG/../../scripts/stop-owned.py" record --pidfile "$LOGS/server.pid" --root "$PKG" --match "server.py"
 echo "  server  pid $spid  (log: logs/server.log)"
 unset JEV_KEY_PRIVATE
 sleep 1

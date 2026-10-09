@@ -428,6 +428,7 @@ class Session:
 
 
 def main():
+    os.chdir(ROOT)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     with (STATE_DIR / "local.lock").open("a+") as lock:
         try:
@@ -438,15 +439,7 @@ def main():
                     "Pod demo already running; use just down first"
                 ) from None
             lock.seek(0)
-            pid = int(lock.read())
-            command = subprocess.check_output(
-                ["ps", "-p", str(pid), "-o", "command="], text=True
-            )
-            if str(Path(__file__).resolve()) not in command:
-                raise RuntimeError(
-                    "Launcher identity mismatch; refusing to signal process"
-                )
-            os.kill(pid, signal.SIGTERM)
+            subprocess.run(["uv", "run", "--no-project", str(ROOT / "scripts/stop-owned.py"), "stop", "--pidfile", str(STATE_DIR / "launcher.pid"), "--root", str(ROOT), "--match", "scenario/local.py"], check=True)
             print("Stop requested; the up terminal will report cleanup.")
             return
         if sys.argv[1:] == ["down"]:
@@ -458,6 +451,8 @@ def main():
         lock.truncate()
         lock.write(str(os.getpid()))
         lock.flush()
+        (STATE_DIR / "launcher.pid").write_text(str(os.getpid()))
+        subprocess.run(["uv", "run", "--no-project", str(ROOT / "scripts/stop-owned.py"), "record", "--pidfile", str(STATE_DIR / "launcher.pid"), "--root", str(ROOT), "--match", "scenario/local.py"], check=True)
 
         def stop(signum, frame):
             raise KeyboardInterrupt

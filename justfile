@@ -346,3 +346,6 @@ ports:
 [private]
 _ports-check:
     @uv run --no-project scripts/demo-ports.py resolve --demo-dir . --service POD_LABEL_PORT --service POD_EDGE_API_PORT >/dev/null
+
+ownership-check:
+    uv run --no-project scripts/test_stop_owned.py
