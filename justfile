@@ -2,6 +2,7 @@
 
 # Resolve once; down retains the persistent allocation.
 ports_json := shell("uv run --no-project scripts/demo-ports.py resolve --demo-dir . --allow-bound")
+export BROWSER_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .BROWSER_PORT")
 export POD_LABEL_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .POD_LABEL_PORT")
 export POD_EDGE_API_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .POD_EDGE_API_PORT")
 export JEV_LIVE_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .JEV_LIVE_PORT")
@@ -144,11 +145,11 @@ down-triage:
 restart: down up
 
 # Serve the step-through page for all eleven examples on 127.0.0.1; Ctrl-C stops it.
-explorer port="8777":
+explorer port=BROWSER_PORT:
     python3 "{{ root }}/tools/serve.py" static {{ port }}
 
 # Stop an explorer server left running on that port.
-explorer-down port="8777":
+explorer-down port=BROWSER_PORT:
     python3 "{{ root }}/tools/serve.py" stop {{ port }}
 
 # Zero-credential stand-in for Jev's API on 127.0.0.1:8099; Ctrl-C stops it.
@@ -344,4 +345,4 @@ ports:
 
 [private]
 _ports-check:
-    @uv run --no-project scripts/demo-ports.py resolve --demo-dir . >/dev/null
+    @uv run --no-project scripts/demo-ports.py resolve --demo-dir . --service POD_LABEL_PORT --service POD_EDGE_API_PORT >/dev/null
