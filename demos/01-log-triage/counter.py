@@ -12,6 +12,7 @@ Endpoints:
   POST /record {"fingerprint": "...", "decision": "page"|...} -> {"ok": true}
 """
 import json
+import os
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -68,5 +69,5 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    HTTPServer(("127.0.0.1", 8898), Handler).serve_forever()
+    HTTPServer(("127.0.0.1", int(os.environ.get("COUNTER_PORT", "8898"))), Handler).serve_forever()
     print("recurrence tracker on 127.0.0.1:8898", flush=True)

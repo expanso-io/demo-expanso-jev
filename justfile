@@ -1,4 +1,15 @@
 # demo-expanso-jev — one entry point for the whole live demo.
+
+# Resolve once; down retains the persistent allocation.
+ports_json := shell("uv run --no-project scripts/demo-ports.py resolve --demo-dir . --allow-bound")
+export POD_LABEL_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .POD_LABEL_PORT")
+export POD_EDGE_API_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .POD_EDGE_API_PORT")
+export JEV_LIVE_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .JEV_LIVE_PORT")
+export JEV_GATE_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .JEV_GATE_PORT")
+export COUNTER_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .COUNTER_PORT")
+export INGEST_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .INGEST_PORT")
+export MOCK_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .MOCK_PORT")
+export TRIAGE_EDGE_API_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .TRIAGE_EDGE_API_PORT")
 #
 #   cp .env.example .env    # then set JEV_API_URL
 #   just doctor             # verify the machine can run it
@@ -18,8 +29,7 @@ live := root / "demos" / demo
 # fixed convention, not a setting -- only the recipes below need to know it.
 data := live / "data"
 
-export JEV_LIVE_PORT := env_var_or_default("JEV_LIVE_PORT", "8890")
-export JEV_LIVE_PIPELINE := env_var_or_default("JEV_LIVE_PIPELINE", "http://[::1]:8080/logs")
+export JEV_LIVE_PIPELINE := "http://127.0.0.1:" + INGEST_PORT + "/logs"
 export NODE_ID := env_var_or_default("NODE_ID", "laptop")
 
 _default:
@@ -99,7 +109,7 @@ doctor:
     if lsof -ti :"$JEV_LIVE_PORT" >/dev/null 2>&1; then
       echo "  WARN  port $JEV_LIVE_PORT already in use"
     fi
-    for p in 8080 8898; do
+    for p in {{INGEST_PORT}} {{COUNTER_PORT}}; do
       if lsof -ti :$p >/dev/null 2>&1; then
         echo "  WARN  port $p already in use (stale 'just up'? run 'just down')"
       fi
@@ -117,7 +127,7 @@ validate:
     done
 
 # Start the pod demo and deploy or update its Expanso Cloud pipeline.
-up:
+up: _ports-check
     bash scripts/up.sh
 
 # Start the original log-triage demo.
@@ -147,7 +157,7 @@ jev-mock:
 
 # Open the selected demo's local browser UI.
 open target="pods":
-    @case "{{ target }}" in pods) open http://127.0.0.1:8901 ;; triage) just --justfile "{{ root }}/justfile" _triage-open ;; *) echo "Choose pods or triage" >&2; exit 2 ;; esac
+    @case "{{ target }}" in pods) open http://127.0.0.1:{{POD_LABEL_PORT}} ;; triage) just --justfile "{{ root }}/justfile" _triage-open ;; *) echo "Choose pods or triage" >&2; exit 2 ;; esac
 
 # Show the selected demo's status.
 status target="pods":
@@ -296,7 +306,7 @@ pod-labels-edge:
       expanso-edge bootstrap --data-dir "$edge_data"
     fi
     exec expanso-edge run --data-dir "$edge_data" \
-      --api-listen 127.0.0.1:9016 \
+      --api-listen 127.0.0.1:{{POD_EDGE_API_PORT}} \
       --config "{{ root }}/demos/11-pod-labels/edge.yaml"
 
 # Inspect only the pinned Cloud network, never the global CLI profile.
@@ -328,3 +338,10 @@ pod-labels-stop:
     : "${EXPANSO_CLI_ENDPOINT:?Set the Cloud endpoint}"
     : "${EXPANSO_CLI_AUTH_API_KEY:?Set the Cloud API key}"
     expanso-cli job stop jev-pod-labels --namespace demo --force
+
+ports:
+    @printf '%s\n' '{{ports_json}}'
+
+[private]
+_ports-check:
+    @uv run --no-project scripts/demo-ports.py resolve --demo-dir . >/dev/null

@@ -33,7 +33,7 @@ import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
-URL = "http://[::1]:8080/logs"
+URL = os.environ.get("JEV_LIVE_PIPELINE", "http://127.0.0.1:8080/logs")
 
 # The dashboard draws the SOURCE side of the picture from these beacons, not
 # from pipeline output -- because in act one there is no pipeline, and the

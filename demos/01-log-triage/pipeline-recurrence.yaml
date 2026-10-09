@@ -93,7 +93,7 @@ config:
                   root = {"fingerprint": this.fingerprint}
                 processors:
                   - http:
-                      url: http://127.0.0.1:8898/track
+                      url: http://127.0.0.1:${COUNTER_PORT:8898}/track
                       verb: POST
                       headers:
                         Content-Type: application/json
@@ -342,7 +342,7 @@ config:
                   root = {"fingerprint": this.fingerprint, "decision": this.jev_decision}
                 processors:
                   - http:
-                      url: http://127.0.0.1:8898/record
+                      url: http://127.0.0.1:${COUNTER_PORT:8898}/record
                       verb: POST
                       headers:
                         Content-Type: application/json
