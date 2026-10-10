@@ -86,7 +86,7 @@ launch() { # name, command...
   local pid=$!
   echo "$pid" >> "$LOGS/pids"
   echo "$pid" > "$LOGS/$name.pid"
-  uv run --no-project "$PKG/../../scripts/stop-owned.py" record --pidfile "$LOGS/$name.pid" --root "$PKG" --match "${1##*/}"
+  uv run --no-project "$PKG/../../scripts/stop-owned.py" record --pidfile "$LOGS/$name.pid" --root "$PKG" --match "$name"
   echo "  $name  pid $pid  (log: logs/$name.log)"
 }
 
