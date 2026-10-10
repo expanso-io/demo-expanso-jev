@@ -21,6 +21,9 @@ name: log-triage
 type: pipeline
 description: Recurrence-aware log triage -- Expanso assembles temporal context, Jev judges it.
 namespace: demo
+selector:
+  match_labels:
+    demo: cribl-log-triage-local
 
 labels:
   category: log-processing

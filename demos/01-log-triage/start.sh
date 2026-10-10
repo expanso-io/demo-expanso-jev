@@ -136,6 +136,12 @@ if [ ! -f "$EDGE_DATA/auth/credentials.creds" ]; then
   fi
 fi
 
+# Only this demo node has the HTTP input, local counter and decision gate.
+# Match the Cloud job to it instead of scheduling the same port on the fleet.
+mkdir -p "$EDGE_DATA/config.d"
+printf 'labels:\n  demo: cribl-log-triage-local\n' \
+  > "$EDGE_DATA/config.d/20-log-triage-label.yaml"
+
 # The agent reaches Jev through the dashboard server's local fault-injection gate,
 # so an outage can be injected with a real failed call. The real endpoint goes
 # to the server as JEV_UPSTREAM_URL; the agent only ever sees the gate.
@@ -249,7 +255,7 @@ launch generator python3 "$JEV_LIVE_GEN"
 echo ""
 echo "== live =="
 echo "  dashboard : http://127.0.0.1:$JEV_LIVE_PORT"
-echo "  Edge input: http://127.0.0.1:8080/logs  (live once a pipeline is switched on)"
+echo "  Edge input: ${JEV_LIVE_PIPELINE:-http://127.0.0.1:8080/logs}  (live once a pipeline is switched on)"
 echo "  pids      : $(tr '\n' ' ' < "$LOGS/pids")"
 echo "  stop      : ./stop.sh"
 STARTED_OK=1
