@@ -205,11 +205,14 @@ def candidate_logprobs(prompt_ids, candidates):
         pad = max_c - len(c)
         batch.append(ids + [pad_id] * pad)
         mask.append([1] * len(ids) + [0] * pad)
-    input_ids = torch.tensor(batch, device=_device)
-    attention_mask = torch.tensor(mask, device=_device)
+    # Every MPS op -- tensor creation, forward pass, softmax -- must stay
+    # inside the lock: concurrent requests share one Metal device, and any
+    # MPS work outside the lock crashes (command-buffer assertions).
     with _infer_lock, torch.inference_mode():
+        input_ids = torch.tensor(batch, device=_device)
+        attention_mask = torch.tensor(mask, device=_device)
         logits = _model(input_ids=input_ids, attention_mask=attention_mask).logits
-    logprobs = torch.log_softmax(logits.float(), dim=-1)
+        logprobs = torch.log_softmax(logits.float(), dim=-1).cpu()
     out = []
     for b, c in enumerate(cand_ids):
         lp = 0.0
