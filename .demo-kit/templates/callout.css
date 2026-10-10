@@ -1,0 +1,58 @@
+/* Callout, status pills, and SVG data flow lanes.
+   Follows kit-guidance rules 4, 5, and 6. */
+
+.callout {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pill {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pill[data-state="on"]   { border-color: var(--ok);    color: var(--ok); }
+.pill[data-state="warn"] { border-color: var(--warn);  color: var(--warn); }
+.pill[data-state="off"]  { border-color: var(--err);   color: var(--err); }
+.pill[data-state="kept"] { border-color: var(--kept);  color: var(--kept); }
+
+/* Lanes carry what they are: derived 2px, originals 3px, control dashed 1px.
+   A cut link dims within 300ms while remaining visible. */
+.lane {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2px;
+  transition: opacity 300ms ease;
+}
+
+.lane--originals {
+  stroke-width: 3px;
+}
+
+.lane--control {
+  stroke-width: 1px;
+  stroke-dasharray: 4 4;
+}
+
+.lane.is-cut,
+.lane--cut,
+.lane[data-state="cut"] {
+  opacity: 0.35;
+}

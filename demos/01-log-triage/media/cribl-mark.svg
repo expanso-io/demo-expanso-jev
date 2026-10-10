@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" aria-label="Cribl brand mark">
+  <rect width="48" height="48" rx="8" fill="#0F172A"/>
+  <!-- Cribl geometric goat logo silhouette -->
+  <path d="M14 14L20 8L22 14L16 18Z" fill="#00A389"/>
+  <path d="M34 14L28 8L26 14L32 18Z" fill="#00D2B4"/>
+  <path d="M16 18L24 13L32 18L24 23Z" fill="#13B59D"/>
+  <path d="M16 18L24 23V35L16 28V18Z" fill="#00A389"/>
+  <path d="M32 18L24 23V35L32 28V18Z" fill="#00D2B4"/>
+  <path d="M20 32L24 39L28 32L24 35Z" fill="#FFFFFF"/>
+</svg>

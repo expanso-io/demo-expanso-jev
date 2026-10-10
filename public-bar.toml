@@ -154,6 +154,14 @@ expected_schema = "demos/11-pod-labels/fixtures/main.replay.schema.json"
 expected_count = 6
 timeout_seconds = 60
 
+[[pipelines]]
+id = "12-ade-schedule"
+path = "demos/12-ade-schedule/pipeline.yaml"
+input = "demos/12-ade-schedule/input.jsonl"
+expected_schema = "demos/12-ade-schedule/fixtures/main.replay.schema.json"
+expected_count = 29
+timeout_seconds = 60
+
 [[stages]]
 id = "01-log-triage-logging.input"
 pipeline = "01-log-triage-logging"

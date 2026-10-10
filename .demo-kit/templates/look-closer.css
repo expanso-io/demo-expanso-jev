@@ -1,0 +1,179 @@
+/* Look-closer inspection panel.
+   Follows decisions.md section 3. */
+
+.look-closer-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.look-closer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bandwidth-badge {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  border: 1px solid var(--ok);
+  color: var(--ok);
+  background: transparent;
+  white-space: nowrap;
+}
+
+.look-closer-body {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Wide frame occupies left 58% of stage */
+.wide-frame-col {
+  flex: 0 0 58%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wide-frame-viewport {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  width: 100%;
+  background-color: var(--kept);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.wide-frame-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.roi-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.roi-box {
+  stroke: var(--warn);
+  stroke-width: 2px;
+  fill: none;
+  transition: stroke-dashoffset 200ms ease;
+}
+
+.roi-pill {
+  font-family: var(--mono);
+  font-size: 13px;
+  fill: var(--text);
+}
+
+.frame-caption {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--kept);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Crop cards occupy right 42% */
+.crop-cards-col {
+  flex: 0 0 42%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.crop-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  animation: cropAppear 200ms ease forwards;
+}
+
+.crop-card:nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.crop-card:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+.crop-card-header {
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 2px 8px;
+  border: 1px solid var(--ok);
+  border-radius: 4px;
+  color: var(--ok);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.crop-viewport {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.crop-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.crop-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ok);
+}
+
+.crop-exit-lane {
+  position: absolute;
+  right: -16px;
+  top: 50%;
+  width: 16px;
+  height: 1px;
+  border-top: 1px solid var(--ok);
+}
+
+@keyframes cropAppear {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
