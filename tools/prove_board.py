@@ -94,7 +94,7 @@ try:
 
             # Check masthead brand
             brand_text = page.locator("#brandTitle").inner_text()
-            assert "EXPANSO" in brand_text.upper() and "CRIBL" in brand_text.upper(), f"Unexpected brand: {brand_text}"
+            assert "EXPANSO" in brand_text.upper() and "CRIBL" not in brand_text.upper(), f"Unexpected brand: {brand_text}"
 
             # Check model name
             model_name = page.locator("#modelName").inner_text()

@@ -1,4 +1,4 @@
-# Recording script — Expanso × Cribl log triage
+# Recording script — Expanso log triage with Cribl decision model
 
 **This is the script for the take.** David's walkthrough, edited: eight beats,
 in the order the board tells the story. `RUNBOOK.md` has the clicks; this has
@@ -8,7 +8,7 @@ Backend: Cribl's open-weight `cribl-decision-1.0` (4B LoRA on Qwen3.5-4B-Base se
 locally on `:8100` via `shared/cribl-decision-server.py`, compatible with the
 `/v1/systemone` API). No metered cloud API, no external leak.
 
-**Branding:** Expanso on the edge, Cribl `cribl-decision-1.0` on the decision node.
+**Branding:** Expanso in masthead and on the edge; decision node named factually in text: Cribl cribl-decision-1.0 (local 4B · Apache-2.0). No co-branding or partnership claim.
 
 ## Three things changed from the raw draft, and why
 

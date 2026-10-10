@@ -41,7 +41,7 @@ All automated mechanical checks, UI linting, media licensing, headless browser l
 - Command: `uv run --with playwright python tools/prove_board.py`
 - Headless Chromium browser automation via Playwright.
 - Viewports tested:
-  - **1440x900**: Verified `scrollWidth <= innerWidth` (zero horizontal overflow), masthead brand layout (`LOG TRIAGE PIPELINE` eyebrow over `EXPANSO × CRIBL`), model node branding (`CRIBL (LOCAL 4B)`), and region callouts.
+  - **1440x900**: Verified `scrollWidth <= innerWidth` (zero horizontal overflow), masthead brand layout (`LOG TRIAGE PIPELINE` eyebrow over `EXPANSO`), model node branding (`Cribl cribl-decision-1.0`), and region callouts.
   - **1920x1080**: Verified `scrollWidth <= innerWidth`, stage layout geometry, and evidence strip rendering.
 - Screenshots committed:
   - `docs/proof/1440x900-triage-board.png`
@@ -56,13 +56,13 @@ All automated mechanical checks, UI linting, media licensing, headless browser l
 
 ---
 
-## Cloud Rehearsal & Model Boundary
+## Cloud Execution Proof & Model Boundary
 
-1. **Expanso Cloud Connectivity**:
-   - The permanent repository checkout (`/Users/daaronch/code/second-brain/projects/demos/demo-expanso-jev`) possesses verified project-local credentials in its `.env` (`EXPANSO_CLI_ENDPOINT`, `EXPANSO_CLI_AUTH_API_KEY`, `EXPANSO_EDGE_BOOTSTRAP_TOKEN`).
-   - Verified reachable via `just doctor` in the permanent folder.
-   - Worktree isolation preserved: `.env` and `.cloud-state` are never copied into this disposable worktree, and no secrets appear in flags or command arguments.
+1. **Cloud Execution Status**:
+   - This demo currently runs **local-only with on-machine inference; no live Cloud execution proof is claimed in this worktree**.
+   - Running `just doctor` in the permanent folder confirms prerequisites but is not a Cloud rehearsal.
+   - Any live Cloud rehearsal with real downstream receipts must be conducted strictly from the permanent repository folder (`/Users/daaronch/code/second-brain/projects/demos/demo-expanso-jev`) where project-local credentials reside, after this PR lands.
 
 2. **Model Boundary & Inference**:
-   - The primary decision backend for this demo is Cribl's open-weight `cribl-decision-1.0` (4B LoRA adapter on Qwen3.5-4B-Base) served on-machine via `shared/cribl-decision-server.py` on `:8100`.
+   - The primary decision backend for this demo is Cribl's open-weight `cribl-decision-1.0` (4B LoRA adapter on Qwen3.5-4B-Base, Apache-2.0) served on-machine via `shared/cribl-decision-server.py` on `:8100`.
    - Conforms strictly to the zero-metered-API policy: all model calls are served locally on-machine with zero external cloud API metering or external data transmission.

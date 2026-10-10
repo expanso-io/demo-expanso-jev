@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="fonts/fonts.css">
-<title>Expanso × Cribl — log triage</title>
+<title>Expanso — log triage</title>
 <style>
 /* Light on purpose: watched on video next to the Expanso Cloud console, and
    dark ink squares on paper stay crisp at capture size. Colour means "a
@@ -275,7 +275,7 @@ body:not(.inspect) .detail{display:none}
   <header class="top" data-region="masthead">
     <div class="brand-group">
       <div class="callout"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#bolt"/></svg>LOG TRIAGE PIPELINE</div>
-      <div class="brand" id="brandTitle">Expanso<i>×</i>Cribl</div>
+      <div class="brand" id="brandTitle">Expanso</div>
     </div>
     <div class="status-pills">
       <span class="pill" id="cloudPill" data-state="on"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#cloud"/></svg>EXPANSO CLOUD</span>
@@ -300,9 +300,8 @@ body:not(.inspect) .detail{display:none}
     <div class="node jevnode gone" id="jevNode">
       <div class="callout"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#scan"/></svg><span id="modelCallout">DECISION MODEL · CRIBL-DECISION-1.0</span></div>
       <h2>
-        <img class="mark" id="modelMark" src="media/cribl-mark.svg" alt="Decision model">
         <span id="modelName">Cribl</span>
-        <span class="by" id="modelBy">cribl-decision-1.0 (local 4B)</span>
+        <span class="by" id="modelBy">cribl-decision-1.0 (local 4B · Apache-2.0)</span>
         <button class="sw" id="jevSw" role="switch" aria-checked="false" aria-label="Route through decision model"></button>
       </h2>
       <div class="steps qs" aria-label="What the model is asked about each record">
@@ -604,24 +603,16 @@ function render(){
 
   // Dynamic decision model branding
   const mName = String(S.model || '');
+  $('#brandTitle').textContent = 'Expanso';
   if (/cribl/i.test(mName) || (!mName && !S.mock)) {
-    $('#brandTitle').innerHTML = 'Expanso<i>×</i>Cribl';
-    $('#modelMark').src = 'media/cribl-mark.svg';
-    $('#modelMark').alt = 'Cribl';
     $('#modelName').textContent = 'Cribl';
-    $('#modelBy').textContent = 'cribl-decision-1.0 (local 4B)';
+    $('#modelBy').textContent = 'cribl-decision-1.0 (local 4B · Apache-2.0)';
     $('#modelCallout').textContent = 'DECISION MODEL · CRIBL-DECISION-1.0';
   } else if (S.mock) {
-    $('#brandTitle').innerHTML = 'Expanso<i>×</i>Cribl';
-    $('#modelMark').src = 'media/cribl-mark.svg';
-    $('#modelMark').alt = 'Cribl (mock)';
-    $('#modelName').textContent = 'Cribl (mock)';
-    $('#modelBy').textContent = 'offline decision heuristics';
-    $('#modelCallout').textContent = 'DECISION MODEL · LOCAL MOCK';
+    $('#modelName').textContent = 'Cribl';
+    $('#modelBy').textContent = 'cribl-decision-1.0 (offline replay · Apache-2.0)';
+    $('#modelCallout').textContent = 'DECISION MODEL · CRIBL-DECISION-1.0 (REPLAY)';
   } else if (/jev|typesafe/i.test(mName)) {
-    $('#brandTitle').innerHTML = 'Expanso<i>×</i>Jev';
-    $('#modelMark').src = 'assets/typesafe-mark.png';
-    $('#modelMark').alt = 'TypeSafe';
     $('#modelName').textContent = 'Jev';
     $('#modelBy').textContent = 'by TypeSafe';
     $('#modelCallout').textContent = 'DECISION MODEL · JEV';

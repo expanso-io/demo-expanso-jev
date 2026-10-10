@@ -5,7 +5,7 @@ record_check_evidence: "2026-10-10: just record-check passed (pipeline validate,
 accepted_warnings: []
 ---
 
-# Recording preflight — Expanso × Cribl Log Triage
+# Recording preflight — Expanso Log Triage with Cribl Decision Model
 
 ## Claim
 
@@ -17,7 +17,7 @@ Platform, security, and observability engineers who believe deploying machine le
 
 ## Capture surface
 
-Local presenter browser at http://127.0.0.1:8890 (or http://127.0.0.1:54165 for replay proof) displaying the Expanso × Cribl triage board in 16:9 at 1440x900 and 1920x1080. Light mode by default with dark mode toggle available. No browser chrome in frame.
+Local presenter browser at http://127.0.0.1:8890 (or http://127.0.0.1:54165 for replay proof) displaying the Expanso log triage board in 16:9 at 1440x900 and 1920x1080. Light mode by default with dark mode toggle available. No browser chrome in frame.
 
 ## Opening state
 
@@ -39,7 +39,7 @@ Three distinct acts:
 ## Truth boundary
 
 - Telemetry source: Synthetic application and auth server cluster generating 14 standard log patterns.
-- Pipeline execution: Real Expanso Edge node running locally, connected to Expanso Cloud control plane.
+- Pipeline execution: Real Expanso Edge node running locally. (Note: this demo runs local-only with on-machine inference; no live Cloud execution proof is claimed in this worktree).
 - Decision model: Cribl `cribl-decision-1.0` (4B LoRA adapter on Qwen3.5-4B-Base) running on local machine via `shared/cribl-decision-server.py` on `:8100`, or local zero-credential mock server for offline verification. No external cloud inference calls.
 - Destinations: Local JSONL sinks under `demos/01-log-triage/data/`.
 
@@ -47,7 +47,7 @@ Three distinct acts:
 
 1. Automated public-bar static lane acceptance across all 12 demo examples (`artifacts/public-bar.md`).
 2. Mechanical preflight validation via `lint-demo-ui.py --video` reporting zero errors and zero warnings.
-3. Isolated headless Playwright verification screenshots committed under `docs/proof/1440x900-triage-board.png` and `docs/proof/1920x1080-triage-board.png` confirming zero horizontal overflow, visible region callouts, and correct Expanso × Cribl branding.
+3. Isolated headless Playwright verification screenshots committed under `docs/proof/1440x900-triage-board.png` and `docs/proof/1920x1080-triage-board.png` confirming zero horizontal overflow, visible region callouts, and clean Expanso masthead branding with factual Cribl model attribution.
 
 ## Decision
 

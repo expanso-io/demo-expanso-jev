@@ -5,7 +5,7 @@ Every shipped pipeline was deployed unmodified to a local `expanso-edge run --lo
 - Date: 2026-10-09
 - Agent: v2.1.22
 - Command: `uv run -s tools/fixture-runner.py run`
-- Result: **22 of 22 cases passed** across 12 pipelines
+- Result: **23 of 23 cases passed** across 13 pipelines
 
 | Case | Pipeline | Inputs | Jev calls | Queues written | File-in replay | Seconds | Result |
 |---|---|---|---|---|---|---|---|
@@ -31,6 +31,7 @@ Every shipped pipeline was deployed unmodified to a local `expanso-edge run --lo
 | 10-feedback-miner:main | `demos/10-feedback-miner/pipeline.yaml` | 5 | 5 | alert 1, analytics 3, eng 1 | 5 records | 4.9 | pass |
 | 10-feedback-miner:jev_down | `demos/10-feedback-miner/pipeline.yaml` | 5 | 10 | analytics 5 | not run | 7.1 | pass |
 | 11-pod-labels | `demos/11-pod-labels/pipeline.yaml` | 6 | 6 | events 33, labels 7, receipts 6 | 6 records | 55.9 | pass |
+| 12-ade-schedule | `demos/12-ade-schedule/pipeline.yaml` | 29 | 0 | must-see 4, pass 2, worth-it 23 | 29 records | 5.0 | pass |
 
 ## Files exercised
 
@@ -80,3 +81,6 @@ Every shipped pipeline was deployed unmodified to a local `expanso-edge run --lo
 | `demos/10-feedback-miner/input.jsonl` | `b39f04f7d5a5dfb46637f1a164db33b8364548f5f7a8749bd2f2c7f149013e46` |
 | `demos/11-pod-labels/pipeline.yaml` | `d4e868c61ef010e2bb2557e3088aff04c0b9dcf9669327698210e01db3a490a1` |
 | `demos/11-pod-labels/fixtures/events.jsonl` | `7b2d802aa55916d928ee2e587487a36d423d4e6084c39b82c9ee01423d64714a` |
+| `demos/12-ade-schedule/pipeline.yaml` | `44d1faff8d357b6caf3fdc606ec5126932c0e0608c3509e48afb466e3f280fff` |
+| `demos/12-ade-schedule/input.jsonl` | `eaff893c15fa35c393f42bca46c369379c810ccd0a6a30cb854aa1fed17a2e49` |
+

@@ -180,8 +180,13 @@ lint-ui:
 public-bar lane="static":
     NODE_ID=edge-1 uv run -s .demo-kit/public-bar.py --repo . --manifest public-bar.toml --report artifacts/public-bar.md --lane {{lane}}
 
+# Check that generated files and fixture runner verification match.
+fixtures-check:
+    uv run -s tools/build-explorers.py --check
+    uv run -s tools/fixture-runner.py check
+
 # Run all mechanical validation gates.
-check: validate test ui-test lint-ui
+check: validate test ui-test lint-ui fixtures-check
     just public-bar static
 
 # Verify headless browser proof and commit-ready screenshots.
