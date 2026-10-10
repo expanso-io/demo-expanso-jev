@@ -1,4 +1,4 @@
-# Recording script — Expanso log triage with Cribl decision model
+# Recording script — Log triage with Expanso Edge and a local Cribl decision model
 
 **This is the script for the take.** David's walkthrough, edited: eight beats,
 in the order the board tells the story. `RUNBOOK.md` has the clicks; this has
