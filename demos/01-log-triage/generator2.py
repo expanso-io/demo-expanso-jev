@@ -291,10 +291,13 @@ def traffic():
 
 
 def worker(wid):
-    """Flat fallback: the original one-post-per-second-per-thread behaviour."""
-    while True:
+    """Spread six workers evenly across the configured source rate."""
+    interval = max(1.0, 6.0 / RATE)
+    if STOP.wait(wid * interval / 6):
+        return
+    while not STOP.is_set():
         post_many([make_event()])
-        time.sleep(1.0)
+        STOP.wait(interval)
 
 
 def scenario():

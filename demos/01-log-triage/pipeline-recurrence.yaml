@@ -193,6 +193,7 @@ config:
                   - http:
                       url: ${JEV_API_URL:http://127.0.0.1:8099/v1/systemone}
                       verb: POST
+                      timeout: 20s
                       headers:
                         Content-Type: application/json
                   - catch:
