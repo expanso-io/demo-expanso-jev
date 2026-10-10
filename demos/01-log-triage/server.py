@@ -100,7 +100,7 @@ GATE_FAULTS = {
 
 STATIC_TYPES = {"css": "text/css", "woff2": "font/woff2", "woff": "font/woff",
                 "svg": "image/svg+xml", "png": "image/png"}
-STATIC_DIRS = ("fonts", "assets")   # nothing else in this package is servable
+STATIC_DIRS = ("fonts", "assets", "media")   # nothing else in this package is servable
 
 # The "Pipeline YAML" tab. A closed allowlist: the request supplies a KEY, never
 # a path, and the key is looked up here. Nothing from the URL is ever joined

@@ -167,6 +167,42 @@ status target="pods":
 # Verify the pod demo without starting services.
 test: pod-labels-test
 
+# Dashboard server unit and safety tests.
+ui-test:
+    uv run "{{ root }}/demos/01-log-triage/tests/ui_server_tests.py"
+    uv run "{{ root }}/demos/01-log-triage/tests/log_safety_test.py"
+
+# Lint the UI and media assets for presentation readiness.
+lint-ui:
+    uv run -s .demo-kit/lint-demo-ui.py demos/01-log-triage --video
+
+# Run the shared public-bar check: all five criteria or selected lane.
+public-bar lane="static":
+    NODE_ID=edge-1 uv run -s .demo-kit/public-bar.py --repo . --manifest public-bar.toml --report artifacts/public-bar.md --lane {{lane}}
+
+# Check that generated files and fixture runner verification match.
+fixtures-check:
+    uv run -s tools/build-explorers.py --check
+    uv run -s tools/fixture-runner.py check
+
+# Run all mechanical validation gates.
+check: validate test ui-test lint-ui fixtures-check
+    just public-bar static
+
+# Verify headless browser proof and commit-ready screenshots.
+record-check: check
+    uv run --with playwright python "{{ root }}/tools/prove_board.py"
+    @echo ""
+    @echo "RECORD CHECKLIST"
+    @echo "  [x] All mechanical checks and tests passed"
+    @echo "  [x] Headless browser proof verified at 1440x900 and 1920x1080"
+    @echo "  [x] Screenshots generated under docs/proof/"
+    @echo "  [ ] RECORDING_PREFLIGHT.md declarations reviewed"
+
+# Human story and recording readiness declaration.
+recording-preflight: record-check
+    @uv run -s .demo-kit/recording-preflight.py .
+
 # Bring up the full stack: counter, Edge agent + pipeline, dashboard, generator.
 _triage-up: doctor validate
     bash "{{ live }}/start.sh"

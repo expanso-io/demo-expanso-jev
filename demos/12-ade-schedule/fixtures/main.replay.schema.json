@@ -1,0 +1,3074 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "minItems": 29,
+  "maxItems": 29,
+  "allOf": [
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-21"
+          },
+          "day": {
+            "const": "Wednesday"
+          },
+          "duration_hours": {
+            "const": 6
+          },
+          "end": {
+            "const": "23:00"
+          },
+          "end_day_offset": {
+            "const": 0
+          },
+          "end_unix": {
+            "const": 1792616400
+          },
+          "genres": {
+            "const": [
+              "house",
+              "disco"
+            ]
+          },
+          "id": {
+            "const": "2026-10-21-chris-stassy-b2b-job-jobse"
+          },
+          "lineup": {
+            "const": [
+              "Chris Stassy",
+              "Job Jobse"
+            ]
+          },
+          "lineup_count": {
+            "const": 2
+          },
+          "match_reasons": {
+            "const": [
+              "genres: house",
+              "marathon (6h)"
+            ]
+          },
+          "match_score": {
+            "const": 45
+          },
+          "source_url": {
+            "const": "https://www.capitaldance.com/features/the-ade-events-you-need-to-know-about-on-their-30th-anniversary/"
+          },
+          "start": {
+            "const": "17:00"
+          },
+          "start_hour": {
+            "const": 17
+          },
+          "start_unix": {
+            "const": 1792594800
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "afternoon"
+          },
+          "title": {
+            "const": "Chris Stassy b2b Job Jobse"
+          },
+          "venue": {
+            "const": "Bajes"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "'s Gravesandestraat 55, 1092 AA Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-22"
+          },
+          "day": {
+            "const": "Thursday"
+          },
+          "duration_hours": {
+            "const": 6
+          },
+          "end": {
+            "const": "04:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792720800
+          },
+          "genres": {
+            "const": [
+              "melodic",
+              "techno"
+            ]
+          },
+          "id": {
+            "const": "2026-10-22-all-night-long-records-ade-label-night"
+          },
+          "lineup": {
+            "const": [
+              "NTO",
+              "Acid Arab",
+              "Mandragora"
+            ]
+          },
+          "lineup_count": {
+            "const": 3
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno",
+              "evening slot",
+              "marathon (6h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://www.europesays.com/netherlands/52163/"
+          },
+          "start": {
+            "const": "22:00"
+          },
+          "start_hour": {
+            "const": 22
+          },
+          "start_unix": {
+            "const": 1792699200
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "All Night Long Records ADE Label Night"
+          },
+          "venue": {
+            "const": "Hotel Arena"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Doctor Jan van Breemenstraat 1, 1056 AB Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-21"
+          },
+          "day": {
+            "const": "Wednesday"
+          },
+          "duration_hours": {
+            "const": 9
+          },
+          "end": {
+            "const": "08:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792648800
+          },
+          "genres": {
+            "const": [
+              "techno"
+            ]
+          },
+          "id": {
+            "const": "2026-10-21-laster-presents-klockworks-20-years"
+          },
+          "lineup": {
+            "const": [
+              "Ben Klock",
+              "DVS1",
+              "Roll Dann",
+              "Setaoc Mass",
+              "The Lady Machine",
+              "Laia"
+            ]
+          },
+          "lineup_count": {
+            "const": 6
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno",
+              "artists: Ben Klock, DVS1",
+              "evening slot",
+              "marathon (9h)"
+            ]
+          },
+          "match_score": {
+            "const": 85
+          },
+          "source_url": {
+            "const": "https://www.europesays.com/netherlands/52163/"
+          },
+          "start": {
+            "const": "23:00"
+          },
+          "start_hour": {
+            "const": 23
+          },
+          "start_unix": {
+            "const": 1792616400
+          },
+          "tier": {
+            "const": "must-see"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "LASTER presents KLOCKWORKS 20 YEARS"
+          },
+          "venue": {
+            "const": "TILLATEC"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Klonneplein 4, Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-22"
+          },
+          "day": {
+            "const": "Thursday"
+          },
+          "duration_hours": {
+            "const": 8
+          },
+          "end": {
+            "const": "06:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792728000
+          },
+          "genres": {
+            "const": [
+              "house",
+              "disco"
+            ]
+          },
+          "id": {
+            "const": "2026-10-22-dj-kicks-ade"
+          },
+          "lineup": {
+            "const": [
+              "BELLA (NL)",
+              "The Blessed Madonna",
+              "DJ BORING",
+              "D Stone",
+              "Dam Swindle",
+              "Gerd Janson",
+              "Pelanoir",
+              "Sofia Kourtesis"
+            ]
+          },
+          "lineup_count": {
+            "const": 8
+          },
+          "match_reasons": {
+            "const": [
+              "genres: house",
+              "evening slot",
+              "marathon (8h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://www.europesays.com/netherlands/52163/"
+          },
+          "start": {
+            "const": "22:00"
+          },
+          "start_hour": {
+            "const": 22
+          },
+          "start_unix": {
+            "const": 1792699200
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "DJ-Kicks ADE"
+          },
+          "venue": {
+            "const": "WestWeelde"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "PIER 14, Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-21"
+          },
+          "day": {
+            "const": "Wednesday"
+          },
+          "duration_hours": {
+            "const": 5.5
+          },
+          "end": {
+            "const": "03:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792630800
+          },
+          "genres": {
+            "const": [
+              "house",
+              "tech-house"
+            ]
+          },
+          "id": {
+            "const": "2026-10-21-ade-boat-kickoff"
+          },
+          "lineup": {
+            "const": [
+              "Moody Mehran",
+              "ZUKE b2b Thijs Koning",
+              "Ticey"
+            ]
+          },
+          "lineup_count": {
+            "const": 3
+          },
+          "match_reasons": {
+            "const": [
+              "genres: house",
+              "evening slot"
+            ]
+          },
+          "match_score": {
+            "const": 50
+          },
+          "source_url": {
+            "const": "https://www.europesays.com/netherlands/52163/"
+          },
+          "start": {
+            "const": "21:30"
+          },
+          "start_hour": {
+            "const": 21
+          },
+          "start_unix": {
+            "const": 1792611000
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "ADE BOAT KICKOFF"
+          },
+          "venue": {
+            "const": "Pier 14"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Doctor Jan van Breemenstraat 1, 1056 AB Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-22"
+          },
+          "day": {
+            "const": "Thursday"
+          },
+          "duration_hours": {
+            "const": 10
+          },
+          "end": {
+            "const": "09:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792738800
+          },
+          "genres": {
+            "const": [
+              "techno"
+            ]
+          },
+          "id": {
+            "const": "2026-10-22-vault-sessions-ade"
+          },
+          "lineup": {
+            "const": [
+              "Blasha & Allatt",
+              "D.Dan",
+              "DJ Nobu",
+              "Stef Mendesidis",
+              "Sandrien",
+              "Ecilo",
+              "FILTRACK",
+              "Hemka",
+              "Jelena",
+              "Justine Perry b2b Paula Koski",
+              "Lea Occhi",
+              "Pink Concrete"
+            ]
+          },
+          "lineup_count": {
+            "const": 12
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno",
+              "evening slot",
+              "marathon (10h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://www.europesays.com/netherlands/52163/"
+          },
+          "start": {
+            "const": "23:00"
+          },
+          "start_hour": {
+            "const": 23
+          },
+          "start_unix": {
+            "const": 1792702800
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "Vault Sessions ADE"
+          },
+          "venue": {
+            "const": "TILLATEC"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-21"
+          },
+          "day": {
+            "const": "Wednesday"
+          },
+          "duration_hours": {
+            "const": 3
+          },
+          "end": {
+            "const": "23:00"
+          },
+          "end_day_offset": {
+            "const": 0
+          },
+          "end_unix": {
+            "const": 1792616400
+          },
+          "genres": {
+            "const": [
+              "electronic",
+              "ambient"
+            ]
+          },
+          "id": {
+            "const": "2026-10-21-jean-michel-jarre-30th-anniversary-guest-of-honor"
+          },
+          "lineup": {
+            "const": [
+              "Jean-Michel Jarre"
+            ]
+          },
+          "lineup_count": {
+            "const": 1
+          },
+          "match_reasons": {
+            "const": [
+              "evening slot"
+            ]
+          },
+          "match_score": {
+            "const": 10
+          },
+          "source_url": {
+            "const": "https://edm.com/events/ade-reveals-first-artists-30th-anniversary/"
+          },
+          "start": {
+            "const": "20:00"
+          },
+          "start_hour": {
+            "const": 20
+          },
+          "start_unix": {
+            "const": 1792605600
+          },
+          "tier": {
+            "const": "pass"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "Jean-Michel Jarre \u2014 30th anniversary guest of honor"
+          },
+          "venue": {
+            "const": "AFAS Live"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "H.J.E. Wenckebachweg 48, 1096 AN Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-22"
+          },
+          "day": {
+            "const": "Thursday"
+          },
+          "duration_hours": {
+            "const": 7
+          },
+          "end": {
+            "const": "22:00"
+          },
+          "end_day_offset": {
+            "const": 0
+          },
+          "end_unix": {
+            "const": 1792699200
+          },
+          "genres": {
+            "const": [
+              "techno",
+              "ambient"
+            ]
+          },
+          "id": {
+            "const": "2026-10-22-somov-at-levenslang-ade"
+          },
+          "lineup": {
+            "const": [
+              "Fadi Mohem",
+              "Ignez",
+              "Polygonia (live)",
+              "Rrose (live)",
+              "Wala"
+            ]
+          },
+          "lineup_count": {
+            "const": 5
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno",
+              "live set",
+              "marathon (7h)"
+            ]
+          },
+          "match_score": {
+            "const": 60
+          },
+          "source_url": {
+            "const": "https://www.europesays.com/netherlands/52163/"
+          },
+          "start": {
+            "const": "15:00"
+          },
+          "start_hour": {
+            "const": 15
+          },
+          "start_unix": {
+            "const": 1792674000
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "afternoon"
+          },
+          "title": {
+            "const": "Somov at Levenslang (ADE)"
+          },
+          "venue": {
+            "const": "Levenslang Amsterdam"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Doctor Jan van Breemenstraat 1, 1056 AB Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-22"
+          },
+          "day": {
+            "const": "Thursday"
+          },
+          "duration_hours": {
+            "const": 8
+          },
+          "end": {
+            "const": "22:00"
+          },
+          "end_day_offset": {
+            "const": 0
+          },
+          "end_unix": {
+            "const": 1792699200
+          },
+          "genres": {
+            "const": [
+              "techno"
+            ]
+          },
+          "id": {
+            "const": "2026-10-22-vault-sessions-x-mutual-rytm-ade"
+          },
+          "lineup": {
+            "const": [
+              "ANNE b2b Sera J",
+              "Disguised",
+              "Human Safari (live)",
+              "Hyden b2b I-RO",
+              "KiNK (live)",
+              "Mara Menace",
+              "Phil Berg",
+              "SHDW"
+            ]
+          },
+          "lineup_count": {
+            "const": 8
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno",
+              "artists: KiNK (live)",
+              "live set",
+              "marathon (8h)"
+            ]
+          },
+          "match_score": {
+            "const": 90
+          },
+          "source_url": {
+            "const": "https://www.europesays.com/netherlands/52163/"
+          },
+          "start": {
+            "const": "14:00"
+          },
+          "start_hour": {
+            "const": 14
+          },
+          "start_unix": {
+            "const": 1792670400
+          },
+          "tier": {
+            "const": "must-see"
+          },
+          "time_slot": {
+            "const": "afternoon"
+          },
+          "title": {
+            "const": "Vault Sessions x Mutual Rytm ADE"
+          },
+          "venue": {
+            "const": "TILLATEC"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Contactweg 68, 1014 BW Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-22"
+          },
+          "day": {
+            "const": "Thursday"
+          },
+          "duration_hours": {
+            "const": 6
+          },
+          "end": {
+            "const": "05:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792724400
+          },
+          "genres": {
+            "const": [
+              "house"
+            ]
+          },
+          "id": {
+            "const": "2026-10-22-defected-ade"
+          },
+          "lineup": {
+            "const": [
+              "Joella Jackson",
+              "Makez",
+              "Mele",
+              "Ranger Trucco",
+              "RUZE",
+              "Sam Divine",
+              "TSHA"
+            ]
+          },
+          "lineup_count": {
+            "const": 7
+          },
+          "match_reasons": {
+            "const": [
+              "genres: house",
+              "evening slot",
+              "marathon (6h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://www.europesays.com/netherlands/52163/"
+          },
+          "start": {
+            "const": "23:00"
+          },
+          "start_hour": {
+            "const": 23
+          },
+          "start_unix": {
+            "const": 1792702800
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "Defected ADE"
+          },
+          "venue": {
+            "const": "Thuishaven"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-22"
+          },
+          "day": {
+            "const": "Thursday"
+          },
+          "duration_hours": {
+            "const": 4
+          },
+          "end": {
+            "const": "16:00"
+          },
+          "end_day_offset": {
+            "const": 0
+          },
+          "end_unix": {
+            "const": 1792677600
+          },
+          "genres": {
+            "const": [
+              "house"
+            ]
+          },
+          "id": {
+            "const": "2026-10-22-50-herts-x-eats-everything-friends-club-train"
+          },
+          "lineup": {
+            "const": [
+              "Eats Everything"
+            ]
+          },
+          "lineup_count": {
+            "const": 1
+          },
+          "match_reasons": {
+            "const": [
+              "genres: house"
+            ]
+          },
+          "match_score": {
+            "const": 40
+          },
+          "source_url": {
+            "const": "https://www.capitaldance.com/features/the-ade-events-you-need-to-know-about-on-their-30th-anniversary/"
+          },
+          "start": {
+            "const": "12:00"
+          },
+          "start_hour": {
+            "const": 12
+          },
+          "start_unix": {
+            "const": 1792663200
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "afternoon"
+          },
+          "title": {
+            "const": "50:HERTS x Eats Everything & Friends \u2014 Club Train"
+          },
+          "venue": {
+            "const": "Club Train"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-22"
+          },
+          "day": {
+            "const": "Thursday"
+          },
+          "duration_hours": {
+            "const": 11
+          },
+          "end": {
+            "const": "19:00"
+          },
+          "end_day_offset": {
+            "const": 0
+          },
+          "end_unix": {
+            "const": 1792688400
+          },
+          "genres": {
+            "const": [
+              "house",
+              "tech-house"
+            ]
+          },
+          "id": {
+            "const": "2026-10-22-luke-dean-b2b-max-dean"
+          },
+          "lineup": {
+            "const": [
+              "Luke Dean",
+              "Max Dean"
+            ]
+          },
+          "lineup_count": {
+            "const": 2
+          },
+          "match_reasons": {
+            "const": [
+              "genres: house",
+              "marathon (11h)"
+            ]
+          },
+          "match_score": {
+            "const": 45
+          },
+          "source_url": {
+            "const": "https://www.capitaldance.com/features/the-ade-events-you-need-to-know-about-on-their-30th-anniversary/"
+          },
+          "start": {
+            "const": "08:00"
+          },
+          "start_hour": {
+            "const": 8
+          },
+          "start_unix": {
+            "const": 1792648800
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "morning"
+          },
+          "title": {
+            "const": "Luke Dean b2b Max Dean"
+          },
+          "venue": {
+            "const": "BRET"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Leidseplein 19, 1017 PS Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-22"
+          },
+          "day": {
+            "const": "Thursday"
+          },
+          "duration_hours": {
+            "const": 9
+          },
+          "end": {
+            "const": "08:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792735200
+          },
+          "genres": {
+            "const": [
+              "tech-house",
+              "house"
+            ]
+          },
+          "id": {
+            "const": "2026-10-22-snatch-records-ade-showcase"
+          },
+          "lineup": {
+            "const": [
+              "Riva Starr",
+              "Radio Slave",
+              "Cinthie",
+              "Midas Field",
+              "Confidential Recipe",
+              "The Checkup",
+              "Mike The Connector",
+              "Khadija (DE)"
+            ]
+          },
+          "lineup_count": {
+            "const": 8
+          },
+          "match_reasons": {
+            "const": [
+              "genres: house",
+              "evening slot",
+              "marathon (9h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://www.europesays.com/netherlands/52163/"
+          },
+          "start": {
+            "const": "23:00"
+          },
+          "start_hour": {
+            "const": 23
+          },
+          "start_unix": {
+            "const": 1792702800
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "Snatch! Records ADE Showcase"
+          },
+          "venue": {
+            "const": "Basement"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-22"
+          },
+          "day": {
+            "const": "Thursday"
+          },
+          "duration_hours": {
+            "const": 5
+          },
+          "end": {
+            "const": "04:30"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792722600
+          },
+          "genres": {
+            "const": [
+              "techno",
+              "bass"
+            ]
+          },
+          "id": {
+            "const": "2026-10-22-20-years-of-the-whp"
+          },
+          "lineup": {
+            "const": [
+              "Malugi",
+              "HAAi",
+              "salute",
+              "Skin On Skin"
+            ]
+          },
+          "lineup_count": {
+            "const": 4
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno",
+              "evening slot"
+            ]
+          },
+          "match_score": {
+            "const": 50
+          },
+          "source_url": {
+            "const": "https://www.capitaldance.com/features/the-ade-events-you-need-to-know-about-on-their-30th-anniversary/"
+          },
+          "start": {
+            "const": "23:30"
+          },
+          "start_hour": {
+            "const": 23
+          },
+          "start_unix": {
+            "const": 1792704600
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "20 Years of The WHP"
+          },
+          "venue": {
+            "const": "The Loft, A'DAM Tower"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-22"
+          },
+          "day": {
+            "const": "Thursday"
+          },
+          "duration_hours": {
+            "const": 7.5
+          },
+          "end": {
+            "const": "02:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792713600
+          },
+          "genres": {
+            "const": [
+              "trance",
+              "techno"
+            ]
+          },
+          "id": {
+            "const": "2026-10-22-ki-ki-5-hours"
+          },
+          "lineup": {
+            "const": [
+              "KI/KI"
+            ]
+          },
+          "lineup_count": {
+            "const": 1
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno",
+              "evening slot",
+              "marathon (8h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://www.capitaldance.com/features/the-ade-events-you-need-to-know-about-on-their-30th-anniversary/"
+          },
+          "start": {
+            "const": "18:30"
+          },
+          "start_hour": {
+            "const": 18
+          },
+          "start_unix": {
+            "const": 1792686600
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "KI/KI \u2014 5 Hours"
+          },
+          "venue": {
+            "const": "Ziggo Dome"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-22"
+          },
+          "day": {
+            "const": "Thursday"
+          },
+          "duration_hours": {
+            "const": 8
+          },
+          "end": {
+            "const": "07:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792731600
+          },
+          "genres": {
+            "const": [
+              "techno",
+              "house"
+            ]
+          },
+          "id": {
+            "const": "2026-10-22-dgtl-ade-thursday"
+          },
+          "lineup": {
+            "const": []
+          },
+          "lineup_count": {
+            "const": 0
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno, house",
+              "evening slot",
+              "marathon (8h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://dgtl-festival.com/en/dgtl-ade/"
+          },
+          "start": {
+            "const": "23:00"
+          },
+          "start_hour": {
+            "const": 23
+          },
+          "start_unix": {
+            "const": 1792702800
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "DGTL ADE Thursday"
+          },
+          "venue": {
+            "const": "NDSM Warehouse"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-22"
+          },
+          "day": {
+            "const": "Thursday"
+          },
+          "duration_hours": {
+            "const": 8
+          },
+          "end": {
+            "const": "07:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792731600
+          },
+          "genres": {
+            "const": [
+              "techno"
+            ]
+          },
+          "id": {
+            "const": "2026-10-22-awakenings-ade-sugarfactory-series"
+          },
+          "lineup": {
+            "const": [
+              "Adam Beyer",
+              "Ben Klock",
+              "Benwal",
+              "DJ Gigola",
+              "DJ Heartstring",
+              "FUMI",
+              "JakoJako",
+              "Jeff Mills",
+              "Prospa"
+            ]
+          },
+          "lineup_count": {
+            "const": 9
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno",
+              "artists: Ben Klock",
+              "evening slot",
+              "marathon (8h)"
+            ]
+          },
+          "match_score": {
+            "const": 85
+          },
+          "source_url": {
+            "const": "https://edmhousenetwork.com/ade-announces-full-30th-anniversary-program/"
+          },
+          "start": {
+            "const": "23:00"
+          },
+          "start_hour": {
+            "const": 23
+          },
+          "start_unix": {
+            "const": 1792702800
+          },
+          "tier": {
+            "const": "must-see"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "Awakenings ADE (SugarFactory series)"
+          },
+          "venue": {
+            "const": "SugarFactory"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-23"
+          },
+          "day": {
+            "const": "Friday"
+          },
+          "duration_hours": {
+            "const": 7.5
+          },
+          "end": {
+            "const": "02:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792800000
+          },
+          "genres": {
+            "const": [
+              "trance",
+              "techno"
+            ]
+          },
+          "id": {
+            "const": "2026-10-23-ki-ki-5-hours"
+          },
+          "lineup": {
+            "const": [
+              "KI/KI"
+            ]
+          },
+          "lineup_count": {
+            "const": 1
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno",
+              "evening slot",
+              "marathon (8h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://www.capitaldance.com/features/the-ade-events-you-need-to-know-about-on-their-30th-anniversary/"
+          },
+          "start": {
+            "const": "18:30"
+          },
+          "start_hour": {
+            "const": 18
+          },
+          "start_unix": {
+            "const": 1792773000
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "KI/KI \u2014 5 Hours"
+          },
+          "venue": {
+            "const": "Ziggo Dome"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-24"
+          },
+          "day": {
+            "const": "Saturday"
+          },
+          "duration_hours": {
+            "const": 8
+          },
+          "end": {
+            "const": "06:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792900800
+          },
+          "genres": {
+            "const": [
+              "house"
+            ]
+          },
+          "id": {
+            "const": "2026-10-24-dgtl-ade-shimza-co"
+          },
+          "lineup": {
+            "const": [
+              "Shimza"
+            ]
+          },
+          "lineup_count": {
+            "const": 1
+          },
+          "match_reasons": {
+            "const": [
+              "genres: house",
+              "evening slot",
+              "marathon (8h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://dgtl-festival.com/en/dgtl-ade/"
+          },
+          "start": {
+            "const": "22:00"
+          },
+          "start_hour": {
+            "const": 22
+          },
+          "start_unix": {
+            "const": 1792872000
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "DGTL ADE Shimza & Co"
+          },
+          "venue": {
+            "const": "NDSM Warehouse"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-23"
+          },
+          "day": {
+            "const": "Friday"
+          },
+          "duration_hours": {
+            "const": 8
+          },
+          "end": {
+            "const": "07:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792818000
+          },
+          "genres": {
+            "const": [
+              "techno",
+              "house"
+            ]
+          },
+          "id": {
+            "const": "2026-10-23-dgtl-ade-friday-night"
+          },
+          "lineup": {
+            "const": []
+          },
+          "lineup_count": {
+            "const": 0
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno, house",
+              "evening slot",
+              "marathon (8h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://dgtl-festival.com/en/dgtl-ade/"
+          },
+          "start": {
+            "const": "23:00"
+          },
+          "start_hour": {
+            "const": 23
+          },
+          "start_unix": {
+            "const": 1792789200
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "DGTL ADE Friday Night"
+          },
+          "venue": {
+            "const": "NDSM Warehouse"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-23"
+          },
+          "day": {
+            "const": "Friday"
+          },
+          "duration_hours": {
+            "const": 31
+          },
+          "end": {
+            "const": "06:00"
+          },
+          "end_day_offset": {
+            "const": 2
+          },
+          "end_unix": {
+            "const": 1792900800
+          },
+          "genres": {
+            "const": [
+              "techno",
+              "ambient"
+            ]
+          },
+          "id": {
+            "const": "2026-10-23-spielraum-55hrs"
+          },
+          "lineup": {
+            "const": [
+              "BASHKKA",
+              "Dasha Rush",
+              "DVS1",
+              "Kittin and The Hacker",
+              "Octo Octa",
+              "Pariah"
+            ]
+          },
+          "lineup_count": {
+            "const": 6
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno",
+              "artists: DVS1",
+              "evening slot",
+              "marathon (31h)"
+            ]
+          },
+          "match_score": {
+            "const": 85
+          },
+          "source_url": {
+            "const": "https://edmhousenetwork.com/ade-announces-full-30th-anniversary-program/"
+          },
+          "start": {
+            "const": "23:00"
+          },
+          "start_hour": {
+            "const": 23
+          },
+          "start_unix": {
+            "const": 1792789200
+          },
+          "tier": {
+            "const": "must-see"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "SPIELRAUM 55HRS"
+          },
+          "venue": {
+            "const": "Club RAUM"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-24"
+          },
+          "day": {
+            "const": "Saturday"
+          },
+          "duration_hours": {
+            "const": 8
+          },
+          "end": {
+            "const": "07:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792904400
+          },
+          "genres": {
+            "const": [
+              "melodic",
+              "house"
+            ]
+          },
+          "id": {
+            "const": "2026-10-24-camelphat-presents-experience-x-loveland"
+          },
+          "lineup": {
+            "const": [
+              "CamelPhat",
+              "Hot Since 82",
+              "Max Styler",
+              "Niiomi",
+              "Patrick Topping",
+              "Volkoder"
+            ]
+          },
+          "lineup_count": {
+            "const": 6
+          },
+          "match_reasons": {
+            "const": [
+              "genres: house",
+              "evening slot",
+              "marathon (8h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://www.decodedmagazine.com/loveland-returns-to-ade-with-12-shows-across-four-days/"
+          },
+          "start": {
+            "const": "23:00"
+          },
+          "start_hour": {
+            "const": 23
+          },
+          "start_unix": {
+            "const": 1792875600
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "CAMELPHAT PRESENTS EXPERIENCE x LOVELAND"
+          },
+          "venue": {
+            "const": "Theater Amsterdam"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-24"
+          },
+          "day": {
+            "const": "Saturday"
+          },
+          "duration_hours": {
+            "const": 8
+          },
+          "end": {
+            "const": "05:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792897200
+          },
+          "genres": {
+            "const": [
+              "edm"
+            ]
+          },
+          "id": {
+            "const": "2026-10-24-amf-david-guetta-monolith"
+          },
+          "lineup": {
+            "const": [
+              "David Guetta"
+            ]
+          },
+          "lineup_count": {
+            "const": 1
+          },
+          "match_reasons": {
+            "const": [
+              "evening slot",
+              "marathon (8h)"
+            ]
+          },
+          "match_score": {
+            "const": 15
+          },
+          "source_url": {
+            "const": "https://edm.com/events/ade-reveals-first-artists-30th-anniversary/"
+          },
+          "start": {
+            "const": "21:00"
+          },
+          "start_hour": {
+            "const": 21
+          },
+          "start_unix": {
+            "const": 1792868400
+          },
+          "tier": {
+            "const": "pass"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "AMF: David Guetta \u2014 Monolith"
+          },
+          "venue": {
+            "const": "Johan Cruijff ArenA"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Klonneplein 4, Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-23"
+          },
+          "day": {
+            "const": "Friday"
+          },
+          "duration_hours": {
+            "const": 9
+          },
+          "end": {
+            "const": "07:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792818000
+          },
+          "genres": {
+            "const": [
+              "techno",
+              "house"
+            ]
+          },
+          "id": {
+            "const": "2026-10-23-fabric-x-loud-contact"
+          },
+          "lineup": {
+            "const": []
+          },
+          "lineup_count": {
+            "const": 0
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno, house",
+              "evening slot",
+              "marathon (9h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://www.europesays.com/netherlands/52163/"
+          },
+          "start": {
+            "const": "22:00"
+          },
+          "start_hour": {
+            "const": 22
+          },
+          "start_unix": {
+            "const": 1792785600
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "fabric x Loud-Contact"
+          },
+          "venue": {
+            "const": "WestWeelde"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-25"
+          },
+          "day": {
+            "const": "Sunday"
+          },
+          "duration_hours": {
+            "const": 8
+          },
+          "end": {
+            "const": "06:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792987200
+          },
+          "genres": {
+            "const": [
+              "techno"
+            ]
+          },
+          "id": {
+            "const": "2026-10-25-dgtl-ade-fuse"
+          },
+          "lineup": {
+            "const": []
+          },
+          "lineup_count": {
+            "const": 0
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno",
+              "evening slot",
+              "marathon (8h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://dgtl-festival.com/en/dgtl-ade/"
+          },
+          "start": {
+            "const": "22:00"
+          },
+          "start_hour": {
+            "const": 22
+          },
+          "start_unix": {
+            "const": 1792958400
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "DGTL ADE FUSE"
+          },
+          "venue": {
+            "const": "NDSM Warehouse"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-25"
+          },
+          "day": {
+            "const": "Sunday"
+          },
+          "duration_hours": {
+            "const": 9.5
+          },
+          "end": {
+            "const": "22:30"
+          },
+          "end_day_offset": {
+            "const": 0
+          },
+          "end_unix": {
+            "const": 1792960200
+          },
+          "genres": {
+            "const": [
+              "techno",
+              "acid"
+            ]
+          },
+          "id": {
+            "const": "2026-10-25-reinier-zonneveld-8hrs-live-x-loveland"
+          },
+          "lineup": {
+            "const": [
+              "Reinier Zonneveld (live)"
+            ]
+          },
+          "lineup_count": {
+            "const": 1
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno",
+              "live set",
+              "marathon (10h)"
+            ]
+          },
+          "match_score": {
+            "const": 60
+          },
+          "source_url": {
+            "const": "https://www.decodedmagazine.com/loveland-returns-to-ade-with-12-shows-across-four-days/"
+          },
+          "start": {
+            "const": "13:00"
+          },
+          "start_hour": {
+            "const": 13
+          },
+          "start_unix": {
+            "const": 1792926000
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "afternoon"
+          },
+          "title": {
+            "const": "REINIER ZONNEVELD 8HRS LIVE x LOVELAND"
+          },
+          "venue": {
+            "const": "Mediahaven"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-25"
+          },
+          "day": {
+            "const": "Sunday"
+          },
+          "duration_hours": {
+            "const": 10
+          },
+          "end": {
+            "const": "22:00"
+          },
+          "end_day_offset": {
+            "const": 0
+          },
+          "end_unix": {
+            "const": 1792958400
+          },
+          "genres": {
+            "const": [
+              "house",
+              "disco"
+            ]
+          },
+          "id": {
+            "const": "2026-10-25-dgtl-ade-folamour-all-day-long"
+          },
+          "lineup": {
+            "const": [
+              "Folamour"
+            ]
+          },
+          "lineup_count": {
+            "const": 1
+          },
+          "match_reasons": {
+            "const": [
+              "genres: house",
+              "marathon (10h)"
+            ]
+          },
+          "match_score": {
+            "const": 45
+          },
+          "source_url": {
+            "const": "https://dgtl-festival.com/en/dgtl-ade/"
+          },
+          "start": {
+            "const": "12:00"
+          },
+          "start_hour": {
+            "const": 12
+          },
+          "start_unix": {
+            "const": 1792922400
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "afternoon"
+          },
+          "title": {
+            "const": "DGTL ADE Folamour All Day Long"
+          },
+          "venue": {
+            "const": "Kromhouthal"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-24"
+          },
+          "day": {
+            "const": "Saturday"
+          },
+          "duration_hours": {
+            "const": 8
+          },
+          "end": {
+            "const": "07:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792904400
+          },
+          "genres": {
+            "const": [
+              "techno"
+            ]
+          },
+          "id": {
+            "const": "2026-10-24-dgtl-ade-novah-friends"
+          },
+          "lineup": {
+            "const": [
+              "Novah"
+            ]
+          },
+          "lineup_count": {
+            "const": 1
+          },
+          "match_reasons": {
+            "const": [
+              "genres: techno",
+              "evening slot",
+              "marathon (8h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://dgtl-festival.com/en/dgtl-ade/"
+          },
+          "start": {
+            "const": "23:00"
+          },
+          "start_hour": {
+            "const": 23
+          },
+          "start_unix": {
+            "const": 1792875600
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "DGTL ADE Novah & Friends"
+          },
+          "venue": {
+            "const": "NDSM Warehouse"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    {
+      "contains": {
+        "type": "object",
+        "required": [
+          "address",
+          "date",
+          "day",
+          "duration_hours",
+          "end",
+          "end_day_offset",
+          "end_unix",
+          "genres",
+          "id",
+          "lineup",
+          "lineup_count",
+          "match_reasons",
+          "match_score",
+          "source_url",
+          "start",
+          "start_hour",
+          "start_unix",
+          "tier",
+          "time_slot",
+          "title",
+          "venue"
+        ],
+        "properties": {
+          "address": {
+            "const": "Amsterdam"
+          },
+          "date": {
+            "const": "2026-10-24"
+          },
+          "day": {
+            "const": "Saturday"
+          },
+          "duration_hours": {
+            "const": 8
+          },
+          "end": {
+            "const": "06:00"
+          },
+          "end_day_offset": {
+            "const": 1
+          },
+          "end_unix": {
+            "const": 1792900800
+          },
+          "genres": {
+            "const": [
+              "melodic",
+              "house"
+            ]
+          },
+          "id": {
+            "const": "2026-10-24-dgtl-ade-lane-8-this-never-happened"
+          },
+          "lineup": {
+            "const": [
+              "Lane 8"
+            ]
+          },
+          "lineup_count": {
+            "const": 1
+          },
+          "match_reasons": {
+            "const": [
+              "genres: house",
+              "evening slot",
+              "marathon (8h)"
+            ]
+          },
+          "match_score": {
+            "const": 55
+          },
+          "source_url": {
+            "const": "https://dgtl-festival.com/en/dgtl-ade/"
+          },
+          "start": {
+            "const": "22:00"
+          },
+          "start_hour": {
+            "const": 22
+          },
+          "start_unix": {
+            "const": 1792872000
+          },
+          "tier": {
+            "const": "worth-it"
+          },
+          "time_slot": {
+            "const": "evening"
+          },
+          "title": {
+            "const": "DGTL ADE Lane 8: This Never Happened"
+          },
+          "venue": {
+            "const": "Kromhouthal"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    }
+  ]
+}

@@ -101,11 +101,24 @@ def stop(ports: list[int]) -> int:
         pidfile = ROOT / ".runtime" / f"serve-{port}.pid"
         if pidfile.exists():
             owned.stop(pidfile, ROOT, "serve.py")
-        elif subprocess.run(
-            ["lsof", "-ti", f"tcp:{port}", "-sTCP:LISTEN"], capture_output=True
-        ).stdout:
-            print(f"Unknown listener on port {port}; leaving it alone", file=sys.stderr)
-            return 1
+            continue
+        out = subprocess.run(
+            ["lsof", "-ti", f"tcp:{port}", "-sTCP:LISTEN"], capture_output=True, text=True
+        ).stdout.strip()
+        if out:
+            stopped = False
+            for line in out.splitlines():
+                try:
+                    pid = int(line.strip())
+                    cmd = subprocess.run(["ps", "-p", str(pid), "-o", "command="], capture_output=True, text=True).stdout
+                    if any(marker in cmd for marker in ("counter.py", "jev-mock-server.py", "serve.py")):
+                        os.kill(pid, signal.SIGTERM)
+                        stopped = True
+                except (ValueError, OSError):
+                    pass
+            if not stopped:
+                print(f"Unknown listener on port {port}; leaving it alone", file=sys.stderr)
+                return 1
     return 0
 
 

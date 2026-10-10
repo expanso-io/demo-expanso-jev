@@ -1,0 +1,45 @@
+<section class="look-closer-panel" id="look-closer-panel">
+  <div class="look-closer-header">
+    <div class="callout">
+      <svg class="icon" aria-hidden="true"><use href="icons.svg#scan"/></svg>
+      <span id="closer-callout-text">LOOK CLOSER · PLATFORM 3 · FIRST PASS STAYS ON DEVICE</span>
+    </div>
+    <div class="bandwidth-badge" id="closer-bandwidth-badge">
+      <span id="closer-bytes-kept">0 B</span> KEPT ON P3 ·
+      <span id="closer-bytes-sent">0 B</span> SENT ·
+      <span id="closer-pct-saved">0.0%</span> LINK SAVED
+    </div>
+  </div>
+
+  <div class="look-closer-body">
+    <div class="wide-frame-col">
+      <div class="wide-frame-viewport" id="wide-frame-viewport">
+        <img id="wide-frame-img" class="wide-frame-img" alt="First pass wide frame">
+        <svg class="roi-overlay" id="roi-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <!-- Dynamic ROI boxes -->
+        </svg>
+      </div>
+      <div class="frame-caption" id="wide-frame-caption">
+        WIDE FRAME · <span id="wide-frame-dims">1920×1080</span> · RETAINED
+      </div>
+    </div>
+
+    <div class="crop-cards-col" id="crop-cards-col">
+      <template id="crop-card-template">
+        <article class="crop-card">
+          <header class="crop-card-header">
+            <span class="crop-roi-label">ROI 1 · VEHICLE · 94%</span>
+          </header>
+          <div class="crop-viewport">
+            <img class="crop-img" alt="Crop detail">
+          </div>
+          <footer class="crop-card-footer">
+            <svg class="icon" aria-hidden="true"><use href="icons.svg#trend-down"/></svg>
+            <span class="crop-bytes-sent">42 KB sent to core</span>
+          </footer>
+          <div class="crop-exit-lane" aria-hidden="true"></div>
+        </article>
+      </template>
+    </div>
+  </div>
+</section>

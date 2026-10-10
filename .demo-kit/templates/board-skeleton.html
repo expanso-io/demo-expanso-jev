@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Archetype A Board Skeleton</title>
+  <link rel="stylesheet" href="../showcase/tokens.css">
+  <link rel="stylesheet" href="callout.css">
+  <link rel="stylesheet" href="board-skeleton.css">
+</head>
+<body>
+  <div class="board-grid">
+    <header class="region-masthead" data-region="masthead">
+      <div class="callout">EXPANSO · SKELETON MASTHEAD</div>
+      <div class="status-pills">
+        <span class="pill" data-state="on">EDGE ACTIVE</span>
+        <span class="pill" data-state="on">LINK UP</span>
+      </div>
+    </header>
+
+    <div class="region-cloud" data-region="cloud">
+      <div class="callout">EXPANSO CLOUD · CONTROL PLANE</div>
+    </div>
+
+    <aside class="region-subject" data-region="subject">
+      <div class="callout">SUBJECT · SOURCE FLEET</div>
+    </aside>
+
+    <main class="region-stage" data-region="stage" id="stage">
+      <div class="callout">STAGE · TOPOLOGY</div>
+      <canvas id="flow" class="stage-canvas"></canvas>
+    </main>
+
+    <aside class="region-destination" data-region="destination">
+      <div class="callout">DESTINATION · CORE INTAKE</div>
+    </aside>
+
+    <section class="region-shelf-payoff" data-region="shelf-payoff">
+      <div class="callout">PAYOFF · ANNUAL SAVINGS</div>
+    </section>
+
+    <section class="region-shelf-accounting" data-region="shelf-accounting">
+      <div class="callout">ACCOUNTING · EVENT TOTALS</div>
+    </section>
+  </div>
+</body>
+</html>

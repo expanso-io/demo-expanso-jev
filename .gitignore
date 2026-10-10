@@ -22,7 +22,6 @@ demos/*/.test-scratch/
 # Recording and review material is kept outside this repository. These names
 # are symlinks on the maintainer's machine and must never be committed.
 demos/*/RUNBOOK.md
-demos/*/RECORDING_SCRIPT.md
 demos/*/DESIGN_BRIEF.md
 demos/*/review/
 .direnv
