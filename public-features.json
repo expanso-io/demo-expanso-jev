@@ -362,6 +362,30 @@
       "description": "Pod labels: Print the receipt stage, with its real input and output"
     },
     {
+      "id": "12-ade-schedule.input",
+      "description": "ADE schedule builder: The input stage, with its real input and output"
+    },
+    {
+      "id": "12-ade-schedule.parse_body",
+      "description": "ADE schedule builder: Parse the body stage, with its real input and output"
+    },
+    {
+      "id": "12-ade-schedule.enrich_event",
+      "description": "ADE schedule builder: Enrich the event stage, with its real input and output"
+    },
+    {
+      "id": "12-ade-schedule.score_preferences",
+      "description": "ADE schedule builder: Score against your taste stage, with its real input and output"
+    },
+    {
+      "id": "12-ade-schedule.route_decision",
+      "description": "ADE schedule builder: Decide the tier stage, with its real input and output"
+    },
+    {
+      "id": "12-ade-schedule.route",
+      "description": "ADE schedule builder: Write to a queue stage, with its real input and output"
+    },
+    {
       "id": "theme-default-light",
       "description": "The published page opens in light mode"
     },

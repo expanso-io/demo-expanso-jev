@@ -784,6 +784,48 @@ selector = "[data-stage-id=\"11-pod-labels.route\"]"
 input = "demos/11-pod-labels/fixtures/stages/11-pod-labels/route.input.json"
 output = "demos/11-pod-labels/fixtures/stages/11-pod-labels/route.output.json"
 
+[[stages]]
+id = "12-ade-schedule.input"
+pipeline = "12-ade-schedule"
+selector = "[data-stage-id=\"12-ade-schedule.input\"]"
+input = "demos/12-ade-schedule/fixtures/stages/12-ade-schedule/input.input.json"
+output = "demos/12-ade-schedule/fixtures/stages/12-ade-schedule/input.output.json"
+
+[[stages]]
+id = "12-ade-schedule.parse_body"
+pipeline = "12-ade-schedule"
+selector = "[data-stage-id=\"12-ade-schedule.parse_body\"]"
+input = "demos/12-ade-schedule/fixtures/stages/12-ade-schedule/parse_body.input.json"
+output = "demos/12-ade-schedule/fixtures/stages/12-ade-schedule/parse_body.output.json"
+
+[[stages]]
+id = "12-ade-schedule.enrich_event"
+pipeline = "12-ade-schedule"
+selector = "[data-stage-id=\"12-ade-schedule.enrich_event\"]"
+input = "demos/12-ade-schedule/fixtures/stages/12-ade-schedule/enrich_event.input.json"
+output = "demos/12-ade-schedule/fixtures/stages/12-ade-schedule/enrich_event.output.json"
+
+[[stages]]
+id = "12-ade-schedule.score_preferences"
+pipeline = "12-ade-schedule"
+selector = "[data-stage-id=\"12-ade-schedule.score_preferences\"]"
+input = "demos/12-ade-schedule/fixtures/stages/12-ade-schedule/score_preferences.input.json"
+output = "demos/12-ade-schedule/fixtures/stages/12-ade-schedule/score_preferences.output.json"
+
+[[stages]]
+id = "12-ade-schedule.route_decision"
+pipeline = "12-ade-schedule"
+selector = "[data-stage-id=\"12-ade-schedule.route_decision\"]"
+input = "demos/12-ade-schedule/fixtures/stages/12-ade-schedule/route_decision.input.json"
+output = "demos/12-ade-schedule/fixtures/stages/12-ade-schedule/route_decision.output.json"
+
+[[stages]]
+id = "12-ade-schedule.route"
+pipeline = "12-ade-schedule"
+selector = "[data-stage-id=\"12-ade-schedule.route\"]"
+input = "demos/12-ade-schedule/fixtures/stages/12-ade-schedule/route.input.json"
+output = "demos/12-ade-schedule/fixtures/stages/12-ade-schedule/route.output.json"
+
 [[yaml]]
 path = "demos/11-pod-labels/scenario/fixtures.yaml"
 role = "fixture"

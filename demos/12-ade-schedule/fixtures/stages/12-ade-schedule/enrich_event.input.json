@@ -1,0 +1,22 @@
+{
+  "address": "Doctor Jan van Breemenstraat 1, 1056 AB Amsterdam",
+  "date": "2026-10-21",
+  "end": "08:00",
+  "end_day_offset": 1,
+  "genres": [
+    "techno"
+  ],
+  "id": "2026-10-21-laster-presents-klockworks-20-years",
+  "lineup": [
+    "Ben Klock",
+    "DVS1",
+    "Roll Dann",
+    "Setaoc Mass",
+    "The Lady Machine",
+    "Laia"
+  ],
+  "source_url": "https://www.europesays.com/netherlands/52163/",
+  "start": "23:00",
+  "title": "LASTER presents KLOCKWORKS 20 YEARS",
+  "venue": "TILLATEC"
+}

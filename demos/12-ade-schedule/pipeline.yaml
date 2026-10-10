@@ -1,0 +1,130 @@
+name: ade-schedule-builder
+type: pipeline
+description: ADE 2026 schedule builder — enrich each festival event, score it against your taste with deterministic rules, and route it to must-see, worth-it, or pass. Pure Expanso; no model call anywhere in the path.
+namespace: production
+labels:
+  category: event-processing
+  pattern: score-and-route
+
+config:
+  input:
+    http_server:
+      address: "${INGEST_ADDRESS:127.0.0.1:8080}"
+      path: /events
+      allowed_verbs: ["POST"]
+
+  pipeline:
+    processors:
+      - label: parse_body
+        mapping: |
+          # http_server already parses JSON bodies; only parse raw strings
+          root = if this.type() == "string" { this.parse_json() } else { this }
+
+      - label: enrich_event
+        mapping: |
+          # Shape + enrich: turn the published schedule into epoch times and
+          # derived fields everything downstream can read.
+          root = this
+          let start_ts = (this.date + "T" + this.start + ":00+02:00").ts_parse("2006-01-02T15:04:05-07:00")
+          let end_ts = (this.date + "T" + this.end + ":00+02:00").ts_parse("2006-01-02T15:04:05-07:00")
+          let start_unix = $start_ts.ts_unix()
+          # end_day_offset handles after-midnight (1) and multi-day (2) events
+          let end_unix = $end_ts.ts_unix() + this.end_day_offset.or(0) * 86400
+
+          root.start_unix = $start_unix
+          root.end_unix = $end_unix
+          root.duration_hours = ($end_unix - $start_unix) / 3600
+          root.day = $start_ts.ts_format("Monday")
+
+          let hour = $start_ts.ts_format("15").number()
+          root.start_hour = $hour
+          root.time_slot = if $hour >= 6 && $hour < 12 {
+            "morning"
+          } else if $hour >= 12 && $hour < 18 {
+            "afternoon"
+          } else if $hour >= 18 && $hour < 24 {
+            "evening"
+          } else {
+            "late-night"
+          }
+          root.lineup_count = this.lineup.or([]).length()
+
+      - label: score_preferences
+        mapping: |
+          # Score: deterministic taste match. Transparent rules, no black box.
+          # Change the profile via env vars and the whole schedule re-routes:
+          #   ADE_GENRES     comma-separated genres you love (default: techno,house)
+          #   ADE_ARTISTS    comma-separated artists you follow (default: ben klock,dvs1,kink,amelie lens)
+          #   ADE_LATE_NIGHT=yes  opt in to post-midnight starts (default: penalized)
+          root = this
+          let pref_genres = env("ADE_GENRES").or("techno,house").lowercase().split(",").map_each(g -> g.trim())
+          let pref_artists = env("ADE_ARTISTS").or("ben klock,dvs1,kink,amelie lens").lowercase().split(",").map_each(a -> a.trim())
+          let genres = this.genres.or([]).map_each(g -> g.lowercase())
+          let lineup = this.lineup.or([])
+
+          let matched_genres = $genres.filter(g -> $pref_genres.contains(g))
+          let matched_artists = $lineup.filter(a -> $pref_artists.any(p -> a.lowercase().contains(p)))
+          let has_live = $lineup.any(a -> a.lowercase().contains("(live)"))
+          let evening_start = this.start_hour >= 18 && this.start_hour < 24
+          let late_start = this.start_hour >= 0 && this.start_hour < 6
+          let marathon = this.duration_hours >= 6
+          let late_ok = env("ADE_LATE_NIGHT").or("no").lowercase() == "yes"
+
+          let score = (if $matched_genres.length() > 0 { 40 } else { 0 }) +
+            (if $matched_artists.length() > 0 { 30 } else { 0 }) +
+            (if $has_live { 15 } else { 0 }) +
+            (if $evening_start { 10 } else { 0 }) +
+            (if $marathon { 5 } else { 0 }) -
+            (if $late_start && !$late_ok { 15 } else { 0 })
+
+          root.match_score = $score
+          root.match_reasons = [
+            if $matched_genres.length() > 0 { "genres: " + $matched_genres.join(", ") },
+            if $matched_artists.length() > 0 { "artists: " + $matched_artists.join(", ") },
+            if $has_live { "live set" },
+            if $evening_start { "evening slot" },
+            if $marathon { "marathon (" + this.duration_hours.round().string() + "h)" },
+            if $late_start && !$late_ok { "late-start penalty" },
+          ].filter(r -> r != null)
+
+      - label: route_decision
+        mapping: |
+          root = this
+          root.tier = if this.match_score >= 70 {
+            "must-see"
+          } else if this.match_score >= 40 {
+            "worth-it"
+          } else {
+            "pass"
+          }
+
+  output:
+    broker:
+      pattern: fan_out
+      outputs:
+        - label: echo_stdout
+          stdout:
+            codec: lines
+        - label: by_decision
+          switch:
+            cases:
+              - check: this.tier == "must-see"
+                output:
+                  label: must_see
+                  file:
+                    path: ./data/ade-schedule-builder/must-see-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              - check: this.tier == "worth-it"
+                output:
+                  label: worth_it
+                  file:
+                    path: ./data/ade-schedule-builder/worth-it-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
+              # Production: swap these files for real sinks —
+              # calendar API, Slack webhook, a mobile push, etc.
+              - check: "true"
+                output:
+                  label: pass
+                  file:
+                    path: ./data/ade-schedule-builder/pass-${! now().ts_format("2006-01-02") }.jsonl
+                    codec: lines
