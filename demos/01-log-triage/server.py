@@ -666,6 +666,7 @@ def heartbeat():
             if mode != HUB.run["mode"]:
                 HUB.run = HUB._new_run(mode)
                 HUB.per_sec.clear()
+                HUB.jev_fail.clear()
 
                 HUB.caught.clear()
                 HUB.quieted.clear()

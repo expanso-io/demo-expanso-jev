@@ -301,7 +301,7 @@ body:not(.inspect) .detail{display:none}
       <div class="callout"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#scan"/></svg><span id="modelCallout">DECISION MODEL · CRIBL-DECISION-1.0</span></div>
       <h2>
         <span id="modelName">Cribl</span>
-        <span class="by" id="modelBy">cribl-decision-1.0 (local 4B · Apache-2.0)</span>
+        <span class="by" id="modelBy"></span>
         <button class="sw" id="jevSw" role="switch" aria-checked="false" aria-label="Route through decision model"></button>
       </h2>
       <div class="steps qs" aria-label="What the model is asked about each record">
@@ -332,7 +332,7 @@ body:not(.inspect) .detail{display:none}
       <button class="btn fault" data-gate="overloaded">Break the link to model</button>
       <button class="btn restore" data-gate="open" id="gateOpen" hidden>Restore the link</button>
     </div>
-    <div class="heldtag gone" id="heldTag"><svg class="icon" aria-hidden="true" style="margin-right:4px"><use href="media/icons.svg#alert"/></svg><b id="heldN">0</b>held on edge (--kept)</div>
+    <div class="heldtag gone" id="heldTag"><svg class="icon" aria-hidden="true" style="margin-right:4px"><use href="media/icons.svg#alert"/></svg><b id="heldN">0</b>waiting for <span id="heldFor">Cribl</span></div>
 
     <div class="buckets" data-region="destination">
       <div class="callout dest-callout"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#database"/></svg>DESTINATIONS · TRIAGE SPREAD</div>
@@ -446,7 +446,6 @@ new ResizeObserver(layout).observe(flow);
 // volume is exactly event volume.
 const inbound = [], outbound = [], pulses = [];
 let spawnQ = [];
-const ROWS = [-16,-8,0,8,16];
 const SPEED = () => (G.bucketX - G.srcR) / 2.0;
 
 function bez(a,b,c,d,t){ const u=1-t; return u*u*u*a + 3*u*u*t*b + 3*u*t*t*c + t*t*t*d; }
@@ -459,7 +458,7 @@ function frame(){
   ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,G.w,G.h);
   const piped = S.up && S.mode!=='off', v = SPEED(), stopX = piped ? G.gateIn+6 : G.bucketX;
 
-  if (spawnQ.length){ const keep=[]; for (const t of spawnQ){ if (t<=now) inbound.push({x:G.srcR, y:ROWS[(Math.random()*ROWS.length)|0]}); else keep.push(t);} spawnQ=keep; }
+  if (spawnQ.length){ const keep=[]; for (const t of spawnQ){ if (t<=now) inbound.push({x:G.srcR}); else keep.push(t);} spawnQ=keep; }
   drawLanes(piped);
 
   ctx.fillStyle = COLORS.raw;
@@ -469,19 +468,21 @@ function frame(){
       inbound.splice(i,1);
       continue;
     }
-    sq(p.x, G.lane+p.y, 5);
+    sq(p.x, G.lane, 5);
   }
   ctx.globalAlpha = 1;
 
-  const x1 = G.gateOut, dx = G.bucketX-x1, T = dx/v;
+  // The output leg is shorter than the source leg. Give each completed record
+  // enough time on its actual destination lane to be visible at demo rates.
+  const x1 = G.gateOut, dx = G.bucketX-x1, T = 3;
   for (let i=outbound.length-1;i>=0;i--){
     const p = outbound[i]; p.t += dt/T;
     if (p.t<0) continue;                               // not released yet
     if (p.t>=1){ outbound.splice(i,1); hit(p.bin); continue; }
     const y3 = G.ends[p.bin];
     const x = bez(x1, x1+dx*.4, x1+dx*.6, G.bucketX, p.t);
-    const y = bez(G.lane, G.lane, y3, y3, p.t) + p.y*(1-p.t)*.5;
-    ctx.fillStyle = p.c; sq(x, y, p.bin==='archive' ? 5 : 7);
+    const y = bez(G.lane, G.lane, y3, y3, p.t);
+    ctx.fillStyle = p.c; sq(x, y, 5);
   }
   drawHeroes(dt);
   requestAnimationFrame(frame);
@@ -574,7 +575,7 @@ function connect(){
       if (h){ h.dest = m.bin; }                            // the big square lands it instead
       else if (m.bin!=='raw' && m.bin!=='held' && G && outbound.length<2000){
         const decided = S.mode==='jev';
-        outbound.push({bin:m.bin, t:-Math.random()*0.1, y:ROWS[(Math.random()*ROWS.length)|0], c: decided ? COLORS[m.bin] : COLORS.raw});
+        outbound.push({bin:m.bin, t:-Math.random()*0.1, c: decided ? COLORS[m.bin] : COLORS.raw});
         if (m.ok) jevPulse();                              // an ANSWER arrived; a fallback has none
       }
     } else if (m.t==='stats'){
@@ -603,14 +604,15 @@ function render(){
 
   // Dynamic decision model branding
   const mName = String(S.model || '');
+  $('#heldFor').textContent = /jev|typesafe/i.test(mName) ? 'Jev' : 'Cribl';
   $('#brandTitle').textContent = 'Expanso';
   if (/cribl/i.test(mName) || (!mName && !S.mock)) {
     $('#modelName').textContent = 'Cribl';
-    $('#modelBy').textContent = 'cribl-decision-1.0 (local 4B · Apache-2.0)';
+    $('#modelBy').textContent = '';
     $('#modelCallout').textContent = 'DECISION MODEL · CRIBL-DECISION-1.0';
   } else if (S.mock) {
     $('#modelName').textContent = 'Cribl';
-    $('#modelBy').textContent = 'cribl-decision-1.0 (offline replay · Apache-2.0)';
+    $('#modelBy').textContent = '';
     $('#modelCallout').textContent = 'DECISION MODEL · CRIBL-DECISION-1.0 (REPLAY)';
   } else if (/jev|typesafe/i.test(mName)) {
     $('#modelName').textContent = 'Jev';
@@ -646,7 +648,7 @@ function render(){
     : !S.gen ? 'Source paused.'
     : !piped ? 'Every line kept. None understood.'
     : down && blocked ? `Decision model is blocked at local gate. Expanso is holding ${fmt(holding)} records, not guessing.`
-    : down ? `Decision model is unreachable. Expanso is holding ${fmt(holding)} records, not guessing.`
+    : down ? `Decision model is not answering in time. ${fmt(holding)} records are waiting for a decision.`
     : jev ? 'Stop paying to analyze noise. Catch the quiet problem that matters.'
     : 'Structured, counted, and archived. No model needed.';
   document.querySelectorAll('.bucket').forEach(x => x.classList.toggle('sel', x.dataset.bin===pinned));
@@ -660,7 +662,7 @@ function ledger(piped, jev, decided, pct){
   // and do not share a boundary with receipts. A Jev failure is not a dropped
   // record: the record was kept and held for review, and is labelled as such.
   const r = S.run, el = $('#ledger'), dash = '—';
-  const mName = S.model_name || '';
+  const mName = S.model || '';
   const isCribl = /cribl/i.test(mName) || (!mName && !S.mock);
   const mTitle = isCribl ? 'Cribl' : 'Jev';
   const stat = (v, label, cls='') => `<div class="stat ${cls}"><b>${v}</b><span>${label}</span></div>`;
@@ -748,7 +750,7 @@ function show(r, bin, tag){
   const el = $('#card'); el.className = 'panel card';
   const c = r.recurrence, input = `<div><p class="cap">Input${tag?` · ${tag}`:''}</p><div class="msg">${esc(r.level)} · ${esc(r.service)} · ${esc(r.msg)}</div>
     ${c ? `<div class="meta detail">${ord(c.occurrence)} time in ${Math.round(c.window_s/60)} min · counted by Expanso</div>` : ''}</div>`;
-  const mName = r.jev?.model || S.model_name || '';
+  const mName = (r.jev_ok && r.jev?.model) || S.model || '';
   const isCribl = /cribl/i.test(mName) || (!mName && !S.mock);
   const mTitle = isCribl ? 'Cribl' : 'Jev';
   let by;
@@ -759,9 +761,9 @@ function show(r, bin, tag){
   else if (!r.jev_ok) by = `<div><p class="cap" style="color:var(--err)">Decided by · fallback</p><div class="said">${mTitle} did not answer after ${r.held_attempts||0} attempts, so Expanso did not guess.</div><span class="rule detail">${gate(r)}</span></div>`;
   else { const a = r.jev.answers||{}, f = v => (v??0).toFixed(2);
     by = `<div><p class="cap jv">Decided by · ${mTitle} reported · ${esc(r.jev.model||'?')}</p><div class="said">actionable <b>${f(a.actionable?.noul)}</b> · ${esc(a.severity?.choice)} <b>${f(a.severity?.confidence)}</b> · team <b>${esc(a.team?.choice)}</b></div><span class="rule detail">${gate(r)}</span></div>`; }
-  const dest = bin==='raw' ? 'raw bucket' : bin==='held' ? 'on hold' : bin, base = r.baseline, judged = r.jev && r.jev_ok, diff = judged && base && base!==bin;
+  const dest = bin==='raw' ? 'raw bucket' : bin==='held' ? 'waiting for model' : bin, base = r.baseline, judged = r.jev && r.jev_ok, diff = judged && base && base!==bin;
   el.innerHTML = `${input}<div class="arrow">→</div>${by}<div class="arrow">→</div>
-    <div><p class="cap">Destination</p><div class="dest" style="color:var(--${bin})">${esc(dest)}</div>
+    <div><p class="cap">${bin==='held' ? 'Status' : 'Destination'}</p><div class="dest" style="color:var(--${bin})">${esc(dest)}</div>
     ${base ? `<div class="vs${diff?' diff':''}">Severity-only baseline: <span style="text-transform:uppercase">${esc(base)}</span>${!judged ? '' : diff ? ' · differs' : ' · same'}</div>` : ''}<div class="vs detail">local demo file ${SINK[bin]}</div></div>`;
 }
 async function card(){
@@ -774,10 +776,10 @@ async function card(){
     return note(`${top.reduce((s,[,c])=>s+c,0)} of the last ${d.records.length} lines are the same ${top.length} messages.`, `Stored again and again: ${top.map(([m])=>esc(m)).join(' · ')}. No fingerprint, no owner, no way to tell which line is the one that matters.`); }
   if (!jev){ const d = await get('/api/bucket/archive'); return d?.records?.length ? show(d.records[0], 'archive', 'latest') : note('Expanso is running.','Waiting for the first shaped record.'); }
   if (S.jevDown || S.gate!=='open'){ const d = await get('/api/bucket/held'); const r = d?.records?.[0];
-    const mName = S.model_name || '';
+    const mName = S.model || '';
     const isCribl = /cribl/i.test(mName) || (!mName && !S.mock);
     const mTitle = isCribl ? 'Cribl' : 'Jev';
-    return r ? show(r, 'held', S.gate!=='open' ? `${mTitle} blocked at local gate · held, not guessed` : `${mTitle} unreachable · held, not guessed`) : note(`${mTitle} is not answering.`, 'Known-benign lines still skip the model. Everything else is held for REVIEW rather than guessed.'); }
+    return r ? show(r, 'held', S.gate!=='open' ? `${mTitle} blocked at local gate · held, not guessed` : `${mTitle} did not answer in time · held, not guessed`) : note(`${mTitle} is not answering.`, 'Known-benign lines still skip the model. Everything else is held for REVIEW rather than guessed.'); }
   const e = await get('/api/evidence');
   if (e?.caught?.length) return show(e.caught[0], e.caught[0].jev_decision, `a quiet one · ${S.run.caught} this run`);
   for (const b of ['page','notify','review']){ const d = await get('/api/bucket/'+b); const r = d?.records?.find(x => x.jev_ok); if (r) return show(r, b, 'latest judged'); }
