@@ -15,6 +15,7 @@ import http.client
 import json
 import pathlib
 import re
+import socket
 import sys
 import threading
 import time
@@ -52,6 +53,17 @@ def req(method, path, body=None):
 
 
 try:
+    probe = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    probe.bind(("127.0.0.1", 0))
+    probe.listen(1)
+    original_pipeline_url = server.PIPELINE_URL
+    try:
+        server.PIPELINE_URL = f"http://127.0.0.1:{probe.getsockname()[1]}/logs"
+        check("input probe uses the configured pipeline port", server.port_up())
+    finally:
+        server.PIPELINE_URL = original_pipeline_url
+        probe.close()
+
     print("--- 1. the YAML route serves exactly two files, verbatim")
     for key, fn in server.PIPELINE_FILES.items():
         st, data, hdr = req("GET", f"/api/pipeline/{key}")

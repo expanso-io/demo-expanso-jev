@@ -14,6 +14,9 @@ name: log-triage
 type: pipeline
 description: Shape, fingerprint and count every log line; archive all of it. No model in the loop.
 namespace: demo
+selector:
+  match_labels:
+    demo: cribl-log-triage-local
 
 labels:
   category: log-processing

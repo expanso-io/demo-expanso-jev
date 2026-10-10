@@ -24,7 +24,7 @@ world rather than a view:
            archive.
 
 Which act we are in is detected two ways, because each covers the other's blind
-spot: a local probe of :8080 (instant, but cannot tell the two pipelines apart)
+spot: a local probe of the configured input port (instant, but cannot tell the two pipelines apart)
 and a poll of Expanso Cloud for the running job's spec (authoritative, ~2s late).
 
 Endpoints:
@@ -51,6 +51,7 @@ import subprocess
 import sys
 import threading
 import time
+import urllib.parse
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -257,11 +258,12 @@ def port_up():
     A job can be "deployed" in Cloud for a second before its input binds here,
     and during that second the honest picture is still "going nowhere".
     """
+    input_port = urllib.parse.urlsplit(PIPELINE_URL).port or 8080
     for host, fam in (("::1", socket.AF_INET6), ("127.0.0.1", socket.AF_INET)):
         try:
             s = socket.socket(fam, socket.SOCK_STREAM)
             s.settimeout(0.3)
-            s.connect((host, 8080))
+            s.connect((host, input_port))
             s.close()
             return True
         except OSError:
@@ -273,9 +275,8 @@ def port_up():
 def cloud_poll():
     """What is running in the network right now, according to Expanso Cloud.
 
-    Read-only. The Jev pipeline is recognised by its spec carrying Jev's
-    `questions`, not by a job name -- the presenter may deploy from the console
-    under any name they like.
+    Read-only. Inspect this demo's Cloud job, not other jobs in the namespace.
+    The Jev version is recognised by its spec carrying Jev's `questions`.
     """
     r = subprocess.run(
         ["expanso-cli", "job", "list", "--namespace", NAMESPACE, "--format", "json"],
@@ -288,11 +289,14 @@ def cloud_poll():
     # json, so an empty network is not valid JSON. It is still a clean answer.
     out = r.stdout.strip()
     for job in (json.loads(out) if out.startswith("[") else []):
+        spec = job.get("spec", {})
+        if spec.get("name") != "log-triage" or spec.get("namespace") != NAMESPACE:
+            continue
         if job.get("status", {}).get("state", {}).get("state_type") != "running":
             continue
         # The config sits in the spec as text, so match the mapping that builds
         # Jev's request, not a JSON key.
-        is_jev = "root.questions" in json.dumps(job.get("spec", {}))
+        is_jev = "root.questions" in json.dumps(spec)
         mode = "jev" if is_jev else ("expanso" if mode != "jev" else mode)
     return mode
 
@@ -312,7 +316,7 @@ def jev_switch(target):
             if not (os.environ.get("EXPANSO_CLI_ENDPOINT") and os.environ.get("EXPANSO_CLI_AUTH_API_KEY")):
                 raise RuntimeError("no Expanso Cloud credentials in the environment")
             # Stop FIRST and wait for the input port to go quiet. A bare version
-            # bump starts the new execution while the old one still owns :8080; the
+            # bump starts the new execution while the old one still owns the input port; the
             # new one fails to bind, Cloud marks the job degraded, and the OLD
             # pipeline keeps running -- so "Jev off" left Jev on. Seen 2026-09-19.
             subprocess.run(["expanso-cli", "job", "stop", "log-triage", "--namespace", NAMESPACE, "--force"],
