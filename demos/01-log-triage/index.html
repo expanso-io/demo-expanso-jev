@@ -284,7 +284,7 @@ body:not(.inspect) .detail{display:none}
     <div class="claim" id="claim">Connecting…</div>
     <nav class="tabs" role="tablist" title="Left and Right arrow keys switch views"><button role="tab" data-tab="flow" aria-selected="true">Live flow</button><button role="tab" data-tab="yaml" aria-selected="false">Pipeline YAML</button></nav>
     <button class="btn tbtn" id="themeBtn" type="button" aria-pressed="false">Dark mode</button>
-    <div class="fine" id="fine">Synthetic demo events<br>Buckets are local demo files</div>
+    <div class="fine" id="fine">Synthetic demo events · illustrative flow<br>Counts are observed · buckets are local demo files</div>
   </header>
 
   <section class="flow" id="flow" aria-label="Live log flow" data-region="stage">
@@ -390,7 +390,7 @@ const COLORS = {};
 function refreshColors(){ for (const [k,v] of Object.entries({page:'--page', notify:'--notify', review:'--review', archive:'--archive', raw:'--raw', err:'--err', jev:'--jev', hero:'--hero', lane:'--lane', ring:'--surface'})) COLORS[k] = css(v); }
 refreshColors();
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-// Representative and labelled as such on screen. The RATE it fills at is real.
+// The detail panel lists local demo destinations; the counters are observed.
 const SINK = {held:'held.jsonl', page:'page.jsonl', notify:'notify.jsonl', review:'review.jsonl', archive:'archive.jsonl', raw:'raw.jsonl'};
 
 const S = {mode:'off', up:false, gen:true, jevDown:false, gate:'open', upstreamOk:null, bins:{raw:0}, run:{mode:'off',produced:0,accepted:0,bypassed:0,judged:0,jev_failed:0,caught:0,quieted:0,received:{page:0,notify:0,review:0,archive:0,raw:0}}};
@@ -442,11 +442,19 @@ function placeRaw(){
 new ResizeObserver(layout).observe(flow);
 
 /* -------------------------------------------------------------- particles */
-// One square is one log line, in and out. No trails, no duplicates: visual
-// volume is exactly event volume.
-const inbound = [], outbound = [], pulses = [];
-let spawnQ = [];
-const SPEED = () => (G.bucketX - G.srcR) / 2.0;
+// The moving squares illustrate the route at presentation speed. Counts and
+// receipts elsewhere on the board remain tied to actual pipeline events.
+const flowDots = [], pulses = [];
+const FLOW_RATE = 50;
+let flowCarry = 0, flowSequence = 0;
+function flowBin(){
+  const counts = S.run.received || {}, bins = ['archive','notify','review','page'];
+  const total = bins.reduce((sum, bin) => sum + (counts[bin] || 0), 0);
+  if (!total) return 'archive';
+  let pick = Math.random()*total;
+  for (const bin of bins){ pick -= counts[bin] || 0; if (pick < 0) return bin; }
+  return 'archive';
+}
 
 function bez(a,b,c,d,t){ const u=1-t; return u*u*u*a + 3*u*u*t*b + 3*u*t*t*c + t*t*t*d; }
 function sq(x,y,s){ ctx.fillRect(Math.round(x-s/2), Math.round(y-s/2), s, s); }
@@ -456,36 +464,47 @@ function frame(){
   const now = performance.now()/1000, dt = Math.min(0.05, now-last); last = now;
   if (!G){ requestAnimationFrame(frame); return; }
   ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,G.w,G.h);
-  const piped = S.up && S.mode!=='off', v = SPEED(), stopX = piped ? G.gateIn+6 : G.bucketX;
-
-  if (spawnQ.length){ const keep=[]; for (const t of spawnQ){ if (t<=now) inbound.push({x:G.srcR}); else keep.push(t);} spawnQ=keep; }
-  drawLanes(piped);
-
-  ctx.fillStyle = COLORS.raw;
-  for (let i=inbound.length-1;i>=0;i--){
-    const p = inbound[i]; p.x += v*dt;
-    if (p.x >= stopX){
-      inbound.splice(i,1);
-      continue;
+  const piped = S.up && S.mode!=='off';
+  if (S.gen){
+    flowCarry += dt*FLOW_RATE*(reduced ? .35 : 1);
+    while (flowCarry >= 1 && flowDots.length < 400){
+      flowCarry--;
+      flowDots.push({age:0, piped, branch:piped && S.mode==='jev' && ++flowSequence%10===0,
+        bin:flowBin()});
     }
-    sq(p.x, G.lane, 5);
-  }
-  ctx.globalAlpha = 1;
-
-  // The output leg is shorter than the source leg. Give each completed record
-  // enough time on its actual destination lane to be visible at demo rates.
-  const x1 = G.gateOut, dx = G.bucketX-x1, T = 3;
-  for (let i=outbound.length-1;i>=0;i--){
-    const p = outbound[i]; p.t += dt/T;
-    if (p.t<0) continue;                               // not released yet
-    if (p.t>=1){ outbound.splice(i,1); hit(p.bin); continue; }
-    const y3 = G.ends[p.bin];
-    const x = bez(x1, x1+dx*.4, x1+dx*.6, G.bucketX, p.t);
-    const y = bez(G.lane, G.lane, y3, y3, p.t);
-    ctx.fillStyle = p.c; sq(x, y, 5);
-  }
+  } else flowCarry = 0;
+  drawLanes(piped);
+  drawFlowDots(dt);
   drawHeroes(dt);
   requestAnimationFrame(frame);
+}
+function drawFlowDots(dt){
+  for (let i=flowDots.length-1;i>=0;i--){
+    const p = flowDots[i]; p.age += dt;
+    const a = p.age, inboundEnd = 1.15;
+    let x, y, color = COLORS.raw;
+    if (a < inboundEnd){
+      x = G.srcR + (p.piped ? G.gateIn-G.srcR : G.bucketX-G.srcR)*a/inboundEnd;
+      y = G.lane;
+    } else if (!p.piped){ flowDots.splice(i,1); continue; }
+    else if (p.branch && a < inboundEnd+.48){
+      x = G.askX; y = G.exTop+(G.jevBottom-G.exTop)*(a-inboundEnd)/.48;
+      color = COLORS.jev;
+    } else if (p.branch && (S.jevDown || S.gate!=='open')){
+      flowDots.splice(i,1); continue;
+    } else if (p.branch && a < inboundEnd+.96){
+      x = G.ansX; y = G.jevBottom+(G.exTop-G.jevBottom)*(a-inboundEnd-.48)/.48;
+      color = COLORS.jev;
+    } else {
+      const t = (a-inboundEnd-(p.branch ? .96 : 0))/2.25;
+      if (t >= 1){ flowDots.splice(i,1); continue; }
+      const dx = G.bucketX-G.gateOut, y3 = G.ends[p.bin];
+      x = bez(G.gateOut,G.gateOut+dx*.4,G.gateOut+dx*.6,G.bucketX,t);
+      y = bez(G.lane,G.lane,y3,y3,t);
+      color = COLORS[p.bin];
+    }
+    ctx.fillStyle = color; sq(x,y,5);
+  }
 }
 function drawLanes(piped){
   ctx.lineWidth = 2; ctx.setLineDash([]); ctx.strokeStyle = COLORS.lane;
@@ -520,7 +539,7 @@ function drawLanes(piped){
   for (let i=pulses.length-1;i>=0;i--){
     const p = pulses[i]; p.t += 0.016/0.9; if (p.t>=1 || (p.held && p.t>=.5)){ pulses.splice(i,1); continue; }
     const up = p.t<.5, k = up ? p.t*2 : (p.t-.5)*2;
-    ctx.globalAlpha = p.held ? 1-k : 1; sq(up ? G.askX : G.ansX, up ? y1+(y0-y1)*k : y0+(y1-y0)*k, 7);
+    ctx.globalAlpha = p.held ? 1-k : 1; sq(up ? G.askX : G.ansX, up ? y1+(y0-y1)*k : y0+(y1-y0)*k, 5);
   }
   ctx.globalAlpha = 1;
 }
@@ -568,16 +587,11 @@ function connect(){
     const m = JSON.parse(ev.data);
     if (m.t==='src'){
       if (m.hero && G) heroes.push({id:m.hero, ph:'in', k:0, born:performance.now()});
-      if (G && inbound.length+spawnQ.length < 2000){ const now=performance.now()/1000, spread=Math.min(.35, m.n*.02); for (let i=0;i<m.n;i++) spawnQ.push(now+Math.random()*spread); }
     } else if (m.t==='rec'){
       if (m.bin==='held' && G) jevPulse(true);
       const h = m.hero && heroes.find(x => x.id===m.hero);
       if (h){ h.dest = m.bin; }                            // the big square lands it instead
-      else if (m.bin!=='raw' && m.bin!=='held' && G && outbound.length<2000){
-        const decided = S.mode==='jev';
-        outbound.push({bin:m.bin, t:-Math.random()*0.1, c: decided ? COLORS[m.bin] : COLORS.raw});
-        if (m.ok) jevPulse();                              // an ANSWER arrived; a fallback has none
-      }
+      else if (m.ok && G) jevPulse(); // Only an observed answer triggers the chip.
     } else if (m.t==='stats'){
       if (m.ui_rev){ if (uiRev && m.ui_rev !== uiRev){ location.reload(); return; } uiRev = m.ui_rev; }
       const was = S.mode;
@@ -638,7 +652,7 @@ function render(){
   $('#jevNum').innerHTML = down ? `<b>${fmt(holding)}</b> held · ${fmt(run.gave_up||0)} given up to review` : `<b>${fmt(run.judged)}</b> judged · ${fmt(run.received.page+run.received.notify)} need a person`;
 
   const fine = $('#fine'); fine.classList.toggle('replay', !!S.replay || !!S.mock);
-  fine.innerHTML = S.mock ? `MOCK decision responses (${esc(S.model)})<br>not real inference` : S.replay ? 'REPLAY of recorded records · not live<br>no pipeline, no model is running' : 'Synthetic demo events<br>Buckets are local demo files';
+  fine.innerHTML = S.mock ? `MOCK decision responses (${esc(S.model)})<br>not real inference` : S.replay ? 'REPLAY of recorded records · not live<br>no pipeline, no model is running' : 'Synthetic demo events · illustrative flow<br>Counts are observed · buckets are local demo files';
   document.querySelectorAll('.btn.fault').forEach(b => { b.classList.toggle('on', b.dataset.gate===S.gate); b.hidden = blocked; });
   $('#gateOpen').hidden = !blocked;
   $('#heldTag').classList.toggle('gone', !(jev && holding)); $('#heldN').textContent = fmt(holding);

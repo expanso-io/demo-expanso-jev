@@ -101,10 +101,10 @@ closed allowlist; `${JEV_API_URL}` stays a placeholder). It is the source
 configuration, not a read-back of the deployed spec.
 
 **Reading the board.** Steps inside Expanso are its real processors. The dashed
-line up to Jev is the path unknown records take; the pulse coming back down
-into *Gate* is a real answer arriving. The metrics strip counts completed
-records of the current run only. "Jev unanswered" records were kept and held
-for review, not dropped.
+line shows the path unknown records take to the decision model. Moving squares
+illustrate that path at presentation speed; the counters and detail strip come
+from pipeline receipts. A real answer lights the *Gate* chip. Unanswered
+records are held for review.
 
 Click a bucket to pin its latest record in the strip; click again to unpin.
 **Inject at the source** pushes a real scenario through the live pipeline.
@@ -160,10 +160,10 @@ generator2.py --POST :8080/logs--> Expanso Edge, job `log-triage` (deployed via 
 
 - **Expanso** is the deterministic part: shape, fingerprint, count occurrences
   in a 10-minute window, bypass known-benign lines, recall previous decisions, route.
-- **Jev** is the judgment: given that history, how concerning is this line
-  *right now*? It is asked only about what the bypass did not clear (measured
-  ~11% of completed records), which is what lets the source run at ~40 lines/sec
-  against a model that judges ~30/sec.
+- **The decision model** judges lines the bypass did not clear. Its capacity
+  depends on the selected model and hardware. The local Cribl adapter completed
+  about 0.12 four-question decisions/sec in a nine-request check on this machine
+  (2026-10-10); concurrency from one to three did not improve throughput.
 - If Jev is unreachable the pipeline routes to **review by design**, never
   dropped, and the board turns the Jev node red and says so. `just doctor`
   checks the endpoint before you get that far.
