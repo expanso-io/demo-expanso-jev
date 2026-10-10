@@ -216,6 +216,10 @@ uv run -s shared/cribl-decision-server.py
 
 # in .env, alongside the other settings:
 JEV_API_URL=http://127.0.0.1:8100/v1/systemone
+
+# from the repository root, use a steady source rate this model can serve:
+JEV_GEN_RATE=0.2 JEV_GEN_JAGGED=0 just up-triage
+just act3
 ```
 
 No `TYPESAFE_API_KEY`, no relay tunnel, no network at request time. The

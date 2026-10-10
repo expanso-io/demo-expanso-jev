@@ -70,6 +70,7 @@ _tokenizer = None
 _model = None
 _device = None
 _infer_lock = threading.Lock()
+_request_lock = threading.Lock()
 
 
 def log(msg):
@@ -297,7 +298,10 @@ class Handler(BaseHTTPRequestHandler):
         except json.JSONDecodeError:
             body = {}
         t0 = time.time()
-        answers = answer_all(body.get("questions", {}), body.get("state", ""))
+        # Keep one request's questions together so concurrent callers do not
+        # make each other exceed the pipeline's response timeout.
+        with _request_lock:
+            answers = answer_all(body.get("questions", {}), body.get("state", ""))
         state_text = body.get("state", "")
         if not isinstance(state_text, str):
             state_text = json.dumps(state_text, sort_keys=True)
