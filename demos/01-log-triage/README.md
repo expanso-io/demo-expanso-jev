@@ -183,12 +183,56 @@ generator2.py --POST :8080/logs--> Expanso Edge, job `log-triage` (deployed via 
 | `JEV_LIVE_GEN` | `generator2.py` | generator script |
 | `JEV_LIVE_PIPELINE` | `http://127.0.0.1:8080/logs` | Edge HTTP input (chaos injection target) |
 | `NODE_ID` | `laptop` | node label stamped on events |
+| `CRIBL_DECISION_PORT` | `8100` | Local Cribl decision server listen port. |
+| `CRIBL_DECISION_CACHE` | `~/.cache/cribl-decision` | Weights dir for the local Cribl server (~8GB). |
 
 The pipeline's output directory is deliberately **not** a variable. It writes
 `data/*.jsonl` relative to the Edge agent's working directory, and `start.sh`
 `cd`s to this package before launching anything — so the files always land
 in `data/` and `server.py` always tails exactly that. Nothing to configure,
 nothing to desync, and the package works from any checkout location.
+
+## Part two: run the decision model locally (Cribl cribl-decision-1.0)
+
+Act three asks a cloud model for every judgment. Part two keeps the same
+pipeline and the same four questions, but the answers come from your own
+machine: [Cribl's cribl-decision-1.0](https://huggingface.co/cribl-ai/cribl-decision-1.0),
+a 4B open-weight (Apache-2.0) decision model released October 2026
+([announcement](https://cribl.io/blog/cribl-decision-1-0-a-foundation-for-telemetry-decision-models/)).
+
+It speaks the same typed-question API as Jev -- `noul`, `choice`, `score`
+over options you supply, probabilities out of a single forward pass, no
+free-form text to parse -- so the pipeline needs no changes: point
+`JEV_API_URL` at the local server and the cascade, the hold-and-release
+degradation, and the dashboard all behave exactly as before. The only
+difference is where the judgment happens.
+
+```bash
+# one time: fetch the weights (~8GB base + 77MB adapter)
+uv run -s shared/cribl-decision-server.py --download-only
+
+# every demo: start the local decision server (:8100)
+uv run -s shared/cribl-decision-server.py
+
+# in .env, alongside the other settings:
+JEV_API_URL=http://127.0.0.1:8100/v1/systemone
+```
+
+No `TYPESAFE_API_KEY`, no relay tunnel, no network at request time. The
+server loads the weights once at startup (about 15s on Apple silicon after
+the first run), then answers each 4-question request in ~5s on an M5 Max
+with per-question latency on stderr. It reports
+`"model": "cribl-decision-1.0-local"`, which the pipeline accepts like any
+real answer -- only `"jev-unavailable"` triggers the hold path.
+
+Two honest caveats. First, probabilities out of a 4B local model are
+scores, not calibrated certainties: the cascade's confidence thresholds
+were tuned against Jev, and in our side-by-side the local model runs
+hotter on `actionable` (0.70s where the mock says 0.45) -- so watch where
+it lands before trusting a page, and expect more `review` while you
+recalibrate. Second, the weights live in `$CRIBL_DECISION_CACHE`
+(default `~/.cache/cribl-decision`, ~8.8GB); Apple-silicon GPU via MPS
+with a CPU fallback elsewhere.
 
 ## Troubleshooting
 

@@ -148,6 +148,7 @@ Details, environment variables and troubleshooting:
 | `demos/02-…` to `demos/10-…` | Nine more Expanso + Jev pipelines, each with a `pipeline.yaml`, a sample `input.jsonl`, recorded fixtures and a README: ticket routing, sensitivity masking, sensor triage, agent guardrails, smart sampling, SOC pre-filtering, data quality, moderation, feedback mining. Each is explained and stepped through in `index.html`. |
 | [`demos/11-pod-labels/`](demos/11-pod-labels/README.md) | Keeps Kubernetes pod labels true: Expanso reads pod logs, asks Jev one question when the evidence might change a label, and patches or un-patches it. Runs on a local k3d cluster with one command; the adapter and pipeline work on your own cluster too. |
 | `shared/jev-mock-server.py` | A zero-credential responder for Jev's API, using keyword rules. It produced the recorded answers the fixture runs replay. |
+| `shared/cribl-decision-server.py` | "Info is not enough, part two": Cribl's open-weight cribl-decision-1.0 served locally behind the same `/v1/systemone` API. Point `JEV_API_URL` at `:8100` and the demos judge on-machine -- no key, no relay. |
 | `index.html` | The explorer for all eleven examples. Built by `tools/build-explorers.py` from the fixture runs. |
 | `tools/fixture-runner.py` | Runs every pipeline on its shipped input and asserts the output; writes the dated report. |
 | `public-bar.toml`, `public-features.json`, `.demo-kit/` | The shared public-example check and the retained-feature baseline. See [`docs/RUNBOOK.md`](docs/RUNBOOK.md). |
