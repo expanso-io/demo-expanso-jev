@@ -32,7 +32,7 @@ FORBIDDEN = {
     r"\bthis\.ts\b": "source timestamp is fine in data, but keep log lines to operational metadata",
     r"JEV_API_URL|https?://": "an endpoint URL",
     r"\bquestions\b|\binstructions\b|\bcriteria\b": "the Jev prompt",
-    r"\bthis\.jev\b(?!\.answers|_ok|_decision)": "the whole Jev response body",
+    r"\bthis\.categorization\b(?!\.answers|_ok|_decision)": "the whole Jev response body",
     r"root\s*=\s*this\b|root\s*=\s*@": "the whole record or all metadata",
     r"api[_-]?key|token|secret|password|credential": "a credential",
     r"this\.fingerprint(?!\.string\(\)\.hash\()": "the raw fingerprint (hash it)",
@@ -97,8 +97,8 @@ for fn in ("pipeline-logging.yaml", "pipeline-recurrence.yaml"):
 print("--- pipeline-recurrence.yaml: only the routine path may be sampled")
 rec_src = (PKG / "pipeline-recurrence.yaml").read_text()
 kind = rec_src[rec_src.index("meta log_kind = if this.bypass {"):rec_src.index("meta log_summary")]
-held = kind[kind.index('} else if this.jev_decision == "held"'):kind.index("} else if !this.jev_ok")]
-non_bypass = kind[kind.index("} else if !this.jev_ok"):]
+held = kind[kind.index('} else if this.categorization_decision == "held"'):kind.index("} else if !this.categorization_ok")]
+non_bypass = kind[kind.index("} else if !this.categorization_ok"):]
 # A held record logs once, when first held. Its retries are the same event coming
 # round again and are deliberately silent; the release is logged as a judgment.
 check("held: first hold logs, retries are silent, keyed on held_attempts (not occurrence)",

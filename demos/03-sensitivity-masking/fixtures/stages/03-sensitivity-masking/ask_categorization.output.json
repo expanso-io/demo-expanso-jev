@@ -1,6 +1,6 @@
 {
   "email": "jane.doe@example.com",
-  "jev": {
+  "categorization": {
     "answers": {
       "contains_credentials": {
         "noul": 0.12,

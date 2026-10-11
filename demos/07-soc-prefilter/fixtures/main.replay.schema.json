@@ -11,8 +11,8 @@
           "failures_10m",
           "geo",
           "ip",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "result",
           "ts",
           "user"
@@ -27,7 +27,7 @@
           "ip": {
             "const": "203.0.113.99"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -114,7 +114,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "siem"
           },
           "result": {
@@ -137,8 +137,8 @@
         "required": [
           "distinct_users_10m",
           "ip",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "note",
           "result",
           "success_rate",
@@ -151,7 +151,7 @@
           "ip": {
             "const": "192.0.2.55"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -238,7 +238,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "warm"
           },
           "note": {
@@ -264,8 +264,8 @@
         "required": [
           "geo",
           "ip",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "mfa",
           "result",
           "ts",
@@ -278,7 +278,7 @@
           "ip": {
             "const": "10.4.2.22"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -365,7 +365,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "cold"
           },
           "mfa": {
@@ -391,8 +391,8 @@
         "required": [
           "geo",
           "ip",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "mfa",
           "result",
           "ts",
@@ -405,7 +405,7 @@
           "ip": {
             "const": "10.4.2.18"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -492,7 +492,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "cold"
           },
           "mfa": {
@@ -518,8 +518,8 @@
         "required": [
           "geo",
           "ip",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "prev_login_ago_min",
           "prev_login_geo",
           "result",
@@ -533,7 +533,7 @@
           "ip": {
             "const": "198.51.100.7"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -620,7 +620,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "warm"
           },
           "prev_login_ago_min": {

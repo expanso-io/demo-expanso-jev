@@ -46,9 +46,9 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
             "msg": "GET /health 200 3ms",
@@ -60,13 +60,13 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "GET /health 200 3ms",
             "received_at": "2026-10-05T20:33:35.116521-07:00",
             "service": "api-gw",
@@ -76,13 +76,13 @@
         {
           "n": 6,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "GET /health 200 3ms",
             "received_at": "2026-10-05T20:33:35.116521-07:00",
             "service": "api-gw",
@@ -183,9 +183,9 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
             "msg": "GET /health 200 2ms",
@@ -197,13 +197,13 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "GET /health 200 2ms",
             "received_at": "2026-10-05T20:33:36.12193-07:00",
             "service": "api-gw",
@@ -213,13 +213,13 @@
         {
           "n": 6,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "GET /health 200 2ms",
             "received_at": "2026-10-05T20:33:36.12193-07:00",
             "service": "api-gw",
@@ -320,9 +320,9 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1003
             },
             "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
@@ -334,13 +334,13 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1003
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
             "received_at": "2026-10-05T20:33:37.128746-07:00",
             "service": "api-gw",
@@ -350,13 +350,13 @@
         {
           "n": 6,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1003
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
             "received_at": "2026-10-05T20:33:37.128746-07:00",
             "service": "api-gw",
@@ -457,9 +457,9 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1007
             },
             "msg": "GET /health 200 3ms",
@@ -471,13 +471,13 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1007
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "GET /health 200 3ms",
             "received_at": "2026-10-05T20:33:38.134397-07:00",
             "service": "api-gw",
@@ -487,13 +487,13 @@
         {
           "n": 6,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1007
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "GET /health 200 3ms",
             "received_at": "2026-10-05T20:33:38.134397-07:00",
             "service": "api-gw",
@@ -594,9 +594,9 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1013
             },
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
@@ -608,13 +608,13 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1013
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
             "received_at": "2026-10-05T20:33:39.152784-07:00",
             "service": "worker-3",
@@ -624,13 +624,13 @@
         {
           "n": 6,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1013
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
             "received_at": "2026-10-05T20:33:39.152784-07:00",
             "service": "worker-3",
@@ -731,9 +731,9 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
             "msg": "GET /health 200 2ms",
@@ -745,13 +745,13 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "GET /health 200 2ms",
             "received_at": "2026-10-05T20:33:40.174825-07:00",
             "service": "api-gw",
@@ -761,13 +761,13 @@
         {
           "n": 6,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "GET /health 200 2ms",
             "received_at": "2026-10-05T20:33:40.174825-07:00",
             "service": "api-gw",
@@ -868,9 +868,9 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
@@ -882,13 +882,13 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
             "received_at": "2026-10-05T20:33:41.182539-07:00",
             "service": "db-proxy",
@@ -898,13 +898,13 @@
         {
           "n": 6,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
             "received_at": "2026-10-05T20:33:41.182539-07:00",
             "service": "db-proxy",
@@ -1005,9 +1005,9 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
             "msg": "GET /health 200 3ms",
@@ -1019,13 +1019,13 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "GET /health 200 3ms",
             "received_at": "2026-10-05T20:33:42.188861-07:00",
             "service": "api-gw",
@@ -1035,13 +1035,13 @@
         {
           "n": 6,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "keep",
-            "jev_score": 0,
+            "categorization_decision": "keep",
+            "categorization_score": 0,
             "msg": "GET /health 200 3ms",
             "received_at": "2026-10-05T20:33:42.188861-07:00",
             "service": "api-gw",

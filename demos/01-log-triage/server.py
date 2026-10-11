@@ -166,13 +166,13 @@ class Hub:
         """Counters for ONE run: the span since the current pipeline took over.
 
         The board's claims use ONE denominator: completed receipts, i.e. records
-        the pipeline actually wrote. bypassed + judged + jev_failed == received,
+        the pipeline actually wrote. bypassed + judged + categorization_failed == received,
         exactly. `produced` and `accepted` are counted at the source, earlier in
         time and across run boundaries, so they are diagnostics only (visible in
         /health) and are never divided into anything on screen.
         """
         return {"mode": mode, "started": time.time(), "produced": 0, "accepted": 0,
-                "bypassed": 0, "judged": 0, "jev_failed": 0, "caught": 0, "quieted": 0,
+                "bypassed": 0, "judged": 0, "categorization_failed": 0, "caught": 0, "quieted": 0,
                 # hold path: held_in = records first held; released = later judged
                 # for real; gave_up = sent to review after HOLD_MAX_ATTEMPTS
                 "held_in": 0, "released": 0, "gave_up": 0,
@@ -464,7 +464,7 @@ def ingest(b, rec):
     record is in none of the three, and only `received` / `completed` count it.
       bypassed    routed_by == "expanso-bypass": matched the rules, NO model call
       judged      has a `jev` block and Jev answered
-      jev_failed  has a `jev` block but Jev did not answer; the record was KEPT
+      categorization_failed  has a `jev` block but Jev did not answer; the record was KEPT
                   (held for review), so this is an inference failure, not a drop
     """
     if b == "held":
@@ -479,7 +479,7 @@ def ingest(b, rec):
         HUB.publish({"t": "rec", "bin": "held", "judged": False, "bypassed": False, "ok": False,
                      "hero": _hero(rec)})
         return
-    judged = "jev" in rec
+    judged = "categorization" in rec
     bypassed = rec.get("routed_by") == "expanso-bypass"
     try:
         attempts = int(rec.get("held_attempts") or 0)
@@ -492,20 +492,20 @@ def ingest(b, rec):
         run["received"][b] += 1
         HUB.per_sec[int(time.time())] += 1
         if b != "raw":
-            HUB.last_kind = "jev" if "jev_decision" in rec else "expanso"
+            HUB.last_kind = "jev" if "categorization_decision" in rec else "expanso"
         if bypassed:
             run["bypassed"] += 1
         if attempts > 0:
             # A held record can finish after the model is switched off. The
             # disabled gate archives it without a judgment, but it is released.
-            run["gave_up" if judged and not rec.get("jev_ok", True) else "released"] += 1
+            run["gave_up" if judged and not rec.get("categorization_ok", True) else "released"] += 1
         if judged:
-            ok = rec.get("jev_ok", True)
+            ok = rec.get("categorization_ok", True)
             HUB.jev_fail.append(not ok)
             if ok:
-                HUB.model = (rec.get("jev") or {}).get("model")
-            run["judged" if ok else "jev_failed"] += 1
-            base, got = rec.get("baseline"), rec.get("jev_decision")
+                HUB.model = (rec.get("categorization") or {}).get("model")
+            run["judged" if ok else "categorization_failed"] += 1
+            base, got = rec.get("baseline"), rec.get("categorization_decision")
             if ok and base == "archive" and got in ("page", "notify"):
                 run["caught"] += 1
                 HUB.caught.append(rec)
@@ -513,7 +513,7 @@ def ingest(b, rec):
                 run["quieted"] += 1
                 HUB.quieted.append(rec)
     HUB.publish({"t": "rec", "bin": b, "judged": judged, "bypassed": bypassed,
-                 "ok": bool(judged and rec.get("jev_ok", True)), "released": attempts > 0,
+                 "ok": bool(judged and rec.get("categorization_ok", True)), "released": attempts > 0,
                  "hero": _hero(rec)})
 
 

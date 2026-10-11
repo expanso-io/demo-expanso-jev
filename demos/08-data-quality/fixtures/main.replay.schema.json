@@ -11,8 +11,8 @@
           "amount",
           "currency",
           "customer_id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "order_id",
           "ts"
         ],
@@ -26,7 +26,7 @@
           "customer_id": {
             "const": "cus-88121"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -87,7 +87,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "warehouse"
           },
           "order_id": {
@@ -108,8 +108,8 @@
           "amount",
           "currency",
           "customer_id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "order_id",
           "ts"
         ],
@@ -123,7 +123,7 @@
           "customer_id": {
             "const": null
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -184,7 +184,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "quarantine"
           },
           "order_id": {
@@ -205,8 +205,8 @@
           "amount",
           "currency",
           "customer_id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "order_id",
           "ts"
         ],
@@ -220,7 +220,7 @@
           "customer_id": {
             "const": "cus-10422"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -281,7 +281,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "quarantine"
           },
           "order_id": {
@@ -302,8 +302,8 @@
           "amount",
           "currency",
           "customer_id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "order_id",
           "ts"
         ],
@@ -317,7 +317,7 @@
           "customer_id": {
             "const": null
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -378,7 +378,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "quarantine"
           },
           "order_id": {
@@ -399,8 +399,8 @@
           "amount",
           "currency",
           "customer_id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "order_id",
           "ts"
         ],
@@ -414,7 +414,7 @@
           "customer_id": {
             "const": "cus-77190"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -475,7 +475,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "warehouse"
           },
           "order_id": {

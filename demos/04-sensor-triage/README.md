@@ -6,7 +6,7 @@ Every reading is judged against its asset's normal range, in context rather than
 
 `pipeline.yaml` — POST /readings in; Jev scores anomaly and judges dispatch; cascade fires a work-order webhook, flags files, or rolls up.
 The Jev call is
-`POST ${JEV_API_URL}` with `jev-unavailable` graceful degradation.
+`POST ${JEV_API_URL}` with `categorization-unavailable` graceful degradation.
 
 `input.jsonl` — sample events for a quick test.
 

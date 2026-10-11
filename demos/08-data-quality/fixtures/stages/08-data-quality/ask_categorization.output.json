@@ -2,7 +2,7 @@
   "amount": 129.99,
   "currency": "USD",
   "customer_id": "cus-88121",
-  "jev": {
+  "categorization": {
     "answers": {
       "conformant": {
         "noul": 0.92,

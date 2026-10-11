@@ -247,11 +247,11 @@ input = "demos/01-log-triage/fixtures/stages/01-log-triage-recurrence/bypass_che
 output = "demos/01-log-triage/fixtures/stages/01-log-triage-recurrence/bypass_check.output.json"
 
 [[stages]]
-id = "01-log-triage-recurrence.ask_jev"
+id = "01-log-triage-recurrence.ask_categorization"
 pipeline = "01-log-triage-recurrence"
-selector = "[data-stage-id=\"01-log-triage-recurrence.ask_jev\"]"
-input = "demos/01-log-triage/fixtures/stages/01-log-triage-recurrence/ask_jev.input.json"
-output = "demos/01-log-triage/fixtures/stages/01-log-triage-recurrence/ask_jev.output.json"
+selector = "[data-stage-id=\"01-log-triage-recurrence.ask_categorization\"]"
+input = "demos/01-log-triage/fixtures/stages/01-log-triage-recurrence/ask_categorization.input.json"
+output = "demos/01-log-triage/fixtures/stages/01-log-triage-recurrence/ask_categorization.output.json"
 
 [[stages]]
 id = "01-log-triage-recurrence.cascade"
@@ -317,11 +317,11 @@ input = "demos/02-ticket-router/fixtures/stages/02-ticket-router/start_timer.inp
 output = "demos/02-ticket-router/fixtures/stages/02-ticket-router/start_timer.output.json"
 
 [[stages]]
-id = "02-ticket-router.ask_jev"
+id = "02-ticket-router.ask_categorization"
 pipeline = "02-ticket-router"
-selector = "[data-stage-id=\"02-ticket-router.ask_jev\"]"
-input = "demos/02-ticket-router/fixtures/stages/02-ticket-router/ask_jev.input.json"
-output = "demos/02-ticket-router/fixtures/stages/02-ticket-router/ask_jev.output.json"
+selector = "[data-stage-id=\"02-ticket-router.ask_categorization\"]"
+input = "demos/02-ticket-router/fixtures/stages/02-ticket-router/ask_categorization.input.json"
+output = "demos/02-ticket-router/fixtures/stages/02-ticket-router/ask_categorization.output.json"
 
 [[stages]]
 id = "02-ticket-router.route_decision"
@@ -366,11 +366,11 @@ input = "demos/03-sensitivity-masking/fixtures/stages/03-sensitivity-masking/sta
 output = "demos/03-sensitivity-masking/fixtures/stages/03-sensitivity-masking/start_timer.output.json"
 
 [[stages]]
-id = "03-sensitivity-masking.ask_jev"
+id = "03-sensitivity-masking.ask_categorization"
 pipeline = "03-sensitivity-masking"
-selector = "[data-stage-id=\"03-sensitivity-masking.ask_jev\"]"
-input = "demos/03-sensitivity-masking/fixtures/stages/03-sensitivity-masking/ask_jev.input.json"
-output = "demos/03-sensitivity-masking/fixtures/stages/03-sensitivity-masking/ask_jev.output.json"
+selector = "[data-stage-id=\"03-sensitivity-masking.ask_categorization\"]"
+input = "demos/03-sensitivity-masking/fixtures/stages/03-sensitivity-masking/ask_categorization.input.json"
+output = "demos/03-sensitivity-masking/fixtures/stages/03-sensitivity-masking/ask_categorization.output.json"
 
 [[stages]]
 id = "03-sensitivity-masking.pick_policy"
@@ -422,11 +422,11 @@ input = "demos/04-sensor-triage/fixtures/stages/04-sensor-triage/start_timer.inp
 output = "demos/04-sensor-triage/fixtures/stages/04-sensor-triage/start_timer.output.json"
 
 [[stages]]
-id = "04-sensor-triage.ask_jev"
+id = "04-sensor-triage.ask_categorization"
 pipeline = "04-sensor-triage"
-selector = "[data-stage-id=\"04-sensor-triage.ask_jev\"]"
-input = "demos/04-sensor-triage/fixtures/stages/04-sensor-triage/ask_jev.input.json"
-output = "demos/04-sensor-triage/fixtures/stages/04-sensor-triage/ask_jev.output.json"
+selector = "[data-stage-id=\"04-sensor-triage.ask_categorization\"]"
+input = "demos/04-sensor-triage/fixtures/stages/04-sensor-triage/ask_categorization.input.json"
+output = "demos/04-sensor-triage/fixtures/stages/04-sensor-triage/ask_categorization.output.json"
 
 [[stages]]
 id = "04-sensor-triage.route_decision"
@@ -471,11 +471,11 @@ input = "demos/05-agent-guardrail/fixtures/stages/05-agent-guardrail/start_timer
 output = "demos/05-agent-guardrail/fixtures/stages/05-agent-guardrail/start_timer.output.json"
 
 [[stages]]
-id = "05-agent-guardrail.ask_jev"
+id = "05-agent-guardrail.ask_categorization"
 pipeline = "05-agent-guardrail"
-selector = "[data-stage-id=\"05-agent-guardrail.ask_jev\"]"
-input = "demos/05-agent-guardrail/fixtures/stages/05-agent-guardrail/ask_jev.input.json"
-output = "demos/05-agent-guardrail/fixtures/stages/05-agent-guardrail/ask_jev.output.json"
+selector = "[data-stage-id=\"05-agent-guardrail.ask_categorization\"]"
+input = "demos/05-agent-guardrail/fixtures/stages/05-agent-guardrail/ask_categorization.input.json"
+output = "demos/05-agent-guardrail/fixtures/stages/05-agent-guardrail/ask_categorization.output.json"
 
 [[stages]]
 id = "05-agent-guardrail.route_decision"
@@ -520,11 +520,11 @@ input = "demos/06-smart-sampling/fixtures/stages/06-smart-sampling/start_timer.i
 output = "demos/06-smart-sampling/fixtures/stages/06-smart-sampling/start_timer.output.json"
 
 [[stages]]
-id = "06-smart-sampling.ask_jev"
+id = "06-smart-sampling.ask_categorization"
 pipeline = "06-smart-sampling"
-selector = "[data-stage-id=\"06-smart-sampling.ask_jev\"]"
-input = "demos/06-smart-sampling/fixtures/stages/06-smart-sampling/ask_jev.input.json"
-output = "demos/06-smart-sampling/fixtures/stages/06-smart-sampling/ask_jev.output.json"
+selector = "[data-stage-id=\"06-smart-sampling.ask_categorization\"]"
+input = "demos/06-smart-sampling/fixtures/stages/06-smart-sampling/ask_categorization.input.json"
+output = "demos/06-smart-sampling/fixtures/stages/06-smart-sampling/ask_categorization.output.json"
 
 [[stages]]
 id = "06-smart-sampling.score_event"
@@ -576,11 +576,11 @@ input = "demos/07-soc-prefilter/fixtures/stages/07-soc-prefilter/start_timer.inp
 output = "demos/07-soc-prefilter/fixtures/stages/07-soc-prefilter/start_timer.output.json"
 
 [[stages]]
-id = "07-soc-prefilter.ask_jev"
+id = "07-soc-prefilter.ask_categorization"
 pipeline = "07-soc-prefilter"
-selector = "[data-stage-id=\"07-soc-prefilter.ask_jev\"]"
-input = "demos/07-soc-prefilter/fixtures/stages/07-soc-prefilter/ask_jev.input.json"
-output = "demos/07-soc-prefilter/fixtures/stages/07-soc-prefilter/ask_jev.output.json"
+selector = "[data-stage-id=\"07-soc-prefilter.ask_categorization\"]"
+input = "demos/07-soc-prefilter/fixtures/stages/07-soc-prefilter/ask_categorization.input.json"
+output = "demos/07-soc-prefilter/fixtures/stages/07-soc-prefilter/ask_categorization.output.json"
 
 [[stages]]
 id = "07-soc-prefilter.route_decision"
@@ -625,11 +625,11 @@ input = "demos/08-data-quality/fixtures/stages/08-data-quality/start_timer.input
 output = "demos/08-data-quality/fixtures/stages/08-data-quality/start_timer.output.json"
 
 [[stages]]
-id = "08-data-quality.ask_jev"
+id = "08-data-quality.ask_categorization"
 pipeline = "08-data-quality"
-selector = "[data-stage-id=\"08-data-quality.ask_jev\"]"
-input = "demos/08-data-quality/fixtures/stages/08-data-quality/ask_jev.input.json"
-output = "demos/08-data-quality/fixtures/stages/08-data-quality/ask_jev.output.json"
+selector = "[data-stage-id=\"08-data-quality.ask_categorization\"]"
+input = "demos/08-data-quality/fixtures/stages/08-data-quality/ask_categorization.input.json"
+output = "demos/08-data-quality/fixtures/stages/08-data-quality/ask_categorization.output.json"
 
 [[stages]]
 id = "08-data-quality.route_decision"
@@ -674,11 +674,11 @@ input = "demos/09-moderation/fixtures/stages/09-moderation/start_timer.input.jso
 output = "demos/09-moderation/fixtures/stages/09-moderation/start_timer.output.json"
 
 [[stages]]
-id = "09-moderation.ask_jev"
+id = "09-moderation.ask_categorization"
 pipeline = "09-moderation"
-selector = "[data-stage-id=\"09-moderation.ask_jev\"]"
-input = "demos/09-moderation/fixtures/stages/09-moderation/ask_jev.input.json"
-output = "demos/09-moderation/fixtures/stages/09-moderation/ask_jev.output.json"
+selector = "[data-stage-id=\"09-moderation.ask_categorization\"]"
+input = "demos/09-moderation/fixtures/stages/09-moderation/ask_categorization.input.json"
+output = "demos/09-moderation/fixtures/stages/09-moderation/ask_categorization.output.json"
 
 [[stages]]
 id = "09-moderation.route_decision"
@@ -723,11 +723,11 @@ input = "demos/10-feedback-miner/fixtures/stages/10-feedback-miner/start_timer.i
 output = "demos/10-feedback-miner/fixtures/stages/10-feedback-miner/start_timer.output.json"
 
 [[stages]]
-id = "10-feedback-miner.ask_jev"
+id = "10-feedback-miner.ask_categorization"
 pipeline = "10-feedback-miner"
-selector = "[data-stage-id=\"10-feedback-miner.ask_jev\"]"
-input = "demos/10-feedback-miner/fixtures/stages/10-feedback-miner/ask_jev.input.json"
-output = "demos/10-feedback-miner/fixtures/stages/10-feedback-miner/ask_jev.output.json"
+selector = "[data-stage-id=\"10-feedback-miner.ask_categorization\"]"
+input = "demos/10-feedback-miner/fixtures/stages/10-feedback-miner/ask_categorization.input.json"
+output = "demos/10-feedback-miner/fixtures/stages/10-feedback-miner/ask_categorization.output.json"
 
 [[stages]]
 id = "10-feedback-miner.route_decision"

@@ -1,7 +1,7 @@
 {
   "geo": "Seattle, US",
   "ip": "10.4.2.18",
-  "jev": {
+  "categorization": {
     "answers": {
       "escalate": {
         "noul": 0.12,

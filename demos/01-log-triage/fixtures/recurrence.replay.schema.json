@@ -156,7 +156,7 @@
             "const": "edge-1"
           },
           "routed_by": {
-            "const": "jev"
+            "const": "categorization"
           },
           "service": {
             "const": "auth"
@@ -211,7 +211,7 @@
             "const": "edge-1"
           },
           "routed_by": {
-            "const": "jev"
+            "const": "categorization"
           },
           "service": {
             "const": "api"
@@ -266,7 +266,7 @@
             "const": "edge-1"
           },
           "routed_by": {
-            "const": "jev"
+            "const": "categorization"
           },
           "service": {
             "const": "api"
@@ -321,7 +321,7 @@
             "const": "edge-1"
           },
           "routed_by": {
-            "const": "jev"
+            "const": "categorization"
           },
           "service": {
             "const": "api"
@@ -486,7 +486,7 @@
             "const": "edge-1"
           },
           "routed_by": {
-            "const": "jev"
+            "const": "categorization"
           },
           "service": {
             "const": "db"
@@ -541,7 +541,7 @@
             "const": "edge-1"
           },
           "routed_by": {
-            "const": "jev"
+            "const": "categorization"
           },
           "service": {
             "const": "edge"
@@ -596,7 +596,7 @@
             "const": "edge-1"
           },
           "routed_by": {
-            "const": "jev"
+            "const": "categorization"
           },
           "service": {
             "const": "cache"
@@ -706,7 +706,7 @@
             "const": "edge-1"
           },
           "routed_by": {
-            "const": "jev"
+            "const": "categorization"
           },
           "service": {
             "const": "db"
@@ -761,7 +761,7 @@
             "const": "edge-1"
           },
           "routed_by": {
-            "const": "jev"
+            "const": "categorization"
           },
           "service": {
             "const": "auth"
@@ -816,7 +816,7 @@
             "const": "edge-1"
           },
           "routed_by": {
-            "const": "jev"
+            "const": "categorization"
           },
           "service": {
             "const": "auth"
@@ -871,7 +871,7 @@
             "const": "edge-1"
           },
           "routed_by": {
-            "const": "jev"
+            "const": "categorization"
           },
           "service": {
             "const": "auth"

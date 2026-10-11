@@ -29,9 +29,9 @@ config:
       # ── Ask Jev: does this tool call match intent, and how risky is it? ──
       - label: start_timer
         mutation: |
-          meta jev_start = timestamp_unix_milli()
+          meta categorization_start = timestamp_unix_milli()
 
-      - label: ask_jev
+      - label: ask_categorization
         branch:
           request_map: |
             root = {
@@ -67,23 +67,23 @@ config:
             - catch:
               # Fail closed: if Jev is unreachable, hold for approval
               - mapping: |
-                  root = {"answers": {}, "model": "jev-unavailable"}
+                  root = {"answers": {}, "model": "categorization-unavailable"}
           result_map: |
-            root.jev = {
+            root.categorization = {
               "answers": this.answers,
               "model": this.model.or("jev-latest"),
-              "ms": timestamp_unix_milli() - metadata("jev_start")
+              "ms": timestamp_unix_milli() - metadata("categorization_start")
             }
 
       # ── Confidence-gated cascade. Fail closed on uncertainty. ──
       - label: route_decision
         mapping: |
           root = this
-          let intent = this.jev.answers.intent_match.noul.or(0)
-          let risk = this.jev.answers.risk.choice.or("other")
-          let risk_conf = this.jev.answers.risk.confidence.or(0)
+          let intent = this.categorization.answers.intent_match.noul.or(0)
+          let risk = this.categorization.answers.risk.choice.or("other")
+          let risk_conf = this.categorization.answers.risk.confidence.or(0)
 
-          root.jev_decision = if $intent < 0.3 || ($risk != "safe" && $risk_conf >= 0.7) {
+          root.categorization_decision = if $intent < 0.3 || ($risk != "safe" && $risk_conf >= 0.7) {
             "block"
           } else if $risk != "safe" || $intent < 0.7 {
             "hold"
@@ -101,13 +101,13 @@ config:
         - label: by_decision
           switch:
             cases:
-              - check: this.jev_decision == "block"
+              - check: this.categorization_decision == "block"
                 output:
                   label: blocked
                   file:
                     path: ./data/expanso-edge-categorization-agent-guardrail/blocked-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
-              - check: this.jev_decision == "hold"
+              - check: this.categorization_decision == "hold"
                 output:
                   label: held
                   file:

@@ -117,7 +117,7 @@
             "fingerprint": "api::get /health # #ms",
             "held_attempts": 0,
             "id": "evt-000101",
-            "jev_decision": "archive",
+            "categorization_decision": "archive",
             "level": "INFO",
             "msg": "GET /health 200 2ms",
             "node_id": "edge-1",
@@ -141,7 +141,7 @@
             "fingerprint": "api::get /health # #ms",
             "held_attempts": 0,
             "id": "evt-000101",
-            "jev_decision": "archive",
+            "categorization_decision": "archive",
             "level": "INFO",
             "msg": "GET /health 200 2ms",
             "node_id": "edge-1",
@@ -165,7 +165,7 @@
             "fingerprint": "api::get /health # #ms",
             "held_attempts": 0,
             "id": "evt-000101",
-            "jev_decision": "archive",
+            "categorization_decision": "archive",
             "level": "INFO",
             "msg": "GET /health 200 2ms",
             "node_id": "edge-1",
@@ -189,7 +189,7 @@
             "fingerprint": "api::get /health # #ms",
             "held_attempts": 0,
             "id": "evt-000101",
-            "jev_decision": "archive",
+            "categorization_decision": "archive",
             "level": "INFO",
             "msg": "GET /health 200 2ms",
             "node_id": "edge-1",
@@ -321,7 +321,7 @@
             "fingerprint": "cache::cache hit rate #.# window#m",
             "held_attempts": 0,
             "id": "evt-000102",
-            "jev_decision": "archive",
+            "categorization_decision": "archive",
             "level": "INFO",
             "msg": "cache hit rate 0.94 window=5m",
             "node_id": "edge-1",
@@ -345,7 +345,7 @@
             "fingerprint": "cache::cache hit rate #.# window#m",
             "held_attempts": 0,
             "id": "evt-000102",
-            "jev_decision": "archive",
+            "categorization_decision": "archive",
             "level": "INFO",
             "msg": "cache hit rate 0.94 window=5m",
             "node_id": "edge-1",
@@ -369,7 +369,7 @@
             "fingerprint": "cache::cache hit rate #.# window#m",
             "held_attempts": 0,
             "id": "evt-000102",
-            "jev_decision": "archive",
+            "categorization_decision": "archive",
             "level": "INFO",
             "msg": "cache hit rate 0.94 window=5m",
             "node_id": "edge-1",
@@ -393,7 +393,7 @@
             "fingerprint": "cache::cache hit rate #.# window#m",
             "held_attempts": 0,
             "id": "evt-000102",
-            "jev_decision": "archive",
+            "categorization_decision": "archive",
             "level": "INFO",
             "msg": "cache hit rate 0.94 window=5m",
             "node_id": "edge-1",
@@ -425,12 +425,12 @@
             "fingerprint": "db::slow query #.#s on orders table rows#k",
             "held_attempts": 15,
             "id": "evt-000103",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable"
+              "model": "categorization-unavailable"
             },
-            "jev_decision": "held",
-            "jev_ok": false,
+            "categorization_decision": "held",
+            "categorization_ok": false,
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "edge-1",
@@ -441,7 +441,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "jev",
+            "routed_by": "categorization",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -454,12 +454,12 @@
             "fingerprint": "db::slow query #.#s on orders table rows#k",
             "held_attempts": 15,
             "id": "evt-000103",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable"
+              "model": "categorization-unavailable"
             },
-            "jev_decision": "held",
-            "jev_ok": false,
+            "categorization_decision": "held",
+            "categorization_ok": false,
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "edge-1",
@@ -470,7 +470,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "jev",
+            "routed_by": "categorization",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -483,12 +483,12 @@
             "fingerprint": "db::slow query #.#s on orders table rows#k",
             "held_attempts": 15,
             "id": "evt-000103",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable"
+              "model": "categorization-unavailable"
             },
-            "jev_decision": "held",
-            "jev_ok": false,
+            "categorization_decision": "held",
+            "categorization_ok": false,
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "edge-1",
@@ -499,7 +499,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "jev",
+            "routed_by": "categorization",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -512,12 +512,12 @@
             "fingerprint": "db::slow query #.#s on orders table rows#k",
             "held_attempts": 15,
             "id": "evt-000103",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable"
+              "model": "categorization-unavailable"
             },
-            "jev_decision": "held",
-            "jev_ok": false,
+            "categorization_decision": "held",
+            "categorization_ok": false,
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "edge-1",
@@ -528,7 +528,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "jev",
+            "routed_by": "categorization",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -541,12 +541,12 @@
             "fingerprint": "db::slow query #.#s on orders table rows#k",
             "held_attempts": 15,
             "id": "evt-000103",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable"
+              "model": "categorization-unavailable"
             },
-            "jev_decision": "held",
-            "jev_ok": false,
+            "categorization_decision": "held",
+            "categorization_ok": false,
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "edge-1",
@@ -557,7 +557,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "jev",
+            "routed_by": "categorization",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -570,12 +570,12 @@
             "fingerprint": "db::slow query #.#s on orders table rows#k",
             "held_attempts": 15,
             "id": "evt-000103",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable"
+              "model": "categorization-unavailable"
             },
-            "jev_decision": "held",
-            "jev_ok": false,
+            "categorization_decision": "held",
+            "categorization_ok": false,
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "edge-1",
@@ -586,7 +586,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "jev",
+            "routed_by": "categorization",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -599,12 +599,12 @@
             "fingerprint": "db::slow query #.#s on orders table rows#k",
             "held_attempts": 15,
             "id": "evt-000103",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable"
+              "model": "categorization-unavailable"
             },
-            "jev_decision": "review",
-            "jev_ok": false,
+            "categorization_decision": "review",
+            "categorization_ok": false,
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "edge-1",
@@ -615,7 +615,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "jev",
+            "routed_by": "categorization",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -628,12 +628,12 @@
             "fingerprint": "db::slow query #.#s on orders table rows#k",
             "held_attempts": 15,
             "id": "evt-000103",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable"
+              "model": "categorization-unavailable"
             },
-            "jev_decision": "review",
-            "jev_ok": false,
+            "categorization_decision": "review",
+            "categorization_ok": false,
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "edge-1",
@@ -644,7 +644,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "jev",
+            "routed_by": "categorization",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -657,12 +657,12 @@
             "fingerprint": "db::slow query #.#s on orders table rows#k",
             "held_attempts": 15,
             "id": "evt-000103",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable"
+              "model": "categorization-unavailable"
             },
-            "jev_decision": "review",
-            "jev_ok": false,
+            "categorization_decision": "review",
+            "categorization_ok": false,
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "edge-1",
@@ -673,7 +673,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "jev",
+            "routed_by": "categorization",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -686,12 +686,12 @@
             "fingerprint": "db::slow query #.#s on orders table rows#k",
             "held_attempts": 15,
             "id": "evt-000103",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable"
+              "model": "categorization-unavailable"
             },
-            "jev_decision": "review",
-            "jev_ok": false,
+            "categorization_decision": "review",
+            "categorization_ok": false,
             "level": "WARN",
             "msg": "slow query 4.2s on orders table rows=120k",
             "node_id": "edge-1",
@@ -702,7 +702,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "jev",
+            "routed_by": "categorization",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }

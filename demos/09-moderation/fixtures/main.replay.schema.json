@@ -10,8 +10,8 @@
         "required": [
           "author",
           "content_id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "review_priority",
           "text"
         ],
@@ -22,7 +22,7 @@
           "content_id": {
             "const": "c-002"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -109,7 +109,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "review"
           },
           "review_priority": {
@@ -129,8 +129,8 @@
         "required": [
           "author",
           "content_id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "review_priority",
           "text"
         ],
@@ -141,7 +141,7 @@
           "content_id": {
             "const": "c-005"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -228,7 +228,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "review"
           },
           "review_priority": {
@@ -248,8 +248,8 @@
         "required": [
           "author",
           "content_id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "review_priority",
           "text"
         ],
@@ -260,7 +260,7 @@
           "content_id": {
             "const": "c-004"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -347,7 +347,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "allow"
           },
           "review_priority": {
@@ -367,8 +367,8 @@
         "required": [
           "author",
           "content_id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "review_priority",
           "text"
         ],
@@ -379,7 +379,7 @@
           "content_id": {
             "const": "c-001"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -466,7 +466,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "allow"
           },
           "review_priority": {
@@ -486,8 +486,8 @@
         "required": [
           "author",
           "content_id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "review_priority",
           "text"
         ],
@@ -498,7 +498,7 @@
           "content_id": {
             "const": "c-003"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -585,7 +585,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "review"
           },
           "review_priority": {

@@ -46,7 +46,7 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -67,7 +67,7 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -79,8 +79,8 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "sampled",
-            "jev_score": 1.4,
+            "categorization_decision": "sampled",
+            "categorization_score": 1.4,
             "msg": "GET /health 200 3ms",
             "received_at": "2026-10-05T20:33:21.312123-07:00",
             "service": "api-gw",
@@ -164,7 +164,7 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -185,7 +185,7 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -197,8 +197,8 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "sampled",
-            "jev_score": 1.4,
+            "categorization_decision": "sampled",
+            "categorization_score": 1.4,
             "msg": "GET /health 200 2ms",
             "received_at": "2026-10-05T20:33:21.31448-07:00",
             "service": "api-gw",
@@ -282,7 +282,7 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -303,7 +303,7 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -315,8 +315,8 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "sampled",
-            "jev_score": 1.4,
+            "categorization_decision": "sampled",
+            "categorization_score": 1.4,
             "msg": "POST /checkout 200 184ms user=48211 amount=129.99",
             "received_at": "2026-10-05T20:33:21.316691-07:00",
             "service": "api-gw",
@@ -400,7 +400,7 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -421,7 +421,7 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -433,8 +433,8 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "sampled",
-            "jev_score": 1.4,
+            "categorization_decision": "sampled",
+            "categorization_score": 1.4,
             "msg": "GET /health 200 3ms",
             "received_at": "2026-10-05T20:33:21.319365-07:00",
             "service": "api-gw",
@@ -518,7 +518,7 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -539,7 +539,7 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -551,8 +551,8 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "keep",
-            "jev_score": 3.4,
+            "categorization_decision": "keep",
+            "categorization_score": 3.4,
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
             "received_at": "2026-10-05T20:33:21.32156-07:00",
             "service": "worker-3",
@@ -562,7 +562,7 @@
         {
           "n": 6,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -574,8 +574,8 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "keep",
-            "jev_score": 3.4,
+            "categorization_decision": "keep",
+            "categorization_score": 3.4,
             "msg": "panic: nil pointer dereference in invoice renderer, goroutine 4412",
             "received_at": "2026-10-05T20:33:21.32156-07:00",
             "service": "worker-3",
@@ -659,7 +659,7 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -680,7 +680,7 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -692,8 +692,8 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "sampled",
-            "jev_score": 1.4,
+            "categorization_decision": "sampled",
+            "categorization_score": 1.4,
             "msg": "GET /health 200 2ms",
             "received_at": "2026-10-05T20:33:21.325279-07:00",
             "service": "api-gw",
@@ -777,7 +777,7 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -798,7 +798,7 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -810,8 +810,8 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "keep",
-            "jev_score": 3.4,
+            "categorization_decision": "keep",
+            "categorization_score": 3.4,
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
             "received_at": "2026-10-05T20:33:21.327236-07:00",
             "service": "db-proxy",
@@ -821,7 +821,7 @@
         {
           "n": 6,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -833,8 +833,8 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "keep",
-            "jev_score": 3.4,
+            "categorization_decision": "keep",
+            "categorization_score": 3.4,
             "msg": "FATAL: connection pool exhausted, 142 queries queued, oldest waiting 42000ms; rejecting new connections",
             "received_at": "2026-10-05T20:33:21.327236-07:00",
             "service": "db-proxy",
@@ -918,7 +918,7 @@
         {
           "n": 4,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -939,7 +939,7 @@
         {
           "n": 5,
           "state": {
-            "jev": {
+            "categorization": {
               "answers": {
                 "interesting": {
                   "confidence": 0.7,
@@ -951,8 +951,8 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "sampled",
-            "jev_score": 1.4,
+            "categorization_decision": "sampled",
+            "categorization_score": 1.4,
             "msg": "GET /health 200 3ms",
             "received_at": "2026-10-05T20:33:21.329617-07:00",
             "service": "api-gw",

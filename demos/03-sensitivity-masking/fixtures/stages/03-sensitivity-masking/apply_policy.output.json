@@ -1,7 +1,7 @@
 {
   "api_key": "QUARANTINED",
   "email": "jane.doe@example.com",
-  "jev": {
+  "categorization": {
     "answers": {
       "contains_credentials": {
         "noul": 0.12,
@@ -26,7 +26,7 @@
     "model": "jev-mock",
     "ms": 1
   },
-  "jev_decision": "quarantine",
+  "categorization_decision": "quarantine",
   "name": "Jane Doe",
   "plan": "team-annual",
   "policy_applied": "quarantine",

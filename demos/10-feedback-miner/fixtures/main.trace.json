@@ -52,7 +52,7 @@
           "state": {
             "customer": "acme-corp",
             "feedback_id": "f-001",
-            "jev": {
+            "categorization": {
               "answers": {
                 "churn_risk": {
                   "noul": 0.12,
@@ -91,7 +91,7 @@
           "state": {
             "customer": "acme-corp",
             "feedback_id": "f-001",
-            "jev": {
+            "categorization": {
               "answers": {
                 "churn_risk": {
                   "noul": 0.12,
@@ -120,7 +120,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "eng",
+            "categorization_decision": "eng",
             "rating": 2,
             "received_at": "2026-10-05T20:34:47.085779-07:00",
             "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
@@ -243,7 +243,7 @@
           "state": {
             "customer": "globex",
             "feedback_id": "f-002",
-            "jev": {
+            "categorization": {
               "answers": {
                 "churn_risk": {
                   "noul": 0.12,
@@ -282,7 +282,7 @@
           "state": {
             "customer": "globex",
             "feedback_id": "f-002",
-            "jev": {
+            "categorization": {
               "answers": {
                 "churn_risk": {
                   "noul": 0.12,
@@ -311,7 +311,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "analytics",
+            "categorization_decision": "analytics",
             "rating": 5,
             "received_at": "2026-10-05T20:34:47.089194-07:00",
             "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
@@ -434,7 +434,7 @@
           "state": {
             "customer": "initech",
             "feedback_id": "f-003",
-            "jev": {
+            "categorization": {
               "answers": {
                 "churn_risk": {
                   "noul": 0.92,
@@ -473,7 +473,7 @@
           "state": {
             "customer": "initech",
             "feedback_id": "f-003",
-            "jev": {
+            "categorization": {
               "answers": {
                 "churn_risk": {
                   "noul": 0.92,
@@ -502,7 +502,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "alert",
+            "categorization_decision": "alert",
             "rating": 1,
             "received_at": "2026-10-05T20:34:47.091969-07:00",
             "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
@@ -625,7 +625,7 @@
           "state": {
             "customer": "umbrella",
             "feedback_id": "f-004",
-            "jev": {
+            "categorization": {
               "answers": {
                 "churn_risk": {
                   "noul": 0.12,
@@ -664,7 +664,7 @@
           "state": {
             "customer": "umbrella",
             "feedback_id": "f-004",
-            "jev": {
+            "categorization": {
               "answers": {
                 "churn_risk": {
                   "noul": 0.12,
@@ -693,7 +693,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "analytics",
+            "categorization_decision": "analytics",
             "rating": 4,
             "received_at": "2026-10-05T20:34:47.094388-07:00",
             "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
@@ -816,7 +816,7 @@
           "state": {
             "customer": "hooli",
             "feedback_id": "f-005",
-            "jev": {
+            "categorization": {
               "answers": {
                 "churn_risk": {
                   "noul": 0.12,
@@ -855,7 +855,7 @@
           "state": {
             "customer": "hooli",
             "feedback_id": "f-005",
-            "jev": {
+            "categorization": {
               "answers": {
                 "churn_risk": {
                   "noul": 0.12,
@@ -884,7 +884,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "analytics",
+            "categorization_decision": "analytics",
             "rating": 3,
             "received_at": "2026-10-05T20:34:47.096967-07:00",
             "text": "It's fine. Does what we need."

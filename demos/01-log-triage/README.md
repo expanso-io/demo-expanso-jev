@@ -227,7 +227,7 @@ server loads the weights once at startup (about 15s on Apple silicon after
 the first run), then answers each 4-question request in ~5s on an M5 Max
 with per-question latency on stderr. It reports
 `"model": "cribl-decision-1.0-local"`, which the pipeline accepts like any
-real answer -- only `"jev-unavailable"` triggers the hold path.
+real answer -- only `"categorization-unavailable"` triggers the hold path.
 
 Two honest caveats. First, probabilities out of a 4B local model are
 scores, not calibrated certainties: the cascade's confidence thresholds

@@ -52,11 +52,11 @@ for i, (label, level, _, _, expect) in enumerate(CASES):
         bad += 1
         continue
     r, fn = got[i]
-    ok = r.get("bypass") is expect and (("jev" in r) is (not expect))
+    ok = r.get("bypass") is expect and (("categorization" in r) is (not expect))
     bad += not ok
     # "attempted" is not "judged": if the endpoint did not answer, the pipeline
     # fell back to review and no model judgment exists for that record.
-    inf = "none" if "jev" not in r else ("judged by Jev" if r.get("jev_ok") else "attempted -> fallback")
+    inf = "none" if "categorization" not in r else ("judged by Jev" if r.get("categorization_ok") else "attempted -> fallback")
     print(f"{label:34s} {level:6s} {str(r.get('bypass')):7s} {inf:22s} "
           f"{r.get('baseline','?'):9s} -> {fn:14s} {'PASS' if ok else 'FAIL'}")
 print(f"\n{len(CASES)-bad}/{len(CASES)} passed")

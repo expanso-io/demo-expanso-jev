@@ -48,7 +48,7 @@
           "state": {
             "author": "user_4821",
             "content_id": "c-001",
-            "jev": {
+            "categorization": {
               "answers": {
                 "category": {
                   "choice": "safe",
@@ -80,7 +80,7 @@
           "state": {
             "author": "user_4821",
             "content_id": "c-001",
-            "jev": {
+            "categorization": {
               "answers": {
                 "category": {
                   "choice": "safe",
@@ -103,7 +103,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "allow",
+            "categorization_decision": "allow",
             "received_at": "2026-10-05T20:34:26.984433-07:00",
             "review_priority": 0.07999999999999996,
             "text": "Just finished the new onboarding flow, super smooth! Great work team."
@@ -204,7 +204,7 @@
           "state": {
             "author": "user_9917",
             "content_id": "c-002",
-            "jev": {
+            "categorization": {
               "answers": {
                 "category": {
                   "choice": "spam",
@@ -236,7 +236,7 @@
           "state": {
             "author": "user_9917",
             "content_id": "c-002",
-            "jev": {
+            "categorization": {
               "answers": {
                 "category": {
                   "choice": "spam",
@@ -259,7 +259,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "review",
+            "categorization_decision": "review",
             "received_at": "2026-10-05T20:34:26.988406-07:00",
             "review_priority": 0.07999999999999996,
             "text": "CHECK OUT my crypto doubling service at shady-link.example, 100% guaranteed returns!!!"
@@ -360,7 +360,7 @@
           "state": {
             "author": "user_3355",
             "content_id": "c-003",
-            "jev": {
+            "categorization": {
               "answers": {
                 "category": {
                   "choice": "hate",
@@ -392,7 +392,7 @@
           "state": {
             "author": "user_3355",
             "content_id": "c-003",
-            "jev": {
+            "categorization": {
               "answers": {
                 "category": {
                   "choice": "hate",
@@ -415,7 +415,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "review",
+            "categorization_decision": "review",
             "received_at": "2026-10-05T20:34:26.991934-07:00",
             "review_priority": 0.07999999999999996,
             "text": "People from [group] shouldn't be allowed to post here, they're ruining everything."
@@ -516,7 +516,7 @@
           "state": {
             "author": "user_7712",
             "content_id": "c-004",
-            "jev": {
+            "categorization": {
               "answers": {
                 "category": {
                   "choice": "safe",
@@ -548,7 +548,7 @@
           "state": {
             "author": "user_7712",
             "content_id": "c-004",
-            "jev": {
+            "categorization": {
               "answers": {
                 "category": {
                   "choice": "safe",
@@ -571,7 +571,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "allow",
+            "categorization_decision": "allow",
             "received_at": "2026-10-05T20:34:26.994857-07:00",
             "review_priority": 0.07999999999999996,
             "text": "Has anyone tried the new API? The rate limits seem a bit low for our use case."
@@ -672,7 +672,7 @@
           "state": {
             "author": "user_6108",
             "content_id": "c-005",
-            "jev": {
+            "categorization": {
               "answers": {
                 "category": {
                   "choice": "self_harm",
@@ -704,7 +704,7 @@
           "state": {
             "author": "user_6108",
             "content_id": "c-005",
-            "jev": {
+            "categorization": {
               "answers": {
                 "category": {
                   "choice": "self_harm",
@@ -727,7 +727,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "review",
+            "categorization_decision": "review",
             "received_at": "2026-10-05T20:34:26.999148-07:00",
             "review_priority": 0.07999999999999996,
             "text": "I don't see the point anymore. Nothing matters. Maybe everyone would be better off if I just disappeared."

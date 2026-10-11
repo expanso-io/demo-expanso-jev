@@ -127,9 +127,9 @@
       "replay": true,
       "replay_volatile": [
         "recurrence",
-        "jev",
-        "jev_ok",
-        "jev_decision"
+        "categorization",
+        "categorization_ok",
+        "categorization_decision"
       ]
     },
     "outage": {

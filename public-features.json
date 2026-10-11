@@ -50,7 +50,7 @@
       "description": "Log triage: Skip the model for routine lines stage, with its real input and output"
     },
     {
-      "id": "01-log-triage-recurrence.ask_jev",
+      "id": "01-log-triage-recurrence.ask_categorization",
       "description": "Log triage: Ask Jev stage, with its real input and output"
     },
     {
@@ -90,7 +90,7 @@
       "description": "Support ticket router: Start the latency timer stage, with its real input and output"
     },
     {
-      "id": "02-ticket-router.ask_jev",
+      "id": "02-ticket-router.ask_categorization",
       "description": "Support ticket router: Ask Jev stage, with its real input and output"
     },
     {
@@ -118,7 +118,7 @@
       "description": "Sensitivity masking: Start the latency timer stage, with its real input and output"
     },
     {
-      "id": "03-sensitivity-masking.ask_jev",
+      "id": "03-sensitivity-masking.ask_categorization",
       "description": "Sensitivity masking: Ask Jev stage, with its real input and output"
     },
     {
@@ -150,7 +150,7 @@
       "description": "Sensor triage: Start the latency timer stage, with its real input and output"
     },
     {
-      "id": "04-sensor-triage.ask_jev",
+      "id": "04-sensor-triage.ask_categorization",
       "description": "Sensor triage: Ask Jev stage, with its real input and output"
     },
     {
@@ -178,7 +178,7 @@
       "description": "Agent guardrail: Start the latency timer stage, with its real input and output"
     },
     {
-      "id": "05-agent-guardrail.ask_jev",
+      "id": "05-agent-guardrail.ask_categorization",
       "description": "Agent guardrail: Ask Jev stage, with its real input and output"
     },
     {
@@ -206,7 +206,7 @@
       "description": "Smart sampling: Start the latency timer stage, with its real input and output"
     },
     {
-      "id": "06-smart-sampling.ask_jev",
+      "id": "06-smart-sampling.ask_categorization",
       "description": "Smart sampling: Ask Jev stage, with its real input and output"
     },
     {
@@ -238,7 +238,7 @@
       "description": "SOC pre-filter: Start the latency timer stage, with its real input and output"
     },
     {
-      "id": "07-soc-prefilter.ask_jev",
+      "id": "07-soc-prefilter.ask_categorization",
       "description": "SOC pre-filter: Ask Jev stage, with its real input and output"
     },
     {
@@ -266,7 +266,7 @@
       "description": "Data quality firewall: Start the latency timer stage, with its real input and output"
     },
     {
-      "id": "08-data-quality.ask_jev",
+      "id": "08-data-quality.ask_categorization",
       "description": "Data quality firewall: Ask Jev stage, with its real input and output"
     },
     {
@@ -294,7 +294,7 @@
       "description": "Moderation pre-filter: Start the latency timer stage, with its real input and output"
     },
     {
-      "id": "09-moderation.ask_jev",
+      "id": "09-moderation.ask_categorization",
       "description": "Moderation pre-filter: Ask Jev stage, with its real input and output"
     },
     {
@@ -322,7 +322,7 @@
       "description": "Feedback miner: Start the latency timer stage, with its real input and output"
     },
     {
-      "id": "10-feedback-miner.ask_jev",
+      "id": "10-feedback-miner.ask_categorization",
       "description": "Feedback miner: Ask Jev stage, with its real input and output"
     },
     {

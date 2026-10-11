@@ -29,9 +29,9 @@ config:
       # ── Ask the categorization model ──
       - label: start_timer
         mutation: |
-          meta jev_start = timestamp_unix_milli()
+          meta categorization_start = timestamp_unix_milli()
 
-      - label: ask_jev
+      - label: ask_categorization
         branch:
           request_map: |
             root = {
@@ -88,24 +88,24 @@ config:
                 retries: 1
             - catch:
               - mapping: |
-                  root = {"answers": {}, "model": "jev-unavailable"}
+                  root = {"answers": {}, "model": "categorization-unavailable"}
           result_map: |
-            root.jev = {
+            root.categorization = {
               "answers": this.answers,
               "model": this.model.or("jev-latest"),
-              "ms": timestamp_unix_milli() - metadata("jev_start")
+              "ms": timestamp_unix_milli() - metadata("categorization_start")
             }
 
       # ── Confidence-gated cascade ──
       - label: route_decision
         mapping: |
           root = this
-          let dept = this.jev.answers.department.choice.or("other")
-          let dept_conf = this.jev.answers.department.confidence.or(0)
-          let frustration = this.jev.answers.frustration.score.or(0)
-          let urgent = this.jev.answers.urgent.noul.or(0)
+          let dept = this.categorization.answers.department.choice.or("other")
+          let dept_conf = this.categorization.answers.department.confidence.or(0)
+          let frustration = this.categorization.answers.frustration.score.or(0)
+          let urgent = this.categorization.answers.urgent.noul.or(0)
 
-          root.jev_decision = if $urgent >= 0.9 {
+          root.categorization_decision = if $urgent >= 0.9 {
             "page"
           } else if $frustration >= 2.5 {
             "priority"
@@ -126,19 +126,19 @@ config:
         - label: by_decision
           switch:
             cases:
-              - check: this.jev_decision == "page"
+              - check: this.categorization_decision == "page"
                 output:
                   label: page
                   file:
                     path: ./data/expanso-edge-categorization-ticket-router/page-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
-              - check: this.jev_decision == "priority"
+              - check: this.categorization_decision == "priority"
                 output:
                   label: priority
                   file:
                     path: ./data/expanso-edge-categorization-ticket-router/priority-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
-              - check: this.jev_decision == "triage"
+              - check: this.categorization_decision == "triage"
                 output:
                   label: triage
                   file:

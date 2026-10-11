@@ -36,9 +36,9 @@ config:
       # ── Ask the categorization model ──
       - label: start_timer
         mutation: |
-          meta jev_start = timestamp_unix_milli()
+          meta categorization_start = timestamp_unix_milli()
 
-      - label: ask_jev
+      - label: ask_categorization
         branch:
           request_map: |
             root = {
@@ -73,26 +73,26 @@ config:
                 retries: 1
             - catch:
               - mapping: |
-                  root = {"answers": {}, "model": "jev-unavailable"}
+                  root = {"answers": {}, "model": "categorization-unavailable"}
           result_map: |
-            root.jev = {
+            root.categorization = {
               "answers": this.answers,
               "model": this.model.or("jev-latest"),
-              "ms": timestamp_unix_milli() - metadata("jev_start")
+              "ms": timestamp_unix_milli() - metadata("categorization_start")
             }
 
       # ── Confidence-gated cascade ──
       - label: route_decision
         mapping: |
           root = this
-          let anomaly = this.jev.answers.anomaly.score.or(0)
-          let dispatch = this.jev.answers.dispatch.noul.or(0)
+          let anomaly = this.categorization.answers.anomaly.score.or(0)
+          let dispatch = this.categorization.answers.dispatch.noul.or(0)
           # When Jev did not answer, flag the reading for a person rather than roll it up.
-          let jev_up = this.jev.model.or("") != "jev-unavailable"
+          let categorization_up = this.categorization.model.or("") != "categorization-unavailable"
 
-          root.jev_decision = if $dispatch >= 0.8 {
+          root.categorization_decision = if $dispatch >= 0.8 {
             "dispatch"
-          } else if !$jev_up || $anomaly >= 2 {
+          } else if !$categorization_up || $anomaly >= 2 {
             "flag"
           } else {
             "rollup"
@@ -108,13 +108,13 @@ config:
         - label: by_decision
           switch:
             cases:
-              - check: this.jev_decision == "dispatch"
+              - check: this.categorization_decision == "dispatch"
                 output:
                   label: dispatch
                   file:
                     path: ./data/expanso-edge-categorization-sensor-triage/dispatch-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
-              - check: this.jev_decision == "flag"
+              - check: this.categorization_decision == "flag"
                 output:
                   label: flagged
                   file:

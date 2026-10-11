@@ -6,7 +6,7 @@ Each record is classified for sensitivity and checked for personal data and cred
 
 `pipeline.yaml` — POST /records in; Jev judges sensitivity, contains_pii, contains_credentials; cascade quarantines+alerts, tokenizes, masks, or passes through.
 The Jev call is
-`POST ${JEV_API_URL}` with `jev-unavailable` graceful degradation.
+`POST ${JEV_API_URL}` with `categorization-unavailable` graceful degradation.
 
 `input.jsonl` — sample events for a quick test.
 

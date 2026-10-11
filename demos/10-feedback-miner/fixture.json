@@ -7,7 +7,7 @@
       "input": "input.jsonl",
       "volatile": [
         "received_at",
-        "jev.ms"
+        "categorization.ms"
       ],
       "volatile_request": [
         "received_at"
@@ -19,7 +19,7 @@
       "input": "input.jsonl",
       "volatile": [
         "received_at",
-        "jev.ms"
+        "categorization.ms"
       ],
       "volatile_request": [
         "received_at"

@@ -6,7 +6,7 @@ Every review and survey comment gets a topic, a sentiment score and a churn-risk
 
 `pipeline.yaml` — POST /feedback in; Jev judges topic, sentiment, churn_risk; cascade alerts the account team, queues eng, or records analytics.
 The Jev call is
-`POST ${JEV_API_URL}` with `jev-unavailable` graceful degradation.
+`POST ${JEV_API_URL}` with `categorization-unavailable` graceful degradation.
 
 `input.jsonl` — sample events for a quick test.
 

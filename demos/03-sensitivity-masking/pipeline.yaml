@@ -29,9 +29,9 @@ config:
       # ── Ask Jev: what is this record, semantically? ──
       - label: start_timer
         mutation: |
-          meta jev_start = timestamp_unix_milli()
+          meta categorization_start = timestamp_unix_milli()
 
-      - label: ask_jev
+      - label: ask_categorization
         branch:
           request_map: |
             root = {
@@ -69,26 +69,26 @@ config:
                 retries: 1
             - catch:
               - mapping: |
-                  root = {"answers": {}, "model": "jev-unavailable"}
+                  root = {"answers": {}, "model": "categorization-unavailable"}
           result_map: |
-            root.jev = {
+            root.categorization = {
               "answers": this.answers,
               "model": this.model.or("jev-latest"),
-              "ms": timestamp_unix_milli() - metadata("jev_start")
+              "ms": timestamp_unix_milli() - metadata("categorization_start")
             }
 
       # ── Pick the policy Jev's judgment calls for ──
       - label: pick_policy
         mapping: |
           root = this
-          let sens = this.jev.answers.sensitivity.choice.or("internal")
-          let pii = this.jev.answers.contains_pii.noul.or(0)
-          let creds = this.jev.answers.contains_credentials.noul.or(0)
+          let sens = this.categorization.answers.sensitivity.choice.or("internal")
+          let pii = this.categorization.answers.contains_pii.noul.or(0)
+          let creds = this.categorization.answers.contains_credentials.noul.or(0)
 
           # Fail closed: when Jev did not answer, nothing leaves unmasked.
-          let jev_up = this.jev.model.or("") != "jev-unavailable"
+          let categorization_up = this.categorization.model.or("") != "categorization-unavailable"
 
-          root.jev_decision = if !$jev_up || $creds >= 0.7 || $sens == "restricted" {
+          root.categorization_decision = if !$categorization_up || $creds >= 0.7 || $sens == "restricted" {
             "quarantine"
           } else if $sens == "confidential" {
             "tokenize"
@@ -102,26 +102,26 @@ config:
       - label: apply_policy
         mapping: |
           root = this
-          root.email = if this.jev_decision == "tokenize" {
+          root.email = if this.categorization_decision == "tokenize" {
             this.email.or("").hash("sha256").encode("hex")
-          } else if this.jev_decision == "mask" {
+          } else if this.categorization_decision == "mask" {
             "MASKED"
           } else {
             this.email
           }
-          root.ssn = if this.jev_decision == "tokenize" {
+          root.ssn = if this.categorization_decision == "tokenize" {
             this.ssn.or("").hash("sha256").encode("hex")
-          } else if this.jev_decision == "mask" || this.jev_decision == "quarantine" {
+          } else if this.categorization_decision == "mask" || this.categorization_decision == "quarantine" {
             "MASKED"
           } else {
             this.ssn
           }
-          root.api_key = if this.jev_decision == "quarantine" {
+          root.api_key = if this.categorization_decision == "quarantine" {
             "QUARANTINED"
           } else {
             this.api_key
           }
-          root.policy_applied = this.jev_decision
+          root.policy_applied = this.categorization_decision
 
   output:
     broker:
@@ -133,7 +133,7 @@ config:
         - label: by_decision
           switch:
             cases:
-              - check: this.jev_decision == "quarantine"
+              - check: this.categorization_decision == "quarantine"
                 output:
                   label: quarantine
                   file:

@@ -11,8 +11,8 @@
           "api_key",
           "email",
           "event",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "name",
           "policy_applied",
           "record_id",
@@ -28,7 +28,7 @@
           "event": {
             "const": "all systems operational"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -123,7 +123,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "tokenize"
           },
           "name": {
@@ -149,8 +149,8 @@
         "required": [
           "api_key",
           "email",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "name",
           "plan",
           "policy_applied",
@@ -164,7 +164,7 @@
           "email": {
             "const": "jane.doe@example.com"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -259,7 +259,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "quarantine"
           },
           "name": {
@@ -288,8 +288,8 @@
         "required": [
           "api_key",
           "email",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "name",
           "note",
           "policy_applied",
@@ -303,7 +303,7 @@
           "email": {
             "const": "ops@example.com"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -398,7 +398,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "quarantine"
           },
           "name": {
@@ -428,8 +428,8 @@
           "api_key",
           "diagnosis",
           "email",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "name",
           "policy_applied",
           "record_id",
@@ -446,7 +446,7 @@
           "email": {
             "const": "8e621e3d0368631d263d07a351fa8d34fba0d17c15fbcdec11a5f58008d022a0"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -541,7 +541,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "tokenize"
           },
           "name": {
@@ -571,8 +571,8 @@
           "api_key",
           "email",
           "event",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "name",
           "policy_applied",
           "record_id",
@@ -588,7 +588,7 @@
           "event": {
             "const": "nightly backup completed in 42s"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -683,7 +683,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "tokenize"
           },
           "name": {

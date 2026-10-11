@@ -52,9 +52,9 @@
           "state": {
             "customer": "acme-corp",
             "feedback_id": "f-001",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
             "rating": 2,
@@ -67,12 +67,12 @@
           "state": {
             "customer": "acme-corp",
             "feedback_id": "f-001",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "analytics",
+            "categorization_decision": "analytics",
             "rating": 2,
             "received_at": "2026-10-05T20:34:58.191472-07:00",
             "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."
@@ -212,9 +212,9 @@
           "state": {
             "customer": "globex",
             "feedback_id": "f-002",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
             "rating": 5,
@@ -227,12 +227,12 @@
           "state": {
             "customer": "globex",
             "feedback_id": "f-002",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
-            "jev_decision": "analytics",
+            "categorization_decision": "analytics",
             "rating": 5,
             "received_at": "2026-10-05T20:34:59.198778-07:00",
             "text": "Support was fantastic, Maya resolved our SSO issue in under an hour. Best support experience we've had with any vendor."
@@ -372,9 +372,9 @@
           "state": {
             "customer": "initech",
             "feedback_id": "f-003",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
             "rating": 1,
@@ -387,12 +387,12 @@
           "state": {
             "customer": "initech",
             "feedback_id": "f-003",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "analytics",
+            "categorization_decision": "analytics",
             "rating": 1,
             "received_at": "2026-10-05T20:35:00.205377-07:00",
             "text": "We've been waiting 3 months for the audit log feature you promised. Our compliance review is next month and we're now evaluating competitors."
@@ -532,9 +532,9 @@
           "state": {
             "customer": "umbrella",
             "feedback_id": "f-004",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1005
             },
             "rating": 4,
@@ -547,12 +547,12 @@
           "state": {
             "customer": "umbrella",
             "feedback_id": "f-004",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1005
             },
-            "jev_decision": "analytics",
+            "categorization_decision": "analytics",
             "rating": 4,
             "received_at": "2026-10-05T20:35:01.217318-07:00",
             "text": "Overall happy with the platform. Would love to see per-project billing breakdowns though."
@@ -692,9 +692,9 @@
           "state": {
             "customer": "hooli",
             "feedback_id": "f-005",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1005
             },
             "rating": 3,
@@ -707,12 +707,12 @@
           "state": {
             "customer": "hooli",
             "feedback_id": "f-005",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1005
             },
-            "jev_decision": "analytics",
+            "categorization_decision": "analytics",
             "rating": 3,
             "received_at": "2026-10-05T20:35:02.228606-07:00",
             "text": "It's fine. Does what we need."

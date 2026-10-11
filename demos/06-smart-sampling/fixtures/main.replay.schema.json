@@ -8,15 +8,15 @@
       "contains": {
         "type": "object",
         "required": [
-          "jev",
-          "jev_decision",
-          "jev_score",
+          "categorization",
+          "categorization_decision",
+          "categorization_score",
           "msg",
           "service",
           "ts"
         ],
         "properties": {
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -61,10 +61,10 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "keep"
           },
-          "jev_score": {
+          "categorization_score": {
             "const": 3.4
           },
           "msg": {
@@ -85,15 +85,15 @@
       "contains": {
         "type": "object",
         "required": [
-          "jev",
-          "jev_decision",
-          "jev_score",
+          "categorization",
+          "categorization_decision",
+          "categorization_score",
           "msg",
           "service",
           "ts"
         ],
         "properties": {
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -138,10 +138,10 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "keep"
           },
-          "jev_score": {
+          "categorization_score": {
             "const": 3.4
           },
           "msg": {

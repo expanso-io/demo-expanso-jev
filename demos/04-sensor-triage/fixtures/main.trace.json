@@ -69,7 +69,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "jev": {
+            "categorization": {
               "answers": {
                 "anomaly": {
                   "confidence": 0.7,
@@ -101,7 +101,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "jev": {
+            "categorization": {
               "answers": {
                 "anomaly": {
                   "confidence": 0.7,
@@ -117,7 +117,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "rollup",
+            "categorization_decision": "rollup",
             "received_at": "2026-10-05T20:32:41.954377-07:00",
             "rpm": 1750,
             "sensor_id": "pump-07",
@@ -241,7 +241,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "jev": {
+            "categorization": {
               "answers": {
                 "anomaly": {
                   "confidence": 0.7,
@@ -273,7 +273,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "jev": {
+            "categorization": {
               "answers": {
                 "anomaly": {
                   "confidence": 0.7,
@@ -289,7 +289,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "rollup",
+            "categorization_decision": "rollup",
             "received_at": "2026-10-05T20:32:41.957594-07:00",
             "rpm": 1750,
             "sensor_id": "pump-07",
@@ -417,7 +417,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "jev": {
+            "categorization": {
               "answers": {
                 "anomaly": {
                   "confidence": 0.7,
@@ -450,7 +450,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "jev": {
+            "categorization": {
               "answers": {
                 "anomaly": {
                   "confidence": 0.7,
@@ -466,7 +466,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "dispatch",
+            "categorization_decision": "dispatch",
             "note": "audible grinding from bearing housing",
             "received_at": "2026-10-05T20:32:41.959914-07:00",
             "rpm": 1748,
@@ -592,7 +592,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "jev": {
+            "categorization": {
               "answers": {
                 "anomaly": {
                   "confidence": 0.7,
@@ -624,7 +624,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "jev": {
+            "categorization": {
               "answers": {
                 "anomaly": {
                   "confidence": 0.7,
@@ -640,7 +640,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "rollup",
+            "categorization_decision": "rollup",
             "received_at": "2026-10-05T20:32:41.962177-07:00",
             "rpm": 1750,
             "sensor_id": "pump-12",
@@ -768,7 +768,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "jev": {
+            "categorization": {
               "answers": {
                 "anomaly": {
                   "confidence": 0.7,
@@ -801,7 +801,7 @@
               "temp_c_max": 85,
               "vibration_mm_s_max": 4.5
             },
-            "jev": {
+            "categorization": {
               "answers": {
                 "anomaly": {
                   "confidence": 0.7,
@@ -817,7 +817,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "flag",
+            "categorization_decision": "flag",
             "note": "vibration spiked to 9.4 mm/s for 40 seconds then recovered; cause unknown, inspection booked for next Tuesday",
             "received_at": "2026-10-05T20:32:41.96417-07:00",
             "rpm": 1749,

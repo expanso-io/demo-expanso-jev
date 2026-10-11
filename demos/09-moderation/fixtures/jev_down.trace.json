@@ -48,9 +48,9 @@
           "state": {
             "author": "user_4821",
             "content_id": "c-001",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
             "received_at": "2026-10-05T20:34:37.995463-07:00",
@@ -62,12 +62,12 @@
           "state": {
             "author": "user_4821",
             "content_id": "c-001",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "review",
+            "categorization_decision": "review",
             "received_at": "2026-10-05T20:34:37.995463-07:00",
             "review_priority": 1,
             "text": "Just finished the new onboarding flow, super smooth! Great work team."
@@ -179,9 +179,9 @@
           "state": {
             "author": "user_9917",
             "content_id": "c-002",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
             "received_at": "2026-10-05T20:34:39.001732-07:00",
@@ -193,12 +193,12 @@
           "state": {
             "author": "user_9917",
             "content_id": "c-002",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
-            "jev_decision": "review",
+            "categorization_decision": "review",
             "received_at": "2026-10-05T20:34:39.001732-07:00",
             "review_priority": 1,
             "text": "CHECK OUT my crypto doubling service at shady-link.example, 100% guaranteed returns!!!"
@@ -310,9 +310,9 @@
           "state": {
             "author": "user_3355",
             "content_id": "c-003",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
             "received_at": "2026-10-05T20:34:40.006623-07:00",
@@ -324,12 +324,12 @@
           "state": {
             "author": "user_3355",
             "content_id": "c-003",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "review",
+            "categorization_decision": "review",
             "received_at": "2026-10-05T20:34:40.006623-07:00",
             "review_priority": 1,
             "text": "People from [group] shouldn't be allowed to post here, they're ruining everything."
@@ -441,9 +441,9 @@
           "state": {
             "author": "user_7712",
             "content_id": "c-004",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
             "received_at": "2026-10-05T20:34:41.013381-07:00",
@@ -455,12 +455,12 @@
           "state": {
             "author": "user_7712",
             "content_id": "c-004",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "review",
+            "categorization_decision": "review",
             "received_at": "2026-10-05T20:34:41.013381-07:00",
             "review_priority": 1,
             "text": "Has anyone tried the new API? The rate limits seem a bit low for our use case."
@@ -572,9 +572,9 @@
           "state": {
             "author": "user_6108",
             "content_id": "c-005",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1001
             },
             "received_at": "2026-10-05T20:34:42.019115-07:00",
@@ -586,12 +586,12 @@
           "state": {
             "author": "user_6108",
             "content_id": "c-005",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1001
             },
-            "jev_decision": "review",
+            "categorization_decision": "review",
             "received_at": "2026-10-05T20:34:42.019115-07:00",
             "review_priority": 1,
             "text": "I don't see the point anymore. Nothing matters. Maybe everyone would be better off if I just disappeared."

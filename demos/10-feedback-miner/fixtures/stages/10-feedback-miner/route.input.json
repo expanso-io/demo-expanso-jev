@@ -1,7 +1,7 @@
 {
   "customer": "acme-corp",
   "feedback_id": "f-001",
-  "jev": {
+  "categorization": {
     "answers": {
       "churn_risk": {
         "noul": 0.12,
@@ -30,7 +30,7 @@
     "model": "jev-mock",
     "ms": 0
   },
-  "jev_decision": "eng",
+  "categorization_decision": "eng",
   "rating": 2,
   "received_at": "2026-10-05T20:34:47.085779-07:00",
   "text": "The new dashboard is completely broken for us \u2014 widgets won't load since Tuesday's update. This is blocking our weekly reporting."

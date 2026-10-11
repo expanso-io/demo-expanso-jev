@@ -3,7 +3,7 @@
   "body": "Hi, we were charged twice for invoice INV-2041 ($4,200 each). This looks like a duplicate charge \u2014 please refund it when you get a chance.",
   "customer": "acme-corp",
   "id": "tkt-1001",
-  "jev": {
+  "categorization": {
     "answers": {
       "department": {
         "choice": "billing",
@@ -43,7 +43,7 @@
     "model": "jev-mock",
     "ms": 1
   },
-  "jev_decision": "route",
+  "categorization_decision": "route",
   "received_at": "2026-10-05T20:32:00.065667-07:00",
   "subject": "Invoice #INV-2041 charged twice"
 }

@@ -4,7 +4,7 @@
     "temp_c_max": 85,
     "vibration_mm_s_max": 4.5
   },
-  "jev": {
+  "categorization": {
     "answers": {
       "anomaly": {
         "confidence": 0.7,

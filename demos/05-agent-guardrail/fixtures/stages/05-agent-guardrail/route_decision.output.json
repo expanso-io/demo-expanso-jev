@@ -3,7 +3,7 @@
   "args": {
     "path": "/data/q3-sales-report.pdf"
   },
-  "jev": {
+  "categorization": {
     "answers": {
       "intent_match": {
         "noul": 0.92,
@@ -25,7 +25,7 @@
     "model": "jev-mock",
     "ms": 1
   },
-  "jev_decision": "allow",
+  "categorization_decision": "allow",
   "received_at": "2026-10-05T20:33:01.473595-07:00",
   "tool": "read_file",
   "user_intent": "Summarize the Q3 sales report for me"

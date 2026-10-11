@@ -55,7 +55,7 @@
           "n": 4,
           "state": {
             "email": "jane.doe@example.com",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.12,
@@ -91,7 +91,7 @@
           "n": 5,
           "state": {
             "email": "jane.doe@example.com",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.12,
@@ -116,7 +116,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "Jane Doe",
             "plan": "team-annual",
             "received_at": "2026-10-05T20:32:21.978172-07:00",
@@ -129,7 +129,7 @@
           "state": {
             "api_key": "QUARANTINED",
             "email": "jane.doe@example.com",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.12,
@@ -154,7 +154,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "Jane Doe",
             "plan": "team-annual",
             "policy_applied": "quarantine",
@@ -263,7 +263,7 @@
           "n": 4,
           "state": {
             "event": "nightly backup completed in 42s",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.12,
@@ -297,7 +297,7 @@
           "n": 5,
           "state": {
             "event": "nightly backup completed in 42s",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.12,
@@ -322,7 +322,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "tokenize",
+            "categorization_decision": "tokenize",
             "name": "System Bot",
             "received_at": "2026-10-05T20:32:21.981849-07:00",
             "record_id": "rec-002"
@@ -334,7 +334,7 @@
             "api_key": null,
             "email": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
             "event": "nightly backup completed in 42s",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.12,
@@ -359,7 +359,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "tokenize",
+            "categorization_decision": "tokenize",
             "name": "System Bot",
             "policy_applied": "tokenize",
             "received_at": "2026-10-05T20:32:21.981849-07:00",
@@ -474,7 +474,7 @@
           "state": {
             "api_key": "sk-live-9f2c41aa77e04bd1",
             "email": "ops@example.com",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.92,
@@ -510,7 +510,7 @@
           "state": {
             "api_key": "sk-live-9f2c41aa77e04bd1",
             "email": "ops@example.com",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.92,
@@ -535,7 +535,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "Deploy Key",
             "note": "production deploy token, do not share",
             "received_at": "2026-10-05T20:32:21.98435-07:00",
@@ -547,7 +547,7 @@
           "state": {
             "api_key": "QUARANTINED",
             "email": "ops@example.com",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.92,
@@ -572,7 +572,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "Deploy Key",
             "note": "production deploy token, do not share",
             "policy_applied": "quarantine",
@@ -690,7 +690,7 @@
           "state": {
             "diagnosis": "Q3 performance review: exceeds expectations",
             "email": "john.smith@example.com",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.12,
@@ -726,7 +726,7 @@
           "state": {
             "diagnosis": "Q3 performance review: exceeds expectations",
             "email": "john.smith@example.com",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.12,
@@ -751,7 +751,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "tokenize",
+            "categorization_decision": "tokenize",
             "name": "John Smith",
             "received_at": "2026-10-05T20:32:21.986847-07:00",
             "record_id": "rec-004",
@@ -764,7 +764,7 @@
             "api_key": null,
             "diagnosis": "Q3 performance review: exceeds expectations",
             "email": "8e621e3d0368631d263d07a351fa8d34fba0d17c15fbcdec11a5f58008d022a0",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.12,
@@ -789,7 +789,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "tokenize",
+            "categorization_decision": "tokenize",
             "name": "John Smith",
             "policy_applied": "tokenize",
             "received_at": "2026-10-05T20:32:21.986847-07:00",
@@ -898,7 +898,7 @@
           "n": 4,
           "state": {
             "event": "all systems operational",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.12,
@@ -932,7 +932,7 @@
           "n": 5,
           "state": {
             "event": "all systems operational",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.12,
@@ -957,7 +957,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "tokenize",
+            "categorization_decision": "tokenize",
             "name": "Status Page",
             "received_at": "2026-10-05T20:32:21.989201-07:00",
             "record_id": "rec-005"
@@ -969,7 +969,7 @@
             "api_key": null,
             "email": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
             "event": "all systems operational",
-            "jev": {
+            "categorization": {
               "answers": {
                 "contains_credentials": {
                   "noul": 0.12,
@@ -994,7 +994,7 @@
               "model": "jev-mock",
               "ms": 0
             },
-            "jev_decision": "tokenize",
+            "categorization_decision": "tokenize",
             "name": "Status Page",
             "policy_applied": "tokenize",
             "received_at": "2026-10-05T20:32:21.989201-07:00",

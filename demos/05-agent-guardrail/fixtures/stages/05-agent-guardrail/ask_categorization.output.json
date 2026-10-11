@@ -3,7 +3,7 @@
   "args": {
     "path": "/data/q3-sales-report.pdf"
   },
-  "jev": {
+  "categorization": {
     "answers": {
       "intent_match": {
         "noul": 0.92,

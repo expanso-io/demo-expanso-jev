@@ -6,7 +6,7 @@ Every event is scored for how interesting it is. Interesting events are all kept
 
 `pipeline.yaml` — POST /events in; Jev scores interesting; cascade keeps 100% at score ≥3, else a deterministic 1% via counter.
 The Jev call is
-`POST ${JEV_API_URL}` with `jev-unavailable` graceful degradation.
+`POST ${JEV_API_URL}` with `categorization-unavailable` graceful degradation.
 
 `input.jsonl` — sample events for a quick test.
 

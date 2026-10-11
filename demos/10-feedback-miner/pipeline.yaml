@@ -29,9 +29,9 @@ config:
       # ── Ask the categorization model ──
       - label: start_timer
         mutation: |
-          meta jev_start = timestamp_unix_milli()
+          meta categorization_start = timestamp_unix_milli()
 
-      - label: ask_jev
+      - label: ask_categorization
         branch:
           request_map: |
             root = {
@@ -78,23 +78,23 @@ config:
                 retries: 1
             - catch:
               - mapping: |
-                  root = {"answers": {}, "model": "jev-unavailable"}
+                  root = {"answers": {}, "model": "categorization-unavailable"}
           result_map: |
-            root.jev = {
+            root.categorization = {
               "answers": this.answers,
               "model": this.model.or("jev-latest"),
-              "ms": timestamp_unix_milli() - metadata("jev_start")
+              "ms": timestamp_unix_milli() - metadata("categorization_start")
             }
 
       # ── Confidence-gated cascade ──
       - label: route_decision
         mapping: |
           root = this
-          let topic = this.jev.answers.topic.choice.or("other")
-          let topic_conf = this.jev.answers.topic.confidence.or(0)
-          let churn = this.jev.answers.churn_risk.noul.or(0)
+          let topic = this.categorization.answers.topic.choice.or("other")
+          let topic_conf = this.categorization.answers.topic.confidence.or(0)
+          let churn = this.categorization.answers.churn_risk.noul.or(0)
 
-          root.jev_decision = if $churn >= 0.75 {
+          root.categorization_decision = if $churn >= 0.75 {
             "alert"
           } else if $topic == "bug" && $topic_conf >= 0.7 {
             "eng"
@@ -112,13 +112,13 @@ config:
         - label: by_decision
           switch:
             cases:
-              - check: this.jev_decision == "alert"
+              - check: this.categorization_decision == "alert"
                 output:
                   label: alert
                   file:
                     path: ./data/expanso-edge-categorization-feedback-miner/alert-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
-              - check: this.jev_decision == "eng"
+              - check: this.categorization_decision == "eng"
                 output:
                   label: eng
                   file:

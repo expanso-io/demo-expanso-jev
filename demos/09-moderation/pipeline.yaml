@@ -29,9 +29,9 @@ config:
       # ── Ask the categorization model ──
       - label: start_timer
         mutation: |
-          meta jev_start = timestamp_unix_milli()
+          meta categorization_start = timestamp_unix_milli()
 
-      - label: ask_jev
+      - label: ask_categorization
         branch:
           request_map: |
             root = {
@@ -67,23 +67,23 @@ config:
                 retries: 1
             - catch:
               - mapping: |
-                  root = {"answers": {}, "model": "jev-unavailable"}
+                  root = {"answers": {}, "model": "categorization-unavailable"}
           result_map: |
-            root.jev = {
+            root.categorization = {
               "answers": this.answers,
               "model": this.model.or("jev-latest"),
-              "ms": timestamp_unix_milli() - metadata("jev_start")
+              "ms": timestamp_unix_milli() - metadata("categorization_start")
             }
 
       # ── Confidence-gated cascade: humans only see the edge cases ──
       - label: route_decision
         mapping: |
           root = this
-          let cat = this.jev.answers.category.choice.or("other")
-          let conf = this.jev.answers.category.confidence.or(0)
-          let needs_human = this.jev.answers.needs_human.noul.or(1)
+          let cat = this.categorization.answers.category.choice.or("other")
+          let conf = this.categorization.answers.category.confidence.or(0)
+          let needs_human = this.categorization.answers.needs_human.noul.or(1)
 
-          root.jev_decision = if $cat == "safe" && $conf >= 0.9 && $needs_human < 0.5 {
+          root.categorization_decision = if $cat == "safe" && $conf >= 0.9 && $needs_human < 0.5 {
             "allow"
           } else {
             "review"
@@ -101,7 +101,7 @@ config:
         - label: by_decision
           switch:
             cases:
-              - check: this.jev_decision == "allow"
+              - check: this.categorization_decision == "allow"
                 output:
                   label: allowed
                   file:

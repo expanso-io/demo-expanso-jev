@@ -6,7 +6,7 @@ Authentication and access events get a threat class and an escalation judgment a
 
 `pipeline.yaml` — POST /auth-events in; Jev classifies threat and judges escalation; cascade hits the SIEM webhook, warm storage, or cold storage.
 The Jev call is
-`POST ${JEV_API_URL}` with `jev-unavailable` graceful degradation.
+`POST ${JEV_API_URL}` with `categorization-unavailable` graceful degradation.
 
 `input.jsonl` — sample events for a quick test.
 

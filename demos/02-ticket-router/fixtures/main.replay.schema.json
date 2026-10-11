@@ -12,8 +12,8 @@
           "body",
           "customer",
           "id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "subject"
         ],
         "properties": {
@@ -29,7 +29,7 @@
           "id": {
             "const": "tkt-1001"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -186,7 +186,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "route"
           },
           "subject": {
@@ -205,8 +205,8 @@
           "body",
           "customer",
           "id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "subject"
         ],
         "properties": {
@@ -222,7 +222,7 @@
           "id": {
             "const": "tkt-1002"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -379,7 +379,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "route"
           },
           "subject": {
@@ -398,8 +398,8 @@
           "body",
           "customer",
           "id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "subject"
         ],
         "properties": {
@@ -415,7 +415,7 @@
           "id": {
             "const": "tkt-1006"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -572,7 +572,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "priority"
           },
           "subject": {
@@ -591,8 +591,8 @@
           "body",
           "customer",
           "id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "subject"
         ],
         "properties": {
@@ -608,7 +608,7 @@
           "id": {
             "const": "tkt-1005"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -765,7 +765,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "route"
           },
           "subject": {
@@ -784,8 +784,8 @@
           "body",
           "customer",
           "id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "subject"
         ],
         "properties": {
@@ -801,7 +801,7 @@
           "id": {
             "const": "tkt-1004"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -958,7 +958,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "route"
           },
           "subject": {
@@ -977,8 +977,8 @@
           "body",
           "customer",
           "id",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "subject"
         ],
         "properties": {
@@ -994,7 +994,7 @@
           "id": {
             "const": "tkt-1003"
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -1151,7 +1151,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "page"
           },
           "subject": {

@@ -1,7 +1,7 @@
 {
   "author": "user_4821",
   "content_id": "c-001",
-  "jev": {
+  "categorization": {
     "answers": {
       "category": {
         "choice": "safe",
@@ -24,7 +24,7 @@
     "model": "jev-mock",
     "ms": 1
   },
-  "jev_decision": "allow",
+  "categorization_decision": "allow",
   "received_at": "2026-10-05T20:34:26.984433-07:00",
   "review_priority": 0.07999999999999996,
   "text": "Just finished the new onboarding flow, super smooth! Great work team."

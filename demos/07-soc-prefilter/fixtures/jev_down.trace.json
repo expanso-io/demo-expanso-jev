@@ -60,9 +60,9 @@
           "state": {
             "geo": "Seattle, US",
             "ip": "10.4.2.18",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1003
             },
             "mfa": true,
@@ -77,12 +77,12 @@
           "state": {
             "geo": "Seattle, US",
             "ip": "10.4.2.18",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1003
             },
-            "jev_decision": "warm",
+            "categorization_decision": "warm",
             "mfa": true,
             "received_at": "2026-10-05T20:33:58.141046-07:00",
             "result": "success",
@@ -215,9 +215,9 @@
             "failures_10m": 47,
             "geo": "Lagos, NG",
             "ip": "203.0.113.99",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
             "received_at": "2026-10-05T20:33:59.146854-07:00",
@@ -232,12 +232,12 @@
             "failures_10m": 47,
             "geo": "Lagos, NG",
             "ip": "203.0.113.99",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
-            "jev_decision": "warm",
+            "categorization_decision": "warm",
             "received_at": "2026-10-05T20:33:59.146854-07:00",
             "result": "failed",
             "ts": "2026-09-18T14:01:12Z",
@@ -368,9 +368,9 @@
           "state": {
             "geo": "Seattle, US",
             "ip": "10.4.2.22",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1003
             },
             "mfa": true,
@@ -385,12 +385,12 @@
           "state": {
             "geo": "Seattle, US",
             "ip": "10.4.2.22",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1003
             },
-            "jev_decision": "warm",
+            "categorization_decision": "warm",
             "mfa": true,
             "received_at": "2026-10-05T20:34:00.151844-07:00",
             "result": "success",
@@ -526,9 +526,9 @@
           "state": {
             "geo": "Seattle, US",
             "ip": "198.51.100.7",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
             "prev_login_ago_min": 22,
@@ -544,12 +544,12 @@
           "state": {
             "geo": "Seattle, US",
             "ip": "198.51.100.7",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
-            "jev_decision": "warm",
+            "categorization_decision": "warm",
             "prev_login_ago_min": 22,
             "prev_login_geo": "Tokyo, JP",
             "received_at": "2026-10-05T20:34:01.158919-07:00",
@@ -684,9 +684,9 @@
           "state": {
             "distinct_users_10m": 18,
             "ip": "192.0.2.55",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
             "note": "shared NAT gateway for branch office",
@@ -701,12 +701,12 @@
           "state": {
             "distinct_users_10m": 18,
             "ip": "192.0.2.55",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "warm",
+            "categorization_decision": "warm",
             "note": "shared NAT gateway for branch office",
             "received_at": "2026-10-05T20:34:02.164313-07:00",
             "result": "mixed",

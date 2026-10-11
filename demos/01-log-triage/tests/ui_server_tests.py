@@ -117,21 +117,21 @@ try:
     r = s["run"]
     check("fresh run: completed 0, rate 0.0, 60-point series, no exception",
           r["completed"] == 0 and r["rate"] == 0.0 and len(r["spark"]) == 60 and sum(r["spark"]) == 0)
-    check("fresh run: all three paths are zero", r["bypassed"] == r["judged"] == r["jev_failed"] == 0)
+    check("fresh run: all three paths are zero", r["bypassed"] == r["judged"] == r["categorization_failed"] == 0)
 
     print("--- 6. three paths, accounted separately, summing to completed")
     base = {"level": "INFO", "service": "api", "msg": "m", "baseline": "archive"}
     for _ in range(7):   # known routine: matched the rules, no model call, no jev block
-        server.ingest("archive", {**base, "bypass": True, "routed_by": "expanso-bypass", "jev_decision": "archive"})
-    server.ingest("notify", {**base, "bypass": False, "routed_by": "jev", "jev_ok": True, "jev_decision": "notify",
-                             "jev": {"answers": {"actionable": {"noul": 0.9}}}})       # judged, and a "caught"
-    server.ingest("page", {**base, "level": "ERROR", "baseline": "page", "bypass": False, "routed_by": "jev",
-                           "jev_ok": True, "jev_decision": "page", "jev": {"answers": {}}})  # judged, agrees with baseline
-    server.ingest("review", {**base, "bypass": False, "routed_by": "jev", "jev_ok": False, "jev_decision": "review",
-                             "jev": {"answers": {}}})                                  # inference failed; record KEPT
+        server.ingest("archive", {**base, "bypass": True, "routed_by": "expanso-bypass", "categorization_decision": "archive"})
+    server.ingest("notify", {**base, "bypass": False, "routed_by": "categorization", "categorization_ok": True, "categorization_decision": "notify",
+                             "categorization": {"answers": {"actionable": {"noul": 0.9}}}})       # judged, and a "caught"
+    server.ingest("page", {**base, "level": "ERROR", "baseline": "page", "bypass": False, "routed_by": "categorization",
+                           "categorization_ok": True, "categorization_decision": "page", "categorization": {"answers": {}}})  # judged, agrees with baseline
+    server.ingest("review", {**base, "bypass": False, "routed_by": "categorization", "categorization_ok": False, "categorization_decision": "review",
+                             "categorization": {"answers": {}}})                                  # inference failed; record KEPT
     r = H.stats()["run"]
-    check("bypassed=7 judged=2 jev_failed=1", (r["bypassed"], r["judged"], r["jev_failed"]) == (7, 2, 1), str((r["bypassed"], r["judged"], r["jev_failed"])))
-    check("bypassed + judged + jev_failed == completed == 10", r["bypassed"] + r["judged"] + r["jev_failed"] == r["completed"] == 10)
+    check("bypassed=7 judged=2 categorization_failed=1", (r["bypassed"], r["judged"], r["categorization_failed"]) == (7, 2, 1), str((r["bypassed"], r["judged"], r["categorization_failed"])))
+    check("bypassed + judged + categorization_failed == completed == 10", r["bypassed"] + r["judged"] + r["categorization_failed"] == r["completed"] == 10)
     check("a bypassed record never counts as judged (no model path stays separate)", r["judged"] == 2)
     check("the fallback record was retained, not dropped (it is in REVIEW)", r["received"]["review"] == 1)
     check("no-model share = 7/10 = 70%", round(r["bypassed"] / r["completed"] * 100) == 70)
@@ -156,21 +156,21 @@ try:
     print("--- 9. hold accounting: a held record is in flight, not completed")
     H.run = H._new_run("jev")
     H.jev_fail.clear()
-    held = {**base, "level": "WARN", "baseline": "notify", "jev_ok": False, "jev_decision": "held", "held_attempts": 0, "jev": {"answers": {}}}
+    held = {**base, "level": "WARN", "baseline": "notify", "categorization_ok": False, "categorization_decision": "held", "held_attempts": 0, "categorization": {"answers": {}}}
     for _ in range(5):
         server.ingest("held", held)
     r = H.stats()["run"]
     check("5 hold receipts: held_in=5, holding=5, completed stays 0", (r["held_in"], r["holding"], r["completed"]) == (5, 5, 0), str((r["held_in"], r["holding"], r["completed"])))
-    check("a hold receipt is none of bypassed/judged/jev_failed", r["bypassed"] == r["judged"] == r["jev_failed"] == 0)
+    check("a hold receipt is none of bypassed/judged/categorization_failed", r["bypassed"] == r["judged"] == r["categorization_failed"] == 0)
     for _ in range(3):   # Jev came back: the same records, judged on a later attempt
-        server.ingest("notify", {**held, "jev_ok": True, "jev_decision": "notify", "held_attempts": 4, "routed_by": "jev", "jev": {"model": "m", "answers": {}}})
-    server.ingest("review", {**held, "jev_ok": False, "jev_decision": "review", "held_attempts": 15, "routed_by": "jev"})   # gave up
+        server.ingest("notify", {**held, "categorization_ok": True, "categorization_decision": "notify", "held_attempts": 4, "routed_by": "categorization", "categorization": {"model": "m", "answers": {}}})
+    server.ingest("review", {**held, "categorization_ok": False, "categorization_decision": "review", "held_attempts": 15, "routed_by": "categorization"})   # gave up
     r = H.stats()["run"]
     check("released=3 gave_up=1 holding=1", (r["released"], r["gave_up"], r["holding"]) == (3, 1, 1), str((r["released"], r["gave_up"], r["holding"])))
     check("held_in == released + gave_up + holding", r["held_in"] == r["released"] + r["gave_up"] + r["holding"])
     check("completed counts the 4 resolved records and no hold receipts", r["completed"] == 4)
-    check("bypassed + judged + jev_failed == completed still holds", r["bypassed"] + r["judged"] + r["jev_failed"] == r["completed"])
-    check("a release is a real judgment; a give-up is a failure, never a judgment", r["judged"] == 3 and r["jev_failed"] == 1)
+    check("bypassed + judged + categorization_failed == completed still holds", r["bypassed"] + r["judged"] + r["categorization_failed"] == r["completed"])
+    check("a release is a real judgment; a give-up is a failure, never a judgment", r["judged"] == 3 and r["categorization_failed"] == 1)
 
     print("--- 10. the fault-injection gate")
     gate = ThreadingHTTPServer(("127.0.0.1", 0), server.Gate)
@@ -262,13 +262,13 @@ try:
               and H.stats()["mode"] == "expanso" and gs == 200
               and json.loads(gd).get("model") == "cribl-disabled")
         server.ingest("archive", {"routed_by": "expanso", "model_disabled": True,
-                                  "jev_decision": "archive"})
+                                  "categorization_decision": "archive"})
         r = H.stats()["run"]
         check("disabled record completes without a model judgment or failure",
-              r["completed"] == 1 and r["judged"] == r["jev_failed"] == 0)
-        server.ingest("held", {"held_attempts": 0, "jev_decision": "held"})
+              r["completed"] == 1 and r["judged"] == r["categorization_failed"] == 0)
+        server.ingest("held", {"held_attempts": 0, "categorization_decision": "held"})
         server.ingest("archive", {"held_attempts": 1, "model_disabled": True,
-                                  "routed_by": "expanso", "jev_decision": "archive"})
+                                  "routed_by": "expanso", "categorization_decision": "archive"})
         r = H.stats()["run"]
         check("switching off releases a previously held record",
               r["held_in"] == r["released"] == 1 and r["holding"] == 0)

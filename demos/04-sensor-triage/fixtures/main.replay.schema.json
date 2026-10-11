@@ -9,8 +9,8 @@
         "type": "object",
         "required": [
           "baseline",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "rpm",
           "sensor_id",
           "temp_c",
@@ -37,7 +37,7 @@
               }
             }
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -98,7 +98,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "rollup"
           },
           "rpm": {
@@ -126,8 +126,8 @@
         "type": "object",
         "required": [
           "baseline",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "note",
           "rpm",
           "sensor_id",
@@ -155,7 +155,7 @@
               }
             }
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -216,7 +216,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "flag"
           },
           "note": {
@@ -247,8 +247,8 @@
         "type": "object",
         "required": [
           "baseline",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "rpm",
           "sensor_id",
           "temp_c",
@@ -275,7 +275,7 @@
               }
             }
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -336,7 +336,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "rollup"
           },
           "rpm": {
@@ -364,8 +364,8 @@
         "type": "object",
         "required": [
           "baseline",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "note",
           "rpm",
           "sensor_id",
@@ -393,7 +393,7 @@
               }
             }
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -454,7 +454,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "dispatch"
           },
           "note": {
@@ -485,8 +485,8 @@
         "type": "object",
         "required": [
           "baseline",
-          "jev",
-          "jev_decision",
+          "categorization",
+          "categorization_decision",
           "rpm",
           "sensor_id",
           "temp_c",
@@ -513,7 +513,7 @@
               }
             }
           },
-          "jev": {
+          "categorization": {
             "type": "object",
             "required": [
               "answers",
@@ -574,7 +574,7 @@
               }
             }
           },
-          "jev_decision": {
+          "categorization_decision": {
             "const": "rollup"
           },
           "rpm": {

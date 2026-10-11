@@ -55,9 +55,9 @@
           "n": 4,
           "state": {
             "email": "jane.doe@example.com",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1001
             },
             "name": "Jane Doe",
@@ -71,12 +71,12 @@
           "n": 5,
           "state": {
             "email": "jane.doe@example.com",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1001
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "Jane Doe",
             "plan": "team-annual",
             "received_at": "2026-10-05T20:32:33.195978-07:00",
@@ -89,12 +89,12 @@
           "state": {
             "api_key": "QUARANTINED",
             "email": "jane.doe@example.com",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1001
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "Jane Doe",
             "plan": "team-annual",
             "policy_applied": "quarantine",
@@ -216,9 +216,9 @@
           "n": 4,
           "state": {
             "event": "nightly backup completed in 42s",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1003
             },
             "name": "System Bot",
@@ -230,12 +230,12 @@
           "n": 5,
           "state": {
             "event": "nightly backup completed in 42s",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1003
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "System Bot",
             "received_at": "2026-10-05T20:32:34.200095-07:00",
             "record_id": "rec-002"
@@ -247,12 +247,12 @@
             "api_key": "QUARANTINED",
             "email": null,
             "event": "nightly backup completed in 42s",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1003
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "System Bot",
             "policy_applied": "quarantine",
             "received_at": "2026-10-05T20:32:34.200095-07:00",
@@ -378,9 +378,9 @@
           "state": {
             "api_key": "sk-live-9f2c41aa77e04bd1",
             "email": "ops@example.com",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1003
             },
             "name": "Deploy Key",
@@ -394,12 +394,12 @@
           "state": {
             "api_key": "sk-live-9f2c41aa77e04bd1",
             "email": "ops@example.com",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1003
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "Deploy Key",
             "note": "production deploy token, do not share",
             "received_at": "2026-10-05T20:32:35.205954-07:00",
@@ -411,12 +411,12 @@
           "state": {
             "api_key": "QUARANTINED",
             "email": "ops@example.com",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1003
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "Deploy Key",
             "note": "production deploy token, do not share",
             "policy_applied": "quarantine",
@@ -547,9 +547,9 @@
           "state": {
             "diagnosis": "Q3 performance review: exceeds expectations",
             "email": "john.smith@example.com",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
             "name": "John Smith",
@@ -563,12 +563,12 @@
           "state": {
             "diagnosis": "Q3 performance review: exceeds expectations",
             "email": "john.smith@example.com",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "John Smith",
             "received_at": "2026-10-05T20:32:36.211666-07:00",
             "record_id": "rec-004",
@@ -581,12 +581,12 @@
             "api_key": "QUARANTINED",
             "diagnosis": "Q3 performance review: exceeds expectations",
             "email": "john.smith@example.com",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1004
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "John Smith",
             "policy_applied": "quarantine",
             "received_at": "2026-10-05T20:32:36.211666-07:00",
@@ -708,9 +708,9 @@
           "n": 4,
           "state": {
             "event": "all systems operational",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
             "name": "Status Page",
@@ -722,12 +722,12 @@
           "n": 5,
           "state": {
             "event": "all systems operational",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "Status Page",
             "received_at": "2026-10-05T20:32:37.216851-07:00",
             "record_id": "rec-005"
@@ -739,12 +739,12 @@
             "api_key": "QUARANTINED",
             "email": null,
             "event": "all systems operational",
-            "jev": {
+            "categorization": {
               "answers": {},
-              "model": "jev-unavailable",
+              "model": "categorization-unavailable",
               "ms": 1002
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "name": "Status Page",
             "policy_applied": "quarantine",
             "received_at": "2026-10-05T20:32:37.216851-07:00",

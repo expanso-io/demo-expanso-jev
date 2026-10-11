@@ -6,7 +6,7 @@ A safety check on every tool call an AI agent makes. Calls that match what the u
 
 `pipeline.yaml` — POST /tool-calls in; Jev judges intent_match and risk; cascade blocks+alerts, holds for approval, or allows.
 The Jev call is
-`POST ${JEV_API_URL}` with `jev-unavailable` graceful degradation.
+`POST ${JEV_API_URL}` with `categorization-unavailable` graceful degradation.
 
 `input.jsonl` — sample events for a quick test.
 

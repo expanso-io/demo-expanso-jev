@@ -6,7 +6,7 @@ Rows headed for the warehouse are judged for quality and schema conformance at t
 
 `pipeline.yaml` — POST /rows in; Jev scores quality and judges conformance; cascade quarantines to file or passes to the warehouse file.
 The Jev call is
-`POST ${JEV_API_URL}` with `jev-unavailable` graceful degradation.
+`POST ${JEV_API_URL}` with `categorization-unavailable` graceful degradation.
 
 `input.jsonl` — sample events for a quick test.
 

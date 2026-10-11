@@ -4,7 +4,7 @@
   "fingerprint": "api::get /health # #ms",
   "held_attempts": 0,
   "id": "evt-000001",
-  "jev_decision": "archive",
+  "categorization_decision": "archive",
   "level": "INFO",
   "msg": "GET /health 200 2ms",
   "node_id": "edge-1",

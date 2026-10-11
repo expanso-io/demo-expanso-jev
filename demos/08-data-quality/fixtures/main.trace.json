@@ -57,7 +57,7 @@
             "amount": 129.99,
             "currency": "USD",
             "customer_id": "cus-88121",
-            "jev": {
+            "categorization": {
               "answers": {
                 "conformant": {
                   "noul": 0.92,
@@ -84,7 +84,7 @@
             "amount": 129.99,
             "currency": "USD",
             "customer_id": "cus-88121",
-            "jev": {
+            "categorization": {
               "answers": {
                 "conformant": {
                   "noul": 0.92,
@@ -100,7 +100,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "warehouse",
+            "categorization_decision": "warehouse",
             "order_id": "ord-9001",
             "received_at": "2026-10-05T20:34:07.129013-07:00",
             "ts": "2026-09-18T14:00:00Z"
@@ -204,7 +204,7 @@
             "amount": -45.0,
             "currency": "USD",
             "customer_id": "cus-10422",
-            "jev": {
+            "categorization": {
               "answers": {
                 "conformant": {
                   "noul": 0.12,
@@ -231,7 +231,7 @@
             "amount": -45.0,
             "currency": "USD",
             "customer_id": "cus-10422",
-            "jev": {
+            "categorization": {
               "answers": {
                 "conformant": {
                   "noul": 0.12,
@@ -247,7 +247,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "order_id": "ord-9002",
             "received_at": "2026-10-05T20:34:07.134351-07:00",
             "ts": "2026-09-18T14:01:00Z"
@@ -351,7 +351,7 @@
             "amount": "a lot",
             "currency": "USDD",
             "customer_id": null,
-            "jev": {
+            "categorization": {
               "answers": {
                 "conformant": {
                   "noul": 0.12,
@@ -378,7 +378,7 @@
             "amount": "a lot",
             "currency": "USDD",
             "customer_id": null,
-            "jev": {
+            "categorization": {
               "answers": {
                 "conformant": {
                   "noul": 0.12,
@@ -394,7 +394,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "order_id": "ord-9003",
             "received_at": "2026-10-05T20:34:07.137993-07:00",
             "ts": "yesterday-ish"
@@ -498,7 +498,7 @@
             "amount": 9.99,
             "currency": "USD",
             "customer_id": "cus-77190",
-            "jev": {
+            "categorization": {
               "answers": {
                 "conformant": {
                   "noul": 0.92,
@@ -525,7 +525,7 @@
             "amount": 9.99,
             "currency": "USD",
             "customer_id": "cus-77190",
-            "jev": {
+            "categorization": {
               "answers": {
                 "conformant": {
                   "noul": 0.92,
@@ -541,7 +541,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "warehouse",
+            "categorization_decision": "warehouse",
             "order_id": "ord-9004",
             "received_at": "2026-10-05T20:34:07.141484-07:00",
             "ts": "2026-09-18T14:03:00Z"
@@ -645,7 +645,7 @@
             "amount": 99999999.99,
             "currency": "US",
             "customer_id": null,
-            "jev": {
+            "categorization": {
               "answers": {
                 "conformant": {
                   "noul": 0.12,
@@ -672,7 +672,7 @@
             "amount": 99999999.99,
             "currency": "US",
             "customer_id": null,
-            "jev": {
+            "categorization": {
               "answers": {
                 "conformant": {
                   "noul": 0.12,
@@ -688,7 +688,7 @@
               "model": "jev-mock",
               "ms": 1
             },
-            "jev_decision": "quarantine",
+            "categorization_decision": "quarantine",
             "order_id": "ord-9005",
             "received_at": "2026-10-05T20:34:07.145142-07:00",
             "ts": "2026-09-18T14:04:00Z"

@@ -394,7 +394,7 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 // The detail panel lists local demo destinations; the counters are observed.
 const SINK = {held:'held.jsonl', page:'page.jsonl', notify:'notify.jsonl', review:'review.jsonl', archive:'archive.jsonl', raw:'raw.jsonl'};
 
-const S = {mode:'off', up:false, gen:false, cloudOk:false, jevDown:false, gate:'open', upstreamOk:null, bins:{raw:0}, run:{mode:'off',produced:0,accepted:0,bypassed:0,judged:0,jev_failed:0,caught:0,quieted:0,received:{page:0,notify:0,review:0,archive:0,raw:0}}};
+const S = {mode:'off', up:false, gen:false, cloudOk:false, jevDown:false, gate:'open', upstreamOk:null, bins:{raw:0}, run:{mode:'off',produced:0,accepted:0,bypassed:0,judged:0,categorization_failed:0,caught:0,quieted:0,received:{page:0,notify:0,review:0,archive:0,raw:0}}};
 let pinned = null, rawStopped = null, frozen = null, uiRev = 0;
 
 /* --------------------------------------------------------------- geometry */
@@ -718,7 +718,7 @@ function render(){
   
   $('#rawWhat').textContent = piped ? 'Stopped · nothing lands here now' : 'Every line, exactly as written';
 
-  const decided = run.bypassed + run.judged + run.jev_failed, pct = decided ? Math.round(run.bypassed/decided*100) : 0;
+  const decided = run.bypassed + run.judged + run.categorization_failed, pct = decided ? Math.round(run.bypassed/decided*100) : 0;
   $('#fkRoutineN').textContent = pct+'%'; $('#fkJudgeN').textContent = (decided ? 100-pct : 0)+'%';
   $('#exNum').innerHTML = jev ? `<b>${fmt(run.bypassed)}</b> of ${fmt(decided)} skipped the model` : `<b>${fmt(run.received.archive)}</b> records · all archived by this pipeline`;
   $('#jevNum').innerHTML = down ? `<b>${fmt(holding)}</b> held · ${fmt(run.gave_up||0)} given up to review` : `<b>${fmt(run.judged)}</b> judged · ${fmt(run.received.page+run.received.notify)} need a person`;
@@ -782,7 +782,7 @@ $('#src').onclick = openSource;
 // "change of shape": production sends five fields, Expanso adds context, Jev
 // adds a judgment.
 const ORIGIN = {fingerprint:'ex', held_attempts:'ex', baseline:'ex', received_at:'ex', node_id:'ex', recurrence:'ex', bypass:'ex', routed_by:'ex',
-                jev:'jv', jev_ok:'jv', jev_decision:'jv'};
+                jev:'jv', categorization_ok:'jv', categorization_decision:'jv'};
 function jval(v, ind){
   const pad = '  '.repeat(ind), pad1 = '  '.repeat(ind+1);
   if (v === null) return '<span class="j-b">null</span>';
@@ -793,10 +793,10 @@ function jval(v, ind){
   const keys = Object.keys(v); if (!keys.length) return '<span class="j-p">{}</span>';
   return `<span class="j-p">{</span>\n${keys.map((k,i) => `${pad1}<span class="j-k">"${esc(k)}"</span><span class="j-p">: </span>${jval(v[k], ind+1)}${i<keys.length-1?'<span class="j-p">,</span>':''}`).join('\n')}\n${pad}<span class="j-p">}</span>`;
 }
-// `jev_decision` is a legacy field name: it holds the routing decision whoever
+// `categorization_decision` is a legacy field name: it holds the routing decision whoever
 // made it. On a bypassed record Expanso's rule made it and Jev never saw the
 // record, so it must not be credited to Jev.
-const originOf = (k, r) => k==='jev_decision' ? (r.jev && r.jev_ok ? 'jv' : 'ex') : (ORIGIN[k] || '');
+const originOf = (k, r) => k==='categorization_decision' ? (r.categorization && r.categorization_ok ? 'jv' : 'ex') : (ORIGIN[k] || '');
 function jrecord(r){
   // Group by who put the field there -- production, then Expanso, then Jev -- so
   // the change of shape reads top to bottom. (The pipeline emits keys A-Z.)
@@ -852,8 +852,8 @@ $('#modal').onclick = e => { if (e.target.id==='modal') closeRecord(); };
 const ord = n => { const t=n%100, o=n%10; return n + (t>=11&&t<=13 ? 'th' : o===1?'st' : o===2?'nd' : o===3?'rd' : 'th'); };
 function gate(r){
   // Mirrors the cascade in pipeline-recurrence.yaml exactly. If that file changes, change this.
-  const a = r.jev.answers||{}, act=a.actionable?.noul??0, sev=a.severity?.choice??'other', conf=a.severity?.confidence??0;
-  if (!r.jev_ok) return 'Model unreachable → review';
+  const a = r.categorization.answers||{}, act=a.actionable?.noul??0, sev=a.severity?.choice??'other', conf=a.severity?.confidence??0;
+  if (!r.categorization_ok) return 'Model unreachable → review';
   if (sev==='critical' && conf>=0.85) return 'severity critical, confidence ≥ 0.85 → page';
   if (act>=0.7 && conf>=0.5) return 'actionable ≥ 0.70, confidence ≥ 0.50 → notify';
   if (conf<0.6) return 'confidence < 0.60 → review';
@@ -867,18 +867,18 @@ function show(r, bin, tag){
   el.className = 'panel card';
   const c = r.recurrence, input = `<div><p class="cap">Input${tag?` · ${tag}`:''}</p><div class="msg">${esc(r.level)} · ${esc(r.service)} · ${esc(r.msg)}</div>
     ${c ? `<div class="meta detail">${ord(c.occurrence)} time in ${Math.round(c.window_s/60)} min · counted by Expanso</div>` : ''}</div>`;
-  const mName = (r.jev_ok && r.jev?.model) || S.model || '';
+  const mName = (r.categorization_ok && r.categorization?.model) || S.model || '';
   const isCribl = /cribl/i.test(mName) || (!mName && !S.mock);
   const mTitle = isCribl ? 'Cribl' : 'Jev';
   let by;
   if (bin==='raw') by = `<div><p class="cap">Decided by</p><div class="said">Nothing. Stored verbatim: no fingerprint, no count, no owner.</div></div>`;
   else if (r.bypass) by = `<div><p class="cap ex">Decided by · Expanso rule</p><div class="said">Exact match on the known-benign list. <b>No model call.</b></div><span class="rule detail">level INFO + service + message, exactly</span></div>`;
-  else if (!r.jev) by = `<div><p class="cap ex">Added by Expanso</p><div class="said"><b>${esc(r.fingerprint)}</b></div><div class="meta detail">node ${esc(r.node_id)} · no model in this pipeline</div></div>`;
+  else if (!r.categorization) by = `<div><p class="cap ex">Added by Expanso</p><div class="said"><b>${esc(r.fingerprint)}</b></div><div class="meta detail">node ${esc(r.node_id)} · no model in this pipeline</div></div>`;
   else if (bin==='held') by = `<div><p class="cap" style="color:var(--held)">Decided by · Expanso</p><div class="said">${mTitle} did not answer. Expanso holds it and asks again every 2–4s.</div><span class="rule detail">up to 15 attempts, then review</span></div>`;
-  else if (!r.jev_ok) by = `<div><p class="cap" style="color:var(--err)">Decided by · fallback</p><div class="said">${mTitle} did not answer after ${r.held_attempts||0} attempts, so Expanso did not guess.</div><span class="rule detail">${gate(r)}</span></div>`;
-  else { const a = r.jev.answers||{}, f = v => (v??0).toFixed(2);
-    by = `<div><p class="cap jv">Decided by · ${mTitle} reported · ${esc(r.jev.model||'?')}</p><div class="said">actionable <b>${f(a.actionable?.noul)}</b> · ${esc(a.severity?.choice)} <b>${f(a.severity?.confidence)}</b> · team <b>${esc(a.team?.choice)}</b></div><span class="rule detail">${gate(r)}</span></div>`; }
-  const dest = bin==='raw' ? 'raw bucket' : bin==='held' ? 'waiting for model' : bin, base = r.baseline, judged = r.jev && r.jev_ok, diff = judged && base && base!==bin;
+  else if (!r.categorization_ok) by = `<div><p class="cap" style="color:var(--err)">Decided by · fallback</p><div class="said">${mTitle} did not answer after ${r.held_attempts||0} attempts, so Expanso did not guess.</div><span class="rule detail">${gate(r)}</span></div>`;
+  else { const a = r.categorization.answers||{}, f = v => (v??0).toFixed(2);
+    by = `<div><p class="cap jv">Decided by · ${mTitle} reported · ${esc(r.categorization.model||'?')}</p><div class="said">actionable <b>${f(a.actionable?.noul)}</b> · ${esc(a.severity?.choice)} <b>${f(a.severity?.confidence)}</b> · team <b>${esc(a.team?.choice)}</b></div><span class="rule detail">${gate(r)}</span></div>`; }
+  const dest = bin==='raw' ? 'raw bucket' : bin==='held' ? 'waiting for model' : bin, base = r.baseline, judged = r.categorization && r.categorization_ok, diff = judged && base && base!==bin;
   el.innerHTML = `${input}<div class="arrow">→</div>${by}<div class="arrow">→</div>
     <div><p class="cap">${bin==='held' ? 'Status' : 'Destination'}</p><div class="dest" style="color:var(--${bin})">${esc(dest)}</div>
     ${base ? `<div class="vs${diff?' diff':''}">Severity-only baseline: <span style="text-transform:uppercase">${esc(base)}</span>${!judged ? '' : diff ? ' · differs' : ' · same'}</div>` : ''}<div class="vs detail">local demo file ${SINK[bin]}</div></div>`;

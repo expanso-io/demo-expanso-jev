@@ -6,7 +6,7 @@ Every ticket gets a department, an intent, a frustration score and an urgency ju
 
 `pipeline.yaml` — POST /tickets in; Jev judges department, intent, frustration, urgency; cascade pages on-call, fills the priority queue and department queues, or holds for human triage.
 The Jev call is
-`POST ${JEV_API_URL}` with `jev-unavailable` graceful degradation.
+`POST ${JEV_API_URL}` with `categorization-unavailable` graceful degradation.
 
 `input.jsonl` — sample events for a quick test.
 

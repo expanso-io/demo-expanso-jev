@@ -139,7 +139,7 @@ config:
       # 3. Jev judgment, WITH the recurrence history in state -- only for records
       #    the bypass did not clear. This switch is the whole cost story: a
       #    bypassed record never reaches the http processor below.
-      - label: ask_jev
+      - label: ask_categorization
         switch:
           - check: '!this.bypass'
             processors:
@@ -202,15 +202,15 @@ config:
                   - catch:
                       # Jev unreachable: degrade gracefully, everything goes to review
                       - mapping: |
-                          root = {"model": "jev-unavailable", "answers": {}}
+                          root = {"model": "categorization-unavailable", "answers": {}}
                 result_map: |
                   root.model_disabled = if this.model == "cribl-disabled" { true } else { deleted() }
-                  root.jev = if this.model == "cribl-disabled" {
+                  root.categorization = if this.model == "cribl-disabled" {
                     deleted()
                   } else {
                     {"answers": this.answers, "model": this.model.or("jev-latest")}
                   }
-                  root.jev_ok = this.model != "jev-unavailable" && this.model != "cribl-disabled"
+                  root.categorization_ok = this.model != "categorization-unavailable" && this.model != "cribl-disabled"
 
       # 4. confidence cascade: deterministic gates over Jev's graded judgment.
       #    review catches BOTH uncertainty (low confidence) and near-threshold
@@ -220,17 +220,17 @@ config:
           root = this
           root.routed_by = if this.model_disabled.or(false) {
             "expanso"
-          } else if this.bypass { "expanso-bypass" } else { "jev" }
-          let actionable = this.jev.answers.actionable.noul.or(0)
-          let sev = this.jev.answers.severity.choice.or("other")
-          let conf = this.jev.answers.severity.confidence.or(0)
-          root.jev_decision = if this.bypass || this.model_disabled.or(false) {
+          } else if this.bypass { "expanso-bypass" } else { "categorization" }
+          let actionable = this.categorization.answers.actionable.noul.or(0)
+          let sev = this.categorization.answers.severity.choice.or("other")
+          let conf = this.categorization.answers.severity.confidence.or(0)
+          root.categorization_decision = if this.bypass || this.model_disabled.or(false) {
             "archive"
-          } else if !this.jev_ok && this.held_attempts < 15 {
+          } else if !this.categorization_ok && this.held_attempts < 15 {
             # Jev did not answer. Do not guess and do not give up yet: hold the
             # record and ask again. See the "held" output below.
             "held"
-          } else if !this.jev_ok {
+          } else if !this.categorization_ok {
             "review"   # 15 attempts, ~45 s: stop holding, hand it to a human
           } else if $sev == "critical" && $conf >= 0.85 {
             "page"
@@ -287,7 +287,7 @@ config:
           #   hashlib.sha256(record["id"].encode()).hexdigest()[:12]
           let eid = this.id.string().hash("sha256").encode("hex").slice(0, 12)
           let tail = " event=" + $eid + " fp=" + $fp + " occ=" + $occ.string() + " svc=" + $svc + " lvl=" + $lvl
-          let a = this.jev.answers.or({})
+          let a = this.categorization.answers.or({})
           let sev = if ["info", "warning", "critical", "other"].contains($a.severity.choice) { $a.severity.choice } else { "invalid" }
           let team = if ["backend", "infra", "data", "security", "other"].contains($a.team.choice) { $a.team.choice } else { "invalid" }
           let act = ($a.actionable.noul.number().catch(0) * 100).round() / 100
@@ -296,10 +296,10 @@ config:
             if $occ == 1 || $occ % 250 == 0 { "bypass" } else { "" }
           } else if this.model_disabled.or(false) {
             if $occ == 1 || $occ % 250 == 0 { "disabled" } else { "" }
-          } else if this.jev_decision == "held" {
+          } else if this.categorization_decision == "held" {
             # one line when a record is FIRST held; its retries are not news
             if this.held_attempts == 0 { "held" } else { "" }
-          } else if !this.jev_ok.or(false) {
+          } else if !this.categorization_ok.or(false) {
             "fallback"
           } else {
             "judged"
@@ -308,12 +308,12 @@ config:
             "triage bypass -> ARCHIVE selected, output pending: known-routine line, no model call (checkpoint: a fingerprint's first occurrence, then every 250th)" + $tail
           } else if this.model_disabled.or(false) {
             "triage model off -> ARCHIVE selected, output pending: local gate disabled the model, no model call (checkpoint: a fingerprint's first occurrence, then every 250th)" + $tail
-          } else if this.jev_decision == "held" {
+          } else if this.categorization_decision == "held" {
             "triage held -> HOLD selected, output pending: Jev gave no answer, nothing guessed; retrying every 2-4s, up to 15 attempts (severity-only baseline: " + this.baseline + ")" + $tail
-          } else if !this.jev_ok.or(false) {
+          } else if !this.categorization_ok.or(false) {
             "triage fallback -> REVIEW selected, output pending: Jev gave no answer after " + this.held_attempts.string() + " attempts, nothing guessed (severity-only baseline: " + this.baseline + ")" + $tail
           } else {
-            "triage judged -> " + this.jev_decision.uppercase() + " selected, output pending: " + (if this.held_attempts > 0 { "released after " + this.held_attempts.string() + " held attempts; " } else { "" }) + "Jev reported actionable=" + $act.string() + " severity=" + $sev + " confidence=" + $conf.string() + " team=" + $team + " (severity-only baseline: " + this.baseline + ")" + $tail
+            "triage judged -> " + this.categorization_decision.uppercase() + " selected, output pending: " + (if this.held_attempts > 0 { "released after " + this.held_attempts.string() + " held attempts; " } else { "" }) + "Jev reported actionable=" + $act.string() + " severity=" + $sev + " confidence=" + $conf.string() + " team=" + $team + " (severity-only baseline: " + this.baseline + ")" + $tail
           }
           meta log_event = $eid
       - label: log_selection
@@ -327,7 +327,7 @@ config:
                     root.stage = "select"
                     root.outcome = meta("log_kind") + "_selected"
                     root.held_attempts = this.held_attempts
-                    root.destination = this.jev_decision
+                    root.destination = this.categorization_decision
                     root.baseline = this.baseline
                     root.event_id = meta("log_event")
                     root.write_confirmed = false
@@ -338,8 +338,8 @@ config:
                   message: '${! meta("log_summary") }'
                   fields_mapping: |
                     root.stage = "select"
-                    root.outcome = meta("log_kind") + "_" + this.jev_decision + "_selected"
-                    root.destination = this.jev_decision
+                    root.outcome = meta("log_kind") + "_" + this.categorization_decision + "_selected"
+                    root.destination = this.categorization_decision
                     root.baseline = this.baseline
                     root.event_id = meta("log_event")
                     root.model_called = !this.bypass && !this.model_disabled.or(false)
@@ -350,11 +350,11 @@ config:
       #    not show up in a fingerprint's history as if it were.
       - label: record_decision
         switch:
-          - check: 'this.jev_decision != "held"'
+          - check: 'this.categorization_decision != "held"'
             processors:
             - branch:
                 request_map: |
-                  root = {"fingerprint": this.fingerprint, "decision": this.jev_decision}
+                  root = {"fingerprint": this.fingerprint, "decision": this.categorization_decision}
                 processors:
                   - http:
                       url: http://127.0.0.1:${COUNTER_PORT:8898}/record
@@ -367,7 +367,7 @@ config:
       cases:
         # HOLD. Jev did not answer, so the record is neither guessed nor dropped.
         # First hold only: write one receipt, then fall through (`continue`) to...
-        - check: this.jev_decision == "held" && this.held_attempts == 0
+        - check: this.categorization_decision == "held" && this.held_attempts == 0
           continue: true
           output:
             file:
@@ -377,7 +377,7 @@ config:
         # count raised. It waits at step 0, asks Jev again, and takes its real
         # route on the pass where Jev answers. After 15 attempts the gate stops
         # holding and sends it to review.
-        - check: this.jev_decision == "held"
+        - check: this.categorization_decision == "held"
           output:
             http_client:
               url: http://127.0.0.1:${INGEST_PORT:8080}/logs
@@ -389,17 +389,17 @@ config:
               - mapping: |
                   root = this
                   root.held_attempts = this.held_attempts + 1
-        - check: this.jev_decision == "page"
+        - check: this.categorization_decision == "page"
           output:
             file:
               path: data/page.jsonl
               codec: lines
-        - check: this.jev_decision == "notify"
+        - check: this.categorization_decision == "notify"
           output:
             file:
               path: data/notify.jsonl
               codec: lines
-        - check: this.jev_decision == "review"
+        - check: this.categorization_decision == "review"
           output:
             file:
               path: data/review.jsonl
