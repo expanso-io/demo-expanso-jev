@@ -1,11 +1,11 @@
-name: jev-soc-prefilter
+name: expanso-edge-categorization-soc-prefilter
 type: pipeline
-description: SOC pre-filter with Jev — auth and access events get a threat classification and escalation judgment at the edge. Only real escalations reach the SIEM; everything else lands in cheap storage with scores attached.
+description: SOC pre-filter with Expanso Edge Categorization — auth and access events get a threat classification and escalation judgment at the edge. Only real escalations reach the SIEM; everything else lands in cheap storage with scores attached.
 namespace: production
 labels:
   category: data-security
   pattern: ai-decision
-  model: jev
+  model: expanso-edge-categorization
 
 config:
   input:
@@ -26,7 +26,7 @@ config:
           root = this
           root.received_at = now()
 
-      # ── Ask Jev ──
+      # ── Ask the categorization model ──
       - label: start_timer
         mutation: |
           meta jev_start = timestamp_unix_milli()
@@ -106,17 +106,17 @@ config:
                 output:
                   label: siem
                   file:
-                    path: ./data/jev-soc-prefilter/siem-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-soc-prefilter/siem-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: this.jev_decision == "warm"
                 output:
                   label: warm
                   file:
-                    path: ./data/jev-soc-prefilter/warm-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-soc-prefilter/warm-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
                   label: cold
                   file:
-                    path: ./data/jev-soc-prefilter/cold-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-soc-prefilter/cold-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

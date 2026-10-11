@@ -1,11 +1,11 @@
-name: jev-feedback-miner
+name: expanso-edge-categorization-feedback-miner
 type: pipeline
-description: Feedback miner with Jev — every review and NPS verbatim gets topic, sentiment and churn-risk judged inline. Bugs route to eng, churn risks ping the account team, everything feeds analytics.
+description: Feedback miner with Expanso Edge Categorization — every review and NPS verbatim gets topic, sentiment and churn-risk judged inline. Bugs route to eng, churn risks ping the account team, everything feeds analytics.
 namespace: production
 labels:
   category: integrations
   pattern: ai-decision
-  model: jev
+  model: expanso-edge-categorization
 
 config:
   input:
@@ -26,7 +26,7 @@ config:
           root = this
           root.received_at = now()
 
-      # ── Ask Jev ──
+      # ── Ask the categorization model ──
       - label: start_timer
         mutation: |
           meta jev_start = timestamp_unix_milli()
@@ -116,17 +116,17 @@ config:
                 output:
                   label: alert
                   file:
-                    path: ./data/jev-feedback-miner/alert-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-feedback-miner/alert-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: this.jev_decision == "eng"
                 output:
                   label: eng
                   file:
-                    path: ./data/jev-feedback-miner/eng-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-feedback-miner/eng-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
                   label: analytics
                   file:
-                    path: ./data/jev-feedback-miner/analytics-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-feedback-miner/analytics-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

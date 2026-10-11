@@ -1,11 +1,11 @@
-name: jev-sensitivity-masking
+name: expanso-edge-categorization-sensitivity-masking
 type: pipeline
-description: Semantic sensitivity classifier with Jev — every record gets a sensitivity class and PII/credential judgment at the edge, then the matching masking policy is applied before data leaves the source.
+description: Semantic sensitivity classifier with Expanso Edge Categorization — every record gets a sensitivity class and PII/credential judgment at the edge, then the matching masking policy is applied before data leaves the source.
 namespace: production
 labels:
   category: data-security
   pattern: ai-decision
-  model: jev
+  model: expanso-edge-categorization
 
 config:
   input:
@@ -137,11 +137,11 @@ config:
                 output:
                   label: quarantine
                   file:
-                    path: ./data/jev-sensitivity-masking/quarantine-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-sensitivity-masking/quarantine-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
                   label: forwarded
                   file:
-                    path: ./data/jev-sensitivity-masking/forwarded-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-sensitivity-masking/forwarded-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

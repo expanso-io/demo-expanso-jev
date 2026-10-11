@@ -1,11 +1,11 @@
-name: jev-ticket-router
+name: expanso-edge-categorization-ticket-router
 type: pipeline
-description: Support ticket router with Jev — every ticket gets department, intent, frustration score and urgency judged inline. Confidently urgent tickets page on-call; uncertain ones queue for humans.
+description: Support ticket router with Expanso Edge Categorization — every ticket gets department, intent, frustration score and urgency judged inline. Confidently urgent tickets page on-call; uncertain ones queue for humans.
 namespace: production
 labels:
   category: integrations
   pattern: ai-decision
-  model: jev
+  model: expanso-edge-categorization
 
 config:
   input:
@@ -26,7 +26,7 @@ config:
           root = this
           root.received_at = now()
 
-      # ── Ask Jev ──
+      # ── Ask the categorization model ──
       - label: start_timer
         mutation: |
           meta jev_start = timestamp_unix_milli()
@@ -130,23 +130,23 @@ config:
                 output:
                   label: page
                   file:
-                    path: ./data/jev-ticket-router/page-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-ticket-router/page-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: this.jev_decision == "priority"
                 output:
                   label: priority
                   file:
-                    path: ./data/jev-ticket-router/priority-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-ticket-router/priority-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: this.jev_decision == "triage"
                 output:
                   label: triage
                   file:
-                    path: ./data/jev-ticket-router/triage-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-ticket-router/triage-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
                   label: routed_by_department
                   file:
-                    path: ./data/jev-ticket-router/routed-${! this.assigned_department }-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-ticket-router/routed-${! this.assigned_department }-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

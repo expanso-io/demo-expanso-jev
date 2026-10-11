@@ -51,7 +51,7 @@
     },
     {
       "title": "Write to a queue",
-      "text": "A switch sends the record to one queue file by its decision. Each queue is a JSONL file under data/jev-ticket-router/ so you can read exactly what landed."
+      "text": "A switch sends the record to one queue file by its decision. Each queue is a JSONL file under data/expanso-edge-categorization-ticket-router/ so you can read exactly what landed."
     }
   ],
   "queues": {

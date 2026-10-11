@@ -51,7 +51,7 @@
     },
     {
       "title": "Write to a queue",
-      "text": "Quarantine and warehouse are separate JSONL files under data/jev-data-quality/."
+      "text": "Quarantine and warehouse are separate JSONL files under data/expanso-edge-categorization-data-quality/."
     }
   ],
   "queues": {

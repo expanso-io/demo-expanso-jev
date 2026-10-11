@@ -1,11 +1,11 @@
-name: jev-moderation
+name: expanso-edge-categorization-moderation
 type: pipeline
-description: Moderation pre-filter with Jev — every piece of user content gets a category judgment inline. Safe content auto-allows; everything else queues for humans, most-uncertain first.
+description: Moderation pre-filter with Expanso Edge Categorization — every piece of user content gets a category judgment inline. Safe content auto-allows; everything else queues for humans, most-uncertain first.
 namespace: production
 labels:
   category: integrations
   pattern: ai-decision
-  model: jev
+  model: expanso-edge-categorization
 
 config:
   input:
@@ -26,7 +26,7 @@ config:
           root = this
           root.received_at = now()
 
-      # ── Ask Jev ──
+      # ── Ask the categorization model ──
       - label: start_timer
         mutation: |
           meta jev_start = timestamp_unix_milli()
@@ -105,11 +105,11 @@ config:
                 output:
                   label: allowed
                   file:
-                    path: ./data/jev-moderation/allowed-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-moderation/allowed-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
                   label: review
                   file:
-                    path: ./data/jev-moderation/review-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-moderation/review-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

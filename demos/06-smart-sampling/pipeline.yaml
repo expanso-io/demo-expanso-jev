@@ -1,11 +1,11 @@
-name: jev-smart-sampling
+name: expanso-edge-categorization-smart-sampling
 type: pipeline
-description: Smart sampling with Jev — every event is scored for interestingness. Keep 100% of the interesting ones, 1% of the noise. Volume reduction depends on your signal-to-noise ratio.
+description: Smart sampling with Expanso Edge Categorization — every event is scored for interestingness. Keep 100% of the interesting ones, 1% of the noise. Volume reduction depends on your signal-to-noise ratio.
 namespace: production
 labels:
   category: log-processing
   pattern: ai-decision
-  model: jev
+  model: expanso-edge-categorization
 
 config:
   input:
@@ -102,11 +102,11 @@ config:
                 output:
                   label: kept
                   file:
-                    path: ./data/jev-smart-sampling/kept-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-smart-sampling/kept-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
                   label: sampled
                   file:
-                    path: ./data/jev-smart-sampling/sampled-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-smart-sampling/sampled-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

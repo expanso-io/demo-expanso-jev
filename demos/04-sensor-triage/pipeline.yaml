@@ -1,11 +1,11 @@
-name: jev-sensor-triage
+name: expanso-edge-categorization-sensor-triage
 type: pipeline
-description: Sensor anomaly triage with Jev — every reading is judged against its baseline in context. Real anomalies dispatch maintenance with a context packet; routine telemetry rolls into aggregates.
+description: Sensor anomaly triage with Expanso Edge Categorization — every reading is judged against its baseline in context. Real anomalies dispatch maintenance with a context packet; routine telemetry rolls into aggregates.
 namespace: production
 labels:
   category: data-routing
   pattern: ai-decision
-  model: jev
+  model: expanso-edge-categorization
 
 config:
   input:
@@ -33,7 +33,7 @@ config:
           }
           root.received_at = now()
 
-      # ── Ask Jev ──
+      # ── Ask the categorization model ──
       - label: start_timer
         mutation: |
           meta jev_start = timestamp_unix_milli()
@@ -112,17 +112,17 @@ config:
                 output:
                   label: dispatch
                   file:
-                    path: ./data/jev-sensor-triage/dispatch-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-sensor-triage/dispatch-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: this.jev_decision == "flag"
                 output:
                   label: flagged
                   file:
-                    path: ./data/jev-sensor-triage/flagged-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-sensor-triage/flagged-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
                   label: rollup
                   file:
-                    path: ./data/jev-sensor-triage/rollup-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-sensor-triage/rollup-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

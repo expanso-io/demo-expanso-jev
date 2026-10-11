@@ -1,11 +1,11 @@
-name: jev-agent-guardrail
+name: expanso-edge-categorization-agent-guardrail
 type: pipeline
-description: Agent guardrail with Jev — a 0.4s safety check on every AI agent tool call. Calls matching user intent pass through; risky or off-intent calls are blocked or held for approval.
+description: Agent guardrail with Expanso Edge Categorization — a 0.4s safety check on every AI agent tool call. Calls matching user intent pass through; risky or off-intent calls are blocked or held for approval.
 namespace: production
 labels:
   category: data-security
   pattern: ai-decision
-  model: jev
+  model: expanso-edge-categorization
 
 config:
   input:
@@ -105,17 +105,17 @@ config:
                 output:
                   label: blocked
                   file:
-                    path: ./data/jev-agent-guardrail/blocked-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-agent-guardrail/blocked-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: this.jev_decision == "hold"
                 output:
                   label: held
                   file:
-                    path: ./data/jev-agent-guardrail/held-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-agent-guardrail/held-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
                   label: allowed
                   file:
-                    path: ./data/jev-agent-guardrail/allowed-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-agent-guardrail/allowed-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

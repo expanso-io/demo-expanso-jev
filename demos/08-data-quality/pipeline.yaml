@@ -1,11 +1,11 @@
-name: jev-data-quality
+name: expanso-edge-categorization-data-quality
 type: pipeline
-description: Data quality firewall with Jev — warehouse-bound rows are judged for quality and schema conformance at the edge. Bad rows quarantine with reasons attached; good rows flow through.
+description: Data quality firewall with Expanso Edge Categorization — warehouse-bound rows are judged for quality and schema conformance at the edge. Bad rows quarantine with reasons attached; good rows flow through.
 namespace: production
 labels:
   category: data-transformation
   pattern: ai-decision
-  model: jev
+  model: expanso-edge-categorization
 
 config:
   input:
@@ -26,7 +26,7 @@ config:
           root = this
           root.received_at = now()
 
-      # ── Ask Jev ──
+      # ── Ask the categorization model ──
       - label: start_timer
         mutation: |
           meta jev_start = timestamp_unix_milli()
@@ -101,11 +101,11 @@ config:
                 output:
                   label: quarantine
                   file:
-                    path: ./data/jev-data-quality/quarantine-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-data-quality/quarantine-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines
               - check: "true"
                 output:
                   label: warehouse
                   file:
-                    path: ./data/jev-data-quality/warehouse-${! now().ts_format("2006-01-02") }.jsonl
+                    path: ./data/expanso-edge-categorization-data-quality/warehouse-${! now().ts_format("2006-01-02") }.jsonl
                     codec: lines

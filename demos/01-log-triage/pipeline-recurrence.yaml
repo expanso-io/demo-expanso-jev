@@ -19,7 +19,7 @@
 
 name: log-triage
 type: pipeline
-description: Recurrence-aware log triage -- Expanso assembles temporal context, Jev judges it.
+description: Recurrence-aware log triage -- Expanso assembles temporal context, the categorization model judges it.
 namespace: demo
 selector:
   match_labels:
@@ -27,7 +27,7 @@ selector:
 
 labels:
   category: log-processing
-  model: jev
+  model: expanso-edge-categorization
   pattern: temporal-context
 
 config:
