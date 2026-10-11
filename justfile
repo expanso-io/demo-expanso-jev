@@ -14,7 +14,7 @@ export TRIAGE_EDGE_API_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .
 #
 #   cp .env.example .env    # then set JEV_API_URL
 #   just doctor             # verify the machine can run it
-#   just up                 # pods + local browser + Expanso Cloud
+#   just up                 # log triage + local browser + Expanso Cloud
 #   just open               # dashboard in a browser
 #   just down               # stop everything this repo started
 
@@ -127,11 +127,20 @@ validate:
       expanso-edge validate "$f"
     done
 
-# Start the pod demo and deploy or update its Expanso Cloud pipeline.
-up: _ports-check
+# Start log triage and deploy its pipeline through Expanso Cloud.
+up: _triage-up
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! (cd "{{ live }}" && expanso-cli job deploy --force pipeline-recurrence.yaml); then
+      just --justfile "{{ root }}/justfile" _triage-down
+      exit 1
+    fi
+
+# Start the separate pod-labels demo with its k3d cluster.
+up-pods: _ports-check
     bash scripts/up.sh
 
-# Start the original log-triage demo.
+# Start log triage at act one, before deploying its Cloud pipeline.
 up-triage:
     @just --justfile "{{ root }}/justfile" _triage-up
 
@@ -165,11 +174,11 @@ jev-mock:
     uv run "{{ root }}/shared/jev-mock-server.py"
 
 # Open the selected demo's local browser UI.
-open target="pods":
+open target="triage":
     @case "{{ target }}" in pods) open http://127.0.0.1:{{POD_LABEL_PORT}} ;; triage) just --justfile "{{ root }}/justfile" _triage-open ;; *) echo "Choose pods or triage" >&2; exit 2 ;; esac
 
 # Show the selected demo's status.
-status target="pods":
+status target="triage":
     @case "{{ target }}" in pods) just --justfile "{{ root }}/justfile" pod-labels-status ;; triage) just --justfile "{{ root }}/justfile" _triage-status ;; *) echo "Choose pods or triage" >&2; exit 2 ;; esac
 
 # Verify the pod demo without starting services.

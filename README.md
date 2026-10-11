@@ -83,15 +83,15 @@ Source incidents are scripted by the workload in `demos/11-pod-labels/scenario/`
 Kubernetes patches, and Service membership are real.
 
 ```bash
-just up
+just up-pods
 ```
 
 Open **http://127.0.0.1:8901** after READY. See the
 [pod demo prerequisites and runbook](demos/11-pod-labels/README.md).
 Inside `demos/11-pod-labels`, `just up` runs that demo directly.
-At the root, `just up`, `just open`, `just status`, and `just test` target the
-pod demo. `just down` stops both managed demos. Log triage starts with
-`just up-triage` and can also stop on its own with `just down-triage`.
+At the root, `just up-pods` starts it, while `just open pods` and
+`just status pods` inspect it. `just test` runs its local tests.
+`just down` stops both managed demos.
 
 ## Log-triage quickstart
 
@@ -100,14 +100,13 @@ just init        # creates .env from .env.example
 $EDITOR .env     # the three EXPANSO_* values from your Cloud network
                  # set JEV_API_URL to http://127.0.0.1:8100/v1/systemone
 just doctor      # checks tools, credentials and reachability
-just up-triage   # takes about a minute; opens on "no pipeline"
-just open triage # http://127.0.0.1:8890
+just up          # starts the Cloud pipeline with Cribl locally off
+just open        # http://127.0.0.1:8890
 ```
 
 Then walk through it:
 
 ```bash
-just act2        # deploy the Cloud pipeline with Cribl locally off
 just act3        # turn Cribl on at the local gate, no redeploy
 just down        # stop the managed demos and triage Cloud job
 ```
@@ -120,6 +119,10 @@ Start the Cribl server in a separate terminal before `just act3`. It needs its
 base weights and adapter on the first start; see
 [the model setup](demos/01-log-triage/README.md#part-two-run-the-decision-model-locally-cribl-cribl-decision-10).
 For a no-model fixture, use `just jev-mock` and point `JEV_API_URL` at `:8099`.
+
+The root `just up`, `just open`, and `just status` target log triage.
+For the three-act walkthrough, `just up-triage` starts at act one with no
+pipeline, then `just act2` deploys it. `just down-triage` stops only log triage.
 
 `just` on its own lists every recipe. `just status` shows what is alive,
 `just logs <name>` tails a component, and `just reset-agent` clears the agent's

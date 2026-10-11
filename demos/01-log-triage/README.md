@@ -39,11 +39,13 @@ and Jev settings live; see `AGENTS.md` for why they are env vars, never flags):
 
 ```bash
 just doctor    # tools, Cloud credentials, Jev reachability
-just up-triage # opens on act one: nothing running, zero counters
+just up        # deploys the Cloud pipeline with Cribl locally off
 just down     # stops the managed demos and triage job in Cloud
 ```
 
 Then open **http://127.0.0.1:8890**.
+To start the three-act walkthrough with no pipeline, use `just up-triage`
+and deploy it later with `just act2`.
 
 ## The three acts
 
