@@ -433,6 +433,7 @@ function layout(){
   G = {w:W, h:H, lane, srcR, bucketX, trayX, trayY, gateIn:nodeL, gateOut:nodeL+NW, askX, ansX,
        jevBottom:jvTop+JH, exTop, rawTop,
        ends:{page:top.page+BH/2, notify:top.notify+BH/2, review:top.review+BH/2, archive:top.archive+BH/2}};
+  G.paths = Object.fromEntries(['page','notify','review','archive'].map(bin => [bin, outputPath(bin)]));
   placeRaw();
 }
 function placeRaw(){
@@ -447,6 +448,7 @@ new ResizeObserver(layout).observe(flow);
 // with a receipt. Never invent a destination from aggregate bucket counts.
 const flowDots = [], flowPending = [], pulses = [];
 const FLOW_RATE = 10;
+const FLOW_SPEED = 360; // pixels per second, regardless of route length
 let flowCarry = 1, flowWindow = 0;
 const flowShown = {in:0,out:0};
 function queueDot(dot){
@@ -462,6 +464,31 @@ function queueSource(n){
 }
 
 function bez(a,b,c,d,t){ const u=1-t; return u*u*u*a + 3*u*u*t*b + 3*u*t*t*c + t*t*t*d; }
+
+function outputPath(bin){
+  const start = G.gateOut, dx = G.bucketX-start, endY = G.ends[bin];
+  const points = [{x:start,y:G.lane,d:0}];
+
+  for (let i=1;i<=32;i++){
+    const t = i/32, prev = points[i-1];
+    const x = bez(start,start+dx*.4,start+dx*.6,G.bucketX,t);
+    const y = bez(G.lane,G.lane,endY,endY,t);
+    points.push({x,y,d:prev.d+Math.hypot(x-prev.x,y-prev.y)});
+  }
+
+  return points;
+}
+
+function pathPoint(points, distance){
+  if (distance >= points.at(-1).d) return null;
+  let i = 1;
+
+  while (points[i].d < distance) i++;
+  const a = points[i-1], b = points[i], t = (distance-a.d)/(b.d-a.d);
+
+  return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t};
+}
+
 function sq(x,y,s){ ctx.fillRect(Math.round(x-s/2), Math.round(y-s/2), s, s); }
 
 let last = performance.now()/1000;
@@ -484,20 +511,18 @@ function frame(){
 function drawFlowDots(dt){
   for (let i=flowDots.length-1;i>=0;i--){
     const p = flowDots[i]; p.age += dt;
-    const a = p.age, inboundEnd = 1.15;
+    const distance = p.age*FLOW_SPEED;
     let x, y, color = COLORS.raw;
     if (p.part==='in'){
-      if (a >= inboundEnd){ flowDots.splice(i,1); continue; }
-      x = G.srcR + ((p.piped ? G.gateIn : G.bucketX)-G.srcR)*a/inboundEnd;
+      const end = p.piped ? G.gateIn : G.bucketX;
+      if (distance >= end-G.srcR){ flowDots.splice(i,1); continue; }
+      x = G.srcR + distance;
       y = G.lane;
     } else {
-      if (a < 0) continue;
-      const t = a/2.25;
-      if (t >= 1){ flowDots.splice(i,1); continue; }
-      const start = p.bin==='raw' ? G.srcR : G.gateOut;
-      const dx = G.bucketX-start, y3 = p.bin==='raw' ? G.lane : G.ends[p.bin];
-      x = bez(start,start+dx*.4,start+dx*.6,G.bucketX,t);
-      y = bez(G.lane,G.lane,y3,y3,t);
+      if (distance < 0) continue;
+      const point = pathPoint(G.paths[p.bin], distance);
+      if (!point){ flowDots.splice(i,1); continue; }
+      x = point.x; y = point.y;
       color = COLORS[p.bin];
     }
     ctx.fillStyle = color; sq(x,y,8);
@@ -587,7 +612,7 @@ function connect(){
       if (m.n) queueSource(m.n);
       if (m.hero && G) heroes.push({id:m.hero, ph:'in', k:0, born:performance.now()});
     } else if (m.t==='rec'){
-      if (m.bin!=='held' && !m.hero && G)
+      if (m.bin!=='held' && m.bin!=='raw' && !m.hero && G)
         queueDot({part:'out',bin:m.bin,age:m.judged ? -.9 : 0});
       if (m.bin==='held' && G) jevPulse(true);
       const h = m.hero && heroes.find(x => x.id===m.hero);
@@ -863,7 +888,7 @@ addEventListener('keydown', e => {
 // Preview/test hook only: lets a static layout check drive render() with a given
 // state. Nothing in the board reads it.
 window.__board = {S, render, layout, card: () => card(), ledger, queueSource,
-  flowDots, flowPending, geometry: () => G,
+  flowDots, flowPending, geometry: () => G, flowSpeed: FLOW_SPEED, pathPoint,
   stopFeed: () => { eventStream?.close(); eventStream = null; }};
 
 document.fonts.ready.then(() => { layout(); render(); card(); connect(); requestAnimationFrame(frame); });
