@@ -81,8 +81,7 @@ button{font:inherit;color:inherit}
 .node{position:absolute;z-index:1;border-radius:8px;padding:10px 14px;transition:opacity .45s,transform .5s cubic-bezier(.2,.9,.3,1.25)}
 .node.gone{opacity:0;transform:scale(.92);pointer-events:none}
 .node h2{margin:0 0 6px;font:800 32px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
-.node h2:before{content:"";width:10px;height:10px;border-radius:50%;background:currentColor;animation:live 1.6s ease-in-out infinite}
-@keyframes live{50%{opacity:.25}}
+.node h2:before{content:"";width:10px;height:10px;border-radius:50%;background:currentColor}
 .node .ask{font-size:18px;line-height:1.3;font-weight:500}
 /* The steps are the pipeline's real processors, in order. */
 /* The chip row fills whatever is left under the logo and centres in it, so the
@@ -112,9 +111,9 @@ body:not(.act-jev) .j3{display:none}
 .node.expanso h2:before,.node.jevnode h2:before{order:-1}
 .node.jevnode{width:460px;min-height:108px;border:2px dashed var(--jev);background:var(--tint-jev)}
 .node.jevnode h2{color:var(--jev)}
-/* Jev is present but dormant until switched on: muted, no live dot. */
+/* The model node stays visible but muted until the local gate is on. */
 .node.jevnode.off{border-color:var(--line);background:var(--surface)}
-.node.jevnode.off h2{color:var(--text-dim)} .node.jevnode.off h2:before{animation:none;opacity:.35}
+.node.jevnode.off h2{color:var(--text-dim)} .node.jevnode.off h2:before{opacity:.35}
 .node.jevnode h2{justify-content:flex-start}
 /* A macOS-style switch: pill track, round white knob, slides and tints when on. */
 .sw{margin-left:auto;flex:0 0 auto;width:46px;height:28px;border-radius:9999px;border:0;padding:0;cursor:pointer;position:relative;
@@ -125,7 +124,6 @@ body:not(.act-jev) .j3{display:none}
 .sw:disabled{cursor:progress;opacity:.7}
 .node.jevnode.down{border-color:var(--err);background:var(--tint-err)}
 .node.jevnode.down h2{color:var(--err)}
-.node.jevnode.down h2:before{animation:none}
 
 .buckets{position:absolute;right:0;top:0;bottom:0;width:300px;z-index:1}
 .bucket{--c:var(--archive);position:absolute;left:0;right:0;height:64px;overflow:hidden;
@@ -267,7 +265,7 @@ body:not(.inspect) .detail{display:none}
   .legend{flex-wrap:wrap}
 }
 @media(max-width:480px){.buckets{grid-template-columns:minmax(0,1fr)}}
-@media(prefers-reduced-motion:reduce){.node h2:before,.bucket.hit .count{animation:none}}
+@media(prefers-reduced-motion:reduce){.bucket.hit .count{animation:none}}
 </style>
 </head>
 <body>
