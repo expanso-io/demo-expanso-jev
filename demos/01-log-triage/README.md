@@ -250,10 +250,9 @@ with a CPU fallback elsewhere.
 - **Board says "Jev is not answering", everything lands in REVIEW** — the
   pipeline can't reach Jev. Check `JEV_API_URL` and your key
   (`just doctor` probes the endpoint). This is the designed graceful degradation, not a bug.
-- **`just up-triage` sits at "waiting for Expanso Cloud to show the node as connected"** —
-  normal. The agent connects in under a second; Cloud's node list takes 40-60s
-  to flip from `connecting`. Allow about a minute for `just up-triage`. It only fails if
-  the agent never connects (30s) or Cloud never lists the node at all (90s).
+- **Cloud lists the node as `connecting` after `just up`** — the Edge agent
+may already be connected. The node list catches up on its next heartbeat;
+the Cloud job can queue briefly while that happens.
 - **Deployed in Cloud but the board stays on act one** — the job is running
   but its input never bound `:8080` here. Is the edge agent connected
   (`expanso-cli node list`)? Did the job land on this node?

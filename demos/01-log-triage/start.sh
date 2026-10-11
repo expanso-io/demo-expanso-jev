@@ -2,11 +2,10 @@
 # jev-live/start.sh — bring up the whole live demo stack on this machine.
 #
 #   1. recurrence tracker  (counter.py, 127.0.0.1:${COUNTER_PORT:-8898})
-#   2. Expanso Edge agent  (joined to Expanso Cloud). NO pipeline is deployed:
-#      the demo opens on act one, every log pouring into a raw bucket. The
-#      presenter starts the single pipeline-recurrence.yaml job through Cloud.
-#      Its local gate starts with model calls off; the board or `just act3`
-#      turns them on without changing the Cloud job.
+#   2. Expanso Edge agent  (joined to Expanso Cloud). The root `just up`
+#      deploys pipeline-recurrence.yaml after this script finishes. The
+#      `just up-triage` path leaves that job stopped for the three-act story.
+#      The local model gate starts off in both modes.
 #   3. dashboard server    (server.py, 127.0.0.1:8890)
 #   4. log generator       (generator2.py, ~5 lines/sec into the Edge HTTP input)
 #
@@ -153,16 +152,9 @@ unset TYPESAFE_API_KEY
 GATE_URL="http://127.0.0.1:${JEV_GATE_PORT:-8897}/v1/systemone"
 launch edge env JEV_API_URL="$GATE_URL" expanso-edge run --api-listen "127.0.0.1:$TRIAGE_EDGE_API_PORT" --data-dir "$EDGE_DATA"
 
-# Two separate questions, asked separately, because they have very different
-# answers and the old single check conflated them:
-#
-#   1. Did the agent connect?  Local truth, from the agent's own log. It takes
-#      well under a second. If THIS fails, something is actually wrong.
-#   2. Has Cloud's node list caught up?  That flips "connecting" -> "connected"
-#      on a heartbeat and has been measured at 37-58 s, sometimes more. It
-#      matters only because a deploy made while it still says "connecting"
-#      waits ~10 s for a node. It is not a failure, so it must not fail the
-#      start: the presenter deploys later anyway. Wait for it, then warn.
+# The agent's connection log proves it reached the configured Cloud network.
+# Cloud's node list may lag the connection by a minute, so do not block startup
+# waiting for its heartbeat. A deploy can queue briefly while it catches up.
 NODE_ID_FULL="$(awk '/node_id:/{print $2; exit}' "$EDGE_DATA/config.d/50-connection.yaml" 2>/dev/null || true)"
 NODE_SHORT="$(printf '%s' "${NODE_ID_FULL:-}" | cut -c1-8)"
 echo "  waiting for the agent to connect to $EXPANSO_CLI_ENDPOINT ..."
@@ -177,32 +169,17 @@ if [ "$ok" != 1 ]; then
 fi
 echo "  agent connected (node ${NODE_SHORT:-?})"
 
-# Positive control: Cloud must at least LIST our node. A reachable control plane
-# that has never heard of this node is the failure worth stopping for.
-echo "  waiting for Expanso Cloud to show the node as connected (usually 40-60s) ..."
-listed=0; connected=0
-for _ in $(seq 1 90); do
-  row="$(cloudcli node list --no-style 2>/dev/null | grep "${NODE_SHORT:-__none__}" || true)"
-  [ -n "$row" ] && listed=1
-  if printf '%s' "$row" | grep -q " connected "; then connected=1; break; fi
-  sleep 1
-done
-if [ "$listed" != 1 ]; then
-  echo "ERROR: Expanso Cloud does not list node ${NODE_SHORT:-?} at all. Wrong network or credentials?" >&2
-  exit 1
+row="$(cloudcli node list --no-style 2>/dev/null | grep "${NODE_SHORT:-__none__}" || true)"
+if [ -n "$row" ]; then
+  echo "  Cloud lists node ${NODE_SHORT:-?}"
+else
+  echo "  Cloud has not listed the node yet; deployment may queue briefly"
 fi
-if [ "$connected" != 1 ]; then
-  echo "  WARN  Cloud still shows the node as 'connecting' after 90s. The agent IS connected;"
-  echo "        a deploy made right now may wait ~10s for a node. Continuing."
-fi
-echo "  node registered"
 
-# Open on a true zero state: nothing deployed, nothing routed. A job left
-# running from a previous take would have the board open mid-story with
-# non-zero counters, and a demo has to start from the same place every time.
+# Start from zero routed records. Stop any job left running from an earlier
+# take before the root recipe deploys it or the three-act path begins.
 port_bound() { lsof -ti tcp:"$INGEST_PORT" -sTCP:LISTEN >/dev/null 2>&1; }
-# Leave the single pipeline version in Cloud, stopped. The local gate starts
-# disabled, so starting that job from the Cloud console enters act two.
+# The three-act path also prepares the pipeline in Cloud and leaves it stopped.
 wait_free() { for _ in $(seq 1 40); do port_bound || return 0; sleep 0.5; done; return 1; }
 wait_bound() { for _ in $(seq 1 60); do port_bound && return 0; sleep 0.5; done; return 1; }
 cloudcli job stop log-triage --namespace demo --force >>"$LOGS/deploy.log" 2>&1 || true
@@ -216,7 +193,7 @@ if ! wait_free; then
   cloudcli job stop log-triage --namespace demo --force >>"$LOGS/deploy.log" 2>&1 || true
   wait_free || true
 fi
-if ! port_bound; then
+if ! port_bound && [ "${TRIAGE_START_MODE:-act1}" != deploy ]; then
   echo "  resetting the Cloud job to the unified pipeline, stopped"
   if cloudcli job deploy --force pipeline-recurrence.yaml >>"$LOGS/deploy.log" 2>&1 && wait_bound; then
     cloudcli job stop log-triage --namespace demo --force >>"$LOGS/deploy.log" 2>&1 || true
@@ -226,12 +203,16 @@ if ! port_bound; then
   fi
 fi
 if port_bound; then
-  echo "ERROR: a pipeline is still bound to :8080; the demo cannot open on act one." >&2
+  echo "ERROR: a previous pipeline is still bound to :8080." >&2
   echo "  Stop it in the Expanso Cloud console, then re-run." >&2
   exit 1
 fi
 rm -f "$PKG"/data/*.jsonl
-echo "  no pipeline running (act one) -- start the prepared Cloud job, or: just act2"
+if [ "${TRIAGE_START_MODE:-act1}" = deploy ]; then
+  echo "  Cloud pipeline will deploy after the local services start"
+else
+  echo "  no pipeline running (act one) -- start the prepared Cloud job, or: just act2"
+fi
 
 echo "[3/4] dashboard server (:$JEV_LIVE_PORT)"
 # Exported inside a subshell, then exec: the key is in the server's environment

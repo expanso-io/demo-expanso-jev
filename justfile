@@ -124,11 +124,11 @@ validate:
     for f in "{{ live }}/pipeline-logging.yaml" \
              "{{ live }}/pipeline-recurrence.yaml" \
              "{{ root }}"/demos/*/pipeline.yaml; do
-      expanso-edge validate "$f"
+      env -u EXPANSO_EDGE_HOME expanso-edge validate "$f"
     done
 
 # Start log triage and deploy its pipeline through Expanso Cloud.
-up: _triage-up
+up: _triage-up-cloud
     #!/usr/bin/env bash
     set -euo pipefail
     if ! (cd "{{ live }}" && expanso-cli job deploy --force pipeline-recurrence.yaml); then
@@ -225,6 +225,10 @@ recording-preflight: record-check
 # Bring up the full stack: counter, Edge agent + pipeline, dashboard, generator.
 _triage-up: doctor validate
     bash "{{ live }}/start.sh"
+
+# The default path deploys immediately, so it need not prepare a stopped job.
+_triage-up-cloud: doctor validate
+    TRIAGE_START_MODE=deploy bash "{{ live }}/start.sh"
 
 # Stop everything start.sh launched.
 _triage-down:
