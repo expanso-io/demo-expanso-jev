@@ -204,8 +204,13 @@ config:
                       - mapping: |
                           root = {"model": "jev-unavailable", "answers": {}}
                 result_map: |
-                  root.jev = {"answers": this.answers, "model": this.model.or("jev-latest")}
-                  root.jev_ok = this.model != "jev-unavailable"
+                  root.model_disabled = if this.model == "cribl-disabled" { true } else { deleted() }
+                  root.jev = if this.model == "cribl-disabled" {
+                    deleted()
+                  } else {
+                    {"answers": this.answers, "model": this.model.or("jev-latest")}
+                  }
+                  root.jev_ok = this.model != "jev-unavailable" && this.model != "cribl-disabled"
 
       # 4. confidence cascade: deterministic gates over Jev's graded judgment.
       #    review catches BOTH uncertainty (low confidence) and near-threshold
@@ -213,11 +218,13 @@ config:
       - label: cascade
         mapping: |
           root = this
-          root.routed_by = if this.bypass { "expanso-bypass" } else { "jev" }
+          root.routed_by = if this.model_disabled.or(false) {
+            "expanso"
+          } else if this.bypass { "expanso-bypass" } else { "jev" }
           let actionable = this.jev.answers.actionable.noul.or(0)
           let sev = this.jev.answers.severity.choice.or("other")
           let conf = this.jev.answers.severity.confidence.or(0)
-          root.jev_decision = if this.bypass {
+          root.jev_decision = if this.bypass || this.model_disabled.or(false) {
             "archive"
           } else if !this.jev_ok && this.held_attempts < 15 {
             # Jev did not answer. Do not guess and do not give up yet: hold the
@@ -287,6 +294,8 @@ config:
           let conf = ($a.severity.confidence.number().catch(0) * 100).round() / 100
           meta log_kind = if this.bypass {
             if $occ == 1 || $occ % 250 == 0 { "bypass" } else { "" }
+          } else if this.model_disabled.or(false) {
+            if $occ == 1 || $occ % 250 == 0 { "disabled" } else { "" }
           } else if this.jev_decision == "held" {
             # one line when a record is FIRST held; its retries are not news
             if this.held_attempts == 0 { "held" } else { "" }
@@ -297,6 +306,8 @@ config:
           }
           meta log_summary = if this.bypass {
             "triage bypass -> ARCHIVE selected, output pending: known-routine line, no model call (checkpoint: a fingerprint's first occurrence, then every 250th)" + $tail
+          } else if this.model_disabled.or(false) {
+            "triage model off -> ARCHIVE selected, output pending: local gate disabled the model, no model call (checkpoint: a fingerprint's first occurrence, then every 250th)" + $tail
           } else if this.jev_decision == "held" {
             "triage held -> HOLD selected, output pending: Jev gave no answer, nothing guessed; retrying every 2-4s, up to 15 attempts (severity-only baseline: " + this.baseline + ")" + $tail
           } else if !this.jev_ok.or(false) {
@@ -320,7 +331,7 @@ config:
                     root.baseline = this.baseline
                     root.event_id = meta("log_event")
                     root.write_confirmed = false
-          - check: 'meta("log_kind") == "judged" || meta("log_kind") == "bypass"'
+          - check: 'meta("log_kind") == "judged" || meta("log_kind") == "bypass" || meta("log_kind") == "disabled"'
             processors:
               - log:
                   level: INFO
@@ -331,7 +342,7 @@ config:
                     root.destination = this.jev_decision
                     root.baseline = this.baseline
                     root.event_id = meta("log_event")
-                    root.model_called = !this.bypass
+                    root.model_called = !this.bypass && !this.model_disabled.or(false)
                     root.write_confirmed = false
 
       # 5. record the decision (deterministic -- feeds future recurrence history).

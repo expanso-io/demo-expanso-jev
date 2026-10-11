@@ -1,10 +1,9 @@
 # 01 log triage — every log kept, none understood
 
-A live board over a **real pipeline**, in three acts. No embedded data and no
-scripted replay: every square is a log line that was actually produced, and
-every coloured square is a record the Edge pipeline actually wrote, to the
-bucket it actually chose. The board only observes: deploy from the Expanso
-Cloud console, the CLI, or the Jev switch, and the board follows.
+A live board over a **real pipeline**, in three acts. Its moving squares
+illustrate the route at presentation speed. Counters, destinations, and record
+details come from the Edge pipeline's receipts. Expanso Cloud owns the job;
+the local gate controls whether Cribl receives candidate requests.
 
 Start at the [repository README](../../README.md) for setup. This page is the
 detail: how the board reads, how the pieces fit, and what to do when it breaks.
@@ -40,8 +39,8 @@ and Jev settings live; see `AGENTS.md` for why they are env vars, never flags):
 
 ```bash
 just doctor    # tools, Cloud credentials, Jev reachability
-just up        # opens on act one: nothing deployed, zero counters
-just down      # stops everything, including the job in Expanso Cloud
+just up-triage # opens on act one: nothing running, zero counters
+just down     # stops the managed demos and triage job in Cloud
 ```
 
 Then open **http://127.0.0.1:8890**.
@@ -51,11 +50,10 @@ Then open **http://127.0.0.1:8890**.
 | Act | Do this in Expanso Cloud | CLI equivalent | What the board does |
 |---|---|---|---|
 | 1 | nothing | `just act1` | Logs flow straight into a raw bucket, kept exactly as written. No Expanso, no Jev on screen. |
-| 2 | deploy `pipeline-logging.yaml` (job `log-triage`) | `just act2` | Expanso appears. Every record is structured, counted and archived. No model. |
-| 3 | deploy `pipeline-recurrence.yaml` over the same job | `just act3` | Jev appears. The lane forks into "no model call" and "ask Jev", each with its measured share. |
+| 2 | deploy `pipeline-recurrence.yaml` (job `log-triage`) | `just act2` | Expanso appears. Every record is structured, counted and archived. The local gate is off. |
+| 3 | keep the same Cloud job running | `just act3` | The local gate starts forwarding candidate requests to Cribl. The lane forks into measured no-call and judged paths. |
 
-Both files deploy as the **same job**, so act three is a version bump of one
-pipeline.
+The switch does not deploy or restart the Cloud job.
 
 **Selective inference.** An exact allowlist (level INFO + service + the raw
 message) sends known-benign lines to the archive with no model call. It matches
@@ -70,11 +68,11 @@ input. The evidence strip shows baseline, what Jev reported, and where the
 record actually landed. Destinations are local JSONL demo files, not vendor
 receipts, and the events are synthetic.
 
-**The Jev switch.** On the Jev box, macOS-style. On deploys
-`pipeline-recurrence.yaml` over the running job through Expanso Cloud; off deploys
-`pipeline-logging.yaml` back. A real deploy (about a second), and the board only
-changes once the pipeline does. Starting and stopping the pipeline itself stays
-in the Cloud console, or `just act1` / `just act2`.
+**The Cribl switch.** The switch changes the dashboard server's local gate.
+Off returns a disabled result without calling Cribl; the pipeline archives
+those records and does not count them as judgments. On forwards candidate
+requests to Cribl. Starting and stopping the pipeline stays in Cloud or with
+`just act1` / `just act2`.
 
 **A Jev outage, and Expanso holding.** *Break the link to Jev* flips a local
 fault-injection gate that every Jev call passes through, so Jev appears to
@@ -96,9 +94,8 @@ If the board ever shows **"MOCK Jev responses"** in red, the gate's upstream is
 the repo's mock and the judgments are not real inference.
 
 **Two tabs.** *Live flow* is the board. *Pipeline YAML* shows the checked-in
-source of either pipeline, verbatim (`GET /api/pipeline/<logging|recurrence>`, a
-closed allowlist; `${JEV_API_URL}` stays a placeholder). It is the source
-configuration, not a read-back of the deployed spec.
+`pipeline-recurrence.yaml` source; `${JEV_API_URL}` stays a placeholder. It is
+the source configuration, not a read-back of the deployed spec.
 
 **Reading the board.** Steps inside Expanso are its real processors. The dashed
 line shows the path unknown records take to the decision model. Moving squares
@@ -132,7 +129,7 @@ To tail from a terminal, use the job's **UUID, not its name** (by name the
 handshake is refused), while the job is running:
 
 ```bash
-just up && just act3
+just up-triage && just act2 && just act3
 expanso-cli job list --namespace demo    # copy the full j-… id
 expanso-cli job logs <job-uuid> | grep triage
 ```
@@ -194,9 +191,9 @@ nothing to desync, and the package works from any checkout location.
 
 ## Part two: run the decision model locally (Cribl cribl-decision-1.0)
 
-Act three asks a cloud model for every judgment. Part two keeps the same
-pipeline and the same four questions, but the answers come from your own
-machine: [Cribl's cribl-decision-1.0](https://huggingface.co/cribl-ai/cribl-decision-1.0),
+Act three sends candidate records through the local gate. With the endpoint
+below, answers come from [Cribl's cribl-decision-1.0](https://huggingface.co/cribl-ai/cribl-decision-1.0)
+on this machine. The Cloud job and its four questions stay the same. It is
 a 4B open-weight (Apache-2.0) decision model released October 2026
 ([announcement](https://cribl.io/blog/cribl-decision-1-0-a-foundation-for-telemetry-decision-models/)).
 
@@ -217,12 +214,13 @@ uv run -s shared/cribl-decision-server.py
 # in .env, alongside the other settings:
 JEV_API_URL=http://127.0.0.1:8100/v1/systemone
 
-# from the repository root, use a steady source rate this model can serve:
-JEV_GEN_RATE=0.2 JEV_GEN_JAGGED=0 just up-triage
+# from the repository root, use a steady source rate:
+JEV_GEN_RATE=0.05 JEV_GEN_JAGGED=0 just up-triage
+just act2
 just act3
 ```
 
-No `TYPESAFE_API_KEY`, no relay tunnel, no network at request time. The
+Cribl requires no TypeSafe key or relay tunnel. The
 server loads the weights once at startup (about 15s on Apple silicon after
 the first run), then answers each 4-question request in ~5s on an M5 Max
 with per-question latency on stderr. It reports
@@ -246,26 +244,26 @@ with a CPU fallback elsewhere.
 - **Port clash on 8890 / 8898 / 8080** — `lsof -i :8890` to find the squatter;
   or set `JEV_LIVE_PORT` to something free (8898 is the counter, 8080 the Edge input).
 - **"Lost the dashboard server"** — server.py isn't running or died; check
-  `logs/server.log`. The UI never invents events: no stream, no squares.
+  `logs/server.log`. The counters require receipts; flow motion is illustrative.
 - **Board says "Jev is not answering", everything lands in REVIEW** — the
   pipeline can't reach Jev. Check `JEV_API_URL` and your key
   (`just doctor` probes the endpoint). This is the designed graceful degradation, not a bug.
-- **`just up` sits at "waiting for Expanso Cloud to show the node as connected"** —
+- **`just up-triage` sits at "waiting for Expanso Cloud to show the node as connected"** —
   normal. The agent connects in under a second; Cloud's node list takes 40-60s
-  to flip from `connecting`. Allow about a minute for `just up`. It only fails if
+  to flip from `connecting`. Allow about a minute for `just up-triage`. It only fails if
   the agent never connects (30s) or Cloud never lists the node at all (90s).
 - **Deployed in Cloud but the board stays on act one** — the job is running
   but its input never bound `:8080` here. Is the edge agent connected
   (`expanso-cli node list`)? Did the job land on this node?
 - **Board serves stale code after a restart** — an older `server.py` still
-  holds `:8890`. `just down` now clears listeners by port, not just by pid file.
+  holds `:8890`. `just down` stops only processes whose saved identity matches.
 - **Chaos button does nothing visible** — chaos lines are ~20s apart on purpose;
   give it a minute. Check `logs/server.log` for `chaos <name> line` entries.
 - **Clean slate** — `just down` stops the `log-triage` job in Expanso Cloud
-  and `just up` truncates `data/*.jsonl`, so every run opens on zero counters.
-- **Jev switch off but Jev keeps running, or `just up` fails with "still bound to
-  :8080"** — the agent is restarting a pipeline from a job Cloud no longer has.
-  `just down`, `just reset-agent`, `just up`.
+  and `just up-triage` truncates `data/*.jsonl`, so every run opens on zero counters.
+- **`just up-triage` fails with "still bound to :8080"** — the agent is restarting
+  a pipeline from a job Cloud no longer has. Run `just down`, then
+  `just reset-agent`, then `just up-triage`.
 
 ## Tests
 

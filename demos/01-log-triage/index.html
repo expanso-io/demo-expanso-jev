@@ -278,8 +278,8 @@ body:not(.inspect) .detail{display:none}
       <div class="brand" id="brandTitle">Expanso</div>
     </div>
     <div class="status-pills">
-      <span class="pill" id="cloudPill" data-state="on"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#cloud"/></svg>EXPANSO CLOUD</span>
-      <span class="pill" id="edgePill" data-state="on"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#bolt"/></svg>EDGE ACTIVE</span>
+<span class="pill" id="cloudPill" data-state="warn"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#cloud"/></svg>EXPANSO CLOUD</span>
+<span class="pill" id="edgePill" data-state="off"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#bolt"/></svg>EDGE ACTIVE</span>
     </div>
     <div class="claim" id="claim">Connecting…</div>
     <nav class="tabs" role="tablist" title="Left and Right arrow keys switch views"><button role="tab" data-tab="flow" aria-selected="true">Live flow</button><button role="tab" data-tab="yaml" aria-selected="false">Pipeline YAML</button></nav>
@@ -361,7 +361,7 @@ body:not(.inspect) .detail{display:none}
 
   <section class="yaml" id="yaml" aria-label="Pipeline source configuration">
     <div class="yamlbar">
-      <nav class="tabs" id="yamlPick"><button data-pipe="logging" aria-selected="false">pipeline-logging.yaml</button><button data-pipe="recurrence" aria-selected="true">pipeline-recurrence.yaml</button></nav>
+      <nav class="tabs" id="yamlPick"><button data-pipe="recurrence" aria-selected="true">pipeline-recurrence.yaml</button></nav>
       <span class="what" id="yamlWhat"></span>
     </div>
     <pre id="yamlPre" tabindex="0">Loading…</pre>
@@ -393,7 +393,7 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 // The detail panel lists local demo destinations; the counters are observed.
 const SINK = {held:'held.jsonl', page:'page.jsonl', notify:'notify.jsonl', review:'review.jsonl', archive:'archive.jsonl', raw:'raw.jsonl'};
 
-const S = {mode:'off', up:false, gen:true, jevDown:false, gate:'open', upstreamOk:null, bins:{raw:0}, run:{mode:'off',produced:0,accepted:0,bypassed:0,judged:0,jev_failed:0,caught:0,quieted:0,received:{page:0,notify:0,review:0,archive:0,raw:0}}};
+const S = {mode:'off', up:false, gen:false, cloudOk:false, jevDown:false, gate:'open', upstreamOk:null, bins:{raw:0}, run:{mode:'off',produced:0,accepted:0,bypassed:0,judged:0,jev_failed:0,caught:0,quieted:0,received:{page:0,notify:0,review:0,archive:0,raw:0}}};
 let pinned = null, rawStopped = null, frozen = null, uiRev = 0;
 
 /* --------------------------------------------------------------- geometry */
@@ -461,19 +461,20 @@ function sq(x,y,s){ ctx.fillRect(Math.round(x-s/2), Math.round(y-s/2), s, s); }
 
 let last = performance.now()/1000;
 function frame(){
-  const now = performance.now()/1000, dt = Math.min(0.05, now-last); last = now;
+  const now = performance.now()/1000, dt = Math.min(0.25, Math.max(0, now-last)); last = now;
   if (!G){ requestAnimationFrame(frame); return; }
   ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,G.w,G.h);
   const piped = S.up && S.mode!=='off';
   if (S.gen){
-    flowCarry += dt*FLOW_RATE*(reduced ? .35 : 1);
+    const rate = FLOW_RATE*(reduced ? .35 : 1);
+    flowCarry += dt*rate;
     while (flowCarry >= 1 && flowDots.length < 400){
       flowCarry--;
-      flowDots.push({age:0, piped, branch:piped && S.mode==='jev' && ++flowSequence%10===0,
+      flowDots.push({age:-dt+flowCarry/rate, piped, branch:piped && S.mode==='jev' && ++flowSequence%10===0,
         bin:flowBin()});
     }
   } else flowCarry = 0;
-  drawLanes(piped);
+  drawLanes(piped, dt);
   drawFlowDots(dt);
   drawHeroes(dt);
   requestAnimationFrame(frame);
@@ -506,7 +507,7 @@ function drawFlowDots(dt){
     ctx.fillStyle = color; sq(x,y,5);
   }
 }
-function drawLanes(piped){
+function drawLanes(piped, dt){
   ctx.lineWidth = 2; ctx.setLineDash([]); ctx.strokeStyle = COLORS.lane;
   ctx.beginPath(); ctx.moveTo(G.srcR,G.lane); ctx.lineTo(piped ? G.gateIn : G.bucketX, G.lane); ctx.stroke();
   if (!piped) return;
@@ -537,7 +538,7 @@ function drawLanes(piped){
   // One square per real receipt, replayed as the trip it made: up the question
   // line, back down the answer line. A held record only goes up: nothing came back.
   for (let i=pulses.length-1;i>=0;i--){
-    const p = pulses[i]; p.t += 0.016/0.9; if (p.t>=1 || (p.held && p.t>=.5)){ pulses.splice(i,1); continue; }
+    const p = pulses[i]; p.t += dt/0.9; if (p.t>=1 || (p.held && p.t>=.5)){ pulses.splice(i,1); continue; }
     const up = p.t<.5, k = up ? p.t*2 : (p.t-.5)*2;
     ctx.globalAlpha = p.held ? 1-k : 1; sq(up ? G.askX : G.ansX, up ? y1+(y0-y1)*k : y0+(y1-y0)*k, 5);
   }
@@ -595,23 +596,34 @@ function connect(){
     } else if (m.t==='stats'){
       if (m.ui_rev){ if (uiRev && m.ui_rev !== uiRev){ location.reload(); return; } uiRev = m.ui_rev; }
       const was = S.mode;
-      Object.assign(S, {mode:m.mode, up:m.up, gen:m.gen, jevDown:!!m.jev_down, replay:!!m.replay, gate:m.gate||'open', mock:!!m.mock, model:m.model||null, upstreamOk:m.upstream_ok, switching:m.switching||null, switchError:m.switch_error||null, bins:m.bins, run:m.run});
+      Object.assign(S, {mode:m.mode, up:m.up, gen:m.gen, cloudOk:!!m.cloud_ok, jevDown:!!m.jev_down, replay:!!m.replay, gate:m.gate||'open', mock:!!m.mock, model:m.model||null, upstreamOk:m.upstream_ok, switching:m.switching||null, switchError:m.switch_error||null, bins:m.bins, run:m.run});
       if (was!==S.mode){ if (was==='off') rawStopped = S.bins.raw; if (S.mode==='off') rawStopped = null; pinned = null; if (G) placeRaw(); setTimeout(card, 0); setTimeout(layout, 0); setTimeout(pickYaml, 0); }
       render();
     }
   };
-  es.onerror = () => { const c=$('#claim'); c.className='claim err'; c.textContent='Lost the dashboard server. Is “just up” still running?'; };
+
+  es.onerror = () => {
+    S.gen = false; S.up = false; S.cloudOk = false; S.mode = 'off';
+    flowDots.length = 0; pulses.length = 0; flowCarry = 0;
+
+    if (G) placeRaw();
+    render();
+    const c=$('#claim'); c.className='claim err'; c.textContent='Dashboard disconnected. The flow has stopped.';
+  };
 }
 const fmt = n => Math.round(n||0).toLocaleString('en-US');
 const esc = s => String(s??'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 function render(){
   const {mode, run} = S, piped = mode!=='off' && S.up, jev = mode==='jev' && S.up, down = jev && (S.jevDown || S.gate!=='open');
+
+  $('#cloudPill').dataset.state = S.cloudOk ? 'on' : 'off';
+
+  $('#edgePill').dataset.state = S.up ? 'on' : 'off';
   const blocked = S.gate!=='open', holding = run.holding||0;   // declared up here: used throughout render()
   document.body.classList.toggle('act-jev', jev);
   $('#exNode').classList.toggle('gone', !piped);
-  // Jev is on the board as soon as there is a pipeline to feed it: dormant with
-  // its switch off, live once the Jev version of the job is actually running.
+  // The Cloud job remains in place; the local gate controls model calls.
   const jn = $('#jevNode'), sw = $('#jevSw'), busy = !!S.switching;
   jn.classList.toggle('gone', !piped); jn.classList.toggle('off', piped && !jev); jn.classList.toggle('down', down);
   sw.setAttribute('aria-checked', String(busy ? S.switching==='jev' : jev)); sw.disabled = busy;
@@ -657,7 +669,7 @@ function render(){
   $('#gateOpen').hidden = !blocked;
   $('#heldTag').classList.toggle('gone', !(jev && holding)); $('#heldN').textContent = fmt(holding);
   const c = $('#claim'); c.className = 'claim'+((down && !busy) || S.switchError ? ' err' : '');
-  c.textContent = busy ? (S.switching==='jev' ? 'Turning decision model on: deploying through Expanso Cloud…' : 'Turning decision model off: deploying through Expanso Cloud…')
+  c.textContent = busy ? 'Updating the local decision gate…'
     : S.switchError ? 'Switch failed: '+S.switchError
     : !S.gen ? 'Source paused.'
     : !piped ? 'Every line kept. None understood.'
@@ -697,8 +709,10 @@ function spark(a){
 }
 
 /* ------------------------------------------------------------------- card */
-$('#jevSw').onclick = () => { const on = $('#jevSw').getAttribute('aria-checked')!=='true'; $('#jevSw').disabled = true;
-  fetch('/api/jev', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({on})}).catch(() => {}); };
+$('#jevSw').onclick = async () => { const on = $('#jevSw').getAttribute('aria-checked')!=='true'; $('#jevSw').disabled = true;
+  try { const res = await fetch('/api/jev', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({on})});
+    if (!res.ok){ const body = await res.json(); S.switchError = body.error || 'Local gate did not switch'; render(); }
+  } catch { S.switchError = 'Dashboard server unreachable'; render(); } };
 document.querySelectorAll('[data-gate]').forEach(b => b.onclick = () => fetch('/api/gate', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:b.dataset.gate})}).catch(() => {}));
 document.querySelectorAll('.chaos').forEach(b => b.onclick = () => { fetch('/chaos/'+b.dataset.chaos,{method:'POST'}); b.classList.add('fired'); setTimeout(()=>b.classList.remove('fired'),80000); });
 document.querySelectorAll('.bucket').forEach(b => b.onclick = () => openRecord(b.dataset.bin));
@@ -802,14 +816,13 @@ async function card(){
 setInterval(card, 1500);
 
 /* ------------------------------------------------------------------- tabs */
-let pipeKey = 'recurrence', yamlUserPicked = false;
+let pipeKey = 'recurrence';
 document.querySelectorAll('.top .tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('.top .tabs button').forEach(x => x.setAttribute('aria-selected', String(x===b)));
   document.body.classList.toggle('tab-yaml', b.dataset.tab==='yaml');
   if (b.dataset.tab==='yaml') loadYaml(); else setTimeout(layout, 0);
 });
-document.querySelectorAll('#yamlPick button').forEach(b => b.onclick = () => { yamlUserPicked = true; pipeKey = b.dataset.pipe; loadYaml(); });
-function pickYaml(){ if (yamlUserPicked) return; pipeKey = S.mode==='expanso' ? 'logging' : 'recurrence'; if (document.body.classList.contains('tab-yaml')) loadYaml(); }
+function pickYaml(){ if (document.body.classList.contains('tab-yaml')) loadYaml(); }
 function paint(src){
   // comments dim, top-level keys violet, ${ENV} placeholders orange. Escaped first; nothing is evaluated.
   return src.split('\n').map(ln => { const e = esc(ln);
@@ -833,12 +846,12 @@ let savedTheme = null; try { savedTheme = localStorage.getItem('jev-theme'); } c
 applyTheme(savedTheme==='dark' ? 'dark' : 'light');
 $('#themeBtn').onclick = () => { const n = rootEl.getAttribute('data-theme')==='dark' ? 'light' : 'dark'; applyTheme(n); try { localStorage.setItem('jev-theme', n); } catch (e) { /* the choice still applies for this visit */ } render(); card(); };
 // Left and Right page through the board's views in order: the live flow, then
-// each pipeline's source. Paging replaces content in place and keeps the scroll.
-const VIEWS = [['flow', null], ['yaml', 'logging'], ['yaml', 'recurrence']];
-const viewNow = () => document.body.classList.contains('tab-yaml') ? (pipeKey==='logging' ? 1 : 2) : 0;
+// the Cloud pipeline's source. Paging replaces content in place and keeps the scroll.
+const VIEWS = [['flow', null], ['yaml', 'recurrence']];
+const viewNow = () => document.body.classList.contains('tab-yaml') ? 1 : 0;
 function setView(i){ const [tab, pipe] = VIEWS[i], y = scrollY, x = scrollX;
   document.querySelector(`.top .tabs button[data-tab=${tab}]`).click();
-  if (pipe){ yamlUserPicked = true; pipeKey = pipe; loadYaml(); }
+  if (pipe){ pipeKey = pipe; loadYaml(); }
   scrollTo(x, y); }
 addEventListener('keydown', e => {
   if (e.key!=='ArrowLeft' && e.key!=='ArrowRight') return;

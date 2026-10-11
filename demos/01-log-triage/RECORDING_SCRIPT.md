@@ -12,10 +12,10 @@ locally on `:8100` via `shared/cribl-decision-server.py`, compatible with the
 
 ## Three things changed from the raw draft, and why
 
-1. **The "10,000 per second" figure is out.** Nothing here measured it and this
-   demo runs at about 40 lines a second, so on camera it would be a number the
-   screen contradicts. The line now says Cribl's local model is fast enough to sit
-   in the pipeline on-machine, which the board shows.
+1. **The "10,000 per second" figure is out.** The local four-question Cribl
+   server measured about 0.12 completed decisions per second on this machine.
+   The source is paced below that limit. Moving squares illustrate the route;
+   the counters show pipeline receipts.
 2. **"90%" becomes the number on the screen.** Real runs measured 86% and 89%.
    Read the fork label aloud instead of quoting a round figure from memory.
 3. **"Non-deterministic 10%" becomes "what a rule can't settle".** The data is
@@ -50,8 +50,8 @@ Point at the card bottom right: "N of the last 30 lines are the same 3 messages"
 
 ### 3. Show it, deploy it · act two
 
-**Do.** Click **Pipeline YAML**, pick `pipeline-logging.yaml`. Then the Expanso
-Cloud console: deploy it as job `log-triage`. Back to **Live flow**.
+**Do.** Click **Pipeline YAML** to show `pipeline-recurrence.yaml`. Then start
+job `log-triage` in the Expanso Cloud console. Back to **Live flow**.
 
 > Let me show you what that pipeline is. It's one file. Shape the record,
 > fingerprint it, count how often we've seen it. I'll go over to Expanso Cloud
@@ -74,12 +74,11 @@ Cloud console: deploy it as job `log-triage`. Back to **Live flow**.
 
 **Do.** Point at the four question chips, then flip the **decision switch**.
 
-> So in the same pipeline, we add a Cribl decision step. Most of this traffic is routine,
-> and Expanso knows that immediately, no model needed. Whatever it can't settle,
-> it hands to Cribl, along with the recurrence history it has already counted. Normally you
-> would never put a model in the hot path of your logs. Cribl's 4B decision model is
-> fast enough that you can run it right here. I'm going to flip this switch, and now
-> the model is part of the pipeline.
+> The pipeline is already running in Expanso Cloud. This switch opens the local
+> gate to Cribl without redeploying it. Known routine lines still skip the model.
+> Expanso sends the remaining lines with the recurrence history it counted.
+> This local Cribl setup handles about seven to eight complete decisions a minute,
+> so the source is paced to stay below that limit.
 > You can see the split right here. *[read the fork label]* never touch the
 > model. The rest go to Cribl.
 

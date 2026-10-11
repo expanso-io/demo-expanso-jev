@@ -135,9 +135,17 @@ up: _ports-check
 up-triage:
     @just --justfile "{{ root }}/justfile" _triage-up
 
-# Stop the pod demo.
+# Stop both managed demos. Each shutdown checks its own process ownership.
 down:
-    uv run "{{ root }}/demos/11-pod-labels/scenario/local.py" down
+    #!/usr/bin/env bash
+    pod_status=0
+    triage_status=0
+    uv run "{{ root }}/demos/11-pod-labels/scenario/local.py" down || pod_status=$?
+    just --justfile "{{ root }}/justfile" _triage-down || triage_status=$?
+    if (( pod_status || triage_status )); then
+      echo "ERROR: shutdown incomplete (pods=$pod_status, triage=$triage_status)" >&2
+      exit 1
+    fi
 
 down-triage:
     @just --justfile "{{ root }}/justfile" _triage-down
@@ -178,7 +186,9 @@ lint-ui:
 
 # Run the shared public-bar check: all five criteria or selected lane.
 public-bar lane="static":
-    NODE_ID=edge-1 uv run -s .demo-kit/public-bar.py --repo . --manifest public-bar.toml --report artifacts/public-bar.md --lane {{lane}}
+    NODE_ID=edge-1 JEV_API_URL="http://127.0.0.1:$MOCK_PORT/v1/systemone" \
+      uv run -s .demo-kit/public-bar.py --repo . --manifest public-bar.toml \
+      --report artifacts/public-bar.md --lane {{lane}}
 
 # Check that generated files and fixture runner verification match.
 fixtures-check:
@@ -271,13 +281,24 @@ agent-help *ARGS:
 act1:
     expanso-cli job stop log-triage --namespace demo --force || true
 
-# Act two: Expanso alone. Shape, fingerprint, count, collapse repeats, archive.
+# Act two: deploy the single Cloud pipeline with its local model gate off.
 act2:
-    cd "{{ live }}" && expanso-cli job deploy --force pipeline-logging.yaml
-
-# Act three: the same job, next version, now asking Jev.
-act3:
     cd "{{ live }}" && expanso-cli job deploy --force pipeline-recurrence.yaml
+
+# Act three: enable the local model gate without changing the Cloud job.
+act3:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    for _ in $(seq 1 60); do
+      if curl -fsS "http://127.0.0.1:$JEV_LIVE_PORT/health" 2>/dev/null | jq -e '.up == true' >/dev/null; then
+        curl -fsS -X POST "http://127.0.0.1:$JEV_LIVE_PORT/api/jev" \
+          -H 'Content-Type: application/json' -d '{"on":true}'
+        exit 0
+      fi
+      sleep 0.5
+    done
+    echo 'ERROR: the Cloud pipeline did not bind its local input within 30 seconds' >&2
+    exit 1
 
 # Point this demo straight at Jev's API and store your key in .env (gitignored,
 # owner-only). Prompts silently: the key never appears on screen, in argv, or in

@@ -416,7 +416,7 @@ def load_manifest(
 
 
 def resolve_manifest_urls(repo: Path, manifest: dict[str, Any]) -> dict[str, Any]:
-    """Resolve only declared localhost URL ports; fixture-only ports stay literal."""
+    """Resolve declared ports in local URLs and whole command arguments."""
     declaration = repo / "ports.json"
     if not declaration.is_file():
         return manifest
@@ -463,6 +463,10 @@ def resolve_manifest_urls(repo: Path, manifest: dict[str, Any]) -> dict[str, Any
             return {key: resolved(item) for key, item in value.items()}
         if isinstance(value, list):
             return [resolved(item) for item in value]
+        if isinstance(value, str):
+            argument = re.fullmatch(r"\$\{([A-Z][A-Z0-9_]*)\}", value)
+            if argument and argument[1] in assigned:
+                return str(assigned[argument[1]])
         if not isinstance(value, str) or not value.startswith(("http://", "https://")):
             return value
         expanded = re.sub(

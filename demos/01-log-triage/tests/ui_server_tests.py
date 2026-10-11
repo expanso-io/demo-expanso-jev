@@ -187,6 +187,15 @@ try:
         return rr.status, d
 
     try:
+        gs, gd = gpost()
+        check("local gate starts disabled and returns a no-model sentinel",
+              gs == 200 and json.loads(gd).get("model") == "cribl-disabled")
+        with H.lock:
+            H.pipeline_up, H.cloud_ok, H.cloud_mode = True, True, "jev"
+        st, body, _ = req("POST", "/api/jev", body=b'{"on":true}')
+        check("local switch enables Cribl without changing the Cloud job",
+              st == 200 and json.loads(body).get("target") == "jev"
+              and H.stats()["mode"] == "jev" and H.cloud_mode == "jev")
         for mode, code in (("overloaded", 503), ("credential", 401)):
             st, _, _ = req("POST", "/api/gate", body=json.dumps({"mode": mode}).encode())
             gs, gd = gpost()
@@ -228,12 +237,17 @@ try:
             check("no key: the gate forwards with NO Authorization header", gs == 200 and seen.get("auth") is None)
             FAKE = "test-only-not-a-real-key-0123456789"
             server._JEV_KEY = FAKE
+            server._AUTH_UPSTREAM = True
             gs, _ = gpost()
-            check("key present: the gate adds 'Authorization: Bearer <key>'", gs == 200 and seen.get("auth") == "Bearer " + FAKE)
+            check("authenticated upstream: the gate adds 'Authorization: Bearer <key>'", gs == 200 and seen.get("auth") == "Bearer " + FAKE)
             blob = json.dumps(H.stats())
             st, hbody, _ = req("GET", "/health")
             check("the key never appears in stats or /health; only its presence does",
                   FAKE not in blob and FAKE.encode() not in hbody and H.stats()["upstream_auth"] is True)
+            server._AUTH_UPSTREAM = False
+            gs, _ = gpost()
+            check("local Cribl upstream gets no saved TypeSafe key",
+                  gs == 200 and seen.get("auth") is None and H.stats()["upstream_auth"] is False)
             server._JEV_KEY = ""
         finally:
             up.shutdown()
@@ -241,6 +255,23 @@ try:
         check("server.py took TYPESAFE_API_KEY out of its environment at import", "TYPESAFE_API_KEY" not in __import__("os").environ)
         st, _, _ = req("POST", "/api/gate", body=b'{"mode": "explode"}')
         check("unknown gate mode -> 400, gate unchanged", st == 400 and H.stats()["gate"] == "open")
+        st, body, _ = req("POST", "/api/jev", body=b'{"on":false}')
+        gs, gd = gpost()
+        check("local switch disables Cribl and gate stops forwarding",
+              st == 200 and json.loads(body).get("target") == "expanso"
+              and H.stats()["mode"] == "expanso" and gs == 200
+              and json.loads(gd).get("model") == "cribl-disabled")
+        server.ingest("archive", {"routed_by": "expanso", "model_disabled": True,
+                                  "jev_decision": "archive"})
+        r = H.stats()["run"]
+        check("disabled record completes without a model judgment or failure",
+              r["completed"] == 1 and r["judged"] == r["jev_failed"] == 0)
+        server.ingest("held", {"held_attempts": 0, "jev_decision": "held"})
+        server.ingest("archive", {"held_attempts": 1, "model_disabled": True,
+                                  "routed_by": "expanso", "jev_decision": "archive"})
+        r = H.stats()["run"]
+        check("switching off releases a previously held record",
+              r["held_in"] == r["released"] == 1 and r["holding"] == 0)
     finally:
         gate.shutdown()
         gate.server_close()

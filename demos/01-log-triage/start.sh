@@ -4,10 +4,9 @@
 #   1. recurrence tracker  (counter.py, 127.0.0.1:${COUNTER_PORT:-8898})
 #   2. Expanso Edge agent  (joined to Expanso Cloud). NO pipeline is deployed:
 #      the demo opens on act one, every log pouring into a raw bucket. The
-#      presenter deploys from the Expanso Cloud console -- pipeline-logging.yaml,
-#      then pipeline-recurrence.yaml over it as the next version of the same
-#      job -- and the dashboard detects each one and follows. `just act2` /
-#      `just act3` do the same from the CLI if the console misbehaves.
+#      presenter starts the single pipeline-recurrence.yaml job through Cloud.
+#      Its local gate starts with model calls off; the board or `just act3`
+#      turns them on without changing the Cloud job.
 #   3. dashboard server    (server.py, 127.0.0.1:8890)
 #   4. log generator       (generator2.py, ~5 lines/sec into the Edge HTTP input)
 #
@@ -202,11 +201,8 @@ echo "  node registered"
 # running from a previous take would have the board open mid-story with
 # non-zero counters, and a demo has to start from the same place every time.
 port_bound() { lsof -ti tcp:"$INGEST_PORT" -sTCP:LISTEN >/dev/null 2>&1; }
-# Always leave the job's LATEST version in Cloud as the Expanso-only pipeline,
-# then stop it. A bare stop kept whatever was deployed last, which after any
-# take is the Jev version (the switch deploys it), so starting the job from the
-# Cloud console opened the story with Jev already on. The deploy is also the
-# real transition that makes a stop reach an agent that resumed from its store.
+# Leave the single pipeline version in Cloud, stopped. The local gate starts
+# disabled, so starting that job from the Cloud console enters act two.
 wait_free() { for _ in $(seq 1 40); do port_bound || return 0; sleep 0.5; done; return 1; }
 wait_bound() { for _ in $(seq 1 60); do port_bound && return 0; sleep 0.5; done; return 1; }
 cloudcli job stop log-triage --namespace demo --force >>"$LOGS/deploy.log" 2>&1 || true
@@ -215,14 +211,14 @@ if ! wait_free; then
   # its local store, and a stop on an already-stopped job sends it nothing.
   # Force a real transition so a real stop reaches it.
   echo "  pipeline resumed from agent state; cycling it off through Expanso Cloud"
-  cloudcli job deploy --force pipeline-logging.yaml >>"$LOGS/deploy.log" 2>&1 || true
+  cloudcli job deploy --force pipeline-recurrence.yaml >>"$LOGS/deploy.log" 2>&1 || true
   sleep 3
   cloudcli job stop log-triage --namespace demo --force >>"$LOGS/deploy.log" 2>&1 || true
   wait_free || true
 fi
 if ! port_bound; then
-  echo "  resetting the Cloud job to the Expanso-only version, stopped"
-  if cloudcli job deploy --force pipeline-logging.yaml >>"$LOGS/deploy.log" 2>&1 && wait_bound; then
+  echo "  resetting the Cloud job to the unified pipeline, stopped"
+  if cloudcli job deploy --force pipeline-recurrence.yaml >>"$LOGS/deploy.log" 2>&1 && wait_bound; then
     cloudcli job stop log-triage --namespace demo --force >>"$LOGS/deploy.log" 2>&1 || true
     wait_free || true
   else
@@ -235,7 +231,7 @@ if port_bound; then
   exit 1
 fi
 rm -f "$PKG"/data/*.jsonl
-echo "  no pipeline deployed (act one) -- deploy from Expanso Cloud, or: just act2 / just act3"
+echo "  no pipeline running (act one) -- start the prepared Cloud job, or: just act2"
 
 echo "[3/4] dashboard server (:$JEV_LIVE_PORT)"
 # Exported inside a subshell, then exec: the key is in the server's environment

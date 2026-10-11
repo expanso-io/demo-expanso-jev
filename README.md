@@ -89,16 +89,16 @@ just up
 Open **http://127.0.0.1:8901** after READY. See the
 [pod demo prerequisites and runbook](demos/11-pod-labels/README.md).
 Inside `demos/11-pod-labels`, `just up` runs that demo directly.
-At the root, `just up`, `just down`, `just open`, `just status`, and
-`just test` target the pod demo. The original log-triage demo uses the
-separate `just up-triage` and `just down-triage` recipes.
+At the root, `just up`, `just open`, `just status`, and `just test` target the
+pod demo. `just down` stops both managed demos. Log triage starts with
+`just up-triage` and can also stop on its own with `just down-triage`.
 
 ## Log-triage quickstart
 
 ```bash
 just init        # creates .env from .env.example
 $EDITOR .env     # the three EXPANSO_* values from your Cloud network
-just jev-key     # prompts for your TypeSafe key (hidden input)
+                 # set JEV_API_URL to http://127.0.0.1:8100/v1/systemone
 just doctor      # checks tools, credentials and reachability
 just up-triage   # takes about a minute; opens on "no pipeline"
 just open triage # http://127.0.0.1:8890
@@ -107,17 +107,19 @@ just open triage # http://127.0.0.1:8890
 Then walk through it:
 
 ```bash
-just act2        # deploy the Expanso-only pipeline
-just act3        # deploy the version that adds Jev
-just down-triage # stop everything, including the job in Cloud
+just act2        # deploy the Cloud pipeline with Cribl locally off
+just act3        # turn Cribl on at the local gate, no redeploy
+just down        # stop the managed demos and triage Cloud job
 ```
 
-You can also deploy the two YAML files from the Expanso Cloud console, or flip
-the Jev switch on the board. The board follows whatever is actually running.
+Deploy `pipeline-recurrence.yaml` once from the Expanso Cloud console or with
+`just act2`. The board's Cribl switch changes the local gate without changing
+the Cloud job.
 
-**Without a TypeSafe key:** run `just jev-mock` in another
-terminal, set `JEV_API_URL=http://127.0.0.1:8099/v1/systemone` in `.env`, and
-skip `just jev-key`.
+Start the Cribl server in a separate terminal before `just act3`. It needs its
+base weights and adapter on the first start; see
+[the model setup](demos/01-log-triage/README.md#part-two-run-the-decision-model-locally-cribl-cribl-decision-10).
+For a no-model fixture, use `just jev-mock` and point `JEV_API_URL` at `:8099`.
 
 `just` on its own lists every recipe. `just status` shows what is alive,
 `just logs <name>` tails a component, and `just reset-agent` clears the agent's
@@ -128,8 +130,8 @@ local execution store if it ever restarts a pipeline Cloud no longer knows about
 | | What is deployed | What happens |
 |---|---|---|
 | 1 | nothing | Every log line is shipped, exactly as written, to a raw bucket. |
-| 2 | `pipeline-logging.yaml` | Expanso shapes, fingerprints and counts each record. Everything is archived, now structured. |
-| 3 | `pipeline-recurrence.yaml` | Known routine lines skip the model. Everything else goes to Jev, with its history, and is routed on the answer. |
+| 2 | `pipeline-recurrence.yaml`, local gate off | Expanso shapes, fingerprints and counts each record. Everything is archived, now structured. |
+| 3 | Same Cloud job, local gate on | Known routine lines skip the model. Everything else goes to Cribl with its history and is routed on the answer. |
 
 On the board you can inject a log line and follow it as one large square
 through the pipeline, up to Jev and back, and into the bucket it really landed

@@ -85,7 +85,10 @@ def stop(pidfile, root, match):
         before = snapshots[target]
         if before is None:
             continue
-        if identity(target) != before:
+        target_now = identity(target)
+        if target_now is None:
+            continue  # an owned child may exit after its parent is signalled
+        if target_now != before:
             raise ValueError(
                 "Process identity changed during shutdown; leaving it alone"
             )

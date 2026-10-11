@@ -515,11 +515,11 @@ def build() -> dict[Path, str]:
         manifest.append(toml_table("browser.controls", c, array=True))
     services = [
         {"id": "jev-responder", "command": ["python3", "shared/jev-mock-server.py"],
-         "ready_url": "http://127.0.0.1:8099/health", "stop_command": ["python3", "tools/serve.py", "stop", "8099"]},
+"ready_url": "http://127.0.0.1:${MOCK_PORT}/health", "stop_command": ["python3", "tools/serve.py", "stop", "${MOCK_PORT}"]},
         {"id": "recurrence-counter", "command": ["python3", "demos/01-log-triage/counter.py"],
-         "ready_url": "http://127.0.0.1:8898/health", "stop_command": ["python3", "tools/serve.py", "stop", "8898"]},
-        {"id": "recorded-adapter", "command": ["python3", "tools/serve.py", "pods", "8901"],
-         "ready_url": "http://127.0.0.1:8901/health", "stop_command": ["python3", "tools/serve.py", "stop", "8901"]},
+"ready_url": "http://127.0.0.1:${COUNTER_PORT}/health", "stop_command": ["python3", "tools/serve.py", "stop", "${COUNTER_PORT}"]},
+{"id": "recorded-adapter", "command": ["python3", "tools/serve.py", "pods", "${POD_LABEL_PORT}"],
+"ready_url": "http://127.0.0.1:${POD_LABEL_PORT}/health", "stop_command": ["python3", "tools/serve.py", "stop", "${POD_LABEL_PORT}"]},
     ]
     for s in services:
         manifest.append(toml_table("services", s, array=True))

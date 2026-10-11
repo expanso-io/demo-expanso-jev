@@ -6,26 +6,22 @@ JEV_API_URL, and the Expanso credentials reach expanso-cli through its own
 environment variables (EXPANSO_CLI_ENDPOINT / EXPANSO_CLI_AUTH_API_KEY), which
 this process inherits from start.sh and never reads or logs.
 
-This server OBSERVES the pipeline, with ONE control: the Jev switch on the board.
-Turning Jev on deploys pipeline-recurrence.yaml over the running job through
-Expanso Cloud; turning it off deploys pipeline-logging.yaml back. Same job, next
-version, real deploy -- the board still only changes once the pipeline does.
-Starting and stopping the pipeline itself stays with the presenter, in the Cloud
-console (or `just act1/act2`). Three acts, each a real state of the
-world rather than a view:
+This server observes the Cloud pipeline and controls a local model gate. The
+presenter deploys the single recurrence pipeline once through Expanso Cloud
+(`just act2`); the dashboard switch then enables or disables Cribl calls without
+redeploying. Starting and stopping the pipeline stays with the presenter in the
+Cloud console (or `just act1/act2`). The three acts are:
 
   off      no pipeline. Nothing listens on :8080, so production's logs take the
            only path they have: straight into the raw bucket (data/raw.jsonl),
            every line, unshaped. It fills fast.
-  expanso  pipeline-logging.yaml is running. Logs are shaped, fingerprinted and
-           counted, repeats are collapsed, and the rest go to the log archive.
-  jev      pipeline-recurrence.yaml is running (same job, next version). Same
-           front half, then Jev judges each event: page / notify / review /
-           archive.
+  expanso  pipeline-recurrence.yaml is running with the local model gate off.
+           Logs are shaped, fingerprinted and counted, then archived.
+  jev      the same Cloud job is running with the local gate on. Cribl judges
+           candidate events: page / notify / review / archive.
 
-Which act we are in is detected two ways, because each covers the other's blind
-spot: a local probe of the configured input port (instant, but cannot tell the two pipelines apart)
-and a poll of Expanso Cloud for the running job's spec (authoritative, ~2s late).
+The local input-port probe checks whether the pipeline accepts logs. A Cloud
+poll verifies the deployed job; local gate state distinguishes the last two acts.
 
 Endpoints:
   GET  /                  the dashboard
@@ -34,7 +30,7 @@ Endpoints:
   GET  /api/evidence      records where Jev and the severity-only baseline disagreed
   GET  /api/pipeline/<logging|recurrence>  the checked-in pipeline YAML, verbatim
   POST /api/gate          {"mode": open|overloaded|credential}: inject a Jev outage at the local gate
-  POST /api/jev           {"on": true|false}: deploy the Jev / Expanso-only version via Cloud
+  POST /api/jev           {"on": true|false}: toggle the local model gate
   POST /beacon            from the generator: {"n": k} lines just emitted
   POST /raw               from the generator: a log line the pipeline refused
   POST /chaos/<name>      inject a scenario through the live pipeline
@@ -94,6 +90,7 @@ UPSTREAM = os.environ.get("JEV_UPSTREAM_URL", "")
 # expanso-cli) can inherit it; it is never logged, never reported by /health,
 # never written to the pipeline spec, and so never reaches Expanso Cloud.
 _JEV_KEY = os.environ.pop("TYPESAFE_API_KEY", "") or ""
+_AUTH_UPSTREAM = bool(_JEV_KEY and urllib.parse.urlsplit(UPSTREAM).hostname == "api.typesafe.ai")
 GATE_FAULTS = {
     "overloaded": (503, {"error": "injected outage: Jev overloaded", "injected": True}),
     "credential": (401, {"error": "injected outage: credential rejected", "injected": True}),
@@ -158,9 +155,8 @@ class Hub:
         self.replay = False   # set only by review/preview_server.py; the board says so on screen
         self.model = None      # model name on the last real judgment; the board shows it
         self.gate = "open"     # "open" | "overloaded" | "credential"
+        self.model_enabled = os.environ.get("JEV_MODEL_ENABLED", "0") == "1"
         self.upstream_ok = None  # did the last forwarded Jev call reach the real endpoint
-        self.switching = None  # "jev" | "expanso" while a Jev-switch deploy is in flight
-        self.switch_from = None
         self.switch_error = None
         self.caught = collections.deque(maxlen=8)    # severity-only: archive, Jev: page/notify
         self.quieted = collections.deque(maxlen=8)   # severity-only: page/notify, Jev: archive
@@ -203,16 +199,11 @@ class Hub:
         """Caller holds the lock. Port first: a job can be 'running' in Cloud a
         beat before its input binds here, and until it binds the logs are still
         going to the raw bucket."""
-        if self.switching:
-            # A version bump stops one execution and starts the next, so :8080 is
-            # unbound for a moment. Hold the act we came from instead of flashing
-            # "no pipeline"; the board flips only when the new version is live.
-            return self.switch_from
         if not self.pipeline_up:
             return "off"
-        if self.cloud_ok and self.cloud_mode != "off":
+        if self.cloud_ok and self.cloud_mode in ("off", "expanso"):
             return self.cloud_mode
-        return self.last_kind or "expanso"
+        return "jev" if self.model_enabled else "expanso"
 
     def publish(self, msg):
         line = json.dumps(msg, separators=(",", ":"))
@@ -234,13 +225,14 @@ class Hub:
                 # one timeout in a burst is not an outage.
                 "jev_down": len(self.jev_fail) >= 4 and all(self.jev_fail),
                 "replay": self.replay,
-                "switching": self.switching, "switch_error": self.switch_error,
+                "switching": None, "switch_error": self.switch_error,
+                "model_enabled": self.model_enabled,
                 # The board reloads itself when this changes, so an open tab can
                 # never silently keep showing an older version of the page.
                 "ui_rev": int(os.path.getmtime(os.path.join(HERE, "index.html"))),
                 "model": self.model, "mock": bool(self.model and "mock" in str(self.model).lower()),
                 "gate": self.gate, "upstream_ok": self.upstream_ok, "upstream_set": bool(UPSTREAM),
-                "upstream_auth": bool(_JEV_KEY),   # presence only; the value is never exposed
+            "upstream_auth": _AUTH_UPSTREAM,   # whether this upstream gets auth; never expose the value
                 "run": {**self.run, "received": dict(self.run["received"]),
                         "age_s": round(time.time() - self.run["started"], 1),
                         **self._rates()},
@@ -299,61 +291,6 @@ def cloud_poll():
         is_jev = "root.questions" in json.dumps(spec)
         mode = "jev" if is_jev else ("expanso" if mode != "jev" else mode)
     return mode
-
-
-_switch_lock = threading.Lock()
-SWITCH_SPECS = {"jev": "pipeline-recurrence.yaml", "expanso": "pipeline-logging.yaml"}
-
-
-def jev_switch(target):
-    """Deploy the Jev (or Expanso-only) version of the job through Expanso Cloud."""
-    with _switch_lock:
-        with HUB.lock:
-            HUB.switch_from, HUB.switching, HUB.switch_error = HUB.mode(), target, None
-        HUB.publish(HUB.stats())
-        err = None
-        try:
-            if not (os.environ.get("EXPANSO_CLI_ENDPOINT") and os.environ.get("EXPANSO_CLI_AUTH_API_KEY")):
-                raise RuntimeError("no Expanso Cloud credentials in the environment")
-            # Stop FIRST and wait for the input port to go quiet. A bare version
-            # bump starts the new execution while the old one still owns the input port; the
-            # new one fails to bind, Cloud marks the job degraded, and the OLD
-            # pipeline keeps running -- so "Jev off" left Jev on. Seen 2026-09-19.
-            subprocess.run(["expanso-cli", "job", "stop", "log-triage", "--namespace", NAMESPACE, "--force"],
-                           capture_output=True, text=True, timeout=60, cwd=HERE)
-            t0 = time.time()
-            while port_up():
-                if time.time() - t0 > 30:
-                    raise RuntimeError("the running pipeline would not release its input port")
-                time.sleep(0.3)
-            # --force: an identical redeploy is otherwise refused (NO_CHANGES_DETECTED).
-            r = subprocess.run(["expanso-cli", "job", "deploy", "--force", SWITCH_SPECS[target]],
-                               capture_output=True, text=True, timeout=90, cwd=HERE)
-            if r.returncode != 0:
-                out = (r.stderr or r.stdout).strip().splitlines()
-                raise RuntimeError(out[-1] if out else "deploy failed")
-            log("jev switch -> %s: %s" % (target, (r.stdout.strip().splitlines() or ["ok"])[-1]))
-            t0 = time.time()
-            while not port_up():          # the new version binds the input
-                if time.time() - t0 > 45:
-                    raise RuntimeError("deployed, but the pipeline input never came back up")
-                time.sleep(0.3)
-            # A bound port proves A pipeline is up, not WHICH. Ask Cloud.
-            t0 = time.time()
-            while cloud_poll() != target:
-                if time.time() - t0 > 30:
-                    raise RuntimeError("deployed, but Expanso Cloud is not running the %s version" % target)
-                time.sleep(1.0)
-        except Exception as e:  # noqa: BLE001 - shown on the board
-            err = str(e)
-            log("jev switch to %s failed: %s" % (target, err))
-        finally:
-            with HUB.lock:
-                if not err:
-                    HUB.cloud_mode, HUB.cloud_ok = target, True   # we know what we just deployed
-                HUB.pipeline_up = port_up()
-                HUB.switching, HUB.switch_from, HUB.switch_error = None, None, err
-            HUB.publish(HUB.stats())
 
 
 def detector():
@@ -558,14 +495,16 @@ def ingest(b, rec):
             HUB.last_kind = "jev" if "jev_decision" in rec else "expanso"
         if bypassed:
             run["bypassed"] += 1
+        if attempts > 0:
+            # A held record can finish after the model is switched off. The
+            # disabled gate archives it without a judgment, but it is released.
+            run["gave_up" if judged and not rec.get("jev_ok", True) else "released"] += 1
         if judged:
             ok = rec.get("jev_ok", True)
             HUB.jev_fail.append(not ok)
             if ok:
                 HUB.model = (rec.get("jev") or {}).get("model")
             run["judged" if ok else "jev_failed"] += 1
-            if attempts > 0:
-                run["released" if ok else "gave_up"] += 1
             base, got = rec.get("baseline"), rec.get("jev_decision")
             if ok and base == "archive" and got in ("page", "notify"):
                 run["caught"] += 1
@@ -629,14 +568,17 @@ class Gate(BaseHTTPRequestHandler):
         n = int(self.headers.get("Content-Length") or 0)
         payload = self.rfile.read(n)
         with HUB.lock:
+            enabled = HUB.model_enabled
             fault = GATE_FAULTS.get(HUB.gate)
+        if not enabled:
+            return self._reply(200, b'{"model":"cribl-disabled","answers":{}}')
         if fault:
             return self._reply(fault[0], json.dumps(fault[1]).encode())
         if not UPSTREAM:
             return self._reply(502, b'{"error": "gate has no JEV_UPSTREAM_URL"}')
         try:
             headers = {"Content-Type": self.headers.get("Content-Type", "application/json")}
-            if _JEV_KEY:
+            if _AUTH_UPSTREAM:
                 headers["Authorization"] = "Bearer " + _JEV_KEY
             req = urllib.request.Request(UPSTREAM, data=payload, method="POST", headers=headers)
             with urllib.request.urlopen(req, timeout=45) as r:
@@ -797,22 +739,29 @@ class Handler(BaseHTTPRequestHandler):
             if not isinstance(on, bool):
                 return self._send_json({"error": "body must be {\"on\": true|false}"}, 400)
             with HUB.lock:
-                mode, busy = HUB.mode(), HUB.switching
-            if busy:
-                return self._send_json({"error": "a switch is already in flight"}, 409)
-            if mode == "off":
-                return self._send_json({"error": "no pipeline is running; deploy Expanso first"}, 409)
-            target = "jev" if on else "expanso"
-            if target == mode:
-                return self._send_json({"ok": True, "unchanged": True})
-            threading.Thread(target=jev_switch, args=(target,), daemon=True).start()
-            return self._send_json({"ok": True, "target": target}, 202)
+                mode = HUB.mode()
+                if mode == "off":
+                    result = ({"error": "no pipeline is running; deploy Expanso first"}, 409)
+                elif HUB.cloud_ok and HUB.cloud_mode != "jev":
+                    result = ({"error": "Cloud is running the old pipeline; deploy the unified pipeline once"}, 409)
+                elif on == HUB.model_enabled:
+                    result = ({"ok": True, "unchanged": True}, 200)
+                else:
+                    target = "jev" if on else "expanso"
+                    HUB.model_enabled = on
+                    HUB.run = HUB._new_run(target)
+                    HUB.per_sec.clear()
+                    HUB.jev_fail.clear()
+                    HUB.caught.clear()
+                    HUB.quieted.clear()
+                    HUB.switch_error = None
+                    result = ({"ok": True, "target": target}, 200)
+            if result[1] != 200 or result[0].get("unchanged"):
+                return self._send_json(*result)
+            HUB.publish(HUB.stats())
+            log("local model gate -> %s" % ("on" if on else "off"))
+            return self._send_json(*result)
         if self.path == "/raw":
-            with HUB.lock:
-                mid_switch = bool(HUB.switching)
-            if mid_switch:
-                # A pipeline exists; it is between versions. The source retries.
-                return self._send_json({"ok": False, "retry": True}, 503)
             # The pipeline refused this line (there is no pipeline). Production
             # does what production does: dumps it, verbatim, in the raw bucket.
             line = json.dumps(self._body(), separators=(",", ":"))
@@ -886,7 +835,7 @@ def main():
     threading.Thread(target=gate.serve_forever, daemon=True).start()
     log("jev gate on http://127.0.0.1:%d -> %s, %s" % (
         GATE_PORT, "upstream set" if UPSTREAM else "NO UPSTREAM",
-        "adds Bearer auth" if _JEV_KEY else "no key: forwards unauthenticated"))
+        "adds Bearer auth" if _AUTH_UPSTREAM else "forwards unauthenticated"))
     srv = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
     srv.daemon_threads = True
     log("serving dashboard on http://127.0.0.1:%d  (data: %s)" % (PORT, DATA))

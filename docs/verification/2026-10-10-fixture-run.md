@@ -9,28 +9,28 @@ Every shipped pipeline was deployed unmodified to a local `expanso-edge run --lo
 
 | Case | Pipeline | Inputs | Jev calls | Queues written | File-in replay | Seconds | Result |
 |---|---|---|---|---|---|---|---|
-| 01-log-triage:logging | `demos/01-log-triage/pipeline-logging.yaml` | 16 | 0 | logs 16 | 16 records | 5.0 | pass |
-| 01-log-triage:recurrence | `demos/01-log-triage/pipeline-recurrence.yaml` | 16 | 11 | archive 5, notify 2, page 1, review 8 | 16 records | 10.0 | pass |
-| 01-log-triage:outage | `demos/01-log-triage/pipeline-recurrence.yaml` | 3 | 64 | archive 2, held 1, review 1 | not run | 100.4 | pass |
-| 02-ticket-router:main | `demos/02-ticket-router/pipeline.yaml` | 6 | 6 | page 1, priority 1, routed-billing 1, routed-sales 1, routed-technical 2 | 6 records | 4.9 | pass |
-| 02-ticket-router:jev_down | `demos/02-ticket-router/pipeline.yaml` | 6 | 12 | triage 6 | not run | 8.1 | pass |
-| 03-sensitivity-masking:main | `demos/03-sensitivity-masking/pipeline.yaml` | 5 | 5 | forwarded 3, quarantine 2 | 5 records | 5.0 | pass |
-| 03-sensitivity-masking:jev_down | `demos/03-sensitivity-masking/pipeline.yaml` | 5 | 10 | quarantine 5 | not run | 7.1 | pass |
-| 04-sensor-triage:main | `demos/04-sensor-triage/pipeline.yaml` | 5 | 5 | dispatch 1, flagged 1, rollup 3 | 5 records | 4.8 | pass |
-| 04-sensor-triage:jev_down | `demos/04-sensor-triage/pipeline.yaml` | 5 | 10 | flagged 5 | not run | 6.9 | pass |
-| 05-agent-guardrail:main | `demos/05-agent-guardrail/pipeline.yaml` | 5 | 5 | allowed 2, blocked 3 | 5 records | 4.8 | pass |
-| 05-agent-guardrail:jev_down | `demos/05-agent-guardrail/pipeline.yaml` | 5 | 10 | blocked 5 | not run | 7.2 | pass |
-| 06-smart-sampling:main | `demos/06-smart-sampling/pipeline.yaml` | 8 | 8 | kept 2 | 2 records | 4.7 | pass |
-| 06-smart-sampling:jev_down | `demos/06-smart-sampling/pipeline.yaml` | 8 | 16 | kept 8 | not run | 10.1 | pass |
-| 07-soc-prefilter:main | `demos/07-soc-prefilter/pipeline.yaml` | 5 | 5 | cold 2, siem 1, warm 2 | 5 records | 4.9 | pass |
-| 07-soc-prefilter:jev_down | `demos/07-soc-prefilter/pipeline.yaml` | 5 | 10 | warm 5 | not run | 7.0 | pass |
-| 08-data-quality:main | `demos/08-data-quality/pipeline.yaml` | 5 | 5 | quarantine 3, warehouse 2 | 5 records | 4.7 | pass |
+| 01-log-triage:logging | `demos/01-log-triage/pipeline-logging.yaml` | 16 | 0 | logs 16 | 16 records | 5.5 | pass |
+| 01-log-triage:recurrence | `demos/01-log-triage/pipeline-recurrence.yaml` | 16 | 11 | archive 5, notify 2, page 1, review 8 | 16 records | 11.1 | pass |
+| 01-log-triage:outage | `demos/01-log-triage/pipeline-recurrence.yaml` | 3 | 64 | archive 2, held 1, review 1 | not run | 100.5 | pass |
+| 02-ticket-router:main | `demos/02-ticket-router/pipeline.yaml` | 6 | 6 | page 1, priority 1, routed-billing 1, routed-sales 1, routed-technical 2 | 6 records | 6.1 | pass |
+| 02-ticket-router:jev_down | `demos/02-ticket-router/pipeline.yaml` | 6 | 12 | triage 6 | not run | 8.2 | pass |
+| 03-sensitivity-masking:main | `demos/03-sensitivity-masking/pipeline.yaml` | 5 | 5 | forwarded 3, quarantine 2 | 5 records | 5.1 | pass |
+| 03-sensitivity-masking:jev_down | `demos/03-sensitivity-masking/pipeline.yaml` | 5 | 10 | quarantine 5 | not run | 7.9 | pass |
+| 04-sensor-triage:main | `demos/04-sensor-triage/pipeline.yaml` | 5 | 5 | dispatch 1, flagged 1, rollup 3 | 5 records | 5.1 | pass |
+| 04-sensor-triage:jev_down | `demos/04-sensor-triage/pipeline.yaml` | 5 | 10 | flagged 5 | not run | 8.2 | pass |
+| 05-agent-guardrail:main | `demos/05-agent-guardrail/pipeline.yaml` | 5 | 5 | allowed 2, blocked 3 | 5 records | 5.1 | pass |
+| 05-agent-guardrail:jev_down | `demos/05-agent-guardrail/pipeline.yaml` | 5 | 10 | blocked 5 | not run | 7.0 | pass |
+| 06-smart-sampling:main | `demos/06-smart-sampling/pipeline.yaml` | 8 | 8 | kept 2 | 2 records | 4.9 | pass |
+| 06-smart-sampling:jev_down | `demos/06-smart-sampling/pipeline.yaml` | 8 | 16 | kept 8 | not run | 10.4 | pass |
+| 07-soc-prefilter:main | `demos/07-soc-prefilter/pipeline.yaml` | 5 | 5 | cold 2, siem 1, warm 2 | 5 records | 5.6 | pass |
+| 07-soc-prefilter:jev_down | `demos/07-soc-prefilter/pipeline.yaml` | 5 | 10 | warm 5 | not run | 7.3 | pass |
+| 08-data-quality:main | `demos/08-data-quality/pipeline.yaml` | 5 | 5 | quarantine 3, warehouse 2 | 5 records | 5.7 | pass |
 | 08-data-quality:jev_down | `demos/08-data-quality/pipeline.yaml` | 5 | 10 | quarantine 5 | not run | 7.1 | pass |
-| 09-moderation:main | `demos/09-moderation/pipeline.yaml` | 5 | 5 | allowed 2, review 3 | 5 records | 5.0 | pass |
-| 09-moderation:jev_down | `demos/09-moderation/pipeline.yaml` | 5 | 10 | review 5 | not run | 7.1 | pass |
-| 10-feedback-miner:main | `demos/10-feedback-miner/pipeline.yaml` | 5 | 5 | alert 1, analytics 3, eng 1 | 5 records | 4.8 | pass |
-| 10-feedback-miner:jev_down | `demos/10-feedback-miner/pipeline.yaml` | 5 | 10 | analytics 5 | not run | 7.1 | pass |
-| 11-pod-labels | `demos/11-pod-labels/pipeline.yaml` | 6 | 6 | events 33, labels 7, receipts 6 | 6 records | 61.3 | pass |
+| 09-moderation:main | `demos/09-moderation/pipeline.yaml` | 5 | 5 | allowed 2, review 3 | 5 records | 4.8 | pass |
+| 09-moderation:jev_down | `demos/09-moderation/pipeline.yaml` | 5 | 10 | review 5 | not run | 8.5 | pass |
+| 10-feedback-miner:main | `demos/10-feedback-miner/pipeline.yaml` | 5 | 5 | alert 1, analytics 3, eng 1 | 5 records | 5.0 | pass |
+| 10-feedback-miner:jev_down | `demos/10-feedback-miner/pipeline.yaml` | 5 | 10 | analytics 5 | not run | 7.2 | pass |
+| 11-pod-labels | `demos/11-pod-labels/pipeline.yaml` | 6 | 6 | events 33, labels 7, receipts 6 | 6 records | 74.5 | pass |
 | 12-ade-schedule | `demos/12-ade-schedule/pipeline.yaml` | 29 | 0 | must-see 4, pass 2, worth-it 23 | 29 records | 5.0 | pass |
 
 ## Files exercised
@@ -39,9 +39,9 @@ Every shipped pipeline was deployed unmodified to a local `expanso-edge run --lo
 |---|---|
 | `demos/01-log-triage/pipeline-logging.yaml` | `aaa7614cd053a34e48140855e44a4560f8664bd23ec0f1ef1e9bfdf5bfcf47c3` |
 | `demos/01-log-triage/input.jsonl` | `f7a8afd40dc7e3f26f40de9a1e71deb39486d945b7d539cac7d226f898ceafcc` |
-| `demos/01-log-triage/pipeline-recurrence.yaml` | `ba1988bebae62b17815d3f2e550055dbe114b559ee81e7ee0357c246493c8346` |
+| `demos/01-log-triage/pipeline-recurrence.yaml` | `1a40f2b6536eaead514a376308c10e870822c7d77c66f6f9c27e244ede3aeaa3` |
 | `demos/01-log-triage/input.jsonl` | `f7a8afd40dc7e3f26f40de9a1e71deb39486d945b7d539cac7d226f898ceafcc` |
-| `demos/01-log-triage/pipeline-recurrence.yaml` | `ba1988bebae62b17815d3f2e550055dbe114b559ee81e7ee0357c246493c8346` |
+| `demos/01-log-triage/pipeline-recurrence.yaml` | `1a40f2b6536eaead514a376308c10e870822c7d77c66f6f9c27e244ede3aeaa3` |
 | `demos/01-log-triage/input-outage.jsonl` | `a51bf3310cf8513fa027ae1f92b12f389d7b0faad0abafaaef411a3c9d0c66db` |
 | `demos/02-ticket-router/pipeline.yaml` | `bb8a26167618f9220c72a83b1df8f07da7cff203154a39e1bfe34f80a00cc749` |
 | `demos/02-ticket-router/input.jsonl` | `e420978e2a39aa7175bbfa047e882f563aba64029bd55a8d540543b18d494e7b` |
