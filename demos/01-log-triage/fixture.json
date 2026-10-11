@@ -238,7 +238,7 @@
         "expanso-cli job deploy --force \\\n  demos/01-log-triage/pipeline-logging.yaml",
         "expanso-cli job deploy --force \\\n  demos/01-log-triage/pipeline-recurrence.yaml"
       ],
-      "after": "The recurrence pipeline asks `JEV_API_URL`, which defaults to the local responder on 127.0.0.1:8099. Point it at the dashboard server's gate (the live demo does) or at Jev with `TYPESAFE_API_KEY` set in the Edge agent's environment. The counter at 127.0.0.1:8898 is `demos/01-log-triage/counter.py`; replace it with a store you trust before real traffic."
+      "after": "The recurrence pipeline asks `EDGE_CATEGORIZATION_API_URL`, which defaults to the local responder on 127.0.0.1:8099. Point it at the dashboard server's gate (the live demo does) or at Jev with `TYPESAFE_API_KEY` set in the Edge agent's environment. The counter at 127.0.0.1:8898 is `demos/01-log-triage/counter.py`; replace it with a store you trust before real traffic."
     }
   ]
 }

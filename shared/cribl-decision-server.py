@@ -34,7 +34,7 @@ Usage:
     uv run -s shared/cribl-decision-server.py --download-only # fetch weights once
 
     # then point a demo at it (no key, no other change):
-    JEV_API_URL=http://127.0.0.1:8100/v1/systemone
+    EDGE_CATEGORIZATION_API_URL=http://127.0.0.1:8100/v1/systemone
 
 Env:
     CRIBL_DECISION_PORT   listen port (default 8100)

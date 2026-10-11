@@ -441,7 +441,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "categorization",
+            "routed_by": "categorizer",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -470,7 +470,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "categorization",
+            "routed_by": "categorizer",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -499,7 +499,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "categorization",
+            "routed_by": "categorizer",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -528,7 +528,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "categorization",
+            "routed_by": "categorizer",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -557,7 +557,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "categorization",
+            "routed_by": "categorizer",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -586,7 +586,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "categorization",
+            "routed_by": "categorizer",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -615,7 +615,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "categorization",
+            "routed_by": "categorizer",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -644,7 +644,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "categorization",
+            "routed_by": "categorizer",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -673,7 +673,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "categorization",
+            "routed_by": "categorizer",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }
@@ -702,7 +702,7 @@
               "previous_decisions": [],
               "window_s": 600
             },
-            "routed_by": "categorization",
+            "routed_by": "categorizer",
             "service": "db",
             "ts": "2026-10-05T09:01:03Z"
           }

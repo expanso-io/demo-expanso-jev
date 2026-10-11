@@ -374,7 +374,7 @@ class Run:
 
     def env(self):
         return clean_env(
-            JEV_API_URL=f"http://127.0.0.1:{self.replay.port}/v1/systemone",
+            EDGE_CATEGORIZATION_API_URL=f"http://127.0.0.1:{self.replay.port}/v1/systemone",
             TYPESAFE_API_KEY=FIXTURE_KEY,
             INGEST_ADDRESS=f"127.0.0.1:{self.ingest_port}",
             INGEST_PORT=str(self.ingest_port),

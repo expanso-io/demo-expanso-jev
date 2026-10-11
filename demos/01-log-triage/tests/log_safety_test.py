@@ -30,7 +30,7 @@ FORBIDDEN = {
     r"\bthis\.msg\b": "raw log message text",
     r"\bcontent\(\)": "whole raw payload",
     r"\bthis\.ts\b": "source timestamp is fine in data, but keep log lines to operational metadata",
-    r"JEV_API_URL|https?://": "an endpoint URL",
+    r"EDGE_CATEGORIZATION_API_URL|https?://": "an endpoint URL",
     r"\bquestions\b|\binstructions\b|\bcriteria\b": "the Jev prompt",
     r"\bthis\.categorization\b(?!\.answers|_ok|_decision)": "the whole Jev response body",
     r"root\s*=\s*this\b|root\s*=\s*@": "the whole record or all metadata",

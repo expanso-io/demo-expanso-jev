@@ -15,7 +15,7 @@ Usage:
     uv run shared/jev-mock-server.py            # listens on :8099
 
     # then in .env:
-    JEV_API_URL=http://127.0.0.1:8099/v1/systemone
+    EDGE_CATEGORIZATION_API_URL=http://127.0.0.1:8099/v1/systemone
 """
 import json
 import os
@@ -390,5 +390,5 @@ class Handler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     server = HTTPServer(("127.0.0.1", int(os.environ.get("MOCK_PORT", "8099"))), Handler)
     print("Mock Jev API listening on http://localhost:8099/v1/systemone")
-    print("Point the demo at it: JEV_API_URL=http://127.0.0.1:8099/v1/systemone in .env")
+    print("Point the demo at it: EDGE_CATEGORIZATION_API_URL=http://127.0.0.1:8099/v1/systemone in .env")
     server.serve_forever()

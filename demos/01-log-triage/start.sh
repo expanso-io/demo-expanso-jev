@@ -10,7 +10,7 @@
 #   4. log generator       (generator2.py, ~5 lines/sec into the Edge HTTP input)
 #
 # Requires: python3, expanso-edge + expanso-cli on PATH (Expanso Edge v2+),
-#           JEV_API_URL set (the Jev endpoint, or the bundled mock), and
+#           EDGE_CATEGORIZATION_API_URL set (the Jev endpoint, or the bundled mock), and
 #           EXPANSO_CLI_ENDPOINT / EXPANSO_CLI_AUTH_API_KEY /
 #           EXPANSO_EDGE_BOOTSTRAP_TOKEN in .env.
 #
@@ -62,8 +62,8 @@ trap 'if [ "$STARTED_OK" != 1 ]; then echo "  start did not complete: stopping w
 : "${NODE_ID:=laptop}"
 export JEV_LIVE_PORT JEV_LIVE_GEN NODE_ID
 
-if [ -z "${JEV_API_URL:-}" ]; then
-  echo "ERROR: JEV_API_URL is not set." >&2
+if [ -z "${EDGE_CATEGORIZATION_API_URL:-}" ]; then
+  echo "ERROR: EDGE_CATEGORIZATION_API_URL is not set." >&2
   echo "  Set it to your Jev endpoint (run 'just jev-key'), or to the bundled mock, then re-run." >&2
   echo "  The pipeline reads it at deploy time; nothing in this package stores it." >&2
   exit 1
@@ -143,14 +143,14 @@ printf 'labels:\n  demo: cribl-log-triage-local\n' \
 # The agent reaches Jev through the dashboard server's local fault-injection gate,
 # so an outage can be injected with a real failed call. The real endpoint goes
 # to the server as JEV_UPSTREAM_URL; the agent only ever sees the gate.
-export JEV_UPSTREAM_URL="$JEV_API_URL"
+export JEV_UPSTREAM_URL="$EDGE_CATEGORIZATION_API_URL"
 # The Jev key, if there is one, is for the dashboard server's gate and nobody
 # else. Move it to a private, unexported variable now so the counter, the edge
 # agent and the generator never have it in their environment.
 JEV_KEY_PRIVATE="${TYPESAFE_API_KEY:-}"
 unset TYPESAFE_API_KEY
 GATE_URL="http://127.0.0.1:${JEV_GATE_PORT:-8897}/v1/systemone"
-launch edge env JEV_API_URL="$GATE_URL" expanso-edge run --api-listen "127.0.0.1:$TRIAGE_EDGE_API_PORT" --data-dir "$EDGE_DATA"
+launch edge env EDGE_CATEGORIZATION_API_URL="$GATE_URL" expanso-edge run --api-listen "127.0.0.1:$TRIAGE_EDGE_API_PORT" --data-dir "$EDGE_DATA"
 
 # The agent's connection log proves it reached the configured Cloud network.
 # Cloud's node list may lag the connection by a minute, so do not block startup

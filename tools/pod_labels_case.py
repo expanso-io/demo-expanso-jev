@@ -261,7 +261,7 @@ class Pass:
             KUBECONFIG=str(agent), KUBE_CONTEXT="jev-label-demo", POD_LABEL_NAMESPACES=NS,
             POD_LABEL_TOKEN=self.token, POD_LABEL_PORT=str(self.port), POD_LABEL_APPLY="true",
             POD_LABEL_AUTO="false", POD_LABEL_THRESHOLD="0.8", TYPESAFE_API_KEY=lib.FIXTURE_KEY,
-            JEV_API_URL=f"http://127.0.0.1:{self.resp.port}/v1/systemone",
+            EDGE_CATEGORIZATION_API_URL=f"http://127.0.0.1:{self.resp.port}/v1/systemone",
             POD_LABEL_GENERAL_LOG=str(self.tmp / "general.jsonl"),
         )
         self._spawn("adapter", ["python3", str(d / "adapter.py")], env, self.tmp)

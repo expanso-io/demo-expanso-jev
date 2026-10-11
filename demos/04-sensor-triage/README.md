@@ -6,12 +6,12 @@ Every reading is judged against its asset's normal range, in context rather than
 
 `pipeline.yaml` — POST /readings in; Jev scores anomaly and judges dispatch; cascade fires a work-order webhook, flags files, or rolls up.
 The Jev call is
-`POST ${JEV_API_URL}` with `categorization-unavailable` graceful degradation.
+`POST ${EDGE_CATEGORIZATION_API_URL}` with `categorization-unavailable` graceful degradation.
 
 `input.jsonl` — sample events for a quick test.
 
 The pipeline listens on `${INGEST_ADDRESS}` (default `127.0.0.1:8080`) and asks
-`${JEV_API_URL}` (default: the bundled responder on `127.0.0.1:8099`, so nothing
+`${EDGE_CATEGORIZATION_API_URL}` (default: the bundled responder on `127.0.0.1:8099`, so nothing
 leaves the host until you point it at Jev and set `TYPESAFE_API_KEY`). If Jev
 cannot be reached, the pipeline fails safe: every reading is flagged for a person. None rolls up unseen, and none is dispatched without a judgment.
 

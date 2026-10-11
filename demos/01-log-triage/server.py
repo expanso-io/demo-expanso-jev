@@ -2,7 +2,7 @@
 """jev-live server: serves the dashboard and streams what is really happening.
 
 Stdlib only. No secrets here -- the Jev endpoint lives in the Edge pipeline's
-JEV_API_URL, and the Expanso credentials reach expanso-cli through its own
+EDGE_CATEGORIZATION_API_URL, and the Expanso credentials reach expanso-cli through its own
 environment variables (EXPANSO_CLI_ENDPOINT / EXPANSO_CLI_AUTH_API_KEY), which
 this process inherits from start.sh and never reads or logs.
 
@@ -76,7 +76,7 @@ BINS = ["page", "notify", "review", "archive", "raw", "held"]
 HOLD_MAX_ATTEMPTS = 15      # mirrors the gate in pipeline-recurrence.yaml
 
 # The fault-injection gate. The pipeline calls Jev THROUGH this local proxy
-# (start.sh points the agent's JEV_API_URL at it and hands the real endpoint to
+# (start.sh points the agent's EDGE_CATEGORIZATION_API_URL at it and hands the real endpoint to
 # this process as JEV_UPSTREAM_URL). Open, it forwards verbatim. Blocked, it
 # answers the way a struggling Jev would, so the pipeline's hold path is
 # exercised by a real failed call rather than an animation. It is an INJECTED
@@ -103,7 +103,7 @@ STATIC_DIRS = ("fonts", "assets", "media")   # nothing else in this package is s
 # The "Pipeline YAML" tab. A closed allowlist: the request supplies a KEY, never
 # a path, and the key is looked up here. Nothing from the URL is ever joined
 # into a filename, so there is no traversal to defend against. Files are served
-# verbatim -- ${JEV_API_URL} stays a placeholder, nothing is interpolated -- and
+# verbatim -- ${EDGE_CATEGORIZATION_API_URL} stays a placeholder, nothing is interpolated -- and
 # this is the checked-in source, not a read-back of what Expanso Cloud is running.
 PIPELINE_FILES = {
     "logging": "pipeline-logging.yaml",

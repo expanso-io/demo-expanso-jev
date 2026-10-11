@@ -40,7 +40,7 @@ for fn, b in server.FILES.items():
             r = json.loads(ln)
         except ValueError:
             continue
-        if r.get("routed_by") in ("expanso-bypass", "categorization"):   # only the Jev-mode pipeline's records
+        if r.get("routed_by") in ("expanso-bypass", "categorizer"):   # only the Jev-mode pipeline's records
             recs.append((r.get("received_at", ""), b, r))
 recs.sort(key=lambda x: x[0])
 print(f"replaying {len(recs)} real recorded records; exits in {LIFETIME_S}s", flush=True)

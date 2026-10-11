@@ -98,7 +98,7 @@ At the root, `just up-pods` starts it, while `just open pods` and
 ```bash
 just init        # creates .env from .env.example
 $EDITOR .env     # the three EXPANSO_* values from your Cloud network
-                 # set JEV_API_URL to http://127.0.0.1:8100/v1/systemone
+                 # set EDGE_CATEGORIZATION_API_URL to http://127.0.0.1:8100/v1/systemone
 just doctor      # checks tools, credentials and reachability
 just up          # starts the Cloud pipeline with Cribl locally off
 just open        # http://127.0.0.1:8890
@@ -118,7 +118,7 @@ the Cloud job.
 Start the Cribl server in a separate terminal before `just act3`. It needs its
 base weights and adapter on the first start; see
 [the model setup](demos/01-log-triage/README.md#part-two-run-the-decision-model-locally-cribl-cribl-decision-10).
-For a no-model fixture, use `just jev-mock` and point `JEV_API_URL` at `:8099`.
+For a no-model fixture, use `just jev-mock` and point `EDGE_CATEGORIZATION_API_URL` at `:8099`.
 
 The root `just up`, `just open`, and `just status` target log triage.
 For the three-act walkthrough, `just up-triage` starts at act one with no
@@ -153,7 +153,7 @@ Details, environment variables and troubleshooting:
 | `demos/02-…` to `demos/10-…` | Nine more Expanso + Jev pipelines, each with a `pipeline.yaml`, a sample `input.jsonl`, recorded fixtures and a README: ticket routing, sensitivity masking, sensor triage, agent guardrails, smart sampling, SOC pre-filtering, data quality, moderation, feedback mining. Each is explained and stepped through in `index.html`. |
 | [`demos/11-pod-labels/`](demos/11-pod-labels/README.md) | Keeps Kubernetes pod labels true: Expanso reads pod logs, asks Jev one question when the evidence might change a label, and patches or un-patches it. Runs on a local k3d cluster with one command; the adapter and pipeline work on your own cluster too. |
 | `shared/jev-mock-server.py` | A zero-credential responder for Jev's API, using keyword rules. It produced the recorded answers the fixture runs replay. |
-| `shared/cribl-decision-server.py` | "Info is not enough, part two": Cribl's open-weight cribl-decision-1.0 served locally behind the same `/v1/systemone` API. Point `JEV_API_URL` at `:8100` and the demos judge on-machine -- no key, no relay. |
+| `shared/cribl-decision-server.py` | "Info is not enough, part two": Cribl's open-weight cribl-decision-1.0 served locally behind the same `/v1/systemone` API. Point `EDGE_CATEGORIZATION_API_URL` at `:8100` and the demos judge on-machine -- no key, no relay. |
 | `index.html` | The explorer for all eleven examples. Built by `tools/build-explorers.py` from the fixture runs. |
 | `tools/fixture-runner.py` | Runs every pipeline on its shipped input and asserts the output; writes the dated report. |
 | `public-bar.toml`, `public-features.json`, `.demo-kit/` | The shared public-example check and the retained-feature baseline. See [`docs/RUNBOOK.md`](docs/RUNBOOK.md). |

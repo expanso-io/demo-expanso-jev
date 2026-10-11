@@ -12,7 +12,7 @@ export INGEST_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .INGEST_PO
 export MOCK_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .MOCK_PORT")
 export TRIAGE_EDGE_API_PORT := shell("printf '%s' '" + ports_json + "' | jq -r .TRIAGE_EDGE_API_PORT")
 #
-#   cp .env.example .env    # then set JEV_API_URL
+#   cp .env.example .env    # then set EDGE_CATEGORIZATION_API_URL
 #   just doctor             # verify the machine can run it
 #   just up                 # log triage + local browser + Expanso Cloud
 #   just open               # dashboard in a browser
@@ -44,7 +44,7 @@ init:
       echo "ok: .env already exists"
     else
       cp "{{ root }}/.env.example" "{{ root }}/.env"
-      echo "created .env — set JEV_API_URL in it, then run: just doctor"
+      echo "created .env — set EDGE_CATEGORIZATION_API_URL in it, then run: just doctor"
     fi
 
 # Check every prerequisite before you waste a take on a broken machine.
@@ -59,17 +59,17 @@ doctor:
         echo "  MISS  $cmd  not on PATH"; fail=1
       fi
     done
-    if [ -z "${JEV_API_URL:-}" ]; then
-      echo "  MISS  JEV_API_URL unset — run 'just init' and edit .env"; fail=1
-    elif [[ "${JEV_API_URL}" == *replace-me* ]]; then
-      echo "  MISS  JEV_API_URL is still the placeholder"; fail=1
+    if [ -z "${EDGE_CATEGORIZATION_API_URL:-}" ]; then
+      echo "  MISS  EDGE_CATEGORIZATION_API_URL unset — run 'just init' and edit .env"; fail=1
+    elif [[ "${EDGE_CATEGORIZATION_API_URL}" == *replace-me* ]]; then
+      echo "  MISS  EDGE_CATEGORIZATION_API_URL is still the placeholder"; fail=1
     else
-      echo "  ok    JEV_API_URL set (${JEV_API_URL%%/*}//…)"
+      echo "  ok    EDGE_CATEGORIZATION_API_URL set (${EDGE_CATEGORIZATION_API_URL%%/*}//…)"
       # Set is not the same as reachable. When the endpoint is down the
       # pipeline degrades on purpose and sends every event to REVIEW, which on
       # camera looks like Jev having no opinions. Probe the socket.
-      hp="${JEV_API_URL#*://}"; hp="${hp%%/*}"
-      case "$hp" in *:*) ;; *) case "$JEV_API_URL" in https://*) hp="$hp:443" ;; *) hp="$hp:80" ;; esac ;; esac
+      hp="${EDGE_CATEGORIZATION_API_URL#*://}"; hp="${hp%%/*}"
+      case "$hp" in *:*) ;; *) case "$EDGE_CATEGORIZATION_API_URL" in https://*) hp="$hp:443" ;; *) hp="$hp:80" ;; esac ;; esac
       if python3 -c "import socket,sys; h,_,p=sys.argv[1].rpartition(':'); socket.create_connection((h.strip('[]'), int(p)), 3)" "$hp" 2>/dev/null; then
         echo "  ok    Jev endpoint reachable ($hp)"
       else
@@ -80,10 +80,10 @@ doctor:
       fi
     fi
     # Jev's public API needs a Bearer key; the dashboard server's gate adds it.
-    case "${JEV_API_URL:-}" in
+    case "${EDGE_CATEGORIZATION_API_URL:-}" in
       *api.typesafe.ai*)
         if [ -n "${TYPESAFE_API_KEY:-}" ]; then echo "  ok    TYPESAFE_API_KEY set (the gate will add Bearer auth)"
-        else echo "  WARN  JEV_API_URL is Jev's public API but TYPESAFE_API_KEY is unset — run: just jev-key"; fi ;;
+        else echo "  WARN  EDGE_CATEGORIZATION_API_URL is Jev's public API but TYPESAFE_API_KEY is unset — run: just jev-key"; fi ;;
     esac
     # Expanso Cloud is not optional for this demo -- there is no local mode.
     # Only ever report set/unset. Never echo any part of a key.
@@ -208,7 +208,7 @@ public-bar lane="static":
     ')
     MOCK_PORT="$fixture_mock" COUNTER_PORT="$fixture_counter" \
       POD_LABEL_PORT="$fixture_pods" PUBLIC_BAR_USE_ENV_PORTS=1 NODE_ID=edge-1 \
-      JEV_API_URL="http://127.0.0.1:$fixture_mock/v1/systemone" \
+      EDGE_CATEGORIZATION_API_URL="http://127.0.0.1:$fixture_mock/v1/systemone" \
       uv run -s .demo-kit/public-bar.py --repo . --manifest public-bar.toml \
       --report artifacts/public-bar.md --lane {{lane}}
 
@@ -343,9 +343,9 @@ jev-key:
         line = f"{name}={val}"
         return re.sub(rf"(?m)^{name}=.*$", lambda _: line, s) if re.search(rf"(?m)^{name}=", s) else s.rstrip("\n") + "\n" + line + "\n"
     s = put(s, "TYPESAFE_API_KEY", k)
-    s = put(s, "JEV_API_URL", "https://api.typesafe.ai/v1/systemone")
+    s = put(s, "EDGE_CATEGORIZATION_API_URL", "https://api.typesafe.ai/v1/systemone")
     p.write_text(s); os.chmod(p, 0o600)
-    print("saved TYPESAFE_API_KEY (" + str(len(k)) + " chars) and JEV_API_URL=https://api.typesafe.ai/v1/systemone to .env")
+    print("saved TYPESAFE_API_KEY (" + str(len(k)) + " chars) and EDGE_CATEGORIZATION_API_URL=https://api.typesafe.ai/v1/systemone to .env")
     PY
     unset K
     echo "next: just doctor && just restart"

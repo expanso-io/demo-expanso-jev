@@ -38,7 +38,7 @@ PROVENANCE = (
     "The investigation answers in the pod-labels example are the real Jev values in "
     "docs/investigation-live-proof.json; every other answer comes from the offline "
     "responder in shared/jev-mock-server.py, which says so in each answer's model field. "
-    "Point JEV_API_URL at Jev, with a TypeSafe key, to get its own judgments."
+    "Point EDGE_CATEGORIZATION_API_URL at Jev, with a TypeSafe key, to get its own judgments."
 )
 BROWSER_PORT = 8777
 DEFAULT = {"example": "01-log-triage", "record": 3, "stage": 1}
@@ -164,7 +164,7 @@ def build_case(demo: Path, fixture: dict, name: str, spec: dict) -> dict:
             "source": slice_by_label(pipeline_text, labels[i]),
         }
         inner = json.dumps(proc.get("branch") or {})
-        if labels[i] == jev_label or "JEV_API_URL" in inner or "typesafe" in inner:
+        if labels[i] == jev_label or "EDGE_CATEGORIZATION_API_URL" in inner or "typesafe" in inner:
             page["jev"] = True
         stages.append(page)
     stages.append(
@@ -283,7 +283,7 @@ def default_run(demo: Path, fixture: dict, first: dict) -> tuple[list, list]:
                 f"cat {data_dir}/*.jsonl",
                 "kill %1 %2",
             ],
-            "after": "Replace REPO with the path to your clone. The bundled responder answers with keyword rules; set `JEV_API_URL` and `TYPESAFE_API_KEY` to use Jev.",
+            "after": "Replace REPO with the path to your clone. The bundled responder answers with keyword rules; set `EDGE_CATEGORIZATION_API_URL` and `TYPESAFE_API_KEY` to use Jev.",
         },
     ]
     deploy = [
@@ -298,7 +298,7 @@ def default_run(demo: Path, fixture: dict, first: dict) -> tuple[list, list]:
                 f"expanso-cli job deploy {rel}/{pipe}",
             ],
             "after": (
-                "`JEV_API_URL` defaults to the local responder on 127.0.0.1:8099, so nothing leaves the host until "
+                "`EDGE_CATEGORIZATION_API_URL` defaults to the local responder on 127.0.0.1:8099, so nothing leaves the host until "
                 "you set it to Jev's endpoint and set `TYPESAFE_API_KEY` in the Edge agent's environment. The key "
                 "never goes in the job file or in Expanso Cloud. Add a selector with `match_labels` to pin the job "
                 "to specific nodes."

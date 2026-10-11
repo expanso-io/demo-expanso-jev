@@ -194,7 +194,7 @@ config:
                   }
                 processors:
                   - http:
-                      url: ${JEV_API_URL:http://127.0.0.1:8099/v1/systemone}
+                      url: ${EDGE_CATEGORIZATION_API_URL:http://127.0.0.1:8099/v1/systemone}
                       verb: POST
                       timeout: 20s
                       headers:
@@ -220,7 +220,7 @@ config:
           root = this
           root.routed_by = if this.model_disabled.or(false) {
             "expanso"
-          } else if this.bypass { "expanso-bypass" } else { "categorization" }
+          } else if this.bypass { "expanso-bypass" } else { "categorizer" }
           let actionable = this.categorization.answers.actionable.noul.or(0)
           let sev = this.categorization.answers.severity.choice.or("other")
           let conf = this.categorization.answers.severity.confidence.or(0)

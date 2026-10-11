@@ -6,12 +6,12 @@ User content gets a category judgment before anyone sees it. Safe content is all
 
 `pipeline.yaml` — POST /content in; Jev judges category and needs_human; cascade auto-allows or queues for review.
 The Jev call is
-`POST ${JEV_API_URL}` with `categorization-unavailable` graceful degradation.
+`POST ${EDGE_CATEGORIZATION_API_URL}` with `categorization-unavailable` graceful degradation.
 
 `input.jsonl` — sample events for a quick test.
 
 The pipeline listens on `${INGEST_ADDRESS}` (default `127.0.0.1:8080`) and asks
-`${JEV_API_URL}` (default: the bundled responder on `127.0.0.1:8099`, so nothing
+`${EDGE_CATEGORIZATION_API_URL}` (default: the bundled responder on `127.0.0.1:8099`, so nothing
 leaves the host until you point it at Jev and set `TYPESAFE_API_KEY`). If Jev
 cannot be reached, the pipeline fails safe: every item goes to human review. Nothing is allowed automatically without a judgment.
 

@@ -27,7 +27,7 @@ in [`index.html`](../../index.html#example=01-log-triage).
 
 - macOS or Linux, `python3`, `just`
 - Expanso Edge + CLI v2+ on PATH (`expanso-edge`, `expanso-cli`)
-- `JEV_API_URL` and, for Jev's public API, `TYPESAFE_API_KEY`. `just jev-key` sets
+- `EDGE_CATEGORIZATION_API_URL` and, for Jev's public API, `TYPESAFE_API_KEY`. `just jev-key` sets
   both in `.env`, which is gitignored. Never put a key in a pipeline file.
 
 Everything is stdlib-only Python 3 plus shell. No pip, no emojis, no secrets.
@@ -96,7 +96,7 @@ If the board ever shows **"MOCK Jev responses"** in red, the gate's upstream is
 the repo's mock and the judgments are not real inference.
 
 **Two tabs.** *Live flow* is the board. *Pipeline YAML* shows the checked-in
-`pipeline-recurrence.yaml` source; `${JEV_API_URL}` stays a placeholder. It is
+`pipeline-recurrence.yaml` source; `${EDGE_CATEGORIZATION_API_URL}` stays a placeholder. It is
 the source configuration, not a read-back of the deployed spec.
 
 **Reading the board.** Steps inside Expanso are its real processors. The dashed
@@ -148,7 +148,7 @@ generator2.py --POST :8080/logs--> Expanso Edge, job `log-triage` (deployed via 
       |     +--> server.py /raw        counter.py (:8898 /track)  <- occurrence, history
       |          -> data/raw.jsonl          | [act 3] exact-match known-benign? -> archive, no model call
       |                                     v
-      +--beacon: "n lines emitted"     [act 3] Jev API (${JEV_API_URL})  <- judgment
+      +--beacon: "n lines emitted"     [act 3] Jev API (${EDGE_CATEGORIZATION_API_URL})  <- judgment
                  |                          | gate on the answers
                  v                          v
             server.py (:8890)  <--tails--  data/{logs,page,notify,review,archive}.jsonl
@@ -173,7 +173,7 @@ generator2.py --POST :8080/logs--> Expanso Edge, job `log-triage` (deployed via 
 
 | var | default | what |
 |---|---|---|
-| `JEV_API_URL` | (required) | The real Jev endpoint. `start.sh` hands it to the dashboard server as `JEV_UPSTREAM_URL` and points the agent at the local gate (`:8897`) instead. |
+| `EDGE_CATEGORIZATION_API_URL` | (required) | The real Jev endpoint. `start.sh` hands it to the dashboard server as `JEV_UPSTREAM_URL` and points the agent at the local gate (`:8897`) instead. |
 | `TYPESAFE_API_KEY` | (needed for Jev's public API) | Bearer key for `api.typesafe.ai`. Set with `just jev-key`. Held only by the dashboard server's gate; never in the pipeline, Cloud, or argv. |
 | `EXPANSO_CLI_ENDPOINT` `EXPANSO_CLI_AUTH_API_KEY` `EXPANSO_EDGE_BOOTSTRAP_TOKEN` | (required) | Expanso Cloud. The CLIs' own variable names, so no secret reaches argv. See `AGENTS.md`. |
 | `JEV_GEN_RATE` | `1.67` | baseline source rate, about 100 lines/minute |
@@ -202,7 +202,7 @@ a 4B open-weight (Apache-2.0) decision model released October 2026
 It speaks the same typed-question API as Jev -- `noul`, `choice`, `score`
 over options you supply, probabilities out of a single forward pass, no
 free-form text to parse -- so the pipeline needs no changes: point
-`JEV_API_URL` at the local server and the cascade, the hold-and-release
+`EDGE_CATEGORIZATION_API_URL` at the local server and the cascade, the hold-and-release
 degradation, and the dashboard all behave exactly as before. The only
 difference is where the judgment happens.
 
@@ -214,7 +214,7 @@ uv run -s shared/cribl-decision-server.py --download-only
 uv run -s shared/cribl-decision-server.py
 
 # in .env, alongside the other settings:
-JEV_API_URL=http://127.0.0.1:8100/v1/systemone
+EDGE_CATEGORIZATION_API_URL=http://127.0.0.1:8100/v1/systemone
 
 # from the repository root, use a steady source rate:
 JEV_GEN_RATE=1.67 JEV_GEN_JAGGED=0 just up-triage
@@ -240,7 +240,7 @@ with a CPU fallback elsewhere.
 
 ## Troubleshooting
 
-- **`JEV_API_URL is not set`** — export it first; start.sh refuses to run without it.
+- **`EDGE_CATEGORIZATION_API_URL is not set`** — export it first; start.sh refuses to run without it.
 - **`expanso-edge` / `expanso-cli` not found** — install Expanso Edge v2+ and make
   sure both binaries are on PATH.
 - **Port clash on 8890 / 8898 / 8080** — `lsof -i :8890` to find the squatter;
@@ -248,7 +248,7 @@ with a CPU fallback elsewhere.
 - **"Lost the dashboard server"** — server.py isn't running or died; check
   `logs/server.log`. The counters require receipts; flow motion is illustrative.
 - **Board says "Jev is not answering", everything lands in REVIEW** — the
-  pipeline can't reach Jev. Check `JEV_API_URL` and your key
+  pipeline can't reach Jev. Check `EDGE_CATEGORIZATION_API_URL` and your key
   (`just doctor` probes the endpoint). This is the designed graceful degradation, not a bug.
 - **Cloud lists the node as `connecting` after `just up`** — the Edge agent
 may already be connected. The node list catches up on its next heartbeat;

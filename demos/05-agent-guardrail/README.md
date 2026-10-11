@@ -6,12 +6,12 @@ A safety check on every tool call an AI agent makes. Calls that match what the u
 
 `pipeline.yaml` — POST /tool-calls in; Jev judges intent_match and risk; cascade blocks+alerts, holds for approval, or allows.
 The Jev call is
-`POST ${JEV_API_URL}` with `categorization-unavailable` graceful degradation.
+`POST ${EDGE_CATEGORIZATION_API_URL}` with `categorization-unavailable` graceful degradation.
 
 `input.jsonl` — sample events for a quick test.
 
 The pipeline listens on `${INGEST_ADDRESS}` (default `127.0.0.1:8080`) and asks
-`${JEV_API_URL}` (default: the bundled responder on `127.0.0.1:8099`, so nothing
+`${EDGE_CATEGORIZATION_API_URL}` (default: the bundled responder on `127.0.0.1:8099`, so nothing
 leaves the host until you point it at Jev and set `TYPESAFE_API_KEY`). If Jev
 cannot be reached, the pipeline fails safe: every tool call is blocked. With no answer the intent match reads as 0, and the guardrail fails closed.
 

@@ -28,7 +28,7 @@ sys.path.insert(0, str(PKG))
 import server  # noqa: E402  (module import starts no threads; main() is guarded)
 
 server.DATA = str(SCRATCH)
-SECRETish = re.compile(rb"exp_(ak|bk)_|JEV_API_URL=|EXPANSO_CLI_|BEGIN [A-Z ]*PRIVATE KEY|api_key")
+SECRETish = re.compile(rb"exp_(ak|bk)_|EDGE_CATEGORIZATION_API_URL=|EXPANSO_CLI_|BEGIN [A-Z ]*PRIVATE KEY|api_key")
 results = []
 
 
@@ -71,8 +71,8 @@ try:
         check(f"GET /api/pipeline/{key} -> 200, byte-identical to {fn}", st == 200 and data == disk, f"{len(data)} bytes")
         check(f"  declares its file name ({hdr.get('X-Pipeline-File')})", hdr.get("X-Pipeline-File") == fn)
     st, data, _ = req("GET", "/api/pipeline/recurrence")
-    check("  ${JEV_API_URL} is served as a literal placeholder, not interpolated", b"${JEV_API_URL:" in data)
-    check("  served YAML contains no credential-shaped content", not SECRETish.search(data.replace(b"${JEV_API_URL}", b"")))
+    check("  ${EDGE_CATEGORIZATION_API_URL} is served as a literal placeholder, not interpolated", b"${EDGE_CATEGORIZATION_API_URL:" in data)
+    check("  served YAML contains no credential-shaped content", not SECRETish.search(data.replace(b"${EDGE_CATEGORIZATION_API_URL}", b"")))
 
     print("--- 2. positive control: the static route really does serve files")
     st, data, _ = req("GET", "/fonts/fonts.css")
@@ -123,11 +123,11 @@ try:
     base = {"level": "INFO", "service": "api", "msg": "m", "baseline": "archive"}
     for _ in range(7):   # known routine: matched the rules, no model call, no jev block
         server.ingest("archive", {**base, "bypass": True, "routed_by": "expanso-bypass", "categorization_decision": "archive"})
-    server.ingest("notify", {**base, "bypass": False, "routed_by": "categorization", "categorization_ok": True, "categorization_decision": "notify",
+    server.ingest("notify", {**base, "bypass": False, "routed_by": "categorizer", "categorization_ok": True, "categorization_decision": "notify",
                              "categorization": {"answers": {"actionable": {"noul": 0.9}}}})       # judged, and a "caught"
-    server.ingest("page", {**base, "level": "ERROR", "baseline": "page", "bypass": False, "routed_by": "categorization",
+    server.ingest("page", {**base, "level": "ERROR", "baseline": "page", "bypass": False, "routed_by": "categorizer",
                            "categorization_ok": True, "categorization_decision": "page", "categorization": {"answers": {}}})  # judged, agrees with baseline
-    server.ingest("review", {**base, "bypass": False, "routed_by": "categorization", "categorization_ok": False, "categorization_decision": "review",
+    server.ingest("review", {**base, "bypass": False, "routed_by": "categorizer", "categorization_ok": False, "categorization_decision": "review",
                              "categorization": {"answers": {}}})                                  # inference failed; record KEPT
     r = H.stats()["run"]
     check("bypassed=7 judged=2 categorization_failed=1", (r["bypassed"], r["judged"], r["categorization_failed"]) == (7, 2, 1), str((r["bypassed"], r["judged"], r["categorization_failed"])))
@@ -163,8 +163,8 @@ try:
     check("5 hold receipts: held_in=5, holding=5, completed stays 0", (r["held_in"], r["holding"], r["completed"]) == (5, 5, 0), str((r["held_in"], r["holding"], r["completed"])))
     check("a hold receipt is none of bypassed/judged/categorization_failed", r["bypassed"] == r["judged"] == r["categorization_failed"] == 0)
     for _ in range(3):   # Jev came back: the same records, judged on a later attempt
-        server.ingest("notify", {**held, "categorization_ok": True, "categorization_decision": "notify", "held_attempts": 4, "routed_by": "categorization", "categorization": {"model": "m", "answers": {}}})
-    server.ingest("review", {**held, "categorization_ok": False, "categorization_decision": "review", "held_attempts": 15, "routed_by": "categorization"})   # gave up
+        server.ingest("notify", {**held, "categorization_ok": True, "categorization_decision": "notify", "held_attempts": 4, "routed_by": "categorizer", "categorization": {"model": "m", "answers": {}}})
+    server.ingest("review", {**held, "categorization_ok": False, "categorization_decision": "review", "held_attempts": 15, "routed_by": "categorizer"})   # gave up
     r = H.stats()["run"]
     check("released=3 gave_up=1 holding=1", (r["released"], r["gave_up"], r["holding"]) == (3, 1, 1), str((r["released"], r["gave_up"], r["holding"])))
     check("held_in == released + gave_up + holding", r["held_in"] == r["released"] + r["gave_up"] + r["holding"])

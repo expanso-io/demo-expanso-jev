@@ -6,12 +6,12 @@ Every ticket gets a department, an intent, a frustration score and an urgency ju
 
 `pipeline.yaml` — POST /tickets in; Jev judges department, intent, frustration, urgency; cascade pages on-call, fills the priority queue and department queues, or holds for human triage.
 The Jev call is
-`POST ${JEV_API_URL}` with `categorization-unavailable` graceful degradation.
+`POST ${EDGE_CATEGORIZATION_API_URL}` with `categorization-unavailable` graceful degradation.
 
 `input.jsonl` — sample events for a quick test.
 
 The pipeline listens on `${INGEST_ADDRESS}` (default `127.0.0.1:8080`) and asks
-`${JEV_API_URL}` (default: the bundled responder on `127.0.0.1:8099`, so nothing
+`${EDGE_CATEGORIZATION_API_URL}` (default: the bundled responder on `127.0.0.1:8099`, so nothing
 leaves the host until you point it at Jev and set `TYPESAFE_API_KEY`). If Jev
 cannot be reached, the pipeline fails safe: department confidence reads as 0, so rule three matches and every ticket waits in human triage.
 
