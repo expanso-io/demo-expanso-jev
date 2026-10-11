@@ -176,7 +176,7 @@ generator2.py --POST :8080/logs--> Expanso Edge, job `log-triage` (deployed via 
 | `JEV_API_URL` | (required) | The real Jev endpoint. `start.sh` hands it to the dashboard server as `JEV_UPSTREAM_URL` and points the agent at the local gate (`:8897`) instead. |
 | `TYPESAFE_API_KEY` | (needed for Jev's public API) | Bearer key for `api.typesafe.ai`. Set with `just jev-key`. Held only by the dashboard server's gate; never in the pipeline, Cloud, or argv. |
 | `EXPANSO_CLI_ENDPOINT` `EXPANSO_CLI_AUTH_API_KEY` `EXPANSO_EDGE_BOOTSTRAP_TOKEN` | (required) | Expanso Cloud. The CLIs' own variable names, so no secret reaches argv. See `AGENTS.md`. |
-| `JEV_GEN_RATE` | `30` | baseline source rate; observed mean is ~40 lines/sec |
+| `JEV_GEN_RATE` | `1.67` | baseline source rate, about 100 lines/minute |
 | `JEV_GEN_JAGGED` | `1` | `0` for a flat, metronomic source |
 | `JEV_LIVE_PORT` | `8890` | dashboard port |
 | `JEV_LIVE_GEN` | `generator2.py` | generator script |
@@ -217,7 +217,7 @@ uv run -s shared/cribl-decision-server.py
 JEV_API_URL=http://127.0.0.1:8100/v1/systemone
 
 # from the repository root, use a steady source rate:
-JEV_GEN_RATE=0.05 JEV_GEN_JAGGED=0 just up-triage
+JEV_GEN_RATE=1.67 JEV_GEN_JAGGED=0 just up-triage
 just act2
 just act3
 ```

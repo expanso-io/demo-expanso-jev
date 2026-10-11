@@ -19,9 +19,9 @@ tell that a demo is synthetic. Three things make it jagged here:
     is a retry loop or crash loop: one template repeating fast for a few
     seconds, which is also what real recurrence looks like to the pipeline.
 
-Mean rate over minutes lands near 40/sec. Most of it is routine INFO that the
-pipeline collapses, so Jev judges only a few per second; it just arrives unevenly. Tune
-with JEV_GEN_RATE, or set JEV_GEN_JAGGED=0 for the old flat behaviour.
+The default source rate is about 100 lines per minute. Most lines are routine
+INFO that the pipeline bypasses without a model call. Tune with JEV_GEN_RATE,
+or set JEV_GEN_JAGGED=0 for a flat source rate.
 """
 import json
 import os
@@ -41,16 +41,11 @@ URL = os.environ.get("JEV_LIVE_PIPELINE", "http://127.0.0.1:8080/logs")
 # A beacon says "n lines were just emitted".
 BEACON = "http://127.0.0.1:%s/beacon" % os.environ.get("JEV_LIVE_PORT", "8890")
 
-# Baseline events/sec. The regime multipliers average out ~1.3x, so the
-# observed mean over minutes lands near 40/sec. Instantaneous rate swings well above and below; that is
-# the point.
-RATE = float(os.environ.get("JEV_GEN_RATE", "30"))
+# Baseline events/sec. The jagged regimes can raise or lower the observed rate.
+RATE = float(os.environ.get("JEV_GEN_RATE", "1.67"))
 
-# Jev judges ~30 events/sec on a laptop before latency runs away. The pipeline
-# collapses repeated INFO lines before asking Jev, and ~90% of this traffic is
-# routine INFO, so Jev sees roughly a seventh of the source rate. MAX_RATE and
-# STORM_SHARE together keep the judged rate under that ceiling: a burst should
-# look like a burst, not knock the pipeline over on camera.
+# The pipeline bypasses routine INFO before model inference. Keep storm bursts
+# bounded so a retry loop does not overwhelm the local model on camera.
 MAX_RATE = float(os.environ.get("JEV_GEN_MAX_RATE", "85"))
 STORM_SHARE = 0.15   # fraction of a storm's lines that are the repeating line
 JAGGED = os.environ.get("JEV_GEN_JAGGED", "1") != "0"

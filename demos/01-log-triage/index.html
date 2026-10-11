@@ -231,6 +231,8 @@ body:not(.inspect) .detail{display:none}
 .card.note{display:flex;flex-direction:column;justify-content:center}
 .card.note .lead{font-size:24px;line-height:1.2;font-weight:600;margin:0 0 6px}
 .card.note .sub{font-size:14px;line-height:1.4;color:var(--text-dim);margin:0;max-width:60em}
+.card.arrived{animation:card-arrived 1.2s ease-out}
+@keyframes card-arrived{from{background:var(--surface-2);border-color:var(--accent)}to{background:var(--surface);border-color:var(--line)}}
 .ex{color:var(--accent)} .jv{color:var(--jev)}
 
 @media(max-height:640px),(max-width:1180px){body{overflow:auto}.shell{height:auto;min-height:100dvh;grid-template-rows:44px 460px 168px}}
@@ -296,11 +298,11 @@ body:not(.inspect) .detail{display:none}
     </div>
 
     <div class="node jevnode gone" id="jevNode">
-      <div class="callout"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#scan"/></svg><span id="modelCallout">DECISION MODEL · CRIBL-DECISION-1.0</span></div>
+      <div class="callout"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#scan"/></svg><span id="modelCallout">CATEGORIZATION MODEL · CRIBL-DECISION-1.0</span></div>
       <h2>
         <span id="modelName">Cribl</span>
         <span class="by" id="modelBy"></span>
-        <button class="sw" id="jevSw" role="switch" aria-checked="false" aria-label="Route through decision model"></button>
+        <button class="sw" id="jevSw" role="switch" aria-checked="false" aria-label="Route through categorization model"></button>
       </h2>
       <div class="steps qs" aria-label="What the model is asked about each record">
         <span class="step">Actionable?</span>
@@ -440,18 +442,23 @@ function placeRaw(){
 new ResizeObserver(layout).observe(flow);
 
 /* -------------------------------------------------------------- particles */
-// The moving squares illustrate the route at presentation speed. Counts and
-// receipts elsewhere on the board remain tied to actual pipeline events.
-const flowDots = [], pulses = [];
-const FLOW_RATE = 50;
-let flowCarry = 0, flowSequence = 0;
-function flowBin(){
-  const counts = S.run.received || {}, bins = ['archive','notify','review','page'];
-  const total = bins.reduce((sum, bin) => sum + (counts[bin] || 0), 0);
-  if (!total) return 'archive';
-  let pick = Math.random()*total;
-  for (const bin of bins){ pick -= counts[bin] || 0; if (pick < 0) return bin; }
-  return 'archive';
+// Source beacons draw arrivals; bucket receipts draw the corresponding exit.
+// Their paths are separate because the stream does not correlate each beacon
+// with a receipt. Never invent a destination from aggregate bucket counts.
+const flowDots = [], flowPending = [], pulses = [];
+const FLOW_RATE = 10;
+let flowCarry = 1, flowWindow = 0;
+const flowShown = {in:0,out:0};
+function queueDot(dot){
+  const now = performance.now();
+  if (now-flowWindow >= 1000){ flowWindow = now; flowShown.in = 0; flowShown.out = 0; }
+  if (flowShown[dot.part] >= FLOW_RATE || flowPending.length >= 40) return;
+  flowShown[dot.part]++;
+  flowPending.push(dot);
+}
+function queueSource(n){
+  const piped = S.up && S.mode!=='off';
+  for (let i=0;i<Math.min(n,FLOW_RATE);i++) queueDot({part:'in',piped,age:0});
 }
 
 function bez(a,b,c,d,t){ const u=1-t; return u*u*u*a + 3*u*u*t*b + 3*u*t*t*c + t*t*t*d; }
@@ -463,15 +470,12 @@ function frame(){
   if (!G){ requestAnimationFrame(frame); return; }
   ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,G.w,G.h);
   const piped = S.up && S.mode!=='off';
-  if (S.gen){
-    const rate = FLOW_RATE*(reduced ? .35 : 1);
-    flowCarry += dt*rate;
-    while (flowCarry >= 1 && flowDots.length < 400){
-      flowCarry--;
-      flowDots.push({age:-dt+flowCarry/rate, piped, branch:piped && S.mode==='jev' && ++flowSequence%10===0,
-        bin:flowBin()});
-    }
-  } else flowCarry = 0;
+  const rate = FLOW_RATE*(reduced ? .35 : 1);
+  flowCarry = Math.min(1, flowCarry+dt*rate);
+  if (flowPending.length && flowCarry >= 1 && flowDots.length < 80){
+    flowCarry--;
+    flowDots.push({age:0, ...flowPending.shift()});
+  }
   drawLanes(piped, dt);
   drawFlowDots(dt);
   drawHeroes(dt);
@@ -482,27 +486,21 @@ function drawFlowDots(dt){
     const p = flowDots[i]; p.age += dt;
     const a = p.age, inboundEnd = 1.15;
     let x, y, color = COLORS.raw;
-    if (a < inboundEnd){
-      x = G.srcR + (p.piped ? G.gateIn-G.srcR : G.bucketX-G.srcR)*a/inboundEnd;
+    if (p.part==='in'){
+      if (a >= inboundEnd){ flowDots.splice(i,1); continue; }
+      x = G.srcR + ((p.piped ? G.gateIn : G.bucketX)-G.srcR)*a/inboundEnd;
       y = G.lane;
-    } else if (!p.piped){ flowDots.splice(i,1); continue; }
-    else if (p.branch && a < inboundEnd+.48){
-      x = G.askX; y = G.exTop+(G.jevBottom-G.exTop)*(a-inboundEnd)/.48;
-      color = COLORS.jev;
-    } else if (p.branch && (S.jevDown || S.gate!=='open')){
-      flowDots.splice(i,1); continue;
-    } else if (p.branch && a < inboundEnd+.96){
-      x = G.ansX; y = G.jevBottom+(G.exTop-G.jevBottom)*(a-inboundEnd-.48)/.48;
-      color = COLORS.jev;
     } else {
-      const t = (a-inboundEnd-(p.branch ? .96 : 0))/2.25;
+      if (a < 0) continue;
+      const t = a/2.25;
       if (t >= 1){ flowDots.splice(i,1); continue; }
-      const dx = G.bucketX-G.gateOut, y3 = G.ends[p.bin];
-      x = bez(G.gateOut,G.gateOut+dx*.4,G.gateOut+dx*.6,G.bucketX,t);
+      const start = p.bin==='raw' ? G.srcR : G.gateOut;
+      const dx = G.bucketX-start, y3 = p.bin==='raw' ? G.lane : G.ends[p.bin];
+      x = bez(start,start+dx*.4,start+dx*.6,G.bucketX,t);
       y = bez(G.lane,G.lane,y3,y3,t);
       color = COLORS[p.bin];
     }
-    ctx.fillStyle = color; sq(x,y,5);
+    ctx.fillStyle = color; sq(x,y,8);
   }
 }
 function drawLanes(piped, dt){
@@ -580,13 +578,17 @@ function hit(bin){
 }
 
 /* ------------------------------------------------------------- live feed */
+let eventStream = null;
 function connect(){
-  const es = new EventSource('/events');
+  const es = new EventSource('/events'); eventStream = es;
   es.onmessage = ev => {
     const m = JSON.parse(ev.data);
     if (m.t==='src'){
+      if (m.n) queueSource(m.n);
       if (m.hero && G) heroes.push({id:m.hero, ph:'in', k:0, born:performance.now()});
     } else if (m.t==='rec'){
+      if (m.bin!=='held' && !m.hero && G)
+        queueDot({part:'out',bin:m.bin,age:m.judged ? -.9 : 0});
       if (m.bin==='held' && G) jevPulse(true);
       const h = m.hero && heroes.find(x => x.id===m.hero);
       if (h){ h.dest = m.bin; }                            // the big square lands it instead
@@ -595,14 +597,14 @@ function connect(){
       if (m.ui_rev){ if (uiRev && m.ui_rev !== uiRev){ location.reload(); return; } uiRev = m.ui_rev; }
       const was = S.mode;
       Object.assign(S, {mode:m.mode, up:m.up, gen:m.gen, cloudOk:!!m.cloud_ok, jevDown:!!m.jev_down, replay:!!m.replay, gate:m.gate||'open', mock:!!m.mock, model:m.model||null, upstreamOk:m.upstream_ok, switching:m.switching||null, switchError:m.switch_error||null, bins:m.bins, run:m.run});
-      if (was!==S.mode){ if (was==='off') rawStopped = S.bins.raw; if (S.mode==='off') rawStopped = null; pinned = null; if (G) placeRaw(); setTimeout(card, 0); setTimeout(layout, 0); setTimeout(pickYaml, 0); }
+      if (was!==S.mode){ if (was==='off') rawStopped = S.bins.raw; if (S.mode==='off') rawStopped = null; pinned = null; flowDots.length = 0; flowPending.length = 0; if (G) placeRaw(); setTimeout(card, 0); setTimeout(layout, 0); setTimeout(pickYaml, 0); }
       render();
     }
   };
 
   es.onerror = () => {
     S.gen = false; S.up = false; S.cloudOk = false; S.mode = 'off';
-    flowDots.length = 0; pulses.length = 0; flowCarry = 0;
+    flowDots.length = 0; flowPending.length = 0; pulses.length = 0; flowCarry = 1;
 
     if (G) placeRaw();
     render();
@@ -633,15 +635,15 @@ function render(){
   if (/cribl/i.test(mName) || (!mName && !S.mock)) {
     $('#modelName').textContent = 'Cribl';
     $('#modelBy').textContent = '';
-    $('#modelCallout').textContent = 'DECISION MODEL · CRIBL-DECISION-1.0';
+    $('#modelCallout').textContent = 'CATEGORIZATION MODEL · CRIBL-DECISION-1.0';
   } else if (S.mock) {
     $('#modelName').textContent = 'Cribl';
     $('#modelBy').textContent = '';
-    $('#modelCallout').textContent = 'DECISION MODEL · CRIBL-DECISION-1.0 (REPLAY)';
+    $('#modelCallout').textContent = 'CATEGORIZATION MODEL · CRIBL-DECISION-1.0 (REPLAY)';
   } else if (/jev|typesafe/i.test(mName)) {
     $('#modelName').textContent = 'Jev';
     $('#modelBy').textContent = 'by TypeSafe';
-    $('#modelCallout').textContent = 'DECISION MODEL · JEV';
+    $('#modelCallout').textContent = 'CATEGORIZATION MODEL · JEV';
   }
 
   $('#inject').classList.toggle('gone', !jev); $('#outage').classList.toggle('gone', !jev);
@@ -662,7 +664,7 @@ function render(){
   $('#jevNum').innerHTML = down ? `<b>${fmt(holding)}</b> held · ${fmt(run.gave_up||0)} given up to review` : `<b>${fmt(run.judged)}</b> judged · ${fmt(run.received.page+run.received.notify)} need a person`;
 
   const fine = $('#fine'); fine.classList.toggle('replay', !!S.replay || !!S.mock);
-  fine.innerHTML = S.mock ? `MOCK decision responses (${esc(S.model)})<br>not real inference` : S.replay ? 'REPLAY of recorded records · not live<br>no pipeline, no model is running' : 'Synthetic demo events · illustrative flow<br>Counts are observed · buckets are local demo files';
+  fine.innerHTML = S.mock ? `MOCK decision responses (${esc(S.model)})<br>not real inference` : S.replay ? 'REPLAY of recorded records · not live<br>no pipeline, no model is running' : 'Moving squares sample live source logs<br>Totals count observed pipeline receipts';
   document.querySelectorAll('.btn.fault').forEach(b => { b.classList.toggle('on', b.dataset.gate===S.gate); b.hidden = blocked; });
   $('#gateOpen').hidden = !blocked;
   $('#heldTag').classList.toggle('gone', !(jev && holding)); $('#heldN').textContent = fmt(holding);
@@ -691,7 +693,7 @@ function ledger(piped, jev, decided, pct){
   const mTitle = isCribl ? 'Cribl' : 'Jev';
   const stat = (v, label, cls='') => `<div class="stat ${cls}"><b>${v}</b><span>${label}</span></div>`;
   const noModel = !piped ? dash : !jev ? '100%' : decided ? pct+'%' : dash;
-  el.innerHTML = `<div class="callout" style="grid-column:1/5"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#cost"/></svg>ACCOUNTING · EVENT TOTALS</div><p class="cap">${S.replay ? 'Replay' : 'This run'} · ${!piped ? 'no pipeline' : jev ? `Expanso + ${mTitle}` : 'Expanso'}</p>`
+  el.innerHTML = `<div class="callout" style="grid-column:1/5"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#cost"/></svg>ACCOUNTING · EVENT TOTALS</div><p class="cap">${S.replay ? 'Replay' : 'This run'} · ${fmt(r.produced)} source logs · ${!piped ? 'no pipeline' : jev ? `Expanso + ${mTitle}` : 'Expanso'}</p>`
     + stat(fmt(r.completed), 'records completed')
     + `<div class="stat"><b>${(r.rate??0).toFixed(1)}</b><span>${S.replay ? 'REPLAY receipts' : 'completed'} / sec · last ${r.rate_window_s||10} s</span><canvas id="spark"></canvas></div>`
     + stat(noModel, 'no model call')
@@ -771,9 +773,11 @@ function gate(r){
   if (act>=0.4) return 'actionable 0.40–0.70 → review';
   return 'below every threshold → archive';
 }
-function note(lead, sub){ const el=$('#card'); el.className='panel card note'; el.innerHTML=`<p class="lead">${lead}</p><p class="sub">${sub}</p>`; }
+let cardShownKey = '';
+function note(lead, sub){ const el=$('#card'); el.className='panel card note'; el.innerHTML=`<p class="lead">${lead}</p><p class="sub">${sub}</p>`; cardShownKey = ''; }
 function show(r, bin, tag){
-  const el = $('#card'); el.className = 'panel card';
+  const el = $('#card'), key = `${S.run.started}:${bin}:${r.id||r.ts||''}`;
+  el.className = 'panel card';
   const c = r.recurrence, input = `<div><p class="cap">Input${tag?` · ${tag}`:''}</p><div class="msg">${esc(r.level)} · ${esc(r.service)} · ${esc(r.msg)}</div>
     ${c ? `<div class="meta detail">${ord(c.occurrence)} time in ${Math.round(c.window_s/60)} min · counted by Expanso</div>` : ''}</div>`;
   const mName = (r.jev_ok && r.jev?.model) || S.model || '';
@@ -791,25 +795,22 @@ function show(r, bin, tag){
   el.innerHTML = `${input}<div class="arrow">→</div>${by}<div class="arrow">→</div>
     <div><p class="cap">${bin==='held' ? 'Status' : 'Destination'}</p><div class="dest" style="color:var(--${bin})">${esc(dest)}</div>
     ${base ? `<div class="vs${diff?' diff':''}">Severity-only baseline: <span style="text-transform:uppercase">${esc(base)}</span>${!judged ? '' : diff ? ' · differs' : ' · same'}</div>` : ''}<div class="vs detail">local demo file ${SINK[bin]}</div></div>`;
+  if (key!==cardShownKey){ el.classList.add('arrived'); cardShownKey = key; }
 }
 async function card(){
   const get = async u => { try { return await (await fetch(u)).json(); } catch { return null; } };
-  const piped = S.mode!=='off' && S.up, jev = S.mode==='jev' && S.up;
+  const piped = S.mode!=='off' && S.up, jev = S.mode==='jev' && S.up, started = S.run.started;
   if (frozen) return show(frozen.r, frozen.bin, 'latest in '+(frozen.bin==='raw'?'raw bucket':frozen.bin));
   if (pinned){ const d = await get('/api/bucket/'+pinned); if (d?.records?.length) return show(d.records[0], pinned, 'latest in '+(pinned==='raw'?'raw bucket':pinned)); return note(`Nothing in ${pinned} yet.`, 'Click the bucket again to unpin.'); }
-  if (!piped){ const d = await get('/api/bucket/raw'); if (!d?.records?.length) return note('Waiting for the first logs…','');
-    const n = {}; d.records.forEach(r => n[r.msg]=(n[r.msg]||0)+1); const top = Object.entries(n).sort((a,b)=>b[1]-a[1]).slice(0,3);
-    return note(`${top.reduce((s,[,c])=>s+c,0)} of the last ${d.records.length} lines are the same ${top.length} messages.`, `Stored again and again: ${top.map(([m])=>esc(m)).join(' · ')}. No fingerprint, no owner, no way to tell which line is the one that matters.`); }
-  if (!jev){ const d = await get('/api/bucket/archive'); return d?.records?.length ? show(d.records[0], 'archive', 'latest') : note('Expanso is running.','Waiting for the first shaped record.'); }
-  if (S.jevDown || S.gate!=='open'){ const d = await get('/api/bucket/held'); const r = d?.records?.[0];
-    const mName = S.model || '';
-    const isCribl = /cribl/i.test(mName) || (!mName && !S.mock);
-    const mTitle = isCribl ? 'Cribl' : 'Jev';
-    return r ? show(r, 'held', S.gate!=='open' ? `${mTitle} blocked at local gate · held, not guessed` : `${mTitle} did not answer in time · held, not guessed`) : note(`${mTitle} is not answering.`, 'Known-benign lines still skip the model. Everything else is held for REVIEW rather than guessed.'); }
-  const e = await get('/api/evidence');
-  if (e?.caught?.length) return show(e.caught[0], e.caught[0].jev_decision, `a quiet one · ${S.run.caught} this run`);
-  for (const b of ['page','notify','review']){ const d = await get('/api/bucket/'+b); const r = d?.records?.find(x => x.jev_ok); if (r) return show(r, b, 'latest judged'); }
-  note('Judging…', 'Waiting for the first judgment to return.');
+  const bins = (piped ? jev ? ['page','notify','review','archive','held'] : ['archive'] : ['raw'])
+    .filter(b => (S.run.received[b]||0)>0);
+  if (!bins.length) return note('Waiting for this run’s first log…', 'The panel shows records after they reach a local bucket.');
+  const items = await Promise.all(bins.map(async bin => ({bin, data:await get('/api/bucket/'+bin)})));
+  if (started!==S.run.started) return;
+  const latest = items.map(({bin,data}) => ({bin, r:data?.records?.[0]})).filter(x => x.r)
+    .sort((a,b) => Date.parse(b.r.received_at||b.r.ts||0)-Date.parse(a.r.received_at||a.r.ts||0))[0];
+  if (latest) show(latest.r, latest.bin, 'latest observed');
+  else note('Waiting for the latest record…', 'The receipt count has updated; the bucket file is catching up.');
 }
 setInterval(card, 1500);
 
@@ -861,7 +862,9 @@ addEventListener('keydown', e => {
 
 // Preview/test hook only: lets a static layout check drive render() with a given
 // state. Nothing in the board reads it.
-window.__board = {S, render, layout, card: () => card(), ledger};
+window.__board = {S, render, layout, card: () => card(), ledger, queueSource,
+  flowDots, flowPending, geometry: () => G,
+  stopFeed: () => { eventStream?.close(); eventStream = null; }};
 
 document.fonts.ready.then(() => { layout(); render(); card(); connect(); requestAnimationFrame(frame); });
 })();
