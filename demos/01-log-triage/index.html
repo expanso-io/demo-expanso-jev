@@ -446,9 +446,10 @@ new ResizeObserver(layout).observe(flow);
 /* -------------------------------------------------------------- particles */
 // Source beacons draw arrivals; bucket receipts draw the corresponding exit.
 // Their paths are separate because the stream does not correlate each beacon
-// with a receipt. Never invent a destination from aggregate bucket counts.
+// with a receipt. Every visible trail follows an observed event and route.
 const flowDots = [], flowPending = [], pulses = [];
-const FLOW_RATE = 10;
+const FLOW_RATE = 30;
+const FLOW_TRAIL = 3;
 const FLOW_SPEED = 360; // pixels per second, regardless of route length
 const MODEL_HOLD = 1.1; // pause briefly at Cribl so an observed call is legible
 let flowCarry = 1, flowWindow = 0;
@@ -456,13 +457,18 @@ const flowShown = {in:0,out:0};
 function queueDot(dot){
   const now = performance.now();
   if (now-flowWindow >= 1000){ flowWindow = now; flowShown.in = 0; flowShown.out = 0; }
-  if (flowShown[dot.part] >= FLOW_RATE || flowPending.length >= 40) return;
+  if (flowShown[dot.part] >= FLOW_RATE || flowPending.length >= 96) return;
   flowShown[dot.part]++;
   flowPending.push(dot);
 }
 function queueSource(n){
   const piped = S.up && S.mode!=='off';
-  for (let i=0;i<Math.min(n,FLOW_RATE);i++) queueDot({part:'in',piped,age:0});
+
+  for (let i=0;i<Math.min(n,FLOW_RATE/FLOW_TRAIL);i++){
+    for (let trail=0;trail<FLOW_TRAIL;trail++){
+      queueDot({part:'in',piped,age:0});
+    }
+  }
 }
 
 function bez(a,b,c,d,t){ const u=1-t; return u*u*u*a + 3*u*u*t*b + 3*u*t*t*c + t*t*t*d; }
@@ -505,7 +511,7 @@ function frame(){
   const piped = S.up && S.mode!=='off';
   const rate = FLOW_RATE*(reduced ? .35 : 1);
   flowCarry = Math.min(1, flowCarry+dt*rate);
-  if (flowPending.length && flowCarry >= 1 && flowDots.length < 80){
+  if (flowPending.length && flowCarry >= 1 && flowDots.length < 160){
     flowCarry--;
     flowDots.push({age:0, ...flowPending.shift()});
   }
@@ -562,11 +568,12 @@ function drawLanes(piped, dt){
   ctx.font = '500 13px "IBM Plex Mono"'; ctx.textBaseline = 'middle';
   ctx.textAlign = 'left'; ctx.fillText(S.gate==='overloaded' ? '503 overloaded' : S.gate==='credential' ? '401 credential' : S.jevDown ? 'no answer' : 'answer', G.ansX+12, (y0+y1)/2);
   if (reduced) return;
-  // One square per observed model receipt. It moves at the same speed as the
-  // source and output squares, pauses at Cribl, then follows the answer line.
+  // Each observed model receipt draws a short trail at the same speed as the
+  // source and output squares, pausing at Cribl before the answer returns.
   for (let i=pulses.length-1;i>=0;i--){
     const p = pulses[i], travel = (y1-y0)/FLOW_SPEED;
     p.t += dt;
+    if (p.t < 0) continue;
 
     if (p.t >= 2*travel+MODEL_HOLD || (p.held && p.t >= travel+MODEL_HOLD)){
       pulses.splice(i,1); continue;
@@ -609,7 +616,14 @@ function drawHeroes(dt){
 }
 let lastPulse = 0;
 function jevPulse(held){
-  const n=performance.now(); if (n-lastPulse<90 || pulses.length>24) return; lastPulse=n; pulses.push({t:0, held:!!held});
+  const n=performance.now();
+  if (n-lastPulse<90 || pulses.length>72) return;
+  lastPulse=n;
+
+  for (let trail=0;trail<(held ? 1 : FLOW_TRAIL);trail++){
+    pulses.push({t:-trail*.12, held:!!held});
+  }
+
   if (held) return;
   const g = $('#gateChip'); setTimeout(() => { g.classList.add('fire'); setTimeout(() => g.classList.remove('fire'), 260); }, 850);
 }
@@ -629,8 +643,12 @@ function connect(){
       if (m.n) queueSource(m.n);
       if (m.hero && G) heroes.push({id:m.hero, ph:'in', k:0, born:performance.now()});
     } else if (m.t==='rec'){
-      if (m.bin!=='held' && m.bin!=='raw' && !m.hero && G)
-        queueDot({part:'out',bin:m.bin,age:m.judged ? -modelTripDuration() : 0});
+      if (m.bin!=='held' && m.bin!=='raw' && !m.hero && G){
+        for (let trail=0;trail<FLOW_TRAIL;trail++){
+          queueDot({part:'out',bin:m.bin,
+            age:(m.judged ? -modelTripDuration() : 0)-trail*.12});
+        }
+      }
       if (m.bin==='held' && G) jevPulse(true);
       const h = m.hero && heroes.find(x => x.id===m.hero);
       if (h){ h.dest = m.bin; }                            // the big square lands it instead
