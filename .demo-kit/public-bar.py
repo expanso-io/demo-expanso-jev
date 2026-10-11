@@ -444,6 +444,15 @@ def resolve_manifest_urls(repo: Path, manifest: dict[str, Any]) -> dict[str, Any
         check=True,
     )
     assigned = json.loads(result.stdout)
+    # The public-bar recipe uses separate fixture listeners when the live demo
+    # is running. Only this explicit test mode may override persistent ports.
+    if os.environ.get("PUBLIC_BAR_USE_ENV_PORTS") == "1":
+        for name in ("MOCK_PORT", "COUNTER_PORT", "POD_LABEL_PORT"):
+            if name in os.environ:
+                port = int(os.environ[name])
+                if not 1 <= port <= 65535:
+                    raise ValueError(f"invalid fixture port for {name}: {port}")
+                assigned[name] = port
     declaration_data = load_json(declaration)
     if declaration_data.get("version") == 1:
         preferences = next(iter(declaration_data["demos"].values()))["ports"]

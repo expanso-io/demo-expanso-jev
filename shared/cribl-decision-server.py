@@ -23,9 +23,9 @@ time -- that is the whole point.
   https://cribl.io/blog/cribl-decision-1-0-a-foundation-for-telemetry-decision-models/
 
 How it answers: the state and each question are formatted with the
-model's chat template, then every candidate option is scored by its
-log-probability as a continuation of the prompt -- one batched forward
-pass per question -- and the scores are softmaxed into probabilities.
+model's chat template. Single-token options use the native LM readout
+at the decision slot; longer options use continuation log-probabilities.
+The scores are softmaxed into probabilities.
 No free-form text is ever generated, so there is nothing to parse: the
 model can only distribute probability mass over the options you supplied.
 
@@ -184,7 +184,7 @@ def build_prompt(state_text, q):
 
 
 def candidate_logprobs(prompt_ids, candidates):
-    """Log P(candidate tokens | prompt) for each candidate, one batched pass."""
+    """Score the supplied candidates from the native LM readout."""
     import torch
 
     cand_ids = []
@@ -197,6 +197,16 @@ def candidate_logprobs(prompt_ids, candidates):
     if len(prompt_ids) > room:
         log(f"prompt truncated from {len(prompt_ids)} to {room} tokens")
         prompt_ids = prompt_ids[-room:]
+    if all(len(ids) == 1 for ids in cand_ids):
+        # The demo's options are single tokens. One prompt forward pass gives
+        # the same decision-slot logits as repeating it for every candidate.
+        with _infer_lock, torch.inference_mode():
+            input_ids = torch.tensor([prompt_ids], device=_device)
+            logits = _model(input_ids=input_ids).logits[0, -1].float()
+            return logits[[ids[0] for ids in cand_ids]].cpu().tolist()
+
+    # Multi-token options need continuation scoring. Keep the full path for
+    # callers whose candidates are not single tokens.
     P = len(prompt_ids)
     max_c = max(len(c) for c in cand_ids)
     pad_id = _tokenizer.pad_token_id

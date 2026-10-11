@@ -195,7 +195,20 @@ lint-ui:
 
 # Run the shared public-bar check: all five criteria or selected lane.
 public-bar lane="static":
-    NODE_ID=edge-1 JEV_API_URL="http://127.0.0.1:$MOCK_PORT/v1/systemone" \
+    #!/usr/bin/env bash
+    set -euo pipefail
+    read -r fixture_mock fixture_counter fixture_pods < <(uv run --no-project python -c '
+    import socket
+    sockets = [socket.socket() for _ in range(3)]
+    for sock in sockets:
+        sock.bind(("127.0.0.1", 0))
+    print(*(sock.getsockname()[1] for sock in sockets))
+    for sock in sockets:
+        sock.close()
+    ')
+    MOCK_PORT="$fixture_mock" COUNTER_PORT="$fixture_counter" \
+      POD_LABEL_PORT="$fixture_pods" PUBLIC_BAR_USE_ENV_PORTS=1 NODE_ID=edge-1 \
+      JEV_API_URL="http://127.0.0.1:$fixture_mock/v1/systemone" \
       uv run -s .demo-kit/public-bar.py --repo . --manifest public-bar.toml \
       --report artifacts/public-bar.md --lane {{lane}}
 

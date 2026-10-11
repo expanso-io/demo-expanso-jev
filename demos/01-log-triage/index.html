@@ -70,7 +70,8 @@ button{font:inherit;color:inherit}
 /* ---------- flow ---------- */
 .flow{position:relative;min-height:0}
 .flow canvas{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;z-index:0}
-.srcbox{position:absolute;left:0;width:200px;height:72px;z-index:1;background:var(--surface);border:2px solid var(--text);border-radius:8px;padding:6px 10px;display:flex;flex-direction:column;justify-content:center}
+.srcbox{position:absolute;left:0;width:200px;height:72px;z-index:1;background:var(--surface);border:2px solid var(--text);border-radius:8px;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;appearance:none;font:inherit;text-align:left;color:var(--text);cursor:pointer}
+.srcbox:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .srcbox .callout{margin-bottom:2px}
 .srcbox .src-body{display:flex;align-items:center;gap:8px}
 .srcbox .src-img{width:28px;height:28px;flex:none}
@@ -289,13 +290,13 @@ body:not(.inspect) .detail{display:none}
 
   <section class="flow" id="flow" aria-label="Live log flow" data-region="stage">
     <canvas id="cv"></canvas>
-    <div class="srcbox" id="src">
+    <button class="srcbox" id="src" type="button" aria-label="Show a recent production log">
       <div class="callout"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#signal"/></svg>TELEMETRY SOURCE</div>
       <div class="src-body">
         <img src="media/source-cluster.svg" class="src-img" alt="Server cluster" width="28" height="28">
         <div><small>Server cluster</small><b>production logs</b></div>
       </div>
-    </div>
+    </button>
 
     <div class="node jevnode gone" id="jevNode">
       <div class="callout"><svg class="icon" aria-hidden="true"><use href="media/icons.svg#scan"/></svg><span id="modelCallout">CATEGORIZATION MODEL · CRIBL-DECISION-1.0</span></div>
@@ -449,6 +450,7 @@ new ResizeObserver(layout).observe(flow);
 const flowDots = [], flowPending = [], pulses = [];
 const FLOW_RATE = 10;
 const FLOW_SPEED = 360; // pixels per second, regardless of route length
+const MODEL_HOLD = 1.1; // pause briefly at Cribl so an observed call is legible
 let flowCarry = 1, flowWindow = 0;
 const flowShown = {in:0,out:0};
 function queueDot(dot){
@@ -487,6 +489,10 @@ function pathPoint(points, distance){
   const a = points[i-1], b = points[i], t = (distance-a.d)/(b.d-a.d);
 
   return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t};
+}
+
+function modelTripDuration(){
+  return 2*(G.exTop-G.jevBottom)/FLOW_SPEED + MODEL_HOLD;
 }
 
 function sq(x,y,s){ ctx.fillRect(Math.round(x-s/2), Math.round(y-s/2), s, s); }
@@ -556,12 +562,23 @@ function drawLanes(piped, dt){
   ctx.font = '500 13px "IBM Plex Mono"'; ctx.textBaseline = 'middle';
   ctx.textAlign = 'left'; ctx.fillText(S.gate==='overloaded' ? '503 overloaded' : S.gate==='credential' ? '401 credential' : S.jevDown ? 'no answer' : 'answer', G.ansX+12, (y0+y1)/2);
   if (reduced) return;
-  // One square per real receipt, replayed as the trip it made: up the question
-  // line, back down the answer line. A held record only goes up: nothing came back.
+  // One square per observed model receipt. It moves at the same speed as the
+  // source and output squares, pauses at Cribl, then follows the answer line.
   for (let i=pulses.length-1;i>=0;i--){
-    const p = pulses[i]; p.t += dt/0.9; if (p.t>=1 || (p.held && p.t>=.5)){ pulses.splice(i,1); continue; }
-    const up = p.t<.5, k = up ? p.t*2 : (p.t-.5)*2;
-    ctx.globalAlpha = p.held ? 1-k : 1; sq(up ? G.askX : G.ansX, up ? y1+(y0-y1)*k : y0+(y1-y0)*k, 5);
+    const p = pulses[i], travel = (y1-y0)/FLOW_SPEED;
+    p.t += dt;
+
+    if (p.t >= 2*travel+MODEL_HOLD || (p.held && p.t >= travel+MODEL_HOLD)){
+      pulses.splice(i,1); continue;
+    }
+
+    const up = p.t < travel, waiting = p.t < travel+MODEL_HOLD;
+
+    const y = up ? y1-p.t*FLOW_SPEED : waiting ? y0
+      : y0+(p.t-travel-MODEL_HOLD)*FLOW_SPEED;
+
+    ctx.globalAlpha = p.held && waiting ? Math.min(1,(travel+MODEL_HOLD-p.t)/.4) : 1;
+    sq(up || waiting ? G.askX : G.ansX, y, 8);
   }
   ctx.globalAlpha = 1;
 }
@@ -613,7 +630,7 @@ function connect(){
       if (m.hero && G) heroes.push({id:m.hero, ph:'in', k:0, born:performance.now()});
     } else if (m.t==='rec'){
       if (m.bin!=='held' && m.bin!=='raw' && !m.hero && G)
-        queueDot({part:'out',bin:m.bin,age:m.judged ? -.9 : 0});
+        queueDot({part:'out',bin:m.bin,age:m.judged ? -modelTripDuration() : 0});
       if (m.bin==='held' && G) jevPulse(true);
       const h = m.hero && heroes.find(x => x.id===m.hero);
       if (h){ h.dest = m.bin; }                            // the big square lands it instead
@@ -741,6 +758,7 @@ $('#jevSw').onclick = async () => { const on = $('#jevSw').getAttribute('aria-ch
 document.querySelectorAll('[data-gate]').forEach(b => b.onclick = () => fetch('/api/gate', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:b.dataset.gate})}).catch(() => {}));
 document.querySelectorAll('.chaos').forEach(b => b.onclick = () => { fetch('/chaos/'+b.dataset.chaos,{method:'POST'}); b.classList.add('fired'); setTimeout(()=>b.classList.remove('fired'),80000); });
 document.querySelectorAll('.bucket').forEach(b => b.onclick = () => openRecord(b.dataset.bin));
+$('#src').onclick = openSource;
 
 // Which pipeline stage put each top-level field on the record. This is the
 // "change of shape": production sends five fields, Expanso adds context, Jev
@@ -772,8 +790,34 @@ function jrecord(r){
 async function openRecord(bin){
   let d; try { d = await (await fetch('/api/bucket/'+bin)).json(); } catch { return; }
   const r = d?.records?.[0]; pinned = bin; frozen = r ? {r, bin} : null; render(); card();
-  $('#mTitle').textContent = bin==='raw' ? 'Raw log bucket' : bin; $('#mTitle').style.color = `var(--${bin})`;
-  $('#mSub').textContent = r ? `latest of ${fmt(d.total)} · local demo file ${SINK[bin]}` : 'nothing here yet';
+  showModal(r, bin==='raw' ? 'Raw log bucket' : bin, `var(--${bin})`,
+    r ? `latest of ${fmt(d.total)} · local demo file ${SINK[bin]}` : 'nothing here yet');
+}
+
+async function openSource(){
+  showModal(null, 'Production log sample', 'var(--text)', 'loading a recent source record');
+  const bins = S.mode==='off' ? ['raw'] : ['page','notify','review','archive','held'];
+
+  const results = await Promise.all(bins.map(async bin => {
+    try { return (await (await fetch('/api/bucket/'+bin)).json()).records || []; }
+    catch { return []; }
+  }));
+
+  const records = results.flat();
+  records.sort((a,b) => Date.parse(b.received_at || b.ts)-Date.parse(a.received_at || a.ts));
+  const latest = records[0];
+
+  const source = latest && Object.fromEntries(['id','ts','level','service','msg']
+    .flatMap(key => key in latest ? [[key, latest[key]]] : []));
+
+  if (!$('#modal').classList.contains('open') || $('#mTitle').textContent!=='Production log sample') return;
+  showModal(source, 'Production log sample', 'var(--text)',
+    source ? 'last observed source record · before Expanso processing' : 'waiting for a source record');
+}
+
+function showModal(r, title, color, subtitle){
+  $('#mTitle').textContent = title; $('#mTitle').style.color = color;
+  $('#mSub').textContent = subtitle;
   const used = r ? new Set(Object.keys(r).map(k => originOf(k, r)).filter(Boolean)) : new Set();
   const mTag = (S.model_name && /cribl/i.test(S.model_name)) || !S.mock ? 'C added by Cribl' : 'J added by Jev';
   $('#mLegend').innerHTML = `<span><i style="background:var(--line)"></i>sent by production</span>`
